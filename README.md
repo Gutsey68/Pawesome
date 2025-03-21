@@ -13,7 +13,7 @@ This guide will help you set up the Pawesome MVC project for development using D
 1. Clone the repository:
    ```bash
    git clone https://CCICampus@dev.azure.com/CCICampus/CDA-ALT2425-G3/_git/CDA-ALT2425-G3
-   cd pawesome-project
+   cd Pawesome
    ```
 
 2. Check that Docker is running on your machine

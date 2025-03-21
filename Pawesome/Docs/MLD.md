@@ -62,13 +62,12 @@
 |Nom du champ|Type de données|Longueur|Contrainte|Description|
 |---|---|---|---|---|
 |id|Int||PK Auto increment|Identifiant unique|
-|rating|Float|||Note attribuée|
 |comment|Text|||Commentaire|
 |createdAt|Timestamp||Default CURRENT_TIMESTAMP|Date de création|
 |updatedAt|Timestamp||Default CURRENT_TIMESTAMP|Date de mise à jour|
 |userId|Int||FK -> Users(id)|Référence à l'utilisateur|
 
-### **Signalments**
+### **Reports**
 
 |Nom du champ|Type de données|Longueur|Contrainte|Description|
 |---|---|---|---|---|
@@ -184,9 +183,9 @@ AnimalTypes (<u>id</u>, name, createdAt, updatedAt)
 
 Adverts (<u>id</u>, startDate, endDate, status, amount, createdAt, updatedAt)
 
-Notifications (<u>id</u>, rating, comment, createdAt, updatedAt, #userId)
+Notifications (<u>id</u>, comment, createdAt, updatedAt, #userId)
 
-Signalments (<u>id</u>, comment, createdAt, updatedAt, #userId )
+Reports (<u>id</u>, comment, createdAt, updatedAt, #userId )
 
 PasswordReset (<u>id</u>, token, isValid, expiresAt, createdAt, updatedAt, #userId)
 
@@ -194,7 +193,7 @@ Roles (<u>id</u>, name, createdAt, updatedAt)
 
 Messages (<u>id</u>, content, status, createdAt, updatedAt, #senderId, #receiverId)
 
-Adresses (<u>id</u>, streetAddress, additionalInfo, createdAt, updatedAt, #cityId)
+Addresses (<u>id</u>, streetAddress, additionalInfo, createdAt, updatedAt, #cityId)
 
 Cities (<u>id</u>, name, postalCode, createdAt, updatedAt, #countryId)
 
