@@ -1,0 +1,6 @@
+﻿services:
+  pawesome:
+    image: pawesome
+    build:
+      context: .
+      dockerfile: Pawesome/Dockerfile
