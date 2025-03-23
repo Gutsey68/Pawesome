@@ -77,7 +77,7 @@
 |updatedAt|Timestamp||Default CURRENT_TIMESTAMP|Date de mise à jour|
 |userId|Int||FK -> Users(id)|Référence à l'utilisateur|
 
-### **PasswordReset**
+### **PasswordResets**
 
 |Nom du champ|Type de données|Longueur|Contrainte|Description|
 |---|---|---|---|---|
@@ -110,7 +110,7 @@
 |senderId|Int||FK -> Users(id)|Expéditeur|
 |receiverId|Int||FK -> Users(id)|Destinataire|
 
-### **Adresses**
+### **Addresses**
 
 |Nom du champ|Type de données|Longueur|Contrainte|Description|
 |---|---|---|---|---|
@@ -187,7 +187,7 @@ Notifications (<u>id</u>, comment, createdAt, updatedAt, #userId)
 
 Reports (<u>id</u>, comment, createdAt, updatedAt, #userId )
 
-PasswordReset (<u>id</u>, token, isValid, expiresAt, createdAt, updatedAt, #userId)
+PasswordResets (<u>id</u>, token, isValid, expiresAt, createdAt, updatedAt, #userId)
 
 Roles (<u>id</u>, name, createdAt, updatedAt)
 
