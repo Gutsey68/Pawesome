@@ -1,25 +1,26 @@
 ### **Users**
 
-|Nom du champ|Type de données|Longueur|Contrainte|Description|
-|---|---|---|---|---|
-|id|Int||PK Auto increment|Identifiant unique de l'utilisateur|
-|lastName|Varchar|255|Not null|Nom de l'utilisateur|
-|firstName|Varchar|255|Not null|Prénom de l'utilisateur|
-|email|Varchar|255|Not null, Unique|Adresse email de l'utilisateur|
-|bio|Text|||Biographie de l'utilisateur|
-|password|Varchar|255|Not null|Mot de passe hashé|
-|photo|Varchar|255||URL de la photo de profil|
-|rating|Float|||Note moyenne de l'utilisateur|
-|role|Varchar|255||Rôle de l'utilisateur|
-|status|Varchar|255||Statut de l'utilisateur|
-|isVerified|Boolean||Default false|Vérification du compte|
-|balanceAccount|Decimal(10,2)||Default 0|Solde du compte utilisateur|
-|onboardingStep|Int||Default 1|Étape d'onboarding en cours|
-|isOnboardingCompleted|Boolean||Default false|Indique si l'onboarding est terminé|
-|createdAt|Timestamp||Default CURRENT_TIMESTAMP|Date de création|
-|updatedAt|Timestamp||Default CURRENT_TIMESTAMP|Date de mise à jour|
-|roleId|Int||FK -> Roles(id)|Référence au rôle|
-|adressId|Int||FK -> Adresses(id)|Référence à l'adresse|
+| Nom du champ          | Type de données | Longueur | Contrainte                | Description                         |
+|-----------------------|-----------------|----------|---------------------------|-------------------------------------|
+| id                    | Int             |          | PK Auto increment         | Identifiant unique de l'utilisateur |
+| lastName              | Varchar         | 255      | Not null                  | Nom de l'utilisateur                |
+| firstName             | Varchar         | 255      | Not null                  | Prénom de l'utilisateur             |
+| email                 | Varchar         | 255      | Not null, Unique          | Adresse email de l'utilisateur      |
+| bio                   | Text            |          |                           | Biographie de l'utilisateur         |
+| password              | Varchar         | 255      | Not null                  | Mot de passe hashé                  |
+| photo                 | Varchar         | 255      |                           | URL de la photo de profil           |
+| rating                | Float           |          |                           | Note moyenne de l'utilisateur       |
+| role                  | Varchar         | 255      |                           | Rôle de l'utilisateur               |
+| status                | Varchar         | 255      |                           | Statut de l'utilisateur             |
+| isVerified            | Boolean         |          | Default false             | Vérification du compte              |
+| balanceAccount        | Decimal(10,2)   |          | Default 0                 | Solde du compte utilisateur         |
+| onboardingStep        | Int             |          | Default 1                 | Étape d'onboarding en cours         |
+| isOnboardingCompleted | Boolean         |          | Default false             | Indique si l'onboarding est terminé |
+| completedProfile      | Int             | 100      | Default 0                 | Pourcentage de complétion du profil |
+| createdAt             | Timestamp       |          | Default CURRENT_TIMESTAMP | Date de création                    |
+| updatedAt             | Timestamp       |          | Default CURRENT_TIMESTAMP | Date de mise à jour                 |
+| roleId                | Int             |          | FK -> Roles(id)           | Référence au rôle                   |
+| adressId              | Int             |          | FK -> Adresses(id)        | Référence à l'adresse               |
 
 ### **Pets**
 
@@ -175,7 +176,7 @@
 ---
 # MLD 
 
-Users (id, lastName, firstName, email, bio, password, photo, rating, role, status, isVerified, balanceAccount, onboardingStep, isOnboardingCompleted, createdAt, updatedAt, #roleId, #adressId)
+Users (id, lastName, firstName, email, bio, password, photo, rating, role, status, isVerified, balanceAccount, onboardingStep, isOnboardingCompleted, completedProfile, createdAt, updatedAt, #roleId, #adressId)
 
 Pets (<u>id</u>, name, breed, age, photo, info, createdAt, updatedAt, #userId, #animalTypesId)
 
