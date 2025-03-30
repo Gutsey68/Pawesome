@@ -1,21 +1,19 @@
+using Microsoft.AspNetCore.Identity;
 using Pawesome.Models;
 
 namespace Pawesome.Data.Seeding
 {
     public static class SeedData
     {
-        public static void Initialize(IServiceProvider serviceProvider)
+        public static async Task SeedAsync(AppDbContext context, UserManager<User> userManager)
         {
-            using var context = serviceProvider
-                .GetRequiredService<AppDbContext>();
-
             context.Database.EnsureCreated();
 
             SeedRoles(context);
             SeedCountries(context);
             SeedCities(context);
             SeedAddresses(context);
-            SeedUsers(context);
+            await SeedUsersAsync(context, userManager);
             SeedAnimalTypes(context);
             SeedPets(context);
             SeedAdverts(context);
@@ -26,7 +24,7 @@ namespace Pawesome.Data.Seeding
             SeedPasswordResets(context);
             SeedPayments(context); 
 
-            context.SaveChanges();
+            await context.SaveChangesAsync();
         }
 
         private static void SeedRoles(AppDbContext context)
@@ -100,103 +98,106 @@ namespace Pawesome.Data.Seeding
             context.SaveChanges();
         }
 
-        private static void SeedUsers(AppDbContext context)
+        private static async Task SeedUsersAsync(AppDbContext context, UserManager<User> userManager)
         {
-            if (context.Users.Any()) return;
+            if (userManager.Users.Any()) return;
 
             var adminRole = context.Roles.Single(r => r.Name == "Admin");
             var userRole = context.Roles.Single(r => r.Name == "User");
             var moderatorRole = context.Roles.Single(r => r.Name == "Moderator");
             var addresses = context.Addresses.ToList();
 
-            context.Users.AddRange(
-                new User
-                {
-                    LastName = "Admin",
-                    FirstName = "Super",
-                    Email = "admin@pawesome.com",
-                    Password = "hashed_password",
-                    Bio = "Administrateur de la plateforme Pawesome",
-                    Photo = "admin.jpg",
-                    Rating = 5.0f,
-                    Role = adminRole,
-                    Status = "Active",
-                    IsVerified = true,
-                    BalanceAccount = 0m,
-                    OnboardingStep = 5,
-                    IsOnboardingCompleted = true,
-                    CompletedProfile = 100,
-                    RoleId = adminRole.Id,
-                    AddressId = addresses[0].Id,
-                    CreatedAt = DateTime.UtcNow,
-                    UpdatedAt = DateTime.UtcNow
-                },
-                new User
-                {
-                    LastName = "Dupont",
-                    FirstName = "Jean",
-                    Email = "user1@example.com",
-                    Password = "hashed_password",
-                    Bio = "Amoureux des animaux depuis toujours",
-                    Photo = "jean.jpg",
-                    Rating = 4.5f,
-                    Role = userRole,
-                    Status = "Active",
-                    IsVerified = true,
-                    BalanceAccount = 100m,
-                    OnboardingStep = 5,
-                    IsOnboardingCompleted = true,
-                    CompletedProfile = 90,
-                    RoleId = userRole.Id,
-                    AddressId = addresses[1].Id,
-                    CreatedAt = DateTime.UtcNow,
-                    UpdatedAt = DateTime.UtcNow
-                },
-                new User
-                {
-                    LastName = "Martin",
-                    FirstName = "Sophie",
-                    Email = "sophie@example.com",
-                    Password = "hashed_password",
-                    Bio = "Passionnée par les chiens et chats",
-                    Photo = "sophie.jpg",
-                    Rating = 4.8f,
-                    Role = userRole,
-                    Status = "Active",
-                    IsVerified = true,
-                    BalanceAccount = 150m,
-                    OnboardingStep = 5,
-                    IsOnboardingCompleted = true,
-                    CompletedProfile = 95,
-                    RoleId = userRole.Id,
-                    AddressId = addresses[0].Id,
-                    CreatedAt = DateTime.UtcNow,
-                    UpdatedAt = DateTime.UtcNow
-                },
-                new User
-                {
-                    LastName = "Dubois",
-                    FirstName = "Michel",
-                    Email = "moderator@example.com",
-                    Password = "hashed_password",
-                    Bio = "Modérateur expérimenté",
-                    Photo = "michel.jpg",
-                    Rating = 4.9f,
-                    Role = moderatorRole,
-                    Status = "Active",
-                    IsVerified = true,
-                    BalanceAccount = 50m,
-                    OnboardingStep = 5,
-                    IsOnboardingCompleted = true,
-                    CompletedProfile = 100,
-                    RoleId = moderatorRole.Id,
-                    AddressId = addresses[1].Id,
-                    CreatedAt = DateTime.UtcNow,
-                    UpdatedAt = DateTime.UtcNow
-                }
-            );
-            
-            context.SaveChanges();
+            var admin = new User
+            {
+                LastName = "Admin",
+                FirstName = "Super",
+                Email = "admin@pawesome.com",
+                UserName = "admin@pawesome.com",
+                Bio = "Administrateur de la plateforme Pawesome",
+                Photo = "admin.jpg",
+                Rating = 5.0f,
+                Status = "Active",
+                IsVerified = true,
+                BalanceAccount = 0m,
+                OnboardingStep = 5,
+                IsOnboardingCompleted = true,
+                CompletedProfile = 100,
+                RoleId = adminRole.Id,
+                AddressId = addresses[0].Id,
+                CreatedAt = DateTime.UtcNow,
+                UpdatedAt = DateTime.UtcNow
+            };
+            await userManager.CreateAsync(admin, "Admin123!");
+            await userManager.AddToRoleAsync(admin, "Admin");
+
+            var user1 = new User
+            {
+                LastName = "Dupont",
+                FirstName = "Jean",
+                Email = "user1@example.com",
+                UserName = "user1@example.com",
+                Bio = "Amoureux des animaux depuis toujours",
+                Photo = "jean.jpg",
+                Rating = 4.5f,
+                Status = "Active",
+                IsVerified = true,
+                BalanceAccount = 100m,
+                OnboardingStep = 5,
+                IsOnboardingCompleted = true,
+                CompletedProfile = 90,
+                RoleId = userRole.Id,
+                AddressId = addresses[1].Id,
+                CreatedAt = DateTime.UtcNow,
+                UpdatedAt = DateTime.UtcNow
+            };
+            await userManager.CreateAsync(user1, "User1234!");
+            await userManager.AddToRoleAsync(user1, "User");
+
+            var user2 = new User
+            {
+                LastName = "Martin",
+                FirstName = "Sophie",
+                Email = "sophie@example.com",
+                UserName = "sophie@example.com",
+                Bio = "Passionnée par les chiens et chats",
+                Photo = "sophie.jpg",
+                Rating = 4.8f,
+                Status = "Active",
+                IsVerified = true,
+                BalanceAccount = 150m,
+                OnboardingStep = 5,
+                IsOnboardingCompleted = true,
+                CompletedProfile = 95,
+                RoleId = userRole.Id,
+                AddressId = addresses[0].Id,
+                CreatedAt = DateTime.UtcNow,
+                UpdatedAt = DateTime.UtcNow
+            };
+            await userManager.CreateAsync(user2, "Sophie123!");
+            await userManager.AddToRoleAsync(user2, "User");
+
+            var moderator = new User
+            {
+                LastName = "Dubois",
+                FirstName = "Michel",
+                Email = "moderator@example.com",
+                UserName = "moderator@example.com",
+                Bio = "Modérateur expérimenté",
+                Photo = "michel.jpg",
+                Rating = 4.9f,
+                Status = "Active",
+                IsVerified = true,
+                BalanceAccount = 50m,
+                OnboardingStep = 5,
+                IsOnboardingCompleted = true,
+                CompletedProfile = 100,
+                RoleId = moderatorRole.Id,
+                AddressId = addresses[1].Id,
+                CreatedAt = DateTime.UtcNow,
+                UpdatedAt = DateTime.UtcNow
+            };
+            await userManager.CreateAsync(moderator, "Moderator123!");
+            await userManager.AddToRoleAsync(moderator, "Moderator");
         }
 
         private static void SeedAnimalTypes(AppDbContext context)
@@ -231,7 +232,7 @@ namespace Pawesome.Data.Seeding
                     Age = 3,
                     Photo = "rex.jpg",
                     Info = "Un gentil berger allemand",
-                    UserId = users[1].Id,
+                    UserId = users[0].Id,
                     AnimalTypeId = chien.Id,
                     CreatedAt = DateTime.UtcNow,
                     UpdatedAt = DateTime.UtcNow
@@ -243,7 +244,7 @@ namespace Pawesome.Data.Seeding
                     Age = 2,
                     Photo = "felix.jpg",
                     Info = "Un chat très joueur",
-                    UserId = users[1].Id,
+                    UserId = users[0].Id,
                     AnimalTypeId = chat.Id,
                     CreatedAt = DateTime.UtcNow,
                     UpdatedAt = DateTime.UtcNow
@@ -255,7 +256,7 @@ namespace Pawesome.Data.Seeding
                     Age = 1,
                     Photo = "piou.jpg",
                     Info = "Chante dès le lever du soleil",
-                    UserId = users[2].Id,
+                    UserId = users[1].Id,
                     AnimalTypeId = oiseau.Id,
                     CreatedAt = DateTime.UtcNow,
                     UpdatedAt = DateTime.UtcNow
@@ -267,7 +268,7 @@ namespace Pawesome.Data.Seeding
                     Age = 1,
                     Photo = "noisette.jpg",
                     Info = "Très actif la nuit",
-                    UserId = users[2].Id,
+                    UserId = users[1].Id,
                     AnimalTypeId = rongeur.Id,
                     CreatedAt = DateTime.UtcNow,
                     UpdatedAt = DateTime.UtcNow
@@ -279,7 +280,7 @@ namespace Pawesome.Data.Seeding
                     Age = 4,
                     Photo = "luna.jpg",
                     Info = "Très douce avec les enfants",
-                    UserId = users[3].Id,
+                    UserId = users[2].Id,
                     AnimalTypeId = chien.Id,
                     CreatedAt = DateTime.UtcNow,
                     UpdatedAt = DateTime.UtcNow
