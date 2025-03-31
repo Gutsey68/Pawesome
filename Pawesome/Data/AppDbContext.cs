@@ -21,7 +21,6 @@ public class AppDbContext :  IdentityDbContext<User, IdentityRole<int>, int>
     public DbSet<Notification> Notifications { get; set; }
     public DbSet<Report> Reports { get; set; }
     public DbSet<PasswordReset> PasswordResets { get; set; }
-    public new DbSet<Role> Roles { get; set; }
     public DbSet<Message> Messages { get; set; }
     public DbSet<Address> Addresses { get; set; }
     public DbSet<City> Cities { get; set; }

@@ -10,7 +10,7 @@ public class Advert
     public DateTime CreatedAt { get; set; } = DateTime.UtcNow;
     public DateTime UpdatedAt { get; set; } = DateTime.UtcNow;
     
-    public ICollection<PetAdvert> PetAdverts { get; set; }
-    public ICollection<Review> Reviews { get; set; }
-    public ICollection<Payment> Payments { get; set; }
+    public required ICollection<PetAdvert> PetAdverts { get; set; }
+    public required ICollection<Review> Reviews { get; set; }
+    public required ICollection<Payment> Payments { get; set; }
 }

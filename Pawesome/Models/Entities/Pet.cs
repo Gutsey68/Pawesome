@@ -3,7 +3,7 @@ namespace Pawesome.Models;
 public class Pet
 {
     public int Id { get; set; }
-    public string Name { get; set; }
+    public required string Name { get; set; }
     public string? Breed { get; set; }
     public int? Age { get; set; }
     public string? Photo { get; set; }
@@ -14,7 +14,7 @@ public class Pet
     public int UserId { get; set; }
     public int AnimalTypeId { get; set; }
     
-    public User User { get; set; }
-    public AnimalType AnimalType { get; set; }
-    public ICollection<PetAdvert> PetAdverts { get; set; }
+    public required User User { get; set; }
+    public required AnimalType AnimalType { get; set; }
+    public required ICollection<PetAdvert> PetAdverts { get; set; }
 }

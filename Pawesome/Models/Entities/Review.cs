@@ -9,6 +9,6 @@ public class Review
     public DateTime CreatedAt { get; set; } = DateTime.UtcNow;
     public DateTime UpdatedAt { get; set; } = DateTime.UtcNow;
     
-    public User User { get; set; }
-    public Advert Advert { get; set; }
+    public required User User { get; set; }
+    public required Advert Advert { get; set; }
 }

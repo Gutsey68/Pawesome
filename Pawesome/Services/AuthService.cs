@@ -56,9 +56,6 @@ public class AuthService : IAuthService
         }
 
         var user = _mapper.Map<User>(registerDto);
-        
-        var userRole = await _roleManager.FindByNameAsync("User");
-        user.RoleId = Convert.ToInt32(userRole.Id);
     
         var result = await _userManager.CreateAsync(user, registerDto.Password);
     

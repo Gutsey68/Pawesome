@@ -28,14 +28,16 @@ public class Repository<T> : IRepository<T> where T : class
         return entity;
     }
     
-    public virtual async Task UpdateAsync(T entity)
+    public virtual Task UpdateAsync(T entity)
     {
         _context.Set<T>().Update(entity);
+        return Task.CompletedTask;
     }
     
-    public virtual async Task DeleteAsync(T entity)
+    public virtual Task DeleteAsync(T entity)
     {
         _context.Set<T>().Remove(entity);
+        return Task.CompletedTask;
     }
     
     public async Task SaveChangesAsync()

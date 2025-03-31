@@ -3,6 +3,7 @@ using FluentValidation.AspNetCore;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using Pawesome.Data.Seeding;
+using Pawesome.Extensions;
 using Pawesome.Interfaces;
 using Pawesome.Models;
 using Pawesome.Models.DTOs;
@@ -22,21 +23,27 @@ builder.Services.AddDbContext<AppDbContext>(options =>
 // Add Identity services
 builder.Services.AddIdentity<User, IdentityRole<int>>(options =>
 {
-    // Configure password settings
     options.Password.RequireDigit = true;
-    options.Password.RequiredLength = 8;
-    options.Password.RequireNonAlphanumeric = true;
-    options.Password.RequireUppercase = true;
     options.Password.RequireLowercase = true;
+    options.Password.RequireUppercase = true;
+    options.Password.RequireNonAlphanumeric = true;
+    options.Password.RequiredLength = 6;
+
+    options.Lockout.DefaultLockoutTimeSpan = TimeSpan.FromMinutes(5);
+    options.Lockout.MaxFailedAccessAttempts = 5;
+    options.Lockout.AllowedForNewUsers = true;
+
+    options.User.RequireUniqueEmail = true;
 })
 .AddEntityFrameworkStores<AppDbContext>()
 .AddDefaultTokenProviders();
 
 // Add FluentValidation
-builder.Services.AddFluentValidation(fv => {
-    fv.DisableDataAnnotationsValidation = true;
-    fv.AutomaticValidationEnabled = false;
-});
+builder.Services.AddFluentValidationAutoValidation(options => {
+        options.DisableDataAnnotationsValidation = true;
+    })
+    .AddFluentValidationClientsideAdapters();
+builder.Services.AddValidatorsFromAssemblyContaining<Program>();
 builder.Services.AddScoped<IValidator<RegisterDto>, RegisterDtoValidator>();
 builder.Services.AddScoped<IValidator<LoginDto>, LoginDtoValidator>();
 
@@ -77,32 +84,6 @@ app.MapControllerRoute(
     name: "default",
     pattern: "{controller=Home}/{action=Index}/{id?}");
 
-using (var scope = app.Services.CreateScope())
-{
-    var services = scope.ServiceProvider;
-    try
-    {
-        var roleManager = services.GetRequiredService<RoleManager<IdentityRole<int>>>();
-        string[] roleNames = { "Admin", "User" };
-
-        foreach (var roleName in roleNames)
-        {
-            if (!await roleManager.RoleExistsAsync(roleName))
-            {
-                await roleManager.CreateAsync(new IdentityRole<int>(roleName));
-                Console.WriteLine($"Rôle {roleName} créé avec succès");
-            }
-        }
-
-        var context = services.GetRequiredService<AppDbContext>();
-        var userManager = services.GetRequiredService<UserManager<User>>();
-        await SeedData.SeedAsync(context, userManager);
-    }
-    catch (Exception ex)
-    {
-        var logger = services.GetRequiredService<ILogger<Program>>();
-        logger.LogError(ex, "Une erreur s'est produite lors de l'initialisation de la base de données.");
-    }
-}
+await app.InitializeDatabaseAsync();
 
 app.Run();

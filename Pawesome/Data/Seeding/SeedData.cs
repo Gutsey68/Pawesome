@@ -1,15 +1,16 @@
 using Microsoft.AspNetCore.Identity;
+using Microsoft.EntityFrameworkCore;
 using Pawesome.Models;
 
 namespace Pawesome.Data.Seeding
 {
     public static class SeedData
     {
-        public static async Task SeedAsync(AppDbContext context, UserManager<User> userManager)
+        public static async Task SeedAsync(AppDbContext context, UserManager<User> userManager, RoleManager<IdentityRole<int>> roleManager)
         {
             context.Database.EnsureCreated();
 
-            SeedRoles(context);
+            await SeedRolesAsync(roleManager);
             SeedCountries(context);
             SeedCities(context);
             SeedAddresses(context);
@@ -27,17 +28,16 @@ namespace Pawesome.Data.Seeding
             await context.SaveChangesAsync();
         }
 
-        private static void SeedRoles(AppDbContext context)
+        private static async Task SeedRolesAsync(RoleManager<IdentityRole<int>> roleManager)
         {
-            if (context.Roles.Any()) return;
+            if (await roleManager.RoleExistsAsync("Admin") && 
+                await roleManager.RoleExistsAsync("User") && 
+                await roleManager.RoleExistsAsync("Moderator"))
+                return;
 
-            context.Roles.AddRange(
-                new Role { Name = "Admin", CreatedAt = DateTime.UtcNow, UpdatedAt = DateTime.UtcNow },
-                new Role { Name = "User", CreatedAt = DateTime.UtcNow, UpdatedAt = DateTime.UtcNow },
-                new Role { Name = "Moderator", CreatedAt = DateTime.UtcNow, UpdatedAt = DateTime.UtcNow }
-            );
-            
-            context.SaveChanges();
+            await roleManager.CreateAsync(new IdentityRole<int>("Admin"));
+            await roleManager.CreateAsync(new IdentityRole<int>("User"));
+            await roleManager.CreateAsync(new IdentityRole<int>("Moderator"));
         }
 
         private static void SeedCountries(AppDbContext context)
@@ -45,9 +45,24 @@ namespace Pawesome.Data.Seeding
             if (context.Countries.Any()) return;
 
             context.Countries.AddRange(
-                new Country { Name = "France", CreatedAt = DateTime.UtcNow, UpdatedAt = DateTime.UtcNow },
-                new Country { Name = "Belgique", CreatedAt = DateTime.UtcNow, UpdatedAt = DateTime.UtcNow },
-                new Country { Name = "Suisse", CreatedAt = DateTime.UtcNow, UpdatedAt = DateTime.UtcNow }
+                new Country { 
+                    Name = "France", 
+                    Cities = new List<City>(),
+                    CreatedAt = DateTime.UtcNow, 
+                    UpdatedAt = DateTime.UtcNow 
+                },
+                new Country { 
+                    Name = "Belgique", 
+                    Cities = new List<City>(),
+                    CreatedAt = DateTime.UtcNow, 
+                    UpdatedAt = DateTime.UtcNow 
+                },
+                new Country { 
+                    Name = "Suisse", 
+                    Cities = new List<City>(),
+                    CreatedAt = DateTime.UtcNow, 
+                    UpdatedAt = DateTime.UtcNow 
+                }
             );
             
             context.SaveChanges();
@@ -57,17 +72,45 @@ namespace Pawesome.Data.Seeding
         {
             if (context.Cities.Any()) return;
 
-            var france = context.Countries.Single(c => c.Name == "France");
-            var belgique = context.Countries.Single(c => c.Name == "Belgique");
-            var suisse = context.Countries.Single(c => c.Name == "Suisse");
+            var countries = context.Countries.ToDictionary(c => c.Name);
 
-            context.Cities.AddRange(
-                new City { Name = "Paris", PostalCode = "75000", CountryId = france.Id, CreatedAt = DateTime.UtcNow, UpdatedAt = DateTime.UtcNow },
-                new City { Name = "Lyon", PostalCode = "69000", CountryId = france.Id, CreatedAt = DateTime.UtcNow, UpdatedAt = DateTime.UtcNow },
-                new City { Name = "Bruxelles", PostalCode = "1000", CountryId = belgique.Id, CreatedAt = DateTime.UtcNow, UpdatedAt = DateTime.UtcNow },
-                new City { Name = "Genève", PostalCode = "1200", CountryId = suisse.Id, CreatedAt = DateTime.UtcNow, UpdatedAt = DateTime.UtcNow }
-            );
-            
+            var cities = new[]
+            {
+                new City { 
+                    Name = "Paris", 
+                    PostalCode = "75000", 
+                    Country = countries["France"],
+                    Addresses = new List<Address>(),
+                    CreatedAt = DateTime.UtcNow, 
+                    UpdatedAt = DateTime.UtcNow 
+                },
+                new City { 
+                    Name = "Lyon", 
+                    PostalCode = "69000", 
+                    Country = countries["France"],
+                    Addresses = new List<Address>(),
+                    CreatedAt = DateTime.UtcNow, 
+                    UpdatedAt = DateTime.UtcNow 
+                },
+                new City { 
+                    Name = "Bruxelles", 
+                    PostalCode = "1000", 
+                    Country = countries["Belgique"],
+                    Addresses = new List<Address>(),
+                    CreatedAt = DateTime.UtcNow, 
+                    UpdatedAt = DateTime.UtcNow 
+                },
+                new City { 
+                    Name = "Genève", 
+                    PostalCode = "1200", 
+                    Country = countries["Suisse"],
+                    Addresses = new List<Address>(),
+                    CreatedAt = DateTime.UtcNow, 
+                    UpdatedAt = DateTime.UtcNow 
+                }
+            };
+
+            context.Cities.AddRange(cities);
             context.SaveChanges();
         }
 
@@ -82,6 +125,8 @@ namespace Pawesome.Data.Seeding
                 {
                     StreetAddress = "123 Rue de Paris",
                     CityId = paris.Id,
+                    City = paris,
+                    Users = new List<User>(),
                     CreatedAt = DateTime.UtcNow,
                     UpdatedAt = DateTime.UtcNow
                 },
@@ -90,6 +135,8 @@ namespace Pawesome.Data.Seeding
                     StreetAddress = "456 Avenue Victor Hugo",
                     AdditionalInfo = "Apt 42",
                     CityId = paris.Id,
+                    City = paris,
+                    Users = new List<User>(),
                     CreatedAt = DateTime.UtcNow,
                     UpdatedAt = DateTime.UtcNow
                 }
@@ -102,9 +149,6 @@ namespace Pawesome.Data.Seeding
         {
             if (userManager.Users.Any()) return;
 
-            var adminRole = context.Roles.Single(r => r.Name == "Admin");
-            var userRole = context.Roles.Single(r => r.Name == "User");
-            var moderatorRole = context.Roles.Single(r => r.Name == "Moderator");
             var addresses = context.Addresses.ToList();
 
             var admin = new User
@@ -122,8 +166,16 @@ namespace Pawesome.Data.Seeding
                 OnboardingStep = 5,
                 IsOnboardingCompleted = true,
                 CompletedProfile = 100,
-                RoleId = adminRole.Id,
                 AddressId = addresses[0].Id,
+                Address = context.Addresses.First(),
+                Pets = new List<Pet>(),
+                Notifications = new List<Notification>(),
+                Reports = new List<Report>(),
+                PasswordResets = new List<PasswordReset>(),
+                SentMessages = new List<Message>(),
+                ReceivedMessages = new List<Message>(),
+                Reviews = new List<Review>(),
+                Payments = new List<Payment>(),
                 CreatedAt = DateTime.UtcNow,
                 UpdatedAt = DateTime.UtcNow
             };
@@ -145,8 +197,16 @@ namespace Pawesome.Data.Seeding
                 OnboardingStep = 5,
                 IsOnboardingCompleted = true,
                 CompletedProfile = 90,
-                RoleId = userRole.Id,
                 AddressId = addresses[1].Id,
+                Address = context.Addresses.First(),
+                Pets = new List<Pet>(),
+                Notifications = new List<Notification>(),
+                Reports = new List<Report>(),
+                PasswordResets = new List<PasswordReset>(),
+                SentMessages = new List<Message>(),
+                ReceivedMessages = new List<Message>(),
+                Reviews = new List<Review>(),
+                Payments = new List<Payment>(),
                 CreatedAt = DateTime.UtcNow,
                 UpdatedAt = DateTime.UtcNow
             };
@@ -168,8 +228,16 @@ namespace Pawesome.Data.Seeding
                 OnboardingStep = 5,
                 IsOnboardingCompleted = true,
                 CompletedProfile = 95,
-                RoleId = userRole.Id,
                 AddressId = addresses[0].Id,
+                Address = context.Addresses.First(),
+                Pets = new List<Pet>(),
+                Notifications = new List<Notification>(),
+                Reports = new List<Report>(),
+                PasswordResets = new List<PasswordReset>(),
+                SentMessages = new List<Message>(),
+                ReceivedMessages = new List<Message>(),
+                Reviews = new List<Review>(),
+                Payments = new List<Payment>(),
                 CreatedAt = DateTime.UtcNow,
                 UpdatedAt = DateTime.UtcNow
             };
@@ -191,8 +259,16 @@ namespace Pawesome.Data.Seeding
                 OnboardingStep = 5,
                 IsOnboardingCompleted = true,
                 CompletedProfile = 100,
-                RoleId = moderatorRole.Id,
                 AddressId = addresses[1].Id,
+                Address = context.Addresses.First(),
+                Pets = new List<Pet>(),
+                Notifications = new List<Notification>(),
+                Reports = new List<Report>(),
+                PasswordResets = new List<PasswordReset>(),
+                SentMessages = new List<Message>(),
+                ReceivedMessages = new List<Message>(),
+                Reviews = new List<Review>(),
+                Payments = new List<Payment>(),
                 CreatedAt = DateTime.UtcNow,
                 UpdatedAt = DateTime.UtcNow
             };
@@ -205,10 +281,10 @@ namespace Pawesome.Data.Seeding
             if (context.AnimalTypes.Any()) return;
 
             context.AnimalTypes.AddRange(
-                new AnimalType { Name = "Chien", CreatedAt = DateTime.UtcNow, UpdatedAt = DateTime.UtcNow },
-                new AnimalType { Name = "Chat", CreatedAt = DateTime.UtcNow, UpdatedAt = DateTime.UtcNow },
-                new AnimalType { Name = "Oiseau", CreatedAt = DateTime.UtcNow, UpdatedAt = DateTime.UtcNow },
-                new AnimalType { Name = "Rongeur", CreatedAt = DateTime.UtcNow, UpdatedAt = DateTime.UtcNow }
+                new AnimalType { Name = "Chien", Pets = new List<Pet>(), CreatedAt = DateTime.UtcNow, UpdatedAt = DateTime.UtcNow },
+                new AnimalType { Name = "Chat", Pets = new List<Pet>(), CreatedAt = DateTime.UtcNow, UpdatedAt = DateTime.UtcNow },
+                new AnimalType { Name = "Oiseau", Pets = new List<Pet>(), CreatedAt = DateTime.UtcNow, UpdatedAt = DateTime.UtcNow },
+                new AnimalType { Name = "Rongeur", Pets = new List<Pet>(), CreatedAt = DateTime.UtcNow, UpdatedAt = DateTime.UtcNow }
             );
             
             context.SaveChanges();
@@ -219,12 +295,10 @@ namespace Pawesome.Data.Seeding
             if (context.Pets.Any()) return;
 
             var users = context.Users.ToList();
-            var chien = context.AnimalTypes.First(a => a.Name == "Chien");
-            var chat = context.AnimalTypes.First(a => a.Name == "Chat");
-            var oiseau = context.AnimalTypes.First(a => a.Name == "Oiseau");
-            var rongeur = context.AnimalTypes.First(a => a.Name == "Rongeur");
+            var animalTypes = context.AnimalTypes.ToDictionary(at => at.Name);
 
-            context.Pets.AddRange(
+            var pets = new[]
+            {
                 new Pet
                 {
                     Name = "Rex",
@@ -233,7 +307,10 @@ namespace Pawesome.Data.Seeding
                     Photo = "rex.jpg",
                     Info = "Un gentil berger allemand",
                     UserId = users[0].Id,
-                    AnimalTypeId = chien.Id,
+                    User = users[0],
+                    AnimalTypeId = animalTypes["Chien"].Id,
+                    AnimalType = animalTypes["Chien"],
+                    PetAdverts = new List<PetAdvert>(),
                     CreatedAt = DateTime.UtcNow,
                     UpdatedAt = DateTime.UtcNow
                 },
@@ -245,7 +322,10 @@ namespace Pawesome.Data.Seeding
                     Photo = "felix.jpg",
                     Info = "Un chat très joueur",
                     UserId = users[0].Id,
-                    AnimalTypeId = chat.Id,
+                    User = users[0],
+                    AnimalTypeId = animalTypes["Chat"].Id,
+                    AnimalType = animalTypes["Chat"],
+                    PetAdverts = new List<PetAdvert>(),
                     CreatedAt = DateTime.UtcNow,
                     UpdatedAt = DateTime.UtcNow
                 },
@@ -257,7 +337,10 @@ namespace Pawesome.Data.Seeding
                     Photo = "piou.jpg",
                     Info = "Chante dès le lever du soleil",
                     UserId = users[1].Id,
-                    AnimalTypeId = oiseau.Id,
+                    User = users[1],
+                    AnimalTypeId = animalTypes["Oiseau"].Id,
+                    AnimalType = animalTypes["Oiseau"],
+                    PetAdverts = new List<PetAdvert>(),
                     CreatedAt = DateTime.UtcNow,
                     UpdatedAt = DateTime.UtcNow
                 },
@@ -269,7 +352,10 @@ namespace Pawesome.Data.Seeding
                     Photo = "noisette.jpg",
                     Info = "Très actif la nuit",
                     UserId = users[1].Id,
-                    AnimalTypeId = rongeur.Id,
+                    User = users[1],
+                    AnimalTypeId = animalTypes["Rongeur"].Id,
+                    AnimalType = animalTypes["Rongeur"],
+                    PetAdverts = new List<PetAdvert>(),
                     CreatedAt = DateTime.UtcNow,
                     UpdatedAt = DateTime.UtcNow
                 },
@@ -281,12 +367,16 @@ namespace Pawesome.Data.Seeding
                     Photo = "luna.jpg",
                     Info = "Très douce avec les enfants",
                     UserId = users[2].Id,
-                    AnimalTypeId = chien.Id,
+                    User = users[2],
+                    AnimalTypeId = animalTypes["Chien"].Id,
+                    AnimalType = animalTypes["Chien"],
+                    PetAdverts = new List<PetAdvert>(),
                     CreatedAt = DateTime.UtcNow,
                     UpdatedAt = DateTime.UtcNow
                 }
-            );
-            
+            };
+
+            context.Pets.AddRange(pets);
             context.SaveChanges();
         }
 
@@ -302,6 +392,9 @@ namespace Pawesome.Data.Seeding
                 EndDate = DateTime.UtcNow.AddDays(3),
                 Status = "pending",
                 Amount = 50.0m,
+                PetAdverts = new List<PetAdvert>(),
+                Reviews = new List<Review>(),
+                Payments = new List<Payment>(),
                 CreatedAt = DateTime.UtcNow,
                 UpdatedAt = DateTime.UtcNow
             };
@@ -312,6 +405,9 @@ namespace Pawesome.Data.Seeding
                 EndDate = DateTime.UtcNow.AddDays(6),
                 Status = "pending",
                 Amount = 15.0m,
+                PetAdverts = new List<PetAdvert>(),
+                Reviews = new List<Review>(),
+                Payments = new List<Payment>(),
                 CreatedAt = DateTime.UtcNow,
                 UpdatedAt = DateTime.UtcNow
             };
@@ -322,6 +418,9 @@ namespace Pawesome.Data.Seeding
                 EndDate = DateTime.UtcNow.AddDays(4),
                 Status = "approved",
                 Amount = 30.0m,
+                PetAdverts = new List<PetAdvert>(),
+                Reviews = new List<Review>(),
+                Payments = new List<Payment>(),
                 CreatedAt = DateTime.UtcNow,
                 UpdatedAt = DateTime.UtcNow
             };
@@ -332,6 +431,9 @@ namespace Pawesome.Data.Seeding
                 EndDate = DateTime.UtcNow.AddDays(10),
                 Status = "approved",
                 Amount = 75.0m,
+                PetAdverts = new List<PetAdvert>(),
+                Reviews = new List<Review>(),
+                Payments = new List<Payment>(),
                 CreatedAt = DateTime.UtcNow,
                 UpdatedAt = DateTime.UtcNow
             };
@@ -340,13 +442,49 @@ namespace Pawesome.Data.Seeding
             context.SaveChanges();
 
             var pets = context.Pets.ToList();
+            var adverts = context.Adverts.ToList();
 
             context.PetAdverts.AddRange(
-                new PetAdvert { PetId = pets[0].Id, AdvertId = advert1.Id, CreatedAt = DateTime.UtcNow, UpdatedAt = DateTime.UtcNow },
-                new PetAdvert { PetId = pets[1].Id, AdvertId = advert2.Id, CreatedAt = DateTime.UtcNow, UpdatedAt = DateTime.UtcNow },
-                new PetAdvert { PetId = pets[2].Id, AdvertId = advert3.Id, CreatedAt = DateTime.UtcNow, UpdatedAt = DateTime.UtcNow },
-                new PetAdvert { PetId = pets[3].Id, AdvertId = advert4.Id, CreatedAt = DateTime.UtcNow, UpdatedAt = DateTime.UtcNow },
-                new PetAdvert { PetId = pets[4].Id, AdvertId = advert3.Id, CreatedAt = DateTime.UtcNow, UpdatedAt = DateTime.UtcNow }
+                new PetAdvert { 
+                    PetId = pets[0].Id, 
+                    Pet = pets[0],
+                    AdvertId = advert1.Id, 
+                    Advert = advert1,
+                    CreatedAt = DateTime.UtcNow, 
+                    UpdatedAt = DateTime.UtcNow 
+                },
+                new PetAdvert { 
+                    PetId = pets[1].Id, 
+                    Pet = pets[1],
+                    AdvertId = advert2.Id, 
+                    Advert = advert2,
+                    CreatedAt = DateTime.UtcNow, 
+                    UpdatedAt = DateTime.UtcNow 
+                },
+                new PetAdvert { 
+                    PetId = pets[2].Id, 
+                    Pet = pets[2],
+                    AdvertId = advert3.Id, 
+                    Advert = advert3,
+                    CreatedAt = DateTime.UtcNow, 
+                    UpdatedAt = DateTime.UtcNow 
+                },
+                new PetAdvert { 
+                    PetId = pets[3].Id, 
+                    Pet = pets[3],
+                    AdvertId = advert4.Id, 
+                    Advert = advert4,
+                    CreatedAt = DateTime.UtcNow, 
+                    UpdatedAt = DateTime.UtcNow 
+                },
+                new PetAdvert { 
+                    PetId = pets[4].Id, 
+                    Pet = pets[4],
+                    AdvertId = advert3.Id, 
+                    Advert = advert3,
+                    CreatedAt = DateTime.UtcNow, 
+                    UpdatedAt = DateTime.UtcNow 
+                }
             );
             
             context.SaveChanges();
@@ -365,7 +503,9 @@ namespace Pawesome.Data.Seeding
                     Content = "Bonjour, je suis intéressé par votre annonce",
                     Status = "unread",
                     SenderId = users[0].Id,
+                    Sender = users[0],
                     ReceiverId = users[1].Id,
+                    Receiver = users[1],
                     CreatedAt = DateTime.UtcNow,
                     UpdatedAt = DateTime.UtcNow
                 },
@@ -374,7 +514,9 @@ namespace Pawesome.Data.Seeding
                     Content = "Merci pour votre message. Quand seriez-vous disponible?",
                     Status = "read",
                     SenderId = users[1].Id,
+                    Sender = users[1],
                     ReceiverId = users[0].Id,
+                    Receiver = users[0],
                     CreatedAt = DateTime.UtcNow,
                     UpdatedAt = DateTime.UtcNow
                 },
@@ -383,7 +525,9 @@ namespace Pawesome.Data.Seeding
                     Content = "Je peux passer demain vers 14h si cela vous convient.",
                     Status = "unread",
                     SenderId = users[0].Id,
+                    Sender = users[0],
                     ReceiverId = users[1].Id,
+                    Receiver = users[1],
                     CreatedAt = DateTime.UtcNow,
                     UpdatedAt = DateTime.UtcNow
                 },
@@ -392,7 +536,9 @@ namespace Pawesome.Data.Seeding
                     Content = "Bonjour, est-ce que votre chat s'entend bien avec les enfants?",
                     Status = "unread",
                     SenderId = users[2].Id,
+                    Sender = users[2],
                     ReceiverId = users[1].Id,
+                    Receiver = users[1],
                     CreatedAt = DateTime.UtcNow,
                     UpdatedAt = DateTime.UtcNow
                 },
@@ -401,7 +547,9 @@ namespace Pawesome.Data.Seeding
                     Content = "Pourriez-vous me donner plus d'informations sur les soins spécifiques pour votre hamster?",
                     Status = "read",
                     SenderId = users[1].Id,
+                    Sender = users[1],
                     ReceiverId = users[2].Id,
+                    Receiver = users[2],
                     CreatedAt = DateTime.UtcNow,
                     UpdatedAt = DateTime.UtcNow
                 }
@@ -425,7 +573,9 @@ namespace Pawesome.Data.Seeding
                     Rate = 5,
                     Comment = "Excellent service, je recommande !",
                     UserId = users[1].Id,
+                    User = users[1],
                     AdvertId = adverts[0].Id,
+                    Advert = adverts[0],
                     CreatedAt = DateTime.UtcNow,
                     UpdatedAt = DateTime.UtcNow
                 },
@@ -434,7 +584,9 @@ namespace Pawesome.Data.Seeding
                     Rate = 4,
                     Comment = "Très bonne expérience, animal adorable",
                     UserId = users[2].Id,
+                    User = users[2],
                     AdvertId = adverts[1].Id,
+                    Advert = adverts[1],
                     CreatedAt = DateTime.UtcNow,
                     UpdatedAt = DateTime.UtcNow
                 },
@@ -443,7 +595,9 @@ namespace Pawesome.Data.Seeding
                     Rate = 5,
                     Comment = "Tout s'est parfaitement déroulé, merci !",
                     UserId = users[0].Id,
+                    User = users[0],
                     AdvertId = adverts[2].Id,
+                    Advert = adverts[2],
                     CreatedAt = DateTime.UtcNow,
                     UpdatedAt = DateTime.UtcNow
                 }
@@ -464,6 +618,7 @@ namespace Pawesome.Data.Seeding
                 {
                     Comment = "Quelqu'un a répondu à votre annonce",
                     UserId = users[0].Id,
+                    User = users[0],
                     CreatedAt = DateTime.UtcNow,
                     UpdatedAt = DateTime.UtcNow
                 },
@@ -471,6 +626,7 @@ namespace Pawesome.Data.Seeding
                 {
                     Comment = "Votre annonce a été approuvée",
                     UserId = users[1].Id,
+                    User = users[1],
                     CreatedAt = DateTime.UtcNow,
                     UpdatedAt = DateTime.UtcNow
                 },
@@ -478,6 +634,7 @@ namespace Pawesome.Data.Seeding
                 {
                     Comment = "Vous avez reçu un nouveau message",
                     UserId = users[2].Id,
+                    User = users[2],
                     CreatedAt = DateTime.UtcNow,
                     UpdatedAt = DateTime.UtcNow
                 },
@@ -485,6 +642,7 @@ namespace Pawesome.Data.Seeding
                 {
                     Comment = "Votre réservation a été confirmée",
                     UserId = users[1].Id,
+                    User = users[1],
                     CreatedAt = DateTime.UtcNow,
                     UpdatedAt = DateTime.UtcNow
                 },
@@ -492,6 +650,7 @@ namespace Pawesome.Data.Seeding
                 {
                     Comment = "Un utilisateur a laissé un avis sur votre service",
                     UserId = users[3].Id,
+                    User = users[3],
                     CreatedAt = DateTime.UtcNow,
                     UpdatedAt = DateTime.UtcNow
                 }
@@ -512,6 +671,7 @@ namespace Pawesome.Data.Seeding
                 {
                     Comment = "Cette annonce contient des informations trompeuses",
                     UserId = users[0].Id,
+                    User = users[0],
                     CreatedAt = DateTime.UtcNow,
                     UpdatedAt = DateTime.UtcNow
                 },
@@ -519,6 +679,7 @@ namespace Pawesome.Data.Seeding
                 {
                     Comment = "Cet utilisateur ne s'est pas présenté au rendez-vous",
                     UserId = users[1].Id,
+                    User = users[1],
                     CreatedAt = DateTime.UtcNow,
                     UpdatedAt = DateTime.UtcNow
                 },
@@ -526,6 +687,7 @@ namespace Pawesome.Data.Seeding
                 {
                     Comment = "Les informations sur l'animal ne correspondent pas à la réalité",
                     UserId = users[2].Id,
+                    User = users[2],
                     CreatedAt = DateTime.UtcNow,
                     UpdatedAt = DateTime.UtcNow
                 }
@@ -548,6 +710,7 @@ namespace Pawesome.Data.Seeding
                     IsValid = true,
                     ExpiresAt = DateTime.UtcNow.AddDays(1),
                     UserId = users[0].Id,
+                    User = users[0],
                     CreatedAt = DateTime.UtcNow,
                     UpdatedAt = DateTime.UtcNow
                 },
@@ -557,6 +720,7 @@ namespace Pawesome.Data.Seeding
                     IsValid = false,
                     ExpiresAt = DateTime.UtcNow.AddHours(-24),
                     UserId = users[1].Id,
+                    User = users[1],
                     CreatedAt = DateTime.UtcNow.AddDays(-2),
                     UpdatedAt = DateTime.UtcNow.AddDays(-1)
                 }
@@ -579,7 +743,9 @@ namespace Pawesome.Data.Seeding
                     Amount = 50.0m,
                     Status = "completed",
                     UserId = users[0].Id,
+                    User = users[0],
                     AdvertId = adverts[0].Id,
+                    Advert = adverts[0],
                     CreatedAt = DateTime.UtcNow,
                     UpdatedAt = DateTime.UtcNow
                 },
@@ -588,7 +754,9 @@ namespace Pawesome.Data.Seeding
                     Amount = 15.0m,
                     Status = "pending",
                     UserId = users[1].Id,
+                    User = users[1],
                     AdvertId = adverts[1].Id,
+                    Advert = adverts[1],
                     CreatedAt = DateTime.UtcNow,
                     UpdatedAt = DateTime.UtcNow
                 },
@@ -597,7 +765,9 @@ namespace Pawesome.Data.Seeding
                     Amount = 30.0m,
                     Status = "completed",
                     UserId = users[2].Id,
+                    User = users[2],
                     AdvertId = adverts[2].Id,
+                    Advert = adverts[2],
                     CreatedAt = DateTime.UtcNow,
                     UpdatedAt = DateTime.UtcNow
                 },
@@ -606,7 +776,9 @@ namespace Pawesome.Data.Seeding
                     Amount = 75.0m,
                     Status = "cancelled",
                     UserId = users[3].Id,
+                    User = users[3],
                     AdvertId = adverts[3].Id,
+                    Advert = adverts[3],
                     CreatedAt = DateTime.UtcNow,
                     UpdatedAt = DateTime.UtcNow
                 }
