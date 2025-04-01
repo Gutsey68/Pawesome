@@ -16,7 +16,6 @@ public static class WebApplicationExtensions
         {
             var context = services.GetRequiredService<AppDbContext>();
             
-            // Assurez-vous que la base de données est créée avec les migrations
             await context.Database.MigrateAsync();
             
             var roleManager = services.GetRequiredService<RoleManager<IdentityRole<int>>>();
@@ -38,7 +37,7 @@ public static class WebApplicationExtensions
         {
             var logger = services.GetRequiredService<ILogger<Program>>();
             logger.LogError(ex, "Une erreur s'est produite lors de l'initialisation de la base de données.");
-            throw; // Ajouter throw pour voir l'erreur complète
+            throw;
         }
     }
 }

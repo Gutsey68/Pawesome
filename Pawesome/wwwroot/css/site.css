@@ -88,12 +88,47 @@
     0 1px 3px rgba(255, 255, 255, 0.05);
 }
 
-* {
-    background-color: var(--color-primary-3);
+body {
+    background-color: var(--color-primary-1);
+    color: var(--color-primary-12);
     font-family: var(--font-primary);
+    display : flex;
+    flex-direction: column;
+    justify-content: space-between;
+    min-height: 100vh;
 }
 
-.test {
-    font-family: var(--font-secondary);
-    color: var(--color-primary-10);
+.btn-primary {
+    background-color: var(--color-primary-12);
+    color: var(--color-primary-1);
+    border-radius: var(--radius-full);
+    padding: var(--space-2) var(--space-4);
+    font-weight: var(--font-weight-medium);
+    border: solid 1px var(--color-primary-12);
+    cursor: pointer;
+    transition: all 0.2s ease-in-out;
+    box-shadow: 0 1px 2px rgba(0, 0, 0, 0.1);
+    position: relative;
+    overflow: hidden;
+}
+
+.btn-primary:hover {
+    opacity: 0.8;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+}
+
+.btn-primary:active {
+    box-shadow: 0 1px 1px rgba(0, 0, 0, 0.1);
+    background-color: var(--color-primary-11);
+}
+
+.btn-primary:focus {
+    outline: none;
+    box-shadow: 0 0 0 2px var(--color-primary-1), 0 0 0 4px var(--color-primary-11);
+}
+
+.btn-primary:disabled {
+    opacity: 0.6;
+    cursor: not-allowed;
+    background-color: var(--color-primary-10);
 }

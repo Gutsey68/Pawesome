@@ -2,36 +2,37 @@
 @{
     ViewData["Title"] = "Connexion";
 }
-
-<h2>Connexion</h2>
-
-<div asp-validation-summary="All"></div>
-
-<form asp-controller="Auth" asp-action="Login" method="post">
-    <div>
-        <label asp-for="Email">Email :</label>
-        <input asp-for="Email" type="email" />
-        <span asp-validation-for="Email"></span>
+<div class="login-page">
+    <div class="login-block">
+        <div class="login-header">
+            <h1>Connexion</h1>
+            <p>Entrez vos identifiants pour vous connecter</p>
+        </div>
+        <div asp-validation-summary="All"></div>
+        <form class="login-form" asp-controller="Auth" asp-action="Login" method="post">
+            <div class="form-group">
+                <label asp-for="Email">Email :</label>
+                <input asp-for="Email" type="email" />
+                <span asp-validation-for="Email"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="Password">Mot de passe :</label>
+                <input asp-for="Password" type="password" />
+                <span asp-validation-for="Password"></span>
+            </div>
+            <div class="form-group">
+                <label>
+                    <input asp-for="RememberMe" type="checkbox" />
+                    Se souvenir de moi
+                </label>
+            </div>
+            <div>
+                <button class="btn-primary" type="submit">Connexion</button>
+            </div>
+            <div>
+                <p>Pas encore de compte ? <a asp-controller="Auth" asp-action="Register">S'inscrire</a></p>
+            </div>
+        </form>
     </div>
-
-    <div>
-        <label asp-for="Password">Mot de passe :</label>
-        <input asp-for="Password" type="password" />
-        <span asp-validation-for="Password"></span>
-    </div>
-
-    <div>
-        <label>
-            <input asp-for="RememberMe" type="checkbox" />
-            Se souvenir de moi
-        </label>
-    </div>
-
-    <div>
-        <button type="submit">Connexion</button>
-    </div>
-
-    <div>
-        <p>Pas encore de compte ? <a asp-controller="Auth" asp-action="Register">S'inscrire</a></p>
-    </div>
-</form>
+    <div class="img-block"></div>
+</div>

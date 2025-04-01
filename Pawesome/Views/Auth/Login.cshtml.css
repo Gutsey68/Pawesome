@@ -1,0 +1,35 @@
+.login-page {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    height: 100%;
+    width: 100%;
+    border: 3px solid darkolivegreen;
+}
+
+.form-group {
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-2)
+}
+
+.login-block {
+    height: 100%;
+    width: 100%;
+    margin: auto;
+    border: 3px solid red;
+}
+
+.login-header {
+    border: 3px solid green;
+}
+
+.login-form {
+    border: 3px solid blue;
+}
+
+.img-block {
+    border: 3px solid orange;
+    height: 100%;
+    width: 100%;
+}
