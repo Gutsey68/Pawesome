@@ -98,6 +98,10 @@ body {
     min-height: 100vh;
 }
 
+main, body, html {
+    height: 100%;
+}
+
 .btn-primary {
     background-color: var(--color-primary-12);
     color: var(--color-primary-1);
