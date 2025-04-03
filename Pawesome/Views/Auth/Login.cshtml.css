@@ -9,12 +9,18 @@
 .form-group {
     display: flex;
     flex-direction: column;
+    gap: var(--space-2);
+}
+
+.form-label label {
+    display: flex;
+    align-items: center;
+    gap: var(--space-2);
 }
 
 .login-block {
     width: 100%;
     margin: auto;
-    border: 3px solid red;
     display: flex;
     flex-direction: column;
     justify-content: center;
@@ -24,23 +30,47 @@
 }
 
 .login-form, .login-header {
-    margin: 0 10% 0 10%
+    margin: 0 20% 0 20%
 }
 
 .login-header {
-    border: 3px solid green;
     display: flex;
     flex-direction: column;
     justify-content: center;
     align-items: center;
 }
 
+.login-header h1 {
+    font-size : var(--font-size-2xl)
+}
+
+.login-header p {
+    font-size : var(--font-size-sm);
+    color: var(--color-primary-11);
+}
+
 .login-form {
-    border: 3px solid blue;
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-4);
+}
+
+.login-form p {
+    font-size: var(--font-size-sm);
+    color: var(--color-primary-11);
+    text-align: center;
+}
+
+.login-form div a {
+    color: var(--color-primary-12);
+}
+
+.login-form button {
+    width: 100%;
+    margin:0;
 }
 
 .img-block {
-    border: 3px solid orange;
     height: 100%;
     width: 100%;
 }

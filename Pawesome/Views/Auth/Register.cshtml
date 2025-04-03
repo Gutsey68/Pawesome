@@ -8,7 +8,7 @@
 <div asp-validation-summary="All"></div>
 
 <form asp-controller="Auth" asp-action="Register" method="post">
-    <div>
+    <div class="form-group">
         <label asp-for="Email">Email :</label>
         <input asp-for="Email" type="email" />
         <span asp-validation-for="Email" class="text-danger"></span>
@@ -39,7 +39,7 @@
     </div>
 
     <div>
-        <button type="submit">S'inscrire</button>
+        <button class="button" type="submit">S'inscrire</button>
     </div>
 
     <div>
