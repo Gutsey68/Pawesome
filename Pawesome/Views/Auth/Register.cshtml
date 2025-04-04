@@ -2,47 +2,48 @@
 @{
     ViewData["Title"] = "Inscription";
 }
-
-<h2>Inscription</h2>
-
-<div asp-validation-summary="All"></div>
-
-<form asp-controller="Auth" asp-action="Register" method="post">
-    <div class="form-group">
-        <label asp-for="Email">Email :</label>
-        <input asp-for="Email" type="email" />
-        <span asp-validation-for="Email" class="text-danger"></span>
+<div class="register-page">
+    <div class="img-block">
+        <img src="~/images/casual-life-3d-woman-taking-funny-photo-with-dog.png" alt="Woman taking funny photo with dog"/>
     </div>
-
-    <div>
-        <label asp-for="FirstName">Prénom :</label>
-        <input asp-for="FirstName" />
-        <span asp-validation-for="FirstName"></span>
+    <div class="register-block">
+        <div class="register-header">
+            <h1 class="font-2xl">Créez votre compte</h1>
+            <p class="font-sm">Remplissez le formulaire ci-dessous pour vous inscrire</p>
+        </div>
+        <div asp-validation-summary="All"></div>
+        <form asp-controller="Auth" asp-action="Register" method="post">
+            <div class="register-form">
+                <div class="form-group">
+                    <label asp-for="FirstName">Prénom :</label>
+                    <input asp-for="FirstName" type="text"/>
+                    <span asp-validation-for="FirstName"></span>
+                </div>
+                <div class="form-group">
+                    <label asp-for="LastName">Nom :</label>
+                    <input asp-for="LastName" type="text"/>
+                    <span asp-validation-for="LastName"></span>
+                </div>
+                <div class="form-group">
+                    <label asp-for="Email">Email :</label>
+                    <input asp-for="Email" type="email"/>
+                    <span asp-validation-for="Email"></span>
+                </div>
+                <div class="form-group">
+                    <label asp-for="Password">Mot de passe :</label>
+                    <input asp-for="Password" type="password"/>
+                    <span asp-validation-for="Password"></span>
+                </div>
+                <div class="form-group">
+                    <label asp-for="ConfirmPassword">Confirmer le mot de passe :</label>
+                    <input asp-for="ConfirmPassword" type="password"/>
+                    <span asp-validation-for="ConfirmPassword"></span>
+                </div>
+                <button class="button" type="submit">S'inscrire</button>
+                <div>
+                    <p>Déjà inscrit ? <a asp-controller="Auth" class="login-link" asp-action="Login">Se connecter</a></p>
+                </div>
+            </div>
+        </form>
     </div>
-
-    <div>
-        <label asp-for="LastName">Nom :</label>
-        <input asp-for="LastName" />
-        <span asp-validation-for="LastName"></span>
-    </div>
-
-    <div>
-        <label asp-for="Password">Mot de passe :</label>
-        <input asp-for="Password" type="password" />
-        <span asp-validation-for="Password"></span>
-    </div>
-
-    <div>
-        <label asp-for="ConfirmPassword">Confirmer le mot de passe :</label>
-        <input asp-for="ConfirmPassword" type="password" />
-        <span asp-validation-for="ConfirmPassword"></span>
-    </div>
-
-    <div>
-        <button class="button" type="submit">S'inscrire</button>
-    </div>
-
-    <div>
-        <p>Déjà inscrit ? <a asp-controller="Auth" asp-action="Login">Se connecter</a></p>
-    </div>
-</form>
+</div>

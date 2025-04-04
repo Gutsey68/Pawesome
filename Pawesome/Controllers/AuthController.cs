@@ -102,4 +102,11 @@ public class AuthController : Controller
         await _authService.LogoutAsync();
         return RedirectToAction("Index", "Home");
     }
+    
+    /// <summary>
+    /// Displays the forgot password form.
+    /// </summary>
+    /// <returns>The forgot password form view.</returns>
+    [HttpGet]
+    public IActionResult ForgotPassword() => View();
 }

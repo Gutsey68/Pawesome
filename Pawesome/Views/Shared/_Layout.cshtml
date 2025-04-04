@@ -16,29 +16,30 @@
 <body>
 <header>
     <nav>
+        <a asp-area="" asp-controller="Home" asp-action="Index">Pawesome</a>
         <div>
-            <a asp-area="" asp-controller="Home" asp-action="Index">Pawesome</a>
-            <div>
-                <ul>
-                    <li>
-                        <a asp-area="" asp-controller="Home" asp-action="Index">Home</a>
-                    </li>
-                    <li>
-                        <a asp-area="" asp-controller="Home" asp-action="Privacy">Privacy</a>
-                    </li>                    
-                    <li>
-                        <a asp-area="" asp-controller="Auth" asp-action="Login">Login</a>
-                    </li>
-                    <li>
-                        <a asp-area="" asp-controller="Auth" asp-action="Register">Register</a>
-                    </li>
-                    <li>
-                        <button id="theme-toggle" class="theme-toggle">
-                            Theme toggle
-                        </button>
-                    </li>
-                </ul>
-            </div>
+            <ul>
+                <li>
+                    <a asp-area="" asp-controller="Home" asp-action="Index">Home</a>
+                </li>
+                <li>
+                    <a asp-area="" asp-controller="Home" asp-action="Privacy">Privacy</a>
+                </li>                    
+                <li>
+                    <a asp-area="" asp-controller="Auth" asp-action="Login">Login</a>
+                </li>
+                <li>
+                    <a asp-area="" asp-controller="Auth" asp-action="Register">Register</a>
+                </li>        
+                <li>
+                    <a asp-area="" asp-controller="Auth" asp-action="ForgotPassword">ForgotPassword</a>
+                </li>
+                <li>
+                    <button id="theme-toggle" class="theme-toggle">
+                        Theme toggle
+                    </button>
+                </li>
+            </ul>
         </div>
     </nav>
 </header>
