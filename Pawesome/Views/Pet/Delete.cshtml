@@ -1,0 +1,31 @@
+@model Pawesome.Models.ViewModels.PetDetailsViewModel
+
+<div>
+    <h1>Supprimer</h1>
+    <div>
+        <h3>Êtes-vous sûr de vouloir supprimer cet animal?</h3>
+        <div>
+            @if (!string.IsNullOrEmpty(Model.Photo))
+            {
+                <img src="~/images/pets/@Model.Photo" alt="@Model.Name" width="150" />
+            }
+            else
+            {
+                <img src="~/images/pet-placeholder.jpg" alt="Image par défaut" width="150" />
+            }
+            <div>
+                <h4>@Model.Name</h4>
+                <p>Type: @Model.Species</p>
+                @if (!string.IsNullOrEmpty(Model.Breed))
+                {
+                    <p>Race: @Model.Breed</p>
+                }
+            </div>
+        </div>
+        <form asp-action="DeleteConfirmed" method="post">
+            <input type="hidden" name="id" value="@Model.Id" />
+            <button type="submit">Supprimer</button>
+            <a asp-action="Index">Annuler</a>
+        </form>
+    </div>
+</div>

@@ -1,0 +1,57 @@
+@model Pawesome.Models.DTOs.UpdatePetDto
+
+<div>
+    <h1>Modifier</h1>
+    <form asp-action="Edit" enctype="multipart/form-data">
+        <div asp-validation-summary="ModelOnly"></div>
+        <input type="hidden" asp-for="Id" />
+        <input type="hidden" asp-for="ExistingPhoto" />
+        <div>
+            <label asp-for="Name">Nom</label>
+            <input asp-for="Name" />
+            <span asp-validation-for="Name"></span>
+        </div>
+        <div>
+            <label asp-for="AnimalTypeId">Type d'animal</label>
+            <select asp-for="AnimalTypeId" asp-items="ViewBag.AnimalTypes">
+                <option value="">-- Sélectionnez un type --</option>
+            </select>
+            <span asp-validation-for="AnimalTypeId"></span>
+        </div>
+        <div>
+            <label asp-for="Breed">Race</label>
+            <input asp-for="Breed" />
+            <span asp-validation-for="Breed"></span>
+        </div>
+        <div>
+            <label asp-for="Age">Âge (années)</label>
+            <input asp-for="Age" type="number" min="0" max="30" />
+            <span asp-validation-for="Age"></span>
+        </div>
+        <div>
+            <label asp-for="Info">Informations complémentaires</label>
+            <textarea asp-for="Info" rows="4"></textarea>
+            <span asp-validation-for="Info"></span>
+        </div>
+        @if (!string.IsNullOrEmpty(Model.ExistingPhoto))
+        {
+            <div>
+                <label>Photo actuelle</label>
+                <div>
+                    <img src="~/images/pets/@Model.ExistingPhoto" alt="Photo actuelle" width="200" />
+                </div>
+            </div>
+        }
+        <div>
+            <label asp-for="Photo">Nouvelle photo</label>
+            <input asp-for="Photo" type="file" accept="image/*" />
+            <small>Laissez vide pour conserver la photo actuelle</small>
+            <span asp-validation-for="Photo"></span>
+        </div>
+        <div>
+            <button type="submit">Enregistrer</button>
+            <a asp-action="Details" asp-route-id="@Model.Id">Annuler</a>
+            <a asp-action="Index">Retour à la liste</a>
+        </div>
+    </form>
+</div>

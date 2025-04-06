@@ -2,9 +2,7 @@
 @{
     ViewData["Title"] = "Mon Profil";
 }
-
 <h1>Mon Profil</h1>
-
 <div>
     <h2>Informations personnelles</h2>
     <dl>
@@ -38,7 +36,6 @@
         <dt>Membre depuis :</dt>
         <dd>@Model.CreatedAt.ToString("dd/MM/yyyy")</dd>
     </dl>
-
     <h2>Adresse</h2>
     @if (!string.IsNullOrEmpty(Model.Street) || !string.IsNullOrEmpty(Model.City))
     {
@@ -60,7 +57,6 @@
     {
         <p>Aucune adresse renseignée</p>
     }
-
     <h2>Animaux</h2>
     @if (Model.Pets.Any())
     {
@@ -70,9 +66,11 @@
                 <li>@pet.Name - @pet.Species</li>
             }
         </ul>
+        <a asp-controller="Pet" asp-action="Index">Voir mes animaux</a>
     }
     else
     {
         <p>Aucun animal enregistré</p>
     }
+    <a asp-controller="Pet" asp-action="Create">Ajouter un animal</a>
 </div>

@@ -2,7 +2,6 @@ using FluentValidation;
 using FluentValidation.AspNetCore;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
-using Pawesome.Data.Seeding;
 using Pawesome.Extensions;
 using Pawesome.Interfaces;
 using Pawesome.Models;
@@ -39,6 +38,10 @@ builder.Services.AddIdentity<User, IdentityRole<int>>(options =>
 .AddDefaultTokenProviders();
 
 // Add FluentValidation
+builder.Services.AddFluentValidationAutoValidation(options => {
+        options.DisableDataAnnotationsValidation = true;
+    })
+    .AddFluentValidationClientsideAdapters();
 builder.Services.AddValidatorsFromAssemblyContaining<Program>();
 builder.Services.AddScoped<IValidator<RegisterDto>, RegisterDtoValidator>();
 builder.Services.AddScoped<IValidator<LoginDto>, LoginDtoValidator>();
@@ -46,8 +49,6 @@ builder.Services.AddScoped<IValidator<LoginDto>, LoginDtoValidator>();
 // Add custom services
 builder.Services.AddScoped<IAuthService, AuthService>();
 builder.Services.AddScoped<IUserRepository, UserRepository>();
-builder.Services.AddScoped<IProfileService, ProfileService>();
-
 builder.Services.AddAutoMapper(typeof(Program).Assembly);
 
 // Configure Identity options

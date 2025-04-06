@@ -1,0 +1,43 @@
+@model Pawesome.Models.DTOs.CreatePetDto
+<div>
+    <h1>Ajouter un animal</h1>
+    <form asp-action="Create" enctype="multipart/form-data">
+        <div asp-validation-summary="ModelOnly"></div>
+        <div>
+            <label asp-for="Name">Nom</label>
+            <input asp-for="Name" />
+            <span asp-validation-for="Name"></span>
+        </div>
+        <div>
+            <label asp-for="AnimalTypeId">Type d'animal</label>
+            <select asp-for="AnimalTypeId" asp-items="ViewBag.AnimalTypes">
+                <option value="">-- Sélectionnez un type --</option>
+            </select>
+            <span asp-validation-for="AnimalTypeId"></span>
+        </div>
+        <div>
+            <label asp-for="Breed">Race</label>
+            <input asp-for="Breed" />
+            <span asp-validation-for="Breed"></span>
+        </div>
+        <div>
+            <label asp-for="Age">Âge (années)</label>
+            <input asp-for="Age" type="number" min="0" max="30" />
+            <span asp-validation-for="Age"></span>
+        </div>
+        <div>
+            <label asp-for="Info">Informations complémentaires</label>
+            <textarea asp-for="Info" rows="4"></textarea>
+            <span asp-validation-for="Info"></span>
+        </div>
+        <div>
+            <label asp-for="Photo">Photo</label>
+            <input asp-for="Photo" type="file" accept="image/*" />
+            <span asp-validation-for="Photo"></span>
+        </div>
+        <div>
+            <button type="submit">Ajouter</button>
+            <a asp-action="Index">Retour à la liste</a>
+        </div>
+    </form>
+</div>

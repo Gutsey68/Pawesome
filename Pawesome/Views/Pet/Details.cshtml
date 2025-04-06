@@ -1,0 +1,52 @@
+@model Pawesome.Models.ViewModels.PetDetailsViewModel
+
+<div>
+    <h1>Détails</h1>
+    <div>
+        @if (!string.IsNullOrEmpty(Model.Photo))
+        {
+            <img src="~/images/pets/@Model.Photo" alt="@Model.Name" width="200" />
+        }
+        else
+        {
+            <img src="~/images/pet-placeholder.jpg" alt="Image par défaut" width="200" />
+        }
+        <div>
+            <h3>@Model.Name</h3>
+            <div>
+                <strong>Type:</strong> @Model.Species
+            </div>
+            @if (!string.IsNullOrEmpty(Model.Breed))
+            {
+                <div>
+                    <strong>Race:</strong> @Model.Breed
+                </div>
+            }
+            @if (Model.Age.HasValue)
+            {
+                <div>
+                    <strong>Âge:</strong> @Model.Age an@(Model.Age > 1 ? "s" : "")
+                </div>
+            }
+            @if (!string.IsNullOrEmpty(Model.Info))
+            {
+                <div>
+                    <strong>Informations:</strong>
+                    <p>@Model.Info</p>
+                </div>
+            }
+            <div>
+                <strong>Propriétaire:</strong> @Model.OwnerName
+            </div>
+            
+            <div>
+                <strong>Date d'ajout:</strong> @Model.CreatedAt.ToString("dd/MM/yyyy")
+            </div>
+        </div>
+        <div>
+            <a asp-action="Edit" asp-route-id="@Model.Id">Modifier</a>
+            <a asp-action="Delete" asp-route-id="@Model.Id">Supprimer</a>
+            <a asp-action="Index">Retour à la liste</a>
+        </div>
+    </div>
+</div>

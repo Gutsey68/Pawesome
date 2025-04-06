@@ -5,8 +5,16 @@ using Pawesome.Models;
 
 namespace Pawesome.Extensions;
 
+/// <summary>
+/// Extension methods for WebApplication
+/// </summary>
 public static class WebApplicationExtensions
 {
+    /// <summary>
+    /// Initializes the database by applying migrations and seeding initial data
+    /// </summary>
+    /// <param name="app">The web application instance</param>
+    /// <returns>A task representing the asynchronous operation</returns>
     public static async Task InitializeDatabaseAsync(this WebApplication app)
     {
         using var scope = app.Services.CreateScope();
