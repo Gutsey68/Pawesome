@@ -104,10 +104,6 @@ body {
     min-height: 100vh;
 }
 
-main, body, html {
-    height: 100%;
-}
-
 h1,h2 {
     font-family: var(--font-secondary), sans-serif;
 }

@@ -1,0 +1,78 @@
+@model Pawesome.Models.ViewModels.ProfileViewModel
+@{
+    ViewData["Title"] = "Mon Profil";
+}
+
+<h1>Mon Profil</h1>
+
+<div>
+    <h2>Informations personnelles</h2>
+    <dl>
+        <dt>Prénom :</dt>
+        <dd>@Model.FirstName</dd>
+
+        <dt>Nom :</dt>
+        <dd>@Model.LastName</dd>
+
+        <dt>Email :</dt>
+        <dd>@Model.Email</dd>
+
+        <dt>Téléphone :</dt>
+        <dd>@(string.IsNullOrEmpty(Model.PhoneNumber) ? "Non renseigné" : Model.PhoneNumber)</dd>
+
+        <dt>Biographie :</dt>
+        <dd>@(string.IsNullOrEmpty(Model.Bio) ? "Non renseigné" : Model.Bio)</dd>
+
+        <dt>Statut :</dt>
+        <dd>@(string.IsNullOrEmpty(Model.Status) ? "Non renseigné" : Model.Status)</dd>
+
+        <dt>Compte vérifié :</dt>
+        <dd>@(Model.IsVerified ? "Oui" : "Non")</dd>
+
+        <dt>Solde du compte :</dt>
+        <dd>@Model.BalanceAccount €</dd>
+
+        <dt>Note moyenne :</dt>
+        <dd>@(Model.Rating.HasValue ? $"{Model.Rating}/5" : "Pas encore noté")</dd>
+
+        <dt>Membre depuis :</dt>
+        <dd>@Model.CreatedAt.ToString("dd/MM/yyyy")</dd>
+    </dl>
+
+    <h2>Adresse</h2>
+    @if (!string.IsNullOrEmpty(Model.Street) || !string.IsNullOrEmpty(Model.City))
+    {
+        <dl>
+            <dt>Rue :</dt>
+            <dd>@(string.IsNullOrEmpty(Model.Street) ? "Non renseigné" : Model.Street)</dd>
+
+            <dt>Ville :</dt>
+            <dd>@(string.IsNullOrEmpty(Model.City) ? "Non renseigné" : Model.City)</dd>
+
+            <dt>Code postal :</dt>
+            <dd>@(string.IsNullOrEmpty(Model.PostalCode) ? "Non renseigné" : Model.PostalCode)</dd>
+
+            <dt>Pays :</dt>
+            <dd>@(string.IsNullOrEmpty(Model.Country) ? "Non renseigné" : Model.Country)</dd>
+        </dl>
+    }
+    else
+    {
+        <p>Aucune adresse renseignée</p>
+    }
+
+    <h2>Animaux</h2>
+    @if (Model.Pets.Any())
+    {
+        <ul>
+            @foreach (var pet in Model.Pets)
+            {
+                <li>@pet.Name - @pet.Species</li>
+            }
+        </ul>
+    }
+    else
+    {
+        <p>Aucun animal enregistré</p>
+    }
+</div>

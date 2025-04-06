@@ -20,4 +20,19 @@ public class UserRepository : Repository<User>, IUserRepository
         return await _context.Users
             .FirstOrDefaultAsync(u => u.Email == email);
     }
+    
+    public async Task<User?> GetUserByIdWithDetailsAsync(string userId)
+    {
+        if (!int.TryParse(userId, out int id))
+        {
+            return null;
+        }
+
+        return await _context.Users
+            .Include(u => u.Address)
+            .ThenInclude(a => a.City)
+            .ThenInclude(c => c.Country)
+            .Include(u => u.Pets)
+            .FirstOrDefaultAsync(u => u.Id == id);
+    }
 }

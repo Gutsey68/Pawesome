@@ -1,0 +1,41 @@
+<nav>
+    <a asp-area="" asp-controller="Home" asp-action="Index">Pawesome</a>
+    <div>
+        <ul>
+            <li>
+                <a asp-area="" asp-controller="Home" asp-action="Index">Accueil</a>
+            </li>
+            <li>
+                <a asp-area="" asp-controller="Home" asp-action="Privacy">Confidentialité</a>
+            </li>
+
+            @if (User.Identity?.IsAuthenticated == true)
+            {
+                <li>
+                    <a asp-area="" asp-controller="Auth" asp-action="Logout">Se déconnecter</a>
+                </li>
+                <li>
+                    <a asp-area="" asp-controller="Profile" asp-action="Index">Mon profil</a>
+                </li>
+            }
+            else
+            {
+                <li>
+                    <a asp-area="" asp-controller="Auth" asp-action="Login">Se connecter</a>
+                </li>
+                <li>
+                    <a asp-area="" asp-controller="Auth" asp-action="Register">S'inscrire</a>
+                </li>
+                <li>
+                    <a asp-area="" asp-controller="Auth" asp-action="ForgotPassword">Mot de passe oublié</a>
+                </li>
+            }
+
+            <li>
+                <button id="theme-toggle" class="theme-toggle">
+                    Thème
+                </button>
+            </li>
+        </ul>
+    </div>
+</nav>

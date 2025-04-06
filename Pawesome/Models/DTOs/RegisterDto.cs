@@ -1,7 +1,9 @@
+using System.ComponentModel.DataAnnotations;
 using Microsoft.AspNetCore.Mvc.ModelBinding.Validation;
 
 namespace Pawesome.Models.DTOs;
 
+[ValidateNever]
 public class RegisterDto
 {
     public required string Email { get; set; }

@@ -14,43 +14,11 @@
     <link rel="stylesheet" href="~/Pawesome.styles.css" asp-append-version="true"/>
 </head>
 <body>
-<header>
-    <nav>
-        <a asp-area="" asp-controller="Home" asp-action="Index">Pawesome</a>
-        <div>
-            <ul>
-                <li>
-                    <a asp-area="" asp-controller="Home" asp-action="Index">Home</a>
-                </li>
-                <li>
-                    <a asp-area="" asp-controller="Home" asp-action="Privacy">Privacy</a>
-                </li>                    
-                <li>
-                    <a asp-area="" asp-controller="Auth" asp-action="Login">Login</a>
-                </li>
-                <li>
-                    <a asp-area="" asp-controller="Auth" asp-action="Register">Register</a>
-                </li>        
-                <li>
-                    <a asp-area="" asp-controller="Auth" asp-action="ForgotPassword">ForgotPassword</a>
-                </li>
-                <li>
-                    <button id="theme-toggle" class="theme-toggle">
-                        Theme toggle
-                    </button>
-                </li>
-            </ul>
-        </div>
-    </nav>
-</header>
+<partial name="_NavBar" />
 <main role="main">
     @RenderBody()
 </main>
-<footer>
-    <div>
-        &copy; 2025 - Pawesome - <a asp-area="" asp-controller="Home" asp-action="Privacy">Privacy</a>
-    </div>
-</footer>
+<partial name="_Footer" />
 <script src="~/js/site.js" asp-append-version="true"></script>
 @await RenderSectionAsync("Scripts", required: false)
 </body>

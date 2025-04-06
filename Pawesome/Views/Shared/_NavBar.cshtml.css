@@ -1,0 +1,10 @@
+nav {
+    display: flex;
+    justify-content: space-between;
+    padding: var(--space-4);
+}
+
+nav ul {
+    display: flex;
+    gap: var(--space-4);
+}
