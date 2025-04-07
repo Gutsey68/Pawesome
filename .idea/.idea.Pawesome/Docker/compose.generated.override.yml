@@ -1,0 +1,22 @@
+# This is a generated file. Not intended for manual editing.
+services:
+  pawesome:
+    build:
+      context: "/Users/gauthierseyzeriat/repos/cda/Pawesome"
+      dockerfile: "Pawesome/Dockerfile"
+      target: "base"
+    command: []
+    entrypoint:
+    - "dotnet"
+    - "/app/bin/Debug/net9.0/Pawesome.dll"
+    environment:
+      ASPNETCORE_ENVIRONMENT: "Development"
+      ASPNETCORE_STATICWEBASSETS: "/app/bin/Debug/net9.0/Pawesome.staticwebassets.runtime.CT.json"
+      DOTNET_USE_POLLING_FILE_WATCHER: "true"
+    image: "pawesome:dev"
+    ports: []
+    volumes:
+    - "/Users/gauthierseyzeriat/repos/cda/Pawesome/Pawesome:/app:rw"
+    - "/Users/gauthierseyzeriat/repos/cda/Pawesome:/src:rw"
+    - "/Users/gauthierseyzeriat/.nuget/packages:/home/app/.nuget/packages"
+    working_dir: "/app"
