@@ -1,24 +1,4 @@
 ﻿services:
-  pawesome:
-    image: pawesome-dev
-    build:
-      context: .
-      dockerfile: Pawesome/Dockerfile.dev
-    environment:
-      - ASPNETCORE_ENVIRONMENT=Development
-      - DOTNET_WATCH_RESTART_ON_RUDE_EDIT=true
-      - ASPNETCORE_URLS=http://0.0.0.0:8080
-    ports:
-      - "3000:8080"
-    volumes:
-      - ./Pawesome:/app/Pawesome
-      - ~/.nuget/packages:/root/.nuget/packages:ro
-    networks:
-      - pawesome-network
-    depends_on:
-      db:
-        condition: service_healthy
-
   db:
     image: postgres:latest
     environment:
@@ -29,8 +9,6 @@
       - "5434:5432"
     volumes:
       - db_data:/var/lib/postgresql/data
-    networks:
-      - pawesome-network
     healthcheck:
       test: [ "CMD-SHELL", "pg_isready -U pawesome" ]
       interval: 5s
@@ -40,7 +18,3 @@
 
 volumes:
   db_data:
-
-networks:
-  pawesome-network:
-    driver: bridge

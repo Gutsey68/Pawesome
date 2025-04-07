@@ -1,14 +1,15 @@
-# Pawesome Project - Getting Started
+# Pawesome Project - Getting Started Guide
 
-This guide will help you set up the Pawesome MVC project for development using Docker.
+This guide will help you set up the Pawesome MVC project for development using Docker only for the database.
 
 ## Prerequisites
 
 - [Docker](https://www.docker.com/products/docker-desktop/) installed and running
-- [Git](https://git-scm.com/downloads) for cloning the repository
+- [.NET 9 SDK](https://dotnet.microsoft.com/download) installed locally
+- [Git](https://git-scm.com/downloads) to clone the repository
 - Basic knowledge of .NET Core and Docker
 
-## Setup Instructions
+## Installation Instructions
 
 1. Clone the repository:
    ```bash
@@ -16,49 +17,47 @@ This guide will help you set up the Pawesome MVC project for development using D
    cd Pawesome
    ```
 
-2. Check that Docker is running on your machine
+2. Verify that Docker is running on your machine
 
 3. Make sure the `compose.dev.yaml` file is present in the project root directory
 
-## Running the Project
+## Starting the Project
 
-Start the application and database containers:
+1. First launch the database container:
 
 ```bash
-docker compose -f compose.dev.yaml up --build
+docker compose -f compose.dev.yaml up -d
 ```
 
-This command:
-- Builds the Docker image for the Pawesome application
-- Starts the PostgreSQL database
-- Sets up the development environment with hot reload
+2. Navigate to the project directory and run the application:
 
-The application will be available at http://localhost:3000
+```bash
+cd Pawesome
+dotnet run
+```
 
-## Development Workflow
-
-- The project uses Entity Framework Core with PostgreSQL
-- Source code is mounted as a volume, so changes to files in the `Pawesome` directory will be detected automatically
-- The application is configured for hot reload with `DOTNET_WATCH_RESTART_ON_RUDE_EDIT=true`
+The application will be available at http://localhost:5159/
 
 ## Database Connection
 
-The PostgreSQL database runs at:
+The PostgreSQL database runs on:
 - Host: localhost
-- Port: 5434 (mapped from 5432 inside container)
+- Port: 5434 (mapped from 5432 inside the container)
 - Username: pawesome
 - Password: pawesome
 - Database name: pawesome
 
 ## Stopping the Application
 
-To stop the running containers, press `Ctrl+C` in the terminal or run:
+To stop the application, press `Ctrl+C` in the terminal where it's running.
+
+To stop the database container:
 
 ```bash
 docker compose -f compose.dev.yaml down
 ```
 
-To remove volumes (database data) as well:
+To also remove volumes (database data):
 
 ```bash
 docker compose -f compose.dev.yaml down -v
