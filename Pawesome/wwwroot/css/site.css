@@ -16,9 +16,9 @@
     --font-size-6xl: 3rem; /* 48px */
 
     /* Font weights */
-    --font-weight-regular: 400;
-    --font-weight-medium: 500;
-    --font-weight-bold: 700;
+    --font-weight-regular: 400; /* Normal */
+    --font-weight-medium: 500; /* Medium */
+    --font-weight-bold: 700; /* Bold */
 
     /* Colors */
     --color-primary-1: #FEFDFC;
@@ -44,6 +44,8 @@
     --space-8: 3rem; /* 48px */
     --space-10: 4rem; /* 64px */
     --space-12: 6rem; /* 96px */
+    --space-14: 7rem; /* 112px */
+    --space-16: 8rem; /* 128px */
     
 
     /* Border radius */
@@ -302,6 +304,14 @@ label {
     font-size: var(--font-size-sm);
     font-weight: var(--font-weight-medium);
     line-height: 1;
+}
+
+a {
+    text-decoration: none;
+}
+
+a.underline {
+    text-decoration: underline;
 }
 
 .avatar {
