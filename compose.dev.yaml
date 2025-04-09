@@ -15,6 +15,13 @@
       timeout: 5s
       retries: 5
       start_period: 10s
+  
+  mailhog:
+    image: mailhog/mailhog
+    ports:
+      - "1025:1025"  # SMTP
+      - "8025:8025"  # WEB UI
+    restart: unless-stopped
 
 volumes:
   db_data:
