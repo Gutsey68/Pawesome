@@ -1,0 +1,25 @@
+@{
+    ViewData["Title"] = "Email Confirmé";
+}
+
+<div>
+    <div>
+        <div>
+            <h1 class="font-2xl">Email Confirmé !</h1>
+        </div>
+
+        <div>
+            <p>Votre adresse email a été confirmée avec succès.</p>
+            <p>Vous pouvez maintenant vous connecter à votre compte et profiter de toutes les fonctionnalités de Pawesome.</p>
+
+            <div>
+                <a asp-controller="Auth" asp-action="Login">Se connecter</a>
+                <a asp-controller="Home" asp-action="Index">Retour à l'accueil</a>
+            </div>
+        </div>
+    </div>
+
+    <div>
+        <img src="~/images/casual-life-3d-inbox-with-envelope.png" alt="Illustration de confirmation"/>
+    </div>
+</div>
