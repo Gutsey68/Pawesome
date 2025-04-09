@@ -65,7 +65,50 @@
     width: 100%;
     display: flex;
     justify-content: center;
+    align-items: flex-start;
+}
+
+.img-block-bg {
+    display: block;
+    background-color: var(--color-primary-5);
+    width: 100%;
+    height: 100%;
+    max-height: 900px;
+    padding: 60px;
+    margin-right: var(--space-12);
+    border-radius: 50px;
+    background-image: url("./svg/paw-print.svg");
+    background-repeat: no-repeat;
+    background-position: center;
+}
+
+.img-block-bg img {
+    flex-direction: column;
+    justify-content: center;
+    height: 70%;
+    width: 600px;
+}
+
+.img-block-bg p {
+    font-size: var(--font-size-4xl);
+}
+
+.img-block-bg strong {
+    font-size: var(--font-size-5xl);
+    font-weight: var(--font-weight-bold);
+}
+
+.img-div {
+    display: flex;
+    justify-content: center;
     align-items: center;
+    transform: translateX(10%) !important;
+}
+
+.img-div img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
 }
 
 .forgot-div {
@@ -79,6 +122,7 @@
         flex-direction: column;
         height: auto;
         min-height: 100%;
+        width: 100%;
     }
 
     .img-block {

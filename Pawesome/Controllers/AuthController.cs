@@ -85,7 +85,6 @@ public class AuthController : Controller
             return View(model);
 
         var result = await _authService.LoginUserAsync(model.Email, model.Password, model.RememberMe);
-        
         if (result.Succeeded)
             return RedirectToAction("Index", "Home");
         
