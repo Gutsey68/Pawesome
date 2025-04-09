@@ -1,0 +1,16 @@
+﻿@model PetCartLandingViewModel
+
+<div class="card">
+    <img src="@Model.ImageUrl" alt="@Model.AnimalName" class="card-image" />
+    <div class="card-content">
+        <div class="card-header">
+            <div class="paw-icon">
+            <img src="~/svg/lucide/paw-print.svg" alt="Paw Icon"/>
+            </div>
+            <h2 class="card-title">@Model.AnimalName <span class="card-type">@Model.AnimalType</span></h2>
+        </div>
+        <p class="card-location">📍 @Model.City, @Model.Country</p>
+        <p class="card-description">@Model.Description</p>
+    </div>
+</div>
+

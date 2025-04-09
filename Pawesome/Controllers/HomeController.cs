@@ -26,7 +26,20 @@ public class HomeController : Controller
     /// <returns>The index view</returns>
     public IActionResult Index()
     {
-        return View();
+        var cardList = new List<PetCartLandingViewModel>
+        {
+            new PetCartLandingViewModel
+            {
+                ImageUrl = "/images/landing/cat.png",
+                AnimalName = "Pumpkin",
+                AnimalType = "Chat",
+                City = "Paris",
+                Country = "France",
+                Description = "Petit chat gentil, mordille pour jouer mais pas agressif"
+            }
+        };
+
+        return View(cardList);
     }
 
     /// <summary>
@@ -47,4 +60,5 @@ public class HomeController : Controller
     {
         return View(new ErrorViewModel { RequestId = Activity.Current?.Id ?? HttpContext.TraceIdentifier });
     }
+    
 }

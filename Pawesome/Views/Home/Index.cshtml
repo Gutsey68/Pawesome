@@ -54,7 +54,17 @@
             </div>
         </div>
         
-        @* Container 2 / Recherche de pet sitter *@
+        @* Container 2 / Défilement des fausses annonces *@
+
+        @model IEnumerable<PetCartLandingViewModel>
+
+        @foreach (var card in Model)
+        {
+            <partial name="Home/_CardPartial" model="card" />
+        }
+
+
+        @* Container 3 / Recherche de pet sitter *@
         <div class="home-page-container">
             <div class="container-img container-l-4">
                 <img alt="dog" src="images/casual-life-3d-man-playing-with-dog-on-the-couch.png"/>
