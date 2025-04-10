@@ -20,7 +20,7 @@
         "ASPNETCORE_ENVIRONMENT": "Development"
       }
     },
-    "HotReload": {
+    "Watch": {
       "commandName": "Executable",
       "workingDirectory": "$(MSBuildProjectDirectory)",
       "executablePath": "dotnet",

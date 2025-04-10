@@ -1,4 +1,5 @@
-﻿@model PetCartLandingViewModel
+﻿@using Pawesome.Helpers
+@model PetCartLandingViewModel
 
 <div class="card">
     <img src="@Model.ImageUrl" alt="@Model.AnimalName" class="card-image" />
@@ -7,9 +8,14 @@
             <div class="paw-icon">
             <img src="~/svg/lucide/paw-print.svg" alt="Paw Icon"/>
             </div>
-            <h2 class="card-title">@Model.AnimalName <span class="card-type">@Model.AnimalType</span></h2>
+            <h2 class="card-title">@Model.AnimalName <span class="card-type" style="background-color: @Model.TagColor; color: @ColorHelper.EnhanceColor(@Model.TagColor, 50)">@Model.AnimalType</span></h2>
         </div>
-        <p class="card-location">📍 @Model.City, @Model.Country</p>
+        <div class="card-location">
+            <div class="location-icon">
+                <img src="~/svg/lucide/map-pin.svg" alt="Paw Icon"/>
+            </div> 
+            <p>@Model.City, @Model.Country</p>
+        </div>
         <p class="card-description">@Model.Description</p>
     </div>
 </div>

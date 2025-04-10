@@ -33,9 +33,32 @@ public class HomeController : Controller
                 ImageUrl = "/images/landing/cat.png",
                 AnimalName = "Pumpkin",
                 AnimalType = "Chat",
+                TagColor = "#FFEFD6",
                 City = "Paris",
                 Country = "France",
                 Description = "Petit chat gentil, mordille pour jouer mais pas agressif"
+            },
+            
+            new PetCartLandingViewModel
+            {
+            ImageUrl = "/images/landing/rabbit.png",
+            AnimalName = "Crakut",
+            AnimalType = "Lapin",
+            TagColor = "#E4FFE3",
+            City = "Strasbourg",
+            Country = "France",
+            Description = "Petit lapin gentil, mordille pour jouer mais pas agressif"
+            },
+            
+            new PetCartLandingViewModel
+            {
+            ImageUrl = "/images/landing/dog.png",
+            AnimalName = "Pumpkin",
+            AnimalType = "Chien",
+            TagColor = "#E6F4FE",
+            City = "Paris",
+            Country = "France",
+            Description = "Chien joueur et super affectueux !"
             }
         };
 
