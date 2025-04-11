@@ -12,6 +12,7 @@
     height: 100%;
     padding: 0 0 var(--space-12) 0;
     background-color: var(--color-primary-3);
+    gap: 12rem;
 }
 
 .pat-background {
@@ -145,7 +146,6 @@
     height: 675px;
     min-height: 675px;
     margin: var(--space-4) var(--space-14) var(--space-4) var(--space-14);
-    margin-top: 215px;
     background-color: var(--color-primary-5);
     border-radius: var(--radius-2xl);
 }
@@ -233,4 +233,21 @@
 
 .icon-button-search-r {
     margin-right: 5px;
+}
+
+/* ====== Section : Container 2 ====== */
+
+.home-page-cards {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    width: 90%;
+    max-width: 1800px;
+    margin-inline: auto;
+    position: relative;
+    height: 500px;
+    margin-top: var(--space-10);
+    overflow: clip;
+    z-index: 5;
+    mask-image: linear-gradient(to right, rgba(0,0,0,0), rgba(0,0,0,1) 10%, rgba(0,0,0,1) 90%, rgba(0,0,0,0));
 }

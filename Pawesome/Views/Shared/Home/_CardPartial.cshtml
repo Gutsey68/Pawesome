@@ -1,22 +1,28 @@
 ﻿@using Pawesome.Helpers
-@model PetCartLandingViewModel
+@model PetLandingViewModel
 
-<div class="card">
-    <img src="@Model.ImageUrl" alt="@Model.AnimalName" class="card-image" />
+<div class="card card-@Model.Index">
+    <img src="@Model.Card.ImageLink" alt="@Model.Card.Name" class="card-image" />
     <div class="card-content">
         <div class="card-header">
             <div class="paw-icon">
-            <img src="~/svg/lucide/paw-print.svg" alt="Paw Icon"/>
+                <img src="~/svg/lucide/paw-print.svg" alt="Paw Icon"/>
             </div>
-            <h2 class="card-title">@Model.AnimalName <span class="card-type" style="background-color: @Model.TagColor; color: @ColorHelper.EnhanceColor(@Model.TagColor, 50)">@Model.AnimalType</span></h2>
+            <h2 class="card-title">
+                @Model.Card.Name 
+                <span class="card-type" style="background-color: @Model.Card.TagColor; color: @ColorHelper.EnhanceColor(@Model.Card.TagColor, 50)">
+                    @Model.Card.Species
+                </span>
+            </h2>
         </div>
         <div class="card-location">
             <div class="location-icon">
-                <img src="~/svg/lucide/map-pin.svg" alt="Paw Icon"/>
+                <img src="~/svg/lucide/map-pin.svg" alt="Map Icon"/>
             </div> 
-            <p>@Model.City, @Model.Country</p>
+            <p>@Model.Card.City, @Model.Card.Country</p>
         </div>
-        <p class="card-description">@Model.Description</p>
+        <p class="card-description">@Model.Card.Description</p>
     </div>
 </div>
+
 

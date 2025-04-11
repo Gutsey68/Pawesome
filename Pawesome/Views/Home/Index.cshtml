@@ -4,36 +4,37 @@
 
 <main role="main">
     <div class="home-page">
-        <div class="pat-background"></div>
-        <div class="header">
-            <h1>Trouver le Petsitter parfait <br/>
-                pour votre animal,<br/>
-                de compagnie !
-            </h1>
-            <p>
-                Réserver facilement des services de garde <br/>
-                d’animaux fiable et sécurisés
-            </p>
+        <div>
+            <div class="pat-background"></div>
+            <div class="header">
+                <h1>Trouver le Petsitter parfait <br/>
+                    pour votre animal,<br/>
+                    de compagnie !
+                </h1>
+                <p>
+                    Réserver facilement des services de garde <br/>
+                    d’animaux fiable et sécurisés
+                </p>
+            </div>
+
+            <div class="research-bar">
+                <input type="text" placeholder="Date de début"/>
+                <span class="tiny-separator"></span>
+                <input type="text" placeholder="Date de fin"/>
+                <span class="tiny-separator"></span>
+                <input type="text" placeholder="Lieu"/>
+                <span class="tiny-separator"></span>
+                <input type="text" placeholder="Type d'animal"/>
+
+                <button class="research-button" type="button">
+                    <img alt="Rechercher" class="icon" src="svg/lucide/search.svg"/>
+                </button>
+            </div>
+
+            <div class="home-page-img">
+                <img alt="woman-sitting" src="images/casual-life-3d-young-woman-sitting-on-ground-and-petting-dog.png"/>
+            </div>
         </div>
-
-        <div class="research-bar">
-            <input type="text" placeholder="Date de début"/>
-            <span class="tiny-separator"></span>
-            <input type="text" placeholder="Date de fin"/>
-            <span class="tiny-separator"></span>
-            <input type="text" placeholder="Lieu"/>
-            <span class="tiny-separator"></span>
-            <input type="text" placeholder="Type d'animal"/>
-
-            <button class="research-button" type="button">
-                <img alt="Rechercher" class="icon" src="svg/lucide/search.svg"/>
-            </button>
-        </div>
-
-        <div class="home-page-img">
-            <img alt="woman-sitting" src="images/casual-life-3d-young-woman-sitting-on-ground-and-petting-dog.png"/>
-        </div>
-
         @* Container 1 / Recherche de petsitting *@
         <div class="home-page-container">
             <div class="container-paragraph container-l-10">
@@ -53,17 +54,27 @@
                 <img alt="dog" src="images/3d-casual-life-young-man-sitting-in-armchair-with-cat-next-to-him.png"/>
             </div>
         </div>
-        
-        @* Container 2 / Défilement des fausses annonces *@
 
+        @* Container 2 / Défilement des fausses annonces *@
         @model IEnumerable<PetCartLandingViewModel>
 
-        @foreach (var card in Model)
-        {
-            <partial name="Home/_CardPartial" model="card" />
-        }
+        <div class="home-page-cards">
+            @{
+                int index = 1;
+            }
+            @foreach (var card in Model)
+            {
+                var viewModel = new PetLandingViewModel
+                {
+                    Card = card,
+                    Index = index
+                };
 
-
+                <partial name="Home/_CardPartial" model="viewModel" />
+                index++;
+            }
+        </div>
+        
         @* Container 3 / Recherche de pet sitter *@
         <div class="home-page-container">
             <div class="container-img container-l-4">
