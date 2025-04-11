@@ -1,0 +1,81 @@
+@model Pawesome.Models.DTOs.PetSittingRequestDto
+@{
+    ViewData["Title"] = "Demande de pet sitting";
+}
+
+<div class="container mt-4">
+    <div class="card">
+        <div class="card-header">
+            <h1>Demande de pet sitting</h1>
+        </div>
+        <div class="card-body">
+            <form asp-action="CreateRequest" method="post">
+                <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+                
+                <div class="mb-3">
+                    <label asp-for="StartDate" class="form-label">Date de début</label>
+                    <input asp-for="StartDate" class="form-control" type="date" />
+                    <span asp-validation-for="StartDate" class="text-danger"></span>
+                </div>
+                
+                <div class="mb-3">
+                    <label asp-for="EndDate" class="form-label">Date de fin</label>
+                    <input asp-for="EndDate" class="form-control" type="date" />
+                    <span asp-validation-for="EndDate" class="text-danger"></span>
+                </div>
+                
+                <div class="mb-3">
+                    <label asp-for="Amount" class="form-label">Prix proposé</label>
+                    <input asp-for="Amount" class="form-control" type="number" step="0.01" />
+                    <span asp-validation-for="Amount" class="text-danger"></span>
+                </div>
+                
+                <div class="mb-3">
+                    <label class="form-label">Animaux à garder</label>
+                    @if (ViewBag.Pets != null && ViewBag.Pets.Count > 0)
+                    {
+                        <div class="row row-cols-1 row-cols-sm-2 row-cols-md-3 g-3">
+                            @foreach (var pet in ViewBag.Pets)
+                            {
+                                <div class="col">
+                                    <div class="card h-100">
+                                        <div class="card-body">
+                                            <div class="form-check">
+                                                <input class="form-check-input" type="checkbox" name="PetIds" value="@pet.Id" id="pet-@pet.Id">
+                                                <label class="form-check-label d-flex align-items-center" for="pet-@pet.Id">
+                                                    @if (!string.IsNullOrEmpty(pet.Photo))
+                                                    {
+                                                        <img src="@pet.Photo" class="rounded me-2" alt="@pet.Name" style="width: 40px; height: 40px; object-fit: cover;">
+                                                    }
+                                                    <span>@pet.Name (@pet.Species)</span>
+                                                </label>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            }
+                        </div>
+                        <span asp-validation-for="PetIds" class="text-danger"></span>
+                    }
+                    else
+                    {
+                        <div class="alert alert-warning">
+                            Vous n'avez pas encore ajouté d'animaux. <a asp-controller="Pet" asp-action="Create">Ajouter un animal</a>
+                        </div>
+                    }
+                </div>
+                
+                <div class="mb-3">
+                    <label asp-for="AdditionalInformation" class="form-label">Informations supplémentaires</label>
+                    <textarea asp-for="AdditionalInformation" class="form-control" rows="4"></textarea>
+                    <span asp-validation-for="AdditionalInformation" class="text-danger"></span>
+                </div>
+                
+                <div class="mb-3">
+                    <button type="submit" class="btn btn-primary">Publier</button>
+                    <a asp-action="Index" class="btn btn-outline-secondary">Annuler</a>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>

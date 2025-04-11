@@ -12,5 +12,6 @@ public interface IPetService
     Task DeletePetAsync(int id);
     Task<IEnumerable<AnimalTypeViewModel>> GetAnimalTypesAsync();
     Task<UpdatePetDto?> GetPetForEditAsync(int id);
+    Task<List<PetViewModel>> GetUserPets(int userId);
     
 }
