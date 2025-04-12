@@ -1,15 +1,17 @@
 ﻿services:
   reverse-proxy:
     image: traefik:v3.3
-    command: --api.insecure=false --providers.docker
+    command: --configFile=/etc/traefik/traefik.toml --api.insecure=false --providers.docker
     ports:
       - "80:80"
       - "443:443"
     volumes:
       - /var/run/docker.sock:/var/run/docker.sock
       - ./traefik/traefik.toml:/etc/traefik/traefik.toml
-      - ./traefik/acme.json:/acme.json
-
+      - /etc/letsencrypt/live/segau.dipsw-ccicampus.dev:/etc/traefik/certs
+    networks:
+      - pawesome-network
+  
   pawesome:
     image: pawesome
     build:
@@ -17,9 +19,10 @@
       dockerfile: Pawesome/Dockerfile
     labels:
       - "traefik.enable=true"
-      - "traefik.http.routers.pawesome.rule=Host(`pawesome.yourdomain.com`)"
+      - "traefik.http.routers.pawesome.rule=Host(`segau.dipsw-ccicampus.dev`)"
       - "traefik.http.routers.pawesome.entrypoints=websecure"
-      - "traefik.http.routers.pawesome.tls.certresolver=myresolver"
+      - "traefik.http.routers.pawesome.tls=true"
+      - "traefik.http.routers.pawesome.tls.domains[0].main=segau.dipsw-ccicampus.dev"
     networks:
       - pawesome-network
     depends_on:
