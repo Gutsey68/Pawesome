@@ -10,9 +10,9 @@
     width: 350px;
     height: 490px;
     margin-left: 16px;
-    margin-right: 32px; /* Augmentation de l'espace entre chaque carte */
+    margin-right: 32px;
     text-align: start;
-    background-color: #fff;
+    background-color: var(--color-primary-1);
     border-radius: 15px;
     box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
     overflow: hidden;
@@ -71,6 +71,12 @@
     transform: rotate(-180deg);
 }
 
+.paw-icon svg,
+.paw-icon path {
+    stroke: var(--color-primary-12);
+    fill: var(--color-primary-12);
+}
+
 .card-title {
     font-size: var(--font-size-2xl);
     font-weight: var(--font-weight-regular);
@@ -81,7 +87,7 @@
     font-size: var(--font-size-md);
     font-weight: var(--font-weight-medium);
     color: rgb(0, 0, 0, 1);
-    background-color: #FFEFD6;
+    background-color: var(--color-primary-1);
     padding: 2px 6px;
     border-radius: 15px;
 }
@@ -95,11 +101,17 @@
     color: #555;
     margin-bottom: 6px;
 }
-
+    
 .location-icon {
     width: 20px;
     height: 20px;
     margin-right: 4px;
+}
+
+.location-icon svg,
+.location-icon path {
+    stroke: var(--color-primary-12);
+    fill: var(--color-primary-12);
 }
 
 .card-description {

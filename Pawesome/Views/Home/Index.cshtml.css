@@ -27,6 +27,8 @@
     background-size: auto;
     z-index: 5;
     pointer-events: none;
+    mask-image: linear-gradient(to right, rgba(246,238,231,0), rgba(246,238,231,0) 60%, rgb(246, 238, 231) 90%, rgb(246, 238, 231));
+    clip-path: inset(0 0 96.875rem 0);
 }
 
 /* ====== Section : Header ====== */
@@ -72,6 +74,10 @@
     filter: drop-shadow(0px 4px 6px #00000030);
 }
 
+.research-bar-date-start {
+ margin-left: var(--space-2);   
+}
+
 .research-bar input[type=text]::placeholder {
     color: var(--color-primary-12) !important;
 }
@@ -99,6 +105,7 @@
     background-color: var(--color-primary-12);
     border: none;
     cursor: pointer;
+    margin-right: 4px;
 }
 
 .icon {
@@ -237,17 +244,52 @@
 
 /* ====== Section : Container 2 ====== */
 
+.home-page-cards-container {
+    width: 100%;
+    max-width: 1800px;
+    text-align: center;
+}
+
+.home-page-cards-container h1 {
+    color: var(--color-primary-12);
+    font-size: var(--font-size-6xl);
+    font-weight: var(--font-weight-bold);
+}
+
 .home-page-cards {
     display: flex;
     justify-content: center;
     align-items: center;
-    width: 90%;
-    max-width: 1800px;
     margin-inline: auto;
     position: relative;
     height: 500px;
     margin-top: var(--space-10);
+    margin-bottom: var(--space-10);
     overflow: clip;
     z-index: 5;
-    mask-image: linear-gradient(to right, rgba(0,0,0,0), rgba(0,0,0,1) 10%, rgba(0,0,0,1) 90%, rgba(0,0,0,0));
+    mask-image: linear-gradient(to right, rgba(246,238,231,0), rgba(246,238,231,1) 10%, rgba(246,238,231,1) 90%, rgba(246,238,231,0));
+}
+
+/* ====== Section : Container 5 ====== */
+
+.home-page-container-map {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: space-between;
+    max-width: 1800px;
+    height: 900px;
+    min-height: 900px;
+    margin: var(--space-4) var(--space-14) var(--space-4) var(--space-14);
+    background-color: var(--color-primary-5);
+    border-radius: var(--radius-2xl);
+}
+
+.home-page-container-map .container-img img {
+    width: 100%;
+    max-width: 500px;
+    transform: translateY(-6%);
+    object-fit: cover;
+    object-position: center;
+    border-radius: var(--radius-2xl);
 }

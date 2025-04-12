@@ -18,7 +18,7 @@
             </div>
 
             <div class="research-bar">
-                <input type="text" placeholder="Date de début"/>
+                <input type="text" class="research-bar-date-start" placeholder="Date de début"/>
                 <span class="tiny-separator"></span>
                 <input type="text" placeholder="Date de fin"/>
                 <span class="tiny-separator"></span>
@@ -58,26 +58,34 @@
         @* Container 2 / Défilement des fausses annonces *@
         @model IEnumerable<PetCartLandingViewModel>
 
-        <div class="home-page-cards">
-            @{
-                int index = 1;
-            }
-            @foreach (var card in Model)
-            {
-                var viewModel = new PetLandingViewModel
-                {
-                    Card = card,
-                    Index = index
-                };
+        <div class="home-page-cards-container">
+            <h1>Les Bestioles Qui Cartonnent</h1>
+            <div class="home-page-cards">
 
-                <partial name="Home/_CardPartial" model="viewModel" />
-                index++;
-            }
+                @{
+                    int index = 1;
+                }
+                @foreach (var card in Model)
+                {
+                    var viewModel = new PetLandingViewModel
+                    {
+                        Card = card,
+                        Index = index
+                    };
+
+                    <partial name="Home/_CardPartial" model="viewModel"/>
+                    index++;
+                }
+
+                
+            </div>
+            <button type="button" class="home-page-submission">Voir toute les annonce <img alt="Rechercher" class="icon icon-button-search-l" src="svg/lucide/arrow-right.svg"/></button>
+
         </div>
         
         @* Container 3 / Recherche de pet sitter *@
         <div class="home-page-container">
-            <div class="container-img container-l-4">
+            <div class="container-img container-l-10">
                 <img alt="dog" src="images/casual-life-3d-man-playing-with-dog-on-the-couch.png"/>
             </div>
             <div class="container-paragraph container-r-10">
@@ -94,5 +102,21 @@
                 <button type="button" class="home-page-submission"> <img alt="Rechercher" class="icon icon-button-search-r" src="svg/lucide/arrow-right.svg"/> Recherche d’un pet sitter </button>
             </div>
         </div>
-    </div>
+
+        @* Container 5 / Recherche de pet sitter *@
+        <div class="home-page-container-map">
+            <div class="container-paragraph container-r-10">
+                <h1>
+                    Plein d’animaux attendent d’être aimés autour de vous !
+                </h1>
+                <p>
+                    Offrez-leur un foyer rempli de tendresse et recevez en retour un amour inconditionnel.
+                </p>
+
+                <button type="button" class="home-page-submission"> <img alt="Rechercher" class="icon icon-button-search-r" src="svg/lucide/arrow-right.svg"/> Cherchez autour de vous </button>
+            </div>
+            <div class="container-img container-l-4">
+                <img alt="dog" src="images/casual-life-3d-cat-in-box.png"/>
+            </div>
+        </div>
 </main>
