@@ -1,0 +1,43 @@
+@{
+    ViewData["Title"] = "Confirmation d'inscription";
+}
+
+<div>
+    <div>
+        <div>
+            <h1>Vérifiez votre email</h1>
+            <div>
+                <svg xmlns="http://www.w3.org/2000/svg" width="64" height="64" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                    <path d="M22 13V6c0-1.1-.9-2-2-2H4c-1.1 0-2 .9-2 2v12c0 1.1.9 2 2 2h9"></path>
+                    <path d="m22 7-8.97 5.7a1.94 1.94 0 0 1-2.06 0L2 7"></path>
+                    <path d="M16 19h6"></path>
+                    <path d="M19 16v6"></path>
+                </svg>
+            </div>
+        </div>
+        
+        <div>
+            <p>Nous avons envoyé un email de confirmation à votre adresse email.</p>
+            <p>Veuillez vérifier votre boîte de réception et cliquer sur le lien de confirmation pour activer votre compte.</p>
+            
+            <div>
+                <h2>Que faire ensuite ?</h2>
+                <ul>
+                    <li>Vérifiez votre boîte de réception principale</li>
+                    <li>Si vous ne trouvez pas l'email, vérifiez votre dossier de spam</li>
+                    <li>L'email peut prendre quelques minutes pour arriver</li>
+                    <li>Cliquez sur le lien dans l'email pour confirmer votre adresse</li>
+                </ul>
+            </div>
+            
+            <div>
+                <a asp-controller="Home" asp-action="Index">Retour à l'accueil</a>
+                <p>Vous n'avez pas reçu l'email ? <a asp-controller="Auth" asp-action="Login">Se connecter</a> ou contacter le support</p>
+            </div>
+        </div>
+    </div>
+    
+    <div>
+        <img src="~/images/casual-life-3d-inbox-with-envelope.png" alt="Email envelope illustration"/>
+    </div>
+</div>

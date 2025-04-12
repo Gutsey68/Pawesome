@@ -1,0 +1,69 @@
+@model List<Pawesome.Models.DTOs.PetSittingAdvertDto>
+@{
+    ViewData["Title"] = "Annonces";
+}
+
+<div class="container mt-4">
+    <div class="d-flex justify-content-between align-items-center mb-4">
+        <h1>Annonces de Pet Sitting</h1>
+        <div>
+            <a asp-action="CreateRequest" class="btn btn-primary me-2">Demander un pet sitter</a>
+            <a asp-action="CreateOffer" class="btn btn-success">Proposer mes services</a>
+        </div>
+    </div>
+
+    <ul class="nav nav-tabs mb-4">
+        <li class="nav-item">
+            <a class="nav-link @(ViewContext.RouteData.Values["isPetSitter"]?.ToString() == "False" ? "active" : "")" 
+               asp-action="Index" asp-route-isPetSitter="false">Demandes</a>
+        </li>
+        <li class="nav-item">
+            <a class="nav-link @(ViewContext.RouteData.Values["isPetSitter"]?.ToString() == "True" ? "active" : "")" 
+               asp-action="Index" asp-route-isPetSitter="true">Offres</a>
+        </li>
+    </ul>
+
+    @if (!Model.Any())
+    {
+        <div class="alert alert-info">
+            Aucune annonce disponible pour le moment
+        </div>
+    }
+    else
+    {
+        <div class="row row-cols-1 row-cols-md-2 row-cols-lg-3 g-4">
+            @foreach (var advert in Model)
+            {
+                <div class="col">
+                    <div class="card h-100">
+                        <div class="card-body">
+                            <h5 class="card-title">
+                                @(advert.IsPetSitter ? "Offre de pet sitting" : "Recherche d'un pet sitter")
+                            </h5>
+                            <h6 class="card-subtitle mb-2 text-muted">
+                                Du @advert.StartDate.ToString("dd/MM/yyyy") au @advert.EndDate.ToString("dd/MM/yyyy")
+                            </h6>
+                            <p class="card-text">
+                                <strong>Prix:</strong> @advert.Amount.ToString("C")
+                            </p>
+                            <div>
+                                <p>@(advert.Owner != null ? advert.Owner.FullName : "Non spécifié")</p>
+                            </div>
+                            @if (!advert.IsPetSitter && advert.Pets.Any())
+                            {
+                                <p class="card-text">
+                                    <strong>Animaux:</strong>
+                                    @string.Join(", ", advert.Pets.Select(p => p.Name))
+                                </p>
+                            }
+                            <a asp-action="Details" asp-route-id="@advert.Id" class="btn btn-outline-primary">Voir détails</a>
+                        </div>
+                        <div class="card-footer text-muted">
+                            Publiée le @advert.CreatedAt.ToString("dd/MM/yyyy")
+                        </div>
+                    </div>
+                </div>
+            }
+        </div>
+    }
+</div>

@@ -185,4 +185,10 @@ public class PetService : IPetService
     
         return updatePetDto;
     }
+
+    public Task<List<PetViewModel>> GetUserPets(int userId)
+    {
+        return _petRepository.GetPetsByUserIdAsync(userId)
+            .ContinueWith(task => _mapper.Map<List<PetViewModel>>(task.Result));
+    }
 }
