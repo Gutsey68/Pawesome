@@ -2,42 +2,52 @@
 @{
     ViewData["Title"] = "Connexion";
 }
-<div class="login-page">
-    <div class="login-block">
-        <div class="login-header">
-            <h1 class="font-2xl">Connectez vous à votre compte</h1>
-            <p class="font-sm">Entrez votre e-mail ci dessous pour vous connecter</p>
-        </div>
-        <div asp-validation-summary="All"></div>
-        <form asp-controller="Auth" asp-action="Login" method="post">
-            <div class="login-form">
-                <div class="form-group">
-                    <label asp-for="Email">Email :</label>
-                    <input asp-for="Email" type="email"/>
-                    <span asp-validation-for="Email"></span>
-                </div>
-                <div class="form-group">
-                    <div class="forgot-div">
-                        <label asp-for="Password">Mot de passe :</label>
-                        <a class="forgot-link" asp-controller="Auth" asp-action="ForgotPassword">Mot de passe oublié ?</a>
+
+<main role="main">
+    <div class="login-page">
+        <div class="login-block">
+            <div class="login-header">
+                <h1 class="font-2xl">Connectez-vous à votre compte</h1>
+                <p class="font-sm">Entrez votre e-mail ci dessous pour vous connecter</p>
+            </div>
+            <div asp-validation-summary="All"></div>
+            <form asp-controller="Auth" asp-action="Login" method="post">
+                <div class="login-form">
+                    <div class="form-group">
+                        <label asp-for="Email">Email :</label>
+                        <input asp-for="Email" type="email"/>
+                        <span asp-validation-for="Email"></span>
                     </div>
-                    <input asp-for="Password" type="password"/>
-                    <span asp-validation-for="Password"></span>
+                    <div class="form-group">    
+                        <div class="forgot-div">
+                            <label asp-for="Password">Mot de passe :</label>
+                            <a class="underline forgot-link" asp-controller="Auth" asp-action="ForgotPassword">Mot de passe oublié ?</a>
+                        </div>
+                        <input asp-for="Password" type="password"/>
+                        <span asp-validation-for="Password"></span>
+                    </div>
+                    <div class="form-label">
+                        <label>
+                            <input class="checkbox" asp-for="RememberMe" type="checkbox"/>
+                            <span>Se souvenir de moi</span>
+                        </label>
+                    </div>
+                    <button class="button" type="submit">Connexion</button>
+                    <div>
+                        <p>Pas encore de compte ? <a asp-controller="Auth" asp-action="Register">S'inscrire</a></p>
+                    </div>
                 </div>
-                <div class="form-label">
-                    <label>
-                        <input class="checkbox" asp-for="RememberMe" type="checkbox"/>
-                        <span>Se souvenir de moi</span>
-                    </label>
-                </div>
-                <button class="button" type="submit">Connexion</button>
-                <div>
-                    <p>Pas encore de compte ? <a asp-controller="Auth" asp-action="Register">S'inscrire</a></p>
+            </form>
+        </div>
+        <div class="img-block">
+            <div class="img-block-bg">
+                <p>Bienvenue sur <br/> 
+                    <strong>Pawesome</strong>
+                </p>
+                <div class="img-div">
+                    <img src="~/images/casual-life-3d-man-sitting-with-dog-and-cup-of-coffee.png" alt="Young couple with pet"/>
                 </div>
             </div>
-        </form>
+        </div>
     </div>
-    <div class="img-block">
-        <img src="~/images/3d-casual-life-young-couple-with-pet-dogs.png" alt="Young couple with pet"/>
-    </div>
-</div>
+</main>
