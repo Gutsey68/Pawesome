@@ -60,7 +60,7 @@
 
         <div class="home-page-cards-container">
             <h1>Les Bestioles Qui Cartonnent</h1>
-            <div class="home-page-cards">
+            <div class="container">
 
                 @{
                     int index = 1;
@@ -102,21 +102,58 @@
                 <button type="button" class="home-page-submission"> <img alt="Rechercher" class="icon icon-button-search-r" src="svg/lucide/arrow-right.svg"/> Recherche d’un pet sitter </button>
             </div>
         </div>
+        
+        @* Container 4 / Recherche de pet sitter *@
+        <section class="testimonial-section">
+            <h2>Ils ont trouvé leur bonheur 🐾</h2>
+            <div class="testimonials">
+                <div class="testimonial">
+                    <p>« Une expérience parfaite du début à la fin. Mon chat Simba a été choyé comme un roi. »</p>
+                    <span>— Chloé, maîtresse de Simba</span>
+                </div>
+                <div class="testimonial">
+                    <p>« J’étais sceptique au début, mais j’ai trouvé un pet sitter adorable pour mes deux lapins ! »</p>
+                    <span>— Romain & ses boules de poils</span>
+                </div>
+                <div class="testimonial">
+                    <p>« Adopter via Pawesome a été un vrai coup de cœur. Cookie est devenu notre rayon de soleil. »</p>
+                    <span>— Léa, adoptante comblée</span>
+                </div>
+                <div class="testimonial">
+                    <p>« Service réactif, sérieux et humain. Mon chien Max a trouvé sa nounou préférée ! »</p>
+                    <span>— Hugo & Max</span>
+                </div>
+                <div class="testimonial">
+                    <p>« Une communauté bienveillante et une appli hyper intuitive. Je recommande à 100 % ! »</p>
+                    <span>— Sophie, utilisatrice fidèle</span>
+                </div>
+
+            </div>
+        </section>
+
 
         @* Container 5 / Recherche de pet sitter *@
         <div class="home-page-container-map">
-            <div class="container-paragraph container-r-10">
-                <h1>
-                    Plein d’animaux attendent d’être aimés autour de vous !
-                </h1>
-                <p>
-                    Offrez-leur un foyer rempli de tendresse et recevez en retour un amour inconditionnel.
-                </p>
-
-                <button type="button" class="home-page-submission"> <img alt="Rechercher" class="icon icon-button-search-r" src="svg/lucide/arrow-right.svg"/> Cherchez autour de vous </button>
+            <div class="container-left">
+                <div class="map-container">
+                    
+                </div>
             </div>
-            <div class="container-img container-l-4">
-                <img alt="dog" src="images/casual-life-3d-cat-in-box.png"/>
+            <div class="container-right">
+                <div class="container-right-paragraph">
+                    <h1>
+                        Plein d’animaux attendent d’être aimés autour de vous !
+                    </h1>
+                    <p>
+                        Offrez-leur un foyer rempli de tendresse et recevez en retour un amour inconditionnel.
+                    </p>
+
+                    <button type="button" class="home-page-submission"> Cherchez autour de vous<img alt="Rechercher" class="icon icon-button-search-l" src="svg/lucide/radar.svg"/></button>
+                </div>
+                <div class="container-img container-l-4">
+                    <img alt="dog" src="images/casual-life-3d-cat-in-box.png"/>
+                </div>
             </div>
         </div>
+    </div>
 </main>

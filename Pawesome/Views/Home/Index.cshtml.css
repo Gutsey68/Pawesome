@@ -168,14 +168,14 @@
 
 .container-paragraph h1 {
     color: var(--color-primary-12);
-    font-size: var(--font-size-5xl);
+    font-size: var(--font-size-3xl);
     font-weight: var(--font-weight-bold);
 }
 
 .container-paragraph p {
-    font-size: var(--font-size-2xl);
+    font-size: var(--font-size-lg);
     font-weight: var(--font-weight-medium);
-    line-height: 36px;
+    line-height: var(--space-6);
     color: var(--color-primary-11);
 }
 
@@ -244,38 +244,98 @@
 
 /* ====== Section : Container 2 ====== */
 
-.home-page-cards-container {
-    width: 100%;
+.home-page-cards-container{
     max-width: 1800px;
     text-align: center;
 }
 
-.home-page-cards-container h1 {
-    color: var(--color-primary-12);
-    font-size: var(--font-size-6xl);
-    font-weight: var(--font-weight-bold);
+.container {
+    position: relative;
+    width: 100%;
+    height: 500px;
+    display: flex;
+    flex-direction: row;
+    margin: var(--space-8) 0 var(--space-8) 0;
+    border-radius: var(--radius-2xl);
 }
 
-.home-page-cards {
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    margin-inline: auto;
-    position: relative;
-    height: 500px;
-    margin-top: var(--space-10);
-    margin-bottom: var(--space-10);
-    overflow: clip;
-    z-index: 5;
-    mask-image: linear-gradient(to right, rgba(246,238,231,0), rgba(246,238,231,1) 10%, rgba(246,238,231,1) 90%, rgba(246,238,231,0));
+/* ====== Section : Container 4 ====== */
+
+.testimonial-section {
+    text-align: center;
+    padding: 3rem 1rem;
+    background-color: #fff8f1;
+    border-radius: 20px;
+    margin: 3rem 0;
 }
+
+.testimonial-section h2 {
+    margin-bottom: var(--space-8);
+}
+
+.testimonials {
+    display: flex;
+    flex-direction: row;
+    gap: 1.5rem;
+    max-width: 1800px;
+    margin: auto;
+}
+.testimonial {
+    font-style: italic;
+    font-size: 1rem;
+    color: #555;
+}
+.testimonial span {
+    display: block;
+    margin-top: 0.5rem;
+    font-weight: bold;
+    color: #333;
+}
+
 
 /* ====== Section : Container 5 ====== */
 
-.home-page-container-map {
+.container-left {
+    width: 40vw;
+    height: 100%;
+}
+
+.map-container {
+    position: relative;
+    width: calc(100% - var(--space-8) * 2);
+    height: calc(100% - var(--space-8) * 2);
+    margin: var(--space-8) auto;
+    border-radius: var(--radius-2xl);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    background-color: #94ACAA;
+    padding: var(--space-4);
+    box-sizing: border-box;
+}
+
+.container-right {
+    width: 40vw;
+    height: 100%;
     display: flex;
     flex-direction: column;
+    justify-content: center;
     align-items: center;
+}
+
+.container-right-paragraph {
+    display: flex;
+    flex-direction: column;
+    align-items: start;
+    text-align: start;
+    width: 50%;
+    gap: 17px;
+    z-index: 9;
+}
+
+.home-page-container-map {
+    display: flex;
+    flex-direction: row;
     justify-content: space-between;
     max-width: 1800px;
     height: 900px;
@@ -288,8 +348,9 @@
 .home-page-container-map .container-img img {
     width: 100%;
     max-width: 500px;
-    transform: translateY(-6%);
+    transform: translateY(-1%);
     object-fit: cover;
     object-position: center;
     border-radius: var(--radius-2xl);
+    z-index: 10;
 }

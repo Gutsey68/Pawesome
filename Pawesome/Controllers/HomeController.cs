@@ -74,17 +74,6 @@ public class HomeController : Controller
 
             new PetCartLandingViewModel
             {
-                ImageLink = "/images/landing/dog3.png",
-                Name = "Snickers",
-                Species = "Chien",
-                TagColor = "#FFEFD6",
-                City = "Toulouse",
-                Country = "France",
-                Description = "A bavé sur un diplôme. Probablement docteur en bisous."
-            },
-
-            new PetCartLandingViewModel
-            {
                 ImageLink = "/images/landing/cat2.png",
                 Name = "Lady Miaouscar",
                 Species = "Chat",
