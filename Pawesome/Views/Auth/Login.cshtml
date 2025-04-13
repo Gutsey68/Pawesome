@@ -4,11 +4,11 @@
 }
 
 <main role="main">
-    <div class="login-page container">
+    <section class="login-page container">
         <div class="login-block">
             <div class="login-header">
-                <h1 class="font-2xl">Connectez-vous à votre compte</h1>
-                <p class="font-sm">Entrez votre e-mail ci dessous pour vous connecter</p>
+                <h1>Connectez-vous</h1>
+                <p>Entrez votre e-mail ci dessous pour vous connecter à votre compte</p>
             </div>
             <form asp-controller="Auth" asp-action="Login" method="post">
                 <div class="login-form">
@@ -48,7 +48,7 @@
                 </div>
             </div>
         </div>
-    </div>
+    </section>
 </main>
 
 @section Scripts {

@@ -1,0 +1,5 @@
+.forgot-link, .login-link, .login-form div a {
+    font-size: var(--font-size-sm);
+    font-weight: var(--font-weight-medium);
+    color: var(--color-primary-12);
+}
