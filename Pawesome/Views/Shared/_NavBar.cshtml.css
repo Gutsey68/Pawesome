@@ -2,6 +2,7 @@ nav {
     display: flex;
     justify-content: space-between;
     padding: var(--space-4);
+    width: 100%;
 }
 
 nav ul {

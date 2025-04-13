@@ -2,6 +2,12 @@
 // for details on configuring this project to bundle and minify static web assets.
 
 // Write your JavaScript code.
+
+/*
+ * This script handles the theme toggle functionality for dark mode.
+ * It checks the user's preference and applies the appropriate theme.
+ * It also listens for changes in the system's color scheme preference.
+ */
 const themeToggle = document.getElementById('theme-toggle');
 
 function applyTheme(isDark) {

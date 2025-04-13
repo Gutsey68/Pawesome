@@ -19,6 +19,7 @@ public static class ApplicationBuilderExtensions
         }
 
         app.UseHttpsRedirection();
+        app.UseRequestLocalization();
         app.UseStaticFiles();
         app.UseRouting();
         app.UseAuthentication();

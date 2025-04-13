@@ -1,3 +1,5 @@
+using System.Globalization;
+using Microsoft.AspNetCore.Localization;
 using Pawesome.Extensions;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -10,6 +12,17 @@ builder.Services.AddPawesomeDatabase(builder.Configuration)
     .AddPawesomeIdentity()
     .AddPawesomeValidation()
     .AddPawesomeServices();
+
+// Configure localization
+var cultureInfo = new CultureInfo("fr-FR");
+var supportedCultures = new[] { cultureInfo };
+
+builder.Services.Configure<RequestLocalizationOptions>(options =>
+{
+    options.DefaultRequestCulture = new RequestCulture("fr-FR");
+    options.SupportedCultures = supportedCultures;
+    options.SupportedUICultures = supportedCultures;
+});
 
 var app = builder.Build();
 

@@ -16,7 +16,8 @@
 <body>
 <partial name="_NavBar" />
     @RenderBody()
-<partial name="_Footer" />
+    <partial name="_Footer" />
+<script src="~/lib/jquery/dist/jquery.min.js"></script>
 <script src="~/js/site.js" asp-append-version="true"></script>
 @await RenderSectionAsync("Scripts", required: false)
 </body>

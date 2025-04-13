@@ -1,0 +1,15 @@
+﻿<script src="~/lib/jquery-validation/dist/jquery.validate.min.js"></script>
+<script src="~/lib/jquery-validation-unobtrusive/dist/jquery.validate.unobtrusive.min.js"></script>
+<script>
+    (function ($) {
+        $.validator.setDefaults({
+            errorClass: "validation-message",
+            highlight: function(element) {
+                $(element).css("border-color", "#BD2C00");
+            },
+            unhighlight: function(element) {
+                $(element).css("border-color", "");
+            }
+        });
+    }(jQuery));
+</script>

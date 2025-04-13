@@ -5,7 +5,7 @@
       "commandName": "Project",
       "hotReloadEnabled": true,
       "dotnetRunMessages": true,
-      "launchBrowser": true,
+      "launchBrowser": false,
       "applicationUrl": "http://localhost:5159",
       "environmentVariables": {
         "ASPNETCORE_ENVIRONMENT": "Development"
@@ -14,7 +14,7 @@
     "https": {
       "commandName": "Project",
       "dotnetRunMessages": true,
-      "launchBrowser": true,
+      "launchBrowser": false,
       "applicationUrl": "https://localhost:7169;http://localhost:5159",
       "environmentVariables": {
         "ASPNETCORE_ENVIRONMENT": "Development"
@@ -24,7 +24,8 @@
       "commandName": "Executable",
       "workingDirectory": "$(MSBuildProjectDirectory)",
       "executablePath": "dotnet",
-      "commandLineArgs": "watch run debug --launch-profile http"
+      "commandLineArgs": "watch run debug --no-launch-profile",
+      "launchBrowser": false
     }
   }
 }
