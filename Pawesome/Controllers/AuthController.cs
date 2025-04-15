@@ -64,9 +64,9 @@ public class AuthController : Controller
     /// <returns>Redirects to RegisterConfirmation on success, or returns the form with errors</returns>
     [HttpPost]
     [ValidateAntiForgeryToken]
-    public async Task<IActionResult> Register(RegisterDto model)
+    public async Task<IActionResult> Register(RegisterDto model, [FromServices] IValidator<RegisterDto> validator)
     {
-        var validationResult = await _registerValidator.ValidateAsync(model);
+        var validationResult = await validator.ValidateAsync(model);
 
         if (!validationResult.IsValid)
         {
@@ -79,20 +79,12 @@ public class AuthController : Controller
         if (result.Succeeded)
         {
             var user = await _userManager.FindByEmailAsync(model.Email);
-            
+
             if (user == null) return RedirectToAction("Index", "Home");
             
-            try
-            {
-                await SendEmailConfirmation(user);
-                _logger.LogInformation("Confirmation email sent to {Email}", model.Email);
-            }
-            catch (Exception ex)
-            {
-                _logger.LogError(ex, "Error sending confirmation email to {Email}", model.Email);
-            }
+            await SendEmailConfirmation(user);
+            
             return RedirectToAction("RegisterConfirmation");
-
         }
 
         foreach (var error in result.Errors)
@@ -116,11 +108,11 @@ public class AuthController : Controller
         if (user.Email != null)
             await _emailService.SendEmailAsync(
                 user.Email,
-                "Confirm your Pawesome account",
-                $"<h1>Welcome to Pawesome!</h1>" +
-                $"<p>Thank you for registering. Please confirm your account by " +
-                $"<a href='{callbackUrl}'>clicking here</a>.</p>" +
-                $"<p>If you did not create an account on Pawesome, please ignore this email.</p>");
+                "Confirmez votre compte Pawesome",
+                $"<h1>Bienvenue sur Pawesome !</h1>" +
+                $"<p>Merci pour votre inscription. Veuillez confirmer votre compte en " +
+                $"<a href='{callbackUrl}'>cliquant ici</a>.</p>" +
+                $"<p>Si vous n'avez pas créé de compte sur Pawesome, veuillez ignorer cet email.</p>");
     }
 
     /// <summary>
@@ -145,18 +137,15 @@ public class AuthController : Controller
         }
 
         var user = await _userManager.FindByIdAsync(userId);
+        
         if (user == null)
         {
             return NotFound($"Unable to find user with ID '{userId}'.");
         }
 
         var result = await _userManager.ConfirmEmailAsync(user, token);
-        if (result.Succeeded)
-        {
-            return View("ConfirmEmail");
-        }
-
-        return View("Error");
+        
+        return View(result.Succeeded ? "ConfirmEmail" : "Error");
     }
 
     /// <summary>
@@ -173,17 +162,21 @@ public class AuthController : Controller
     /// <returns>Redirects to home page on success, or returns the form with errors</returns>
     [HttpPost]
     [ValidateAntiForgeryToken]
-    public async Task<IActionResult> Login(LoginDto model)
+    public async Task<IActionResult> Login(LoginDto model, [FromServices] IValidator<LoginDto> validator)
     {
-        if (!ModelState.IsValid)
+        var validationResult = await validator.ValidateAsync(model);
+        if (!validationResult.IsValid)
+        {
+            validationResult.AddToModelState(ModelState);
             return View(model);
+        }
 
         var result = await _authService.LoginUserAsync(model.Email, model.Password, model.RememberMe);
-        
+    
         if (result.Succeeded)
             return RedirectToAction("Index", "Home");
 
-        ModelState.AddModelError(string.Empty, "Invalid login attempt");
+        ModelState.AddModelError(string.Empty, "Email ou mot de passe incorrect.");
         return View(model);
     }
 
@@ -215,9 +208,8 @@ public class AuthController : Controller
     [ValidateAntiForgeryToken]
     public async Task<IActionResult> ForgotPassword(ForgotPasswordDto model, [FromServices] IValidator<ForgotPasswordDto> validator)
     {
-        _logger.LogInformation("Processing password reset request for: {Email}", model.Email);
-
         var validationResult = await validator.ValidateAsync(model);
+        
         if (!validationResult.IsValid)
         {
             validationResult.AddToModelState(ModelState);
@@ -225,31 +217,23 @@ public class AuthController : Controller
         }
 
         var user = await _userManager.FindByEmailAsync(model.Email);
+        
         if (user == null || !(await _userManager.IsEmailConfirmedAsync(user)))
         {
-            _logger.LogWarning("Failed ForgotPasswordAsync for: {Email} - User non-existent or email not confirmed", model.Email);
             return RedirectToAction("ForgotPasswordConfirmation");
         }
+        
+        var token = await _userManager.GeneratePasswordResetTokenAsync(user);
+        var callbackUrl = Url.Action("ResetPassword", "Auth",
+            new { email = user.Email, code = token }, protocol: Request.Scheme);
 
-        try
-        {
-            var token = await _userManager.GeneratePasswordResetTokenAsync(user);
-            var callbackUrl = Url.Action("ResetPassword", "Auth",
-                new { email = user.Email, code = token }, protocol: Request.Scheme);
+        await _emailService.SendEmailAsync(
+            model.Email,
+            "Réinitialisation de mot de passe",
+            $"<h1>Réinitialisez votre mot de passe</h1>" +
+            $"<p>Veuillez réinitialiser votre mot de passe en <a href='{callbackUrl}'>cliquant ici</a>.</p>" +
+            $"<p>Si vous n'avez pas demandé de réinitialisation de mot de passe, veuillez ignorer cet email.</p>");
 
-            await _emailService.SendEmailAsync(
-                model.Email,
-                "Reset Password",
-                $"<h1>Reset your password</h1>" +
-                $"<p>Please reset your password by <a href='{callbackUrl}'>clicking here</a>.</p>" +
-                $"<p>If you did not request a password reset, please ignore this email.</p>");
-
-            _logger.LogInformation("Password reset email sent to {Email}", model.Email);
-        }
-        catch (Exception ex)
-        {
-            _logger.LogError(ex, "Error sending password reset email to {Email}", model.Email);
-        }
 
         return RedirectToAction("ForgotPasswordConfirmation");
     }
@@ -293,9 +277,9 @@ public class AuthController : Controller
     /// <returns>Redirects to confirmation page on success, or returns the form with errors</returns>
     [HttpPost]
     [ValidateAntiForgeryToken]
-    public async Task<IActionResult> ResetPassword(ResetPasswordDto model)
+    public async Task<IActionResult> ResetPassword(ResetPasswordDto model, [FromServices] IValidator<ResetPasswordDto> validator)
     {
-        var validationResult = await _resetPasswordValidator.ValidateAsync(model);
+        var validationResult = await validator.ValidateAsync(model);
         if (!validationResult.IsValid)
         {
             validationResult.AddToModelState(ModelState);
@@ -311,7 +295,6 @@ public class AuthController : Controller
         var result = await _userManager.ResetPasswordAsync(user, model.Code, model.Password);
         if (result.Succeeded)
         {
-            _logger.LogInformation("Password successfully reset for {Email}", model.Email);
             return RedirectToAction("ResetPasswordConfirmation");
         }
 
@@ -329,54 +312,4 @@ public class AuthController : Controller
     /// <returns>The reset password confirmation view</returns>
     [HttpGet]
     public IActionResult ResetPasswordConfirmation() => View();
-
-    /// <summary>
-    /// Development route to manually confirm a user's email
-    /// </summary>
-    /// <param name="email">The email address to confirm</param>
-    /// <returns>Text confirmation of the operation result</returns>
-    [HttpGet]
-    [Route("/dev-confirm-email")]
-    public async Task<IActionResult> ConfirmEmailDev(string email)
-    {
-        if (string.IsNullOrEmpty(email))
-            return Content("Email not specified");
-
-        var user = await _userManager.FindByEmailAsync(email);
-        if (user == null)
-            return Content("User not found");
-
-        user.EmailConfirmed = true;
-        await _userManager.UpdateAsync(user);
-        _logger.LogInformation("Email manually confirmed for {Email}", email);
-        return Content($"Email confirmed for {email}");
-    }
-
-    /// <summary>
-    /// Test route for email sending functionality
-    /// </summary>
-    /// <param name="email">Optional email address to send the test to</param>
-    /// <returns>Text confirmation of the operation result</returns>
-    [HttpGet]
-    [Route("/test-email")]
-    public async Task<IActionResult> TestEmail(string email = null!)
-    {
-        try
-        {
-            email ??= "test@example.com";
-
-            await _emailService.SendEmailAsync(
-                email,
-                "Test email",
-                "<h1>This is a test</h1><p>If you receive this email, the email service is working correctly.</p>");
-
-            _logger.LogInformation("Test email sent to {Email}", email);
-            return Content($"Test email sent to {email}");
-        }
-        catch (Exception ex)
-        {
-            _logger.LogError(ex, "Error sending test email to {Email}", email);
-            return Content($"Error sending email: {ex.Message}");
-        }
-    }
 }

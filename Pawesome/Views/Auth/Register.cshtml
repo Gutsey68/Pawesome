@@ -24,27 +24,27 @@
                 <div class="register-form">
                     <div class="form-group">
                         <label asp-for="FirstName">Prénom :</label>
-                        <input asp-for="FirstName" type="text"/>
+                        <input asp-for="FirstName" type="text" data-val-required="Le prénom est requis"/>
                         <span class="validation-message" asp-validation-for="FirstName"></span>
                     </div>
                     <div class="form-group">
                         <label asp-for="LastName">Nom :</label>
-                        <input asp-for="LastName" type="text"/>
+                        <input asp-for="LastName" type="text" data-val-required="Le nom est requis"/>
                         <span class="validation-message" asp-validation-for="LastName"></span>
                     </div>
                     <div class="form-group">
                         <label asp-for="Email">Email :</label>
-                        <input asp-for="Email" type="email"/>
+                        <input asp-for="Email" type="email" data-val-required="L'email est requis" data-val-email="Veuillez fournir une adresse électronique valide"/>
                         <span class="validation-message" asp-validation-for="Email"></span>
                     </div>
                     <div class="form-group">
                         <label asp-for="Password">Mot de passe :</label>
-                        <input asp-for="Password" type="password"/>
+                        <input asp-for="Password" type="password" data-val-required="Le mot de passe est requis" data-val-minlength-min="8" data-val-minlength="Le mot de passe doit contenir au moins 8 caractères"/>
                         <span class="validation-message" asp-validation-for="Password"></span>
                     </div>
                     <div class="form-group">
                         <label asp-for="ConfirmPassword">Confirmer le mot de passe :</label>
-                        <input asp-for="ConfirmPassword" type="password"/>
+                        <input asp-for="ConfirmPassword" type="password" data-val-required="La confirmation du mot de passe est requise" data-val-equalto="Les mots de passe ne correspondent pas" data-val-equalto-other="*.Password"/>
                         <span class="validation-message" asp-validation-for="ConfirmPassword"></span>
                     </div>
                     <button class="button" type="submit">S'inscrire</button>
