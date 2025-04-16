@@ -1,4 +1,5 @@
-﻿@{
+﻿@using Pawesome.Models.ViewModels
+@{
     ViewData["Title"] = "Home Page";
 }
 
@@ -56,16 +57,15 @@
         </div>
 
         @* Container 2 / Défilement des fausses annonces *@
-        @model IEnumerable<PetCartLandingViewModel>
+        @*@model PetCartLandingViewModel*@
 
         <div class="home-page-cards-container">
             <h1>Les Bestioles Qui Cartonnent</h1>
-            <div class="container">
-
+            @*<div class="container pet-cards-flex-container">
                 @{
                     int index = 1;
                 }
-                @foreach (var card in Model)
+                @foreach (PetCartLandingViewModel card in Model)
                 {
                     var viewModel = new PetLandingViewModel
                     {
@@ -76,9 +76,7 @@
                     <partial name="Home/_CardPartial" model="viewModel"/>
                     index++;
                 }
-
-                
-            </div>
+            </div>*@
             <button type="button" class="home-page-submission">Voir toute les annonce <img alt="Rechercher" class="icon icon-button-search-l" src="svg/lucide/arrow-right.svg"/></button>
 
         </div>
@@ -104,31 +102,26 @@
         </div>
         
         @* Container 4 / Recherche de pet sitter *@
+        @*@model CommentCardLandingViewModel*@
+        
         <section class="testimonial-section">
-            <h2>Ils ont trouvé leur bonheur 🐾</h2>
-            <div class="testimonials">
-                <div class="testimonial">
-                    <p>« Une expérience parfaite du début à la fin. Mon chat Simba a été choyé comme un roi. »</p>
-                    <span>— Chloé, maîtresse de Simba</span>
-                </div>
-                <div class="testimonial">
-                    <p>« J’étais sceptique au début, mais j’ai trouvé un pet sitter adorable pour mes deux lapins ! »</p>
-                    <span>— Romain & ses boules de poils</span>
-                </div>
-                <div class="testimonial">
-                    <p>« Adopter via Pawesome a été un vrai coup de cœur. Cookie est devenu notre rayon de soleil. »</p>
-                    <span>— Léa, adoptante comblée</span>
-                </div>
-                <div class="testimonial">
-                    <p>« Service réactif, sérieux et humain. Mon chien Max a trouvé sa nounou préférée ! »</p>
-                    <span>— Hugo & Max</span>
-                </div>
-                <div class="testimonial">
-                    <p>« Une communauté bienveillante et une appli hyper intuitive. Je recommande à 100 % ! »</p>
-                    <span>— Sophie, utilisatrice fidèle</span>
-                </div>
+            <h1>Ils ont trouvé leur bonheur</h1>
+            @*<div class="testimonials">
+                @{
+                    int index2 = 1;
+                }
+                @foreach (CommentCardLandingViewModel comment in Model)
+                {
+                    var viewModel = new CommentLandingViewModel()
+                    {
+                        Card = comment,
+                        Index = index2
+                    };
 
-            </div>
+                    <partial name="Home/_CardPartial" model="viewModel"/>
+                    index++;
+                }
+            </div>*@
         </section>
 
 

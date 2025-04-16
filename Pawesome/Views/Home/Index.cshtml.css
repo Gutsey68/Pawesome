@@ -257,6 +257,33 @@
     flex-direction: row;
     margin: var(--space-8) 0 var(--space-8) 0;
     border-radius: var(--radius-2xl);
+    overflow: hidden;
+}
+
+.pet-cards-flex-container {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    gap: var(--space-4);
+}
+
+/* Gestion responsive des cartes */
+@media (max-width: 1200px) {
+    .pet-cards-flex-container > * {
+        flex-basis: calc(33.333% - var(--space-4));
+    }
+}
+
+@media (max-width: 900px) {
+    .pet-cards-flex-container > * {
+        flex-basis: calc(50% - var(--space-4));
+    }
+}
+
+@media (max-width: 600px) {
+    .pet-cards-flex-container > * {
+        flex-basis: 100%;
+    }
 }
 
 /* ====== Section : Container 4 ====== */
@@ -264,32 +291,41 @@
 .testimonial-section {
     text-align: center;
     padding: 3rem 1rem;
-    background-color: #fff8f1;
-    border-radius: 20px;
     margin: 3rem 0;
 }
 
-.testimonial-section h2 {
+.testimonial-section h1 {
     margin-bottom: var(--space-8);
 }
 
 .testimonials {
     display: flex;
-    flex-direction: row;
+    flex-wrap: wrap;
+    justify-content: center;
     gap: 1.5rem;
     max-width: 1800px;
-    margin: auto;
+    height: 240px;
+    margin: var(--space-4) var(--space-14) var(--space-4) var(--space-14);
+    overflow: hidden;
 }
-.testimonial {
-    font-style: italic;
-    font-size: 1rem;
-    color: #555;
+
+/* Gestion responsive des témoignages */
+@media (max-width: 1200px) {
+    .testimonials {
+        gap: var(--space-3);
+    }
 }
-.testimonial span {
-    display: block;
-    margin-top: 0.5rem;
-    font-weight: bold;
-    color: #333;
+
+@media (max-width: 900px) {
+    .testimonials {
+        gap: var(--space-3);
+    }
+}
+
+@media (max-width: 600px) {
+    .testimonials {
+        margin: var(--space-4) var(--space-4) var(--space-4) var(--space-4);
+    }
 }
 
 
@@ -354,3 +390,4 @@
     border-radius: var(--radius-2xl);
     z-index: 10;
 }
+

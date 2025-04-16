@@ -1,5 +1,4 @@
-﻿namespace Pawesome.Models;
-using Pawesome.Models;
+﻿namespace Pawesome.Models.ViewModels;
 
 public class PetLandingViewModel
 {
