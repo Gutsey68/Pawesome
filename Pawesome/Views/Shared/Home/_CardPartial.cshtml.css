@@ -1,12 +1,5 @@
-﻿@keyframes scrollRight {
-    to{
-        right: -450px;
-    }
-}
-
-.card {
-    position: absolute;
-    right: 100%;
+﻿.card {
+    position: relative;
     width: 350px;
     height: 490px;
     margin-left: 16px;
@@ -17,30 +10,6 @@
     box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
     overflow: hidden;
     z-index: 10;
-    animation: scrollRight;
-    animation-duration: 30s;
-    animation-fill-mode: forwards;
-    animation-timing-function: linear;
-    animation-iteration-count: infinite;
-}
-
-.card-6 {
-    animation-delay: -0s;
-}
-.card-5 {
-    animation-delay: -5s;
-}
-.card-4 {
-    animation-delay: -10s;
-}
-.card-3 {
-    animation-delay: -15s;
-}
-.card-2 {
-    animation-delay: -20s;
-}
-.card-1 {
-    animation-delay: -25s;
 }
 
 .card-image {
@@ -98,7 +67,7 @@
     align-items: center;
     justify-content: center;
     font-size: 0.9em;
-    color: #555;
+    color: var(--color-primary-12);
     margin-bottom: 6px;
 }
     
@@ -115,6 +84,6 @@
 }
 
 .card-description {
-    font-size: 1em;
-    color: #333;
+    font-size: var(--font-size-sm);
+    color: var(--color-primary-12);
 }

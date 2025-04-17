@@ -1,6 +1,7 @@
 using System.Diagnostics;
 using Microsoft.AspNetCore.Mvc;
 using Pawesome.Models;
+using Pawesome.Models.ViewModels;
 
 namespace Pawesome.Controllers;
 
@@ -74,17 +75,6 @@ public class HomeController : Controller
 
             new PetCartLandingViewModel
             {
-                ImageLink = "/images/landing/dog3.png",
-                Name = "Snickers",
-                Species = "Chien",
-                TagColor = "#FFEFD6",
-                City = "Toulouse",
-                Country = "France",
-                Description = "A bavé sur un diplôme. Probablement docteur en bisous."
-            },
-
-            new PetCartLandingViewModel
-            {
                 ImageLink = "/images/landing/cat2.png",
                 Name = "Lady Miaouscar",
                 Species = "Chat",
@@ -95,8 +85,35 @@ public class HomeController : Controller
             }
 
         };
-
-        return View(cardList);
+        
+        var commentList = new List<CommentCardLandingViewModel>
+        {
+            new CommentCardLandingViewModel
+            {
+                Name = "Jean Dupont",
+                AgoMonth = 2,
+                Comment = "Super site ! J'ai trouvé mon compagnon idéal !",
+                StarsNumber = 5,
+                Photo = "/images/landing/guys_1.png",
+            },
+            
+            new CommentCardLandingViewModel
+            {
+                Name = "Marie Curie",
+                AgoMonth = 1,
+                Comment = "Une expérience incroyable ! Mon chat est devenu une star !",
+                StarsNumber = 5,
+                Photo = "/images/landing/girl_1.png",
+            }
+        };
+        
+        var model = new LandingPageViewModel()
+        {
+            PetCards = cardList,
+            CommentCards = commentList
+        };
+        
+        return View(model);
     }
 
     /// <summary>

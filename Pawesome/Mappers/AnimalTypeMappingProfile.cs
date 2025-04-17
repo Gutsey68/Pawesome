@@ -1,0 +1,15 @@
+using AutoMapper;
+using Pawesome.Models;
+using Pawesome.Models.DTOs;
+using Pawesome.Models.ViewModels;
+
+namespace Pawesome.Mappers;
+
+public class AnimalTypeMappingProfile : Profile
+{
+    public AnimalTypeMappingProfile()
+    {
+        CreateMap<AnimalType, AnimalTypeViewModel>();
+        CreateMap<AnimalType, AnimalTypeDto>();
+    }
+}
