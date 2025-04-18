@@ -1,0 +1,21 @@
+.img-cover {
+    width: 100%;
+    height: 200px;
+    background-color: var(--color-primary-5);
+    border-radius: var(--radius-2xl);
+}
+
+.profile-header {
+    display: flex;
+    align-items: center;
+    gap: var(--space-4);
+}
+
+.profile-header h1 {
+
+}
+
+.avatar-profile {
+    width : var(--space-16);
+    height: var(--space-16);
+}

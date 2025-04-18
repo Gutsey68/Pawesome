@@ -2,7 +2,27 @@
 @{
     ViewData["Title"] = "Mon Profil";
 }
-<h1>Mon Profil</h1>
+<div class="container">
+    <div class="img-cover">
+    </div>  
+    <div class="profile-header">
+        <div><img class="avatar avatar-profile" src="" alt=""></div>
+        <div>
+            <div>
+                <h1>@Model.FirstName @Model.LastName</h1>
+                @if (Model.IsVerified)
+                {
+                    <p>☑️</p>
+                }
+            </div>
+            <p>@Model.Bio Test parce que j'ai pas de bio</p>
+        </div>
+    </div>
+    <div class="profile-pets">
+        @* Cards de tous mes animaux *@
+    </div>
+</div>
+
 <div>
     <h2>Informations personnelles</h2>
     <dl>
