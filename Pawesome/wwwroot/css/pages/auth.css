@@ -3,3 +3,41 @@
     font-weight: var(--font-weight-medium);
     color: var(--color-primary-12);
 }
+
+.logo {
+    position: absolute;
+    top: var(--space-8);
+    left: var(--space-8);
+}
+
+.auth-theme-toggle {
+    position: absolute;
+    top: var(--space-8);
+    right: var(--space-8);
+}
+
+.auth-theme-toggle {
+    background-color: transparent;
+    border: 1px solid transparent;
+    color: var(--color-primary-12);
+    height: 2rem;
+    width: 2rem;
+    padding: 0;
+    border-radius: var(--radius-full);
+}
+
+.auth-theme-toggle:hover {
+    background-color: var(--color-primary-3);
+}
+
+@media (max-width: 768px) {
+    .logo {
+        top: var(--space-6);
+        left: var(--space-6);
+    }
+    
+    .auth-theme-toggle {
+        top: var(--space-6);
+        right: var(--space-6);
+    }
+}
