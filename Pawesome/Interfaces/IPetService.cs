@@ -1,4 +1,5 @@
 using Pawesome.Models.DTOs;
+using Pawesome.Models.Dtos.Pet;
 using Pawesome.Models.ViewModels;
 
 namespace Pawesome.Interfaces;

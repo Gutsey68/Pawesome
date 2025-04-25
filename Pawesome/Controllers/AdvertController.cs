@@ -4,48 +4,48 @@ using Microsoft.AspNetCore.Mvc;
 using Pawesome.Interfaces;
 using Pawesome.Models;
 using Pawesome.Models.DTOs;
-using Pawesome.Services.Interfaces;
+using Pawesome.Models.Dtos.Advert;
 
 namespace Pawesome.Controllers;
 
 /// <summary>
 /// Controller for managing pet sitting offers and requests
 /// </summary>
-public class PetSittingController : Controller
+public class AdvertController : Controller
 {
-    private readonly IPetSittingService _service;
+    private readonly IAdvertService _advertService;
     private readonly IPetService _petService;
     private readonly IAnimalTypeService _animalTypeService;
     private readonly UserManager<User> _userManager;
 
     /// <summary>
-    /// Initializes a new instance of the PetSittingController
+    /// Initializes a new instance of the AdvertController
     /// </summary>
-    /// <param name="service">Service for pet sitting operations</param>
+    /// <param name="advertService">Service for pet sitting operations</param>
     /// <param name="petService">Service for pet operations</param>
     /// <param name="animalTypeService">Service for animal type operations</param>
     /// <param name="userManager">Identity user manager</param>
-    public PetSittingController(
-        IPetSittingService service,
+    public AdvertController(
+        IAdvertService advertService,
         IPetService petService,
         IAnimalTypeService animalTypeService,
         UserManager<User> userManager)
     {
-        _service = service;
+        _advertService = advertService;
         _petService = petService;
         _animalTypeService = animalTypeService;
         _userManager = userManager;
     }
 
     /// <summary>
-    /// Displays a list of all pet sitting adverts
+    /// Displays a list of all pet-sitting adverts
     /// </summary>
     /// <param name="isPetSitter">If true, shows pet sitting offers; if false, shows pet sitting requests</param>
     /// <returns>View containing a list of adverts</returns>
     [HttpGet]
     public async Task<IActionResult> Index(bool isPetSitter = false)
     {
-        var adverts = await _service.GetAllAdvertsAsync(isPetSitter);
+        var adverts = await _advertService.GetAllAdvertsAsync(isPetSitter);
         return View(adverts);
     }
 
@@ -57,10 +57,13 @@ public class PetSittingController : Controller
     [HttpGet]
     public async Task<IActionResult> Details(int id)
     {
-        var advert = await _service.GetAdvertByIdAsync(id);
+        var advert = await _advertService.GetAdvertByIdAsync(id);
+        
         if (advert == null)
+        {
             return NotFound();
-
+        }
+        
         return View(advert);
     }
 
@@ -73,13 +76,15 @@ public class PetSittingController : Controller
     public async Task<IActionResult> CreateRequest()
     {
         var user = await _userManager.GetUserAsync(User);
+        
         if (user == null)
+        {
             return Challenge();
-
+        }
+        
         var pets = await _petService.GetUserPets(user.Id);
-
         ViewBag.Pets = pets;
-
+        
         return View(new PetSittingRequestDto());
     }
 
@@ -95,20 +100,26 @@ public class PetSittingController : Controller
         if (!ModelState.IsValid)
         {
             var user = await _userManager.GetUserAsync(User);
-            if (user == null)
-                return Challenge();
 
+            if (user == null)
+            {
+                return Challenge();
+            }
+            
             var pets = await _petService.GetUserPets(user.Id);
             ViewBag.Pets = pets;
+            
             return View(dto);
         }
 
         var existingUser = await _userManager.GetUserAsync(User);
+
         if (existingUser == null)
+        {
             return Challenge();
-
-        var result = await _service.CreatePetSittingRequestAsync(dto, existingUser.Id);
-
+        }
+        
+        var result = await _advertService.CreatePetSittingRequestAsync(dto, existingUser.Id);
         return RedirectToAction(nameof(Details), new { id = result.Id });
     }
 
@@ -139,14 +150,17 @@ public class PetSittingController : Controller
         {
             var animalTypes = await _animalTypeService.GetAllAnimalTypesAsync();
             ViewBag.AnimalTypes = animalTypes;
+            
             return View(dto);
         }
 
         var user = await _userManager.GetUserAsync(User);
         if (user == null)
+        {
             return Challenge();
-
-        var result = await _service.CreatePetSittingOfferAsync(dto, user.Id);
+        }
+        
+        var result = await _advertService.CreatePetSittingOfferAsync(dto, user.Id);
 
         return RedirectToAction(nameof(Details), new { id = result.Id });
     }
@@ -161,10 +175,12 @@ public class PetSittingController : Controller
     [HttpPost]
     public async Task<IActionResult> UpdateStatus(int advertId, string status)
     {
-        var result = await _service.UpdateAdvertStatusAsync(advertId, status);
+        var result = await _advertService.UpdateAdvertStatusAsync(advertId, status);
 
         if (!result)
+        {
             return NotFound();
+        }
 
         return RedirectToAction(nameof(Details), new { id = advertId });
     }
@@ -178,10 +194,14 @@ public class PetSittingController : Controller
     public async Task<IActionResult> MyAdverts()
     {
         var user = await _userManager.GetUserAsync(User);
+        
         if (user == null)
+        {
             return Challenge();
-
-        var adverts = await _service.GetUserAdvertsAsync(user.Id);
+        }
+        
+        var adverts = await _advertService.GetUserAdvertsAsync(user.Id);
+        
         return View(adverts);
     }
 }

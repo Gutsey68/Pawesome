@@ -8,7 +8,6 @@ using Pawesome.Models;
 using Pawesome.Models.DTOs;
 using Pawesome.Repositories;
 using Pawesome.Services;
-using Pawesome.Services.Interfaces;
 using Pawesome.Validators;
 
 namespace Pawesome.Extensions;
@@ -98,14 +97,14 @@ public static class ServiceCollectionExtensions
         services.AddScoped<IUserRepository, UserRepository>();
         services.AddScoped<IPetRepository, PetRepository>();
         services.AddScoped<IAnimalTypeRepository, AnimalTypeRepository>();
-        services.AddScoped<IPetSittingRepository, PetSittingRepository>();
+        services.AddScoped<IAdvertRepository, AdvertRepository>();
         
         // Register services
         services.AddScoped<IAuthService, AuthService>();
         services.AddScoped<IProfileService, ProfileService>();
         services.AddScoped<IPetService, PetService>();
         services.AddScoped<IEmailService, EmailService>();
-        services.AddScoped<IPetSittingService, PetSittingService>();
+        services.AddScoped<IAdvertService, AdvertService>();
         services.AddScoped<IAnimalTypeService, AnimalTypeService>();
         
         // Register AutoMapper

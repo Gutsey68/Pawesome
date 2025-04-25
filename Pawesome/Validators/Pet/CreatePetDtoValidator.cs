@@ -1,7 +1,7 @@
 using FluentValidation;
-using Pawesome.Models.DTOs;
+using Pawesome.Models.Dtos.Pet;
 
-namespace Pawesome.Validators;
+namespace Pawesome.Validators.Pet;
 
 public class CreatePetDtoValidator : AbstractValidator<CreatePetDto>
 {

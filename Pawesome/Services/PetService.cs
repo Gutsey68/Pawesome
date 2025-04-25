@@ -2,6 +2,7 @@ using AutoMapper;
 using Pawesome.Interfaces;
 using Pawesome.Models;
 using Pawesome.Models.DTOs;
+using Pawesome.Models.Dtos.Pet;
 using Pawesome.Models.ViewModels;
 
 namespace Pawesome.Services;
@@ -39,6 +40,7 @@ public class PetService : IPetService
     public async Task<IEnumerable<PetViewModel>> GetUserPetsAsync(int userId)
     {
         var pets = await _petRepository.GetPetsByUserIdAsync(userId);
+        
         return _mapper.Map<IEnumerable<PetViewModel>>(pets);
     }
 
@@ -50,6 +52,7 @@ public class PetService : IPetService
     public async Task<PetDetailsViewModel?> GetPetDetailsAsync(int id)
     {
         var pet = await _petRepository.GetPetWithDetailsAsync(id);
+        
         return pet != null ? _mapper.Map<PetDetailsViewModel>(pet) : null;
     }
 
@@ -62,6 +65,7 @@ public class PetService : IPetService
     public async Task<int> CreatePetAsync(CreatePetDto petDto, int userId)
     {
         var pet = _mapper.Map<Pet>(petDto);
+        
         pet.UserId = userId;
         
         if (petDto.Photo != null)
@@ -71,6 +75,7 @@ public class PetService : IPetService
         }
         
         var result = await _petRepository.AddAsync(pet);
+        
         await _petRepository.SaveChangesAsync();
         
         return result.Id;
@@ -105,6 +110,7 @@ public class PetService : IPetService
             }
 
             await _petRepository.UpdateAsync(pet);
+            
             await _petRepository.SaveChangesAsync();
         }
     }
@@ -125,6 +131,7 @@ public class PetService : IPetService
             }
             
             await _petRepository.DeleteAsync(pet);
+            
             await _petRepository.SaveChangesAsync();
         }
     }
@@ -137,11 +144,13 @@ public class PetService : IPetService
     private async Task<string> SavePhotoAsync(IFormFile photo)
     {
         var fileName = $"{Guid.NewGuid()}_{Path.GetFileName(photo.FileName)}";
+        
         var filePath = Path.Combine(_environment.WebRootPath, "images", "pets", fileName);
         
         Directory.CreateDirectory(Path.GetDirectoryName(filePath)!);
 
         await using var stream = new FileStream(filePath, FileMode.Create);
+        
         await photo.CopyToAsync(stream);
 
         return fileName;
@@ -168,6 +177,7 @@ public class PetService : IPetService
     public async Task<IEnumerable<AnimalTypeViewModel>> GetAnimalTypesAsync()
     {
         var animalTypes = await _animalTypeRepository.GetAllAnimalTypesAsync();
+        
         return _mapper.Map<IEnumerable<AnimalTypeViewModel>>(animalTypes);
     }
 
@@ -179,6 +189,7 @@ public class PetService : IPetService
     public async Task<UpdatePetDto?> GetPetForEditAsync(int id)
     {
         var pet = await _petRepository.GetPetWithDetailsAsync(id);
+        
         if (pet == null) return null;
         
         var updatePetDto = _mapper.Map<UpdatePetDto>(pet);

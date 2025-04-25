@@ -67,7 +67,9 @@ public class AuthController : Controller
         }
 
         foreach (var error in result.Errors)
+        {
             ModelState.AddModelError(string.Empty, error.Description);
+        }
 
         return View(model);
     }
@@ -85,6 +87,7 @@ public class AuthController : Controller
             new { userId = user.Id, token = token }, protocol: Request.Scheme);
 
         if (user.Email != null)
+        {
             await _emailService.SendEmailAsync(
                 user.Email,
                 "Confirmez votre compte Pawesome",
@@ -92,6 +95,7 @@ public class AuthController : Controller
                 $"<p>Merci pour votre inscription. Veuillez confirmer votre compte en " +
                 $"<a href='{callbackUrl}'>cliquant ici</a>.</p>" +
                 $"<p>Si vous n'avez pas créé de compte sur Pawesome, veuillez ignorer cet email.</p>");
+        }
     }
 
     /// <summary>
@@ -151,9 +155,12 @@ public class AuthController : Controller
         var result = await _authService.LoginUserAsync(model.Email, model.Password, model.RememberMe);
 
         if (result.Succeeded)
+        {
             return RedirectToAction("Index", "Home");
-
+        }
+        
         ModelState.AddModelError(string.Empty, "Email ou mot de passe incorrect.");
+        
         return View(model);
     }
 
@@ -165,6 +172,7 @@ public class AuthController : Controller
     public async Task<IActionResult> Logout()
     {
         await _authService.LogoutAsync();
+        
         return RedirectToAction("Index", "Home");
     }
 
@@ -197,6 +205,7 @@ public class AuthController : Controller
         }
 
         var token = await _userManager.GeneratePasswordResetTokenAsync(user);
+        
         var callbackUrl = Url.Action("ResetPassword", "Auth",
             new { email = user.Email, code = token }, protocol: Request.Scheme);
 
@@ -257,12 +266,14 @@ public class AuthController : Controller
         }
 
         var user = await _userManager.FindByEmailAsync(model.Email);
+        
         if (user == null)
         {
             return RedirectToAction("ResetPasswordConfirmation");
         }
 
         var result = await _userManager.ResetPasswordAsync(user, model.Code, model.Password);
+        
         if (result.Succeeded)
         {
             return RedirectToAction("ResetPasswordConfirmation");

@@ -1,4 +1,6 @@
-namespace Pawesome.Models.DTOs;
+using Pawesome.Models.DTOs;
+
+namespace Pawesome.Models.Dtos.Advert;
 
 public class PetSittingAdvertDto
 {

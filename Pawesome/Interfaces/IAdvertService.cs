@@ -1,8 +1,9 @@
 using Pawesome.Models.DTOs;
+using Pawesome.Models.Dtos.Advert;
 
-namespace Pawesome.Services.Interfaces;
+namespace Pawesome.Interfaces;
 
-public interface IPetSittingService
+public interface IAdvertService
 {
     Task<List<PetSittingAdvertDto>> GetAllAdvertsAsync(bool isPetSitter = false);
     Task<PetSittingAdvertDto?> GetAdvertByIdAsync(int id);

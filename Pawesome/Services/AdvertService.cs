@@ -2,16 +2,16 @@ using AutoMapper;
 using Pawesome.Interfaces;
 using Pawesome.Models;
 using Pawesome.Models.DTOs;
-using Pawesome.Services.Interfaces;
+using Pawesome.Models.Dtos.Advert;
 
 namespace Pawesome.Services;
 
 /// <summary>
 /// Service handling pet sitting advertisements operations
 /// </summary>
-public class PetSittingService : IPetSittingService
+public class AdvertService : IAdvertService
 {
-    private readonly IPetSittingRepository _repository;
+    private readonly IAdvertRepository _repository;
     private readonly IMapper _mapper;
 
     /// <summary>
@@ -19,7 +19,7 @@ public class PetSittingService : IPetSittingService
     /// </summary>
     /// <param name="repository">Repository for pet sitting data operations</param>
     /// <param name="mapper">AutoMapper instance for object mapping</param>
-    public PetSittingService(IPetSittingRepository repository, IMapper mapper)
+    public AdvertService(IAdvertRepository repository, IMapper mapper)
     {
         _repository = repository;
         _mapper = mapper;

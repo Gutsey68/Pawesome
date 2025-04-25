@@ -1,5 +1,4 @@
 using Microsoft.AspNetCore.Identity;
-using Pawesome.Models.DTOs;
 using Pawesome.Models.Dtos.Auth;
 
 namespace Pawesome.Interfaces;

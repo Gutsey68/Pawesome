@@ -7,15 +7,15 @@ namespace Pawesome.Repositories;
 /// <summary>
 /// Repository handling database operations for pet sitting adverts
 /// </summary>
-public class PetSittingRepository : IPetSittingRepository
+public class AdvertRepository : IAdvertRepository
 {
     private readonly AppDbContext _context;
 
     /// <summary>
-    /// Initializes a new instance of the PetSittingRepository
+    /// Initializes a new instance of the AdvertRepository
     /// </summary>
     /// <param name="context">The database context</param>
-    public PetSittingRepository(AppDbContext context)
+    public AdvertRepository(AppDbContext context)
     {
         _context = context;
     }

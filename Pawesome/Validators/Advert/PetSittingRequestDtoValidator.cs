@@ -1,11 +1,11 @@
 using FluentValidation;
-using Pawesome.Models.DTOs;
+using Pawesome.Models.Dtos.Advert;
 
-namespace Pawesome.Validators;
+namespace Pawesome.Validators.Advert;
 
-public class PetSittingOfferValidator : AbstractValidator<PetSittingOfferDto>
+public class PetSittingRequestDtoValidator : AbstractValidator<PetSittingRequestDto>
 {
-    public PetSittingOfferValidator()
+    public PetSittingRequestDtoValidator()
     {
         RuleFor(x => x.StartDate)
             .NotEmpty().WithMessage("La date de début est obligatoire")
@@ -18,8 +18,8 @@ public class PetSittingOfferValidator : AbstractValidator<PetSittingOfferDto>
         RuleFor(x => x.Amount)
             .GreaterThanOrEqualTo(0).WithMessage("Le montant ne peut pas être négatif");
             
-        RuleFor(x => x.AcceptedAnimalTypeIds)
-            .NotEmpty().WithMessage("Vous devez sélectionner au moins un type d'animal");
+        RuleFor(x => x.PetIds)
+            .NotEmpty().WithMessage("Vous devez sélectionner au moins un animal");
     }
     
     private bool BeInFuture(DateTime date)

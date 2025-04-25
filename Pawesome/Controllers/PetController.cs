@@ -5,6 +5,7 @@ using Microsoft.AspNetCore.Mvc.Rendering;
 using Pawesome.Interfaces;
 using Pawesome.Models;
 using Pawesome.Models.DTOs;
+using Pawesome.Models.Dtos.Pet;
 
 namespace Pawesome.Controllers;
 
@@ -35,7 +36,9 @@ public class PetController : Controller
     public async Task<IActionResult> Index()
     {
         var userId = int.Parse(_userManager.GetUserId(User)!);
+        
         var pets = await _petService.GetUserPetsAsync(userId);
+        
         return View(pets);
     }
     
@@ -59,10 +62,11 @@ public class PetController : Controller
     /// <summary>
     /// Displays the pet creation form
     /// </summary>
-    /// <returns>The create pet view with animal types dropdown</returns>
+    /// <returns>The creation pet view with animal types dropdown</returns>
     public async Task<IActionResult> Create()
     {
         await PopulateAnimalTypesDropdown();
+        
         return View();
     }
     
@@ -70,7 +74,7 @@ public class PetController : Controller
     /// Handles the pet creation form submission
     /// </summary>
     /// <param name="petDto">The pet creation data</param>
-    /// <returns>Redirects to details on success, or returns the form with errors</returns>
+    /// <returns>Redirects to details on success or returns the form with errors</returns>
     [HttpPost]
     [ValidateAntiForgeryToken]
     public async Task<IActionResult> Create(CreatePetDto petDto)
@@ -82,7 +86,9 @@ public class PetController : Controller
         }
 
         var userId = int.Parse(_userManager.GetUserId(User)!);
+        
         var petId = await _petService.CreatePetAsync(petDto, userId);
+        
         return RedirectToAction(nameof(Details), new { id = petId });
     }
     
@@ -101,13 +107,16 @@ public class PetController : Controller
         }
 
         var userId = int.Parse(_userManager.GetUserId(User)!);
+        
         var pets = await _petService.GetUserPetsAsync(userId);
+        
         if (pets.All(p => p.Id != id))
         {
             return Forbid();
         }
 
         await PopulateAnimalTypesDropdown(updatePetDto.AnimalTypeId);
+        
         return View(updatePetDto);
     }
     
@@ -127,13 +136,16 @@ public class PetController : Controller
         }
 
         var userId = int.Parse(_userManager.GetUserId(User)!);
+        
         var pets = await _petService.GetUserPetsAsync(userId);
+        
         if (pets.All(p => p.Id != petDto.Id))
         {
             return Forbid();
         }
 
         await _petService.UpdatePetAsync(petDto);
+        
         return RedirectToAction(nameof(Details), new { id = petDto.Id });
     }
     
@@ -152,7 +164,9 @@ public class PetController : Controller
         }
 
         var userId = int.Parse(_userManager.GetUserId(User)!);
+        
         var pets = await _petService.GetUserPetsAsync(userId);
+        
         if (pets.All(p => p.Id != id))
         {
             return Forbid();
@@ -171,13 +185,16 @@ public class PetController : Controller
     public async Task<IActionResult> DeleteConfirmed(int id)
     {
         var userId = int.Parse(_userManager.GetUserId(User)!);
+        
         var pets = await _petService.GetUserPetsAsync(userId);
+        
         if (pets.All(p => p.Id != id))
         {
             return Forbid();
         }
 
         await _petService.DeletePetAsync(id);
+        
         return RedirectToAction(nameof(Index));
     }
 
@@ -188,6 +205,7 @@ public class PetController : Controller
     private async Task PopulateAnimalTypesDropdown(int? selectedAnimalTypeId = null)
     {
         var animalTypes = await _petService.GetAnimalTypesAsync();
+        
         ViewBag.AnimalTypes = new SelectList(animalTypes, "Id", "Name", selectedAnimalTypeId);
     }
 }

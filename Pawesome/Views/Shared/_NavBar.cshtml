@@ -1,4 +1,4 @@
-<nav class="container">
+ <nav class="container">
     <a asp-area="" asp-controller="Home" asp-action="Index">Pawesome</a>
     <div>
         <ul>
@@ -11,6 +11,9 @@
 
             @if (User.Identity?.IsAuthenticated == true)
             {
+                <li>
+                    <a asp-area="" asp-controller="Advert" asp-action="Index">Annonces</a>
+                </li>
                 <li>
                     <a asp-area="" asp-controller="Auth" asp-action="Logout">Se déconnecter</a>
                 </li>

@@ -2,7 +2,7 @@ using Pawesome.Models;
 
 namespace Pawesome.Interfaces;
 
-public interface IPetSittingRepository
+public interface IAdvertRepository
 {
     Task<List<Advert>> GetAllAdvertsAsync(bool isPetSitter = false);
     Task<Advert?> GetAdvertByIdAsync(int id);
