@@ -2,7 +2,7 @@ using AutoMapper;
 using Microsoft.AspNetCore.Identity;
 using Pawesome.Interfaces;
 using Pawesome.Models;
-using Pawesome.Models.DTOs;
+using Pawesome.Models.Dtos.Auth;
 
 namespace Pawesome.Services;
 
@@ -16,7 +16,6 @@ public class AuthService : IAuthService
     private readonly SignInManager<User> _signInManager;
     private readonly IUserRepository _userRepository;
     private readonly IMapper _mapper;
-    private readonly RoleManager<IdentityRole<int>> _roleManager;
 
     /// <summary>
     /// Initializes a new instance of the authentication service.
@@ -25,19 +24,16 @@ public class AuthService : IAuthService
     /// <param name="signInManager">ASP.NET Identity SignInManager for authentication operations.</param>
     /// <param name="userRepository">Repository for user data access.</param>
     /// <param name="mapper">AutoMapper for object mapping between DTOs and entities.</param>
-    /// <param name="roleManager">ASP.NET Identity RoleManager for role operations.</param>
     public AuthService(
         UserManager<User> userManager,
         SignInManager<User> signInManager,
         IUserRepository userRepository,
-        IMapper mapper,
-        RoleManager<IdentityRole<int>> roleManager)
+        IMapper mapper)
     {
         _userManager = userManager;
         _signInManager = signInManager;
         _userRepository = userRepository;
         _mapper = mapper;
-        _roleManager = roleManager;
     }
 
     /// <summary>
@@ -45,7 +41,7 @@ public class AuthService : IAuthService
     /// </summary>
     /// <param name="registerDto">The registration data provided by the user.</param>
     /// <returns>
-    /// An IdentityResult indicating success or failure of the registration process.
+    /// An IdentityResult indicating the success or failure of the registration process.
     /// If successful, the user is automatically signed in.
     /// </returns>
     public async Task<IdentityResult> RegisterUserAsync(RegisterDto registerDto)
@@ -75,11 +71,12 @@ public class AuthService : IAuthService
     /// <param name="password">The password of the user.</param>
     /// <param name="rememberMe">Whether to persist the authentication cookie across browser sessions.</param>
     /// <returns>
-    /// A SignInResult indicating success or failure of the login attempt.
+    /// A SignInResult indicating the success or failure of the login attempt.
     /// </returns>
     public async Task<SignInResult> LoginUserAsync(string email, string password, bool rememberMe)
     {
         var user = await _userManager.FindByEmailAsync(email);
+        
         if (user == null)
         {
             return SignInResult.Failed;

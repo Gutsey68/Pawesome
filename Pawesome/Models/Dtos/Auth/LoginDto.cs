@@ -1,4 +1,4 @@
-namespace Pawesome.Models.DTOs;
+namespace Pawesome.Models.Dtos.Auth;
 
 public class LoginDto
 {

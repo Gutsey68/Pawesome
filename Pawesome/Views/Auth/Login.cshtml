@@ -1,4 +1,4 @@
-@model Pawesome.Models.DTOs.LoginDto
+@model Pawesome.Models.Dtos.Auth.LoginDto
 @{
     ViewData["Title"] = "Connexion";
 }
@@ -23,7 +23,10 @@
                 <div class="login-form">
                     <div class="form-group">
                         <label asp-for="Email">Email :</label>
-                        <input asp-for="Email" type="email" data-val-required="L'adresse e-mail est requise" data-val-email="Veuillez fournir une adresse électronique valide"/>
+                        <input asp-for="Email" type="email" class="form-control"
+                               data-val="true"
+                               data-val-required="L'adresse e-mail est requise"
+                               data-val-email="Veuillez entrer une adresse e-mail valide"/>
                         <span class="validation-message" asp-validation-for="Email"></span>
                     </div>
                     <div class="form-group">
@@ -31,7 +34,9 @@
                             <label asp-for="Password">Mot de passe :</label>
                             <a class="underline forgot-link" asp-controller="Auth" asp-action="ForgotPassword">Mot de passe oublié ?</a>
                         </div>
-                        <input asp-for="Password" type="password" data-val-required="Le mot de passe est requis"/>
+                        <input asp-for="Password" type="password" class="form-control"
+                               data-val="true"
+                               data-val-required="Le mot de passe est requis"/>
                         <span class="validation-message" asp-validation-for="Password"></span>
                     </div>
                     <div class="form-label">

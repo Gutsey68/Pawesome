@@ -1,11 +1,9 @@
-using AutoMapper;
-using FluentValidation;
-using FluentValidation.AspNetCore;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Pawesome.Interfaces;
 using Pawesome.Models;
 using Pawesome.Models.DTOs;
+using Pawesome.Models.Dtos.Auth;
 
 namespace Pawesome.Controllers;
 
@@ -17,10 +15,6 @@ public class AuthController : Controller
     private readonly IAuthService _authService;
     private readonly IEmailService _emailService;
     private readonly UserManager<User> _userManager;
-    private readonly IValidator<RegisterDto> _registerValidator;
-    private readonly IValidator<ResetPasswordDto> _resetPasswordValidator;
-    private readonly IMapper _mapper;
-    private readonly ILogger<AuthController> _logger;
 
     /// <summary>
     /// Initializes a new instance of the AuthController
@@ -28,26 +22,14 @@ public class AuthController : Controller
     /// <param name="authService">The authentication service for handling login and registration</param>
     /// <param name="emailService">The email service for sending notifications</param>
     /// <param name="userManager">The user manager for user operations</param>
-    /// <param name="registerValidator">Validator for registration data</param>
-    /// <param name="resetPasswordValidator">Validator for password reset data</param>
-    /// <param name="mapper">AutoMapper instance for object mapping</param>
-    /// <param name="logger">Logger for recording operations</param>
     public AuthController(
         IAuthService authService,
         IEmailService emailService,
-        UserManager<User> userManager,
-        IValidator<RegisterDto> registerValidator,
-        IValidator<ResetPasswordDto> resetPasswordValidator,
-        IMapper mapper,
-        ILogger<AuthController> logger)
+        UserManager<User> userManager)
     {
         _authService = authService;
         _emailService = emailService;
         _userManager = userManager;
-        _registerValidator = registerValidator;
-        _resetPasswordValidator = resetPasswordValidator;
-        _mapper = mapper;
-        _logger = logger;
     }
 
     /// <summary>
@@ -64,13 +46,10 @@ public class AuthController : Controller
     /// <returns>Redirects to RegisterConfirmation on success, or returns the form with errors</returns>
     [HttpPost]
     [ValidateAntiForgeryToken]
-    public async Task<IActionResult> Register(RegisterDto model, [FromServices] IValidator<RegisterDto> validator)
+    public async Task<IActionResult> Register(RegisterDto model)
     {
-        var validationResult = await validator.ValidateAsync(model);
-
-        if (!validationResult.IsValid)
+        if (!ModelState.IsValid)
         {
-            validationResult.AddToModelState(ModelState);
             return View(model);
         }
 
@@ -81,9 +60,9 @@ public class AuthController : Controller
             var user = await _userManager.FindByEmailAsync(model.Email);
 
             if (user == null) return RedirectToAction("Index", "Home");
-            
+
             await SendEmailConfirmation(user);
-            
+
             return RedirectToAction("RegisterConfirmation");
         }
 
@@ -101,7 +80,7 @@ public class AuthController : Controller
     private async Task SendEmailConfirmation(User user)
     {
         var token = await _userManager.GenerateEmailConfirmationTokenAsync(user);
-        
+
         var callbackUrl = Url.Action("ConfirmEmail", "Auth",
             new { userId = user.Id, token = token }, protocol: Request.Scheme);
 
@@ -137,14 +116,14 @@ public class AuthController : Controller
         }
 
         var user = await _userManager.FindByIdAsync(userId);
-        
+
         if (user == null)
         {
             return NotFound($"Unable to find user with ID '{userId}'.");
         }
 
         var result = await _userManager.ConfirmEmailAsync(user, token);
-        
+
         return View(result.Succeeded ? "ConfirmEmail" : "Error");
     }
 
@@ -159,20 +138,18 @@ public class AuthController : Controller
     /// Handles the login form submission
     /// </summary>
     /// <param name="model">The login credentials</param>
-    /// <returns>Redirects to home page on success, or returns the form with errors</returns>
+    /// <returns>Redirects to the home page on success or returns the form with errors</returns>
     [HttpPost]
     [ValidateAntiForgeryToken]
-    public async Task<IActionResult> Login(LoginDto model, [FromServices] IValidator<LoginDto> validator)
+    public async Task<IActionResult> Login(LoginDto model)
     {
-        var validationResult = await validator.ValidateAsync(model);
-        if (!validationResult.IsValid)
+        if (!ModelState.IsValid)
         {
-            validationResult.AddToModelState(ModelState);
             return View(model);
         }
 
         var result = await _authService.LoginUserAsync(model.Email, model.Password, model.RememberMe);
-    
+
         if (result.Succeeded)
             return RedirectToAction("Index", "Home");
 
@@ -202,27 +179,23 @@ public class AuthController : Controller
     /// Handles the forgot password form submission
     /// </summary>
     /// <param name="model">The email address to send password reset instructions to</param>
-    /// <param name="validator">The validator for the forgot password form</param>
-    /// <returns>Redirects to confirmation page in all cases for security</returns>
+    /// <returns>Redirects to the confirmation page in all cases for security</returns>
     [HttpPost]
     [ValidateAntiForgeryToken]
-    public async Task<IActionResult> ForgotPassword(ForgotPasswordDto model, [FromServices] IValidator<ForgotPasswordDto> validator)
+    public async Task<IActionResult> ForgotPassword(ForgotPasswordDto model)
     {
-        var validationResult = await validator.ValidateAsync(model);
-        
-        if (!validationResult.IsValid)
+        if (!ModelState.IsValid)
         {
-            validationResult.AddToModelState(ModelState);
             return View(model);
         }
 
         var user = await _userManager.FindByEmailAsync(model.Email);
-        
+
         if (user == null || !(await _userManager.IsEmailConfirmedAsync(user)))
         {
             return RedirectToAction("ForgotPasswordConfirmation");
         }
-        
+
         var token = await _userManager.GeneratePasswordResetTokenAsync(user);
         var callbackUrl = Url.Action("ResetPassword", "Auth",
             new { email = user.Email, code = token }, protocol: Request.Scheme);
@@ -233,7 +206,6 @@ public class AuthController : Controller
             $"<h1>Réinitialisez votre mot de passe</h1>" +
             $"<p>Veuillez réinitialiser votre mot de passe en <a href='{callbackUrl}'>cliquant ici</a>.</p>" +
             $"<p>Si vous n'avez pas demandé de réinitialisation de mot de passe, veuillez ignorer cet email.</p>");
-
 
         return RedirectToAction("ForgotPasswordConfirmation");
     }
@@ -274,15 +246,13 @@ public class AuthController : Controller
     /// Handles the reset password form submission
     /// </summary>
     /// <param name="model">The reset password data including the new password</param>
-    /// <returns>Redirects to confirmation page on success, or returns the form with errors</returns>
+    /// <returns>Redirects to the confirmation page on success or returns the form with errors</returns>
     [HttpPost]
     [ValidateAntiForgeryToken]
-    public async Task<IActionResult> ResetPassword(ResetPasswordDto model, [FromServices] IValidator<ResetPasswordDto> validator)
+    public async Task<IActionResult> ResetPassword(ResetPasswordDto model)
     {
-        var validationResult = await validator.ValidateAsync(model);
-        if (!validationResult.IsValid)
+        if (!ModelState.IsValid)
         {
-            validationResult.AddToModelState(ModelState);
             return View(model);
         }
 

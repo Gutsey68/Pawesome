@@ -1,4 +1,4 @@
-@model Pawesome.Models.DTOs.RegisterDto
+@model Pawesome.Models.Dtos.Auth.RegisterDto
 @{
     ViewData["Title"] = "Inscription";
 }
@@ -24,27 +24,52 @@
                 <div class="register-form">
                     <div class="form-group">
                         <label asp-for="FirstName">Prénom :</label>
-                        <input asp-for="FirstName" type="text" data-val-required="Le prénom est requis"/>
+                        <input asp-for="FirstName" type="text" class="form-control" 
+                               data-val="true" 
+                               data-val-required="Le prénom est requis"
+                               data-val-length="Le prénom ne peut pas dépasser 50 caractères"
+                               data-val-length-max="50" />
                         <span class="validation-message" asp-validation-for="FirstName"></span>
                     </div>
+
                     <div class="form-group">
                         <label asp-for="LastName">Nom :</label>
-                        <input asp-for="LastName" type="text" data-val-required="Le nom est requis"/>
+                        <input asp-for="LastName" type="text" class="form-control"
+                               data-val="true" 
+                               data-val-required="Le nom est requis"
+                               data-val-length="Le nom ne peut pas dépasser 50 caractères"
+                               data-val-length-max="50" />
                         <span class="validation-message" asp-validation-for="LastName"></span>
                     </div>
+
                     <div class="form-group">
                         <label asp-for="Email">Email :</label>
-                        <input asp-for="Email" type="email" data-val-required="L'email est requis" data-val-email="Veuillez fournir une adresse électronique valide"/>
+                        <input asp-for="Email" type="email" class="form-control"
+                               data-val="true" 
+                               data-val-required="L'email est requis"
+                               data-val-email="Format d'email invalide" />
                         <span class="validation-message" asp-validation-for="Email"></span>
                     </div>
+
                     <div class="form-group">
                         <label asp-for="Password">Mot de passe :</label>
-                        <input asp-for="Password" type="password" data-val-required="Le mot de passe est requis" data-val-minlength-min="8" data-val-minlength="Le mot de passe doit contenir au moins 8 caractères"/>
+                        <input asp-for="Password" type="password" class="form-control"
+                               data-val="true" 
+                               data-val-required="Le mot de passe est requis"
+                               data-val-minlength="Le mot de passe doit contenir au moins 8 caractères"
+                               data-val-minlength-min="8"
+                               data-val-regex="Le mot de passe doit contenir au moins une lettre majuscule, une lettre minuscule, un chiffre et un caractère spécial"
+                               data-val-regex-pattern="^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[^\da-zA-Z]).{8,}$" />
                         <span class="validation-message" asp-validation-for="Password"></span>
                     </div>
+
                     <div class="form-group">
                         <label asp-for="ConfirmPassword">Confirmer le mot de passe :</label>
-                        <input asp-for="ConfirmPassword" type="password" data-val-required="La confirmation du mot de passe est requise" data-val-equalto="Les mots de passe ne correspondent pas" data-val-equalto-other="*.Password"/>
+                        <input asp-for="ConfirmPassword" type="password" class="form-control"
+                               data-val="true" 
+                               data-val-required="La confirmation du mot de passe est requise"
+                               data-val-equalto="Les mots de passe ne correspondent pas"
+                               data-val-equalto-other="*.Password" />
                         <span class="validation-message" asp-validation-for="ConfirmPassword"></span>
                     </div>
                     <button class="button" type="submit">S'inscrire</button>
@@ -59,4 +84,5 @@
 
 @section Scripts {
     <partial name="_ValidationScriptsPartial" />
+    <script src="~/js/validation-extensions.js"></script>
 }

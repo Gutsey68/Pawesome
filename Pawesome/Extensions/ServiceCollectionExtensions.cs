@@ -1,6 +1,8 @@
 using FluentValidation;
 using Microsoft.AspNetCore.Identity;
+using Microsoft.AspNetCore.Mvc.Infrastructure;
 using Microsoft.EntityFrameworkCore;
+using Pawesome.Infrastructure.Filters;
 using Pawesome.Interfaces;
 using Pawesome.Models;
 using Pawesome.Models.DTOs;
@@ -69,20 +71,19 @@ public static class ServiceCollectionExtensions
     }
     
     /// <summary>
-    /// Registers validators for data validation using FluentValidation
+    /// Registers validators for data validation using FluentValidation and configures automatic validation filter
     /// </summary>
     /// <param name="services">The service collection</param>
     /// <returns>The service collection for chaining</returns>
     public static IServiceCollection AddPawesomeValidation(this IServiceCollection services)
     {
+        // Register all validators from the assembly automatically
         services.AddValidatorsFromAssemblyContaining<Program>();
-        services.AddScoped<IValidator<RegisterDto>, RegisterDtoValidator>();
-        services.AddScoped<IValidator<LoginDto>, LoginDtoValidator>();
-        services.AddScoped<IValidator<CreatePetDto>, CreatePetDtoValidator>();
-        services.AddScoped<IValidator<UpdatePetDto>, UpdatePetDtoValidator>();
-        services.AddScoped<IValidator<ForgotPasswordDto>, ForgotPasswordValidator>();
-        services.AddScoped<IValidator<ResetPasswordDto>, ResetPasswordValidator>();
-        
+    
+        // Register components needed for automatic validation in controllers
+        services.AddScoped<FluentValidationFilter>();
+        services.AddSingleton<ProblemDetailsFactory, DefaultProblemDetailsFactory>();
+
         return services;
     }
     

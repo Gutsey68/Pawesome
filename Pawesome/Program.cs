@@ -1,11 +1,15 @@
 using System.Globalization;
 using Microsoft.AspNetCore.Localization;
 using Pawesome.Extensions;
+using Pawesome.Infrastructure.Filters;
 
 var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
-builder.Services.AddControllersWithViews();
+builder.Services.AddControllersWithViews(options =>
+{
+    options.Filters.AddService<FluentValidationFilter>();
+});
 
 // Configure services using extension methods
 builder.Services.AddPawesomeDatabase(builder.Configuration)

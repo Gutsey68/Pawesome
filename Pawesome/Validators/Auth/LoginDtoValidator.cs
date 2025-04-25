@@ -1,7 +1,8 @@
 using FluentValidation;
 using Pawesome.Models.DTOs;
+using Pawesome.Models.Dtos.Auth;
 
-namespace Pawesome.Validators;
+namespace Pawesome.Validators.Auth;
 
 public class LoginDtoValidator : AbstractValidator<LoginDto>
 {
