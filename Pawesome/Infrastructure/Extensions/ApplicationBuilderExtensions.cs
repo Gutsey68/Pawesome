@@ -1,4 +1,4 @@
-namespace Pawesome.Extensions;
+namespace Pawesome.Infrastructure.Extensions;
 
 /// <summary>
 /// Extension methods for WebApplication to configure the HTTP request pipeline

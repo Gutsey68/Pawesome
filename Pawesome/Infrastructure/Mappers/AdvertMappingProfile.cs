@@ -3,7 +3,7 @@ using Pawesome.Models;
 using Pawesome.Models.DTOs;
 using Pawesome.Models.Dtos.Advert;
 
-namespace Pawesome.Mappers;
+namespace Pawesome.Infrastructure.Mappers;
 
 public class AdvertMappingProfile : Profile
 {

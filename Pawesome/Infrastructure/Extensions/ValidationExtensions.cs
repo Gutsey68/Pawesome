@@ -1,7 +1,7 @@
 using FluentValidation.Results;
 using Microsoft.AspNetCore.Mvc.ModelBinding;
 
-namespace Pawesome.Extensions;
+namespace Pawesome.Infrastructure.Extensions;
 
 /// <summary>
 /// Extension methods for FluentValidation ValidationResult for better integration with ASP.NET Core

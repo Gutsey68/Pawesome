@@ -1,6 +1,6 @@
 using System.Globalization;
 using Microsoft.AspNetCore.Localization;
-using Pawesome.Extensions;
+using Pawesome.Infrastructure.Extensions;
 using Pawesome.Infrastructure.Filters;
 
 var builder = WebApplication.CreateBuilder(args);

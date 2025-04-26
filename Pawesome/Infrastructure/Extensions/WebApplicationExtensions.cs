@@ -3,7 +3,7 @@ using Microsoft.EntityFrameworkCore;
 using Pawesome.Data.Seeding;
 using Pawesome.Models;
 
-namespace Pawesome.Extensions;
+namespace Pawesome.Infrastructure.Extensions;
 
 /// <summary>
 /// Extension methods for WebApplication

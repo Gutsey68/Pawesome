@@ -1,95 +1,94 @@
-# Guide de démarrage du projet Pawesome
+# Pawesome Project Startup Guide
 
-Ce guide vous aidera à configurer le projet MVC Pawesome pour le développement, utilisant Docker uniquement pour la base de données et le service mail.
+This guide will help you set up the Pawesome MVC project for development, using Docker only for the database and mail service.
 
-## Prérequis
+## Prerequisites
 
-- [Docker](https://www.docker.com/products/docker-desktop/) installé et en cours d'exécution
-- [.NET 9 SDK](https://dotnet.microsoft.com/download) installé localement
-- [Git](https://git-scm.com/downloads) pour cloner le dépôt
-- Connaissances de base de .NET Core et Docker
+- [Docker](https://www.docker.com/products/docker-desktop/) installed and running
+- [.NET 9 SDK](https://dotnet.microsoft.com/download) locally installed
+- [Git](https://git-scm.com/downloads) to clone the repository
 
-## Instructions d'installation
+## Installation Instructions
 
-1. Clonez le dépôt :
+1. Clone the repository:
    ```bash
    git clone https://CCICampus@dev.azure.com/CCICampus/CDA-ALT2425-G3/_git/CDA-ALT2425-G3
    cd Pawesome
    ```
 
-2. Vérifiez que Docker fonctionne sur votre machine
+2. Verify that Docker is running on your machine
 
-3. Assurez-vous que le fichier `compose.dev.yaml` est présent dans le répertoire racine du projet
+3. Make sure the `compose.dev.yaml` file is in the project root directory
 
-4. Restaurez les dépendances du projet :
+4. Restore the project dependencies:
    ```bash
    dotnet restore
    ```
 
-## Démarrage du projet
+## Starting the Project
 
-1. Lancez d'abord les conteneurs Docker :
+1. First, launch the Docker containers:
 
 ```bash
 docker compose -f compose.dev.yaml up -d
 ```
 
-2. Naviguez vers le répertoire du projet et exécutez l'application :
+2. Navigate to the project directory and run the application:
 
 ```bash
 cd Pawesome
 dotnet run
 ```
 
-L'application sera disponible à l'adresse http://localhost:5159/
+The application will be available at http://localhost:5159/
 
-## Services Docker
+## Docker Services
 
-### Base de données PostgreSQL
+### PostgreSQL Database
 
-- Hôte : localhost
-- Port : 5434 (mappé depuis 5432 dans le conteneur)
-- Nom d'utilisateur : pawesome
-- Mot de passe : pawesome
-- Nom de la base : pawesome
+- Host: localhost
+- Port: 5434 (mapped from 5432 in the container)
+- Username: pawesome
+- Password: pawesome
+- Database name: pawesome
 
-### MailHog (Service de test d'emails)
+### MailHog (Email Testing Service)
 
-Un service MailHog est inclus pour intercepter et visualiser les emails envoyés par l'application pendant le développement.
+A MailHog service is included to intercept and visualize emails sent by the application during development.
 
-- Interface web : http://localhost:8025/
-- Serveur SMTP : localhost:1025
+- Web interface: http://localhost:8025/
+- SMTP Server: localhost:1025
 
-Tous les emails envoyés par l'application seront capturés par MailHog et visibles dans l'interface web.
+All emails sent by the application will be captured by MailHog and visible in the web interface.
 
-## Architecture du projet
+## Project Architecture
 
-Le projet Pawesome est structuré selon les principes MVC (Model-View-Controller) avec une organisation modulaire :
+The Pawesome project is structured according to MVC (Model-View-Controller) principles with a modular organization:
 
-- **Extensions** - Classes d'extension pour simplifier la configuration :
-   - `ServiceCollectionExtensions.cs` : Configure les services (base de données, identity, validations, etc.)
-   - `ApplicationBuilderExtensions.cs` : Configure le pipeline HTTP
-   - `WebApplicationExtensions.cs` : Gère l'initialisation de la base de données
+- **Extensions** - Extension classes to simplify configuration:
+  - `ServiceCollectionExtensions.cs`: Configures services (database, identity, validations, etc.)
+  - `ApplicationBuilderExtensions.cs`: Configures the HTTP pipeline
+  - `WebApplicationExtensions.cs`: Manages database initialization
 
-- **Architecture en couches** :
-   - **Controllers** : Gèrent les requêtes HTTP
-   - **Models** : Définissent les entités et DTOs
-   - **Views** : Interface utilisateur
-   - **Services** : Logique métier
-   - **Repositories** : Accès aux données
-   - **Validators** : Validation des données avec FluentValidation
+- **Layered Architecture**:
+  - **Controllers**: Handle HTTP requests
+  - **Models**: Define entities and DTOs
+  - **Views**: User interface
+  - **Services**: Business logic
+  - **Repositories**: Data access
+  - **Validators**: Data validation with FluentValidation
 
-## Arrêt de l'application
+## Stopping the Application
 
-Pour arrêter l'application, appuyez sur `Ctrl+C` dans le terminal où elle s'exécute.
+To stop the application, press `Ctrl+C` in the terminal where it's running.
 
-Pour arrêter les conteneurs Docker :
+To stop the Docker containers:
 
 ```bash
 docker compose -f compose.dev.yaml down
 ```
 
-Pour également supprimer les volumes (données de la base) :
+To also remove volumes (database data):
 
 ```bash
 docker compose -f compose.dev.yaml down -v

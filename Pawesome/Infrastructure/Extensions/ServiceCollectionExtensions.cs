@@ -5,12 +5,10 @@ using Microsoft.EntityFrameworkCore;
 using Pawesome.Infrastructure.Filters;
 using Pawesome.Interfaces;
 using Pawesome.Models;
-using Pawesome.Models.DTOs;
 using Pawesome.Repositories;
 using Pawesome.Services;
-using Pawesome.Validators;
 
-namespace Pawesome.Extensions;
+namespace Pawesome.Infrastructure.Extensions;
 
 /// <summary>
 /// Extension methods for IServiceCollection to register application services
