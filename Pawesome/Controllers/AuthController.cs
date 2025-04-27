@@ -2,8 +2,7 @@ using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Pawesome.Interfaces;
 using Pawesome.Models;
-using Pawesome.Models.DTOs;
-using Pawesome.Models.Dtos.Auth;
+using Pawesome.Models.ViewModels.Auth;
 
 namespace Pawesome.Controllers;
 
@@ -46,7 +45,7 @@ public class AuthController : Controller
     /// <returns>Redirects to RegisterConfirmation on success, or returns the form with errors</returns>
     [HttpPost]
     [ValidateAntiForgeryToken]
-    public async Task<IActionResult> Register(RegisterDto model)
+    public async Task<IActionResult> Register(RegisterViewModel model)
     {
         if (!ModelState.IsValid)
         {
@@ -145,7 +144,7 @@ public class AuthController : Controller
     /// <returns>Redirects to the home page on success or returns the form with errors</returns>
     [HttpPost]
     [ValidateAntiForgeryToken]
-    public async Task<IActionResult> Login(LoginDto model)
+    public async Task<IActionResult> Login(LoginViewModel model)
     {
         if (!ModelState.IsValid)
         {
@@ -158,9 +157,9 @@ public class AuthController : Controller
         {
             return RedirectToAction("Index", "Home");
         }
-        
+    
         ModelState.AddModelError(string.Empty, "Email ou mot de passe incorrect.");
-        
+    
         return View(model);
     }
 
@@ -190,7 +189,7 @@ public class AuthController : Controller
     /// <returns>Redirects to the confirmation page in all cases for security</returns>
     [HttpPost]
     [ValidateAntiForgeryToken]
-    public async Task<IActionResult> ForgotPassword(ForgotPasswordDto model)
+    public async Task<IActionResult> ForgotPassword(ForgotPasswordViewModel model)
     {
         if (!ModelState.IsValid)
         {
@@ -205,7 +204,7 @@ public class AuthController : Controller
         }
 
         var token = await _userManager.GeneratePasswordResetTokenAsync(user);
-        
+    
         var callbackUrl = Url.Action("ResetPassword", "Auth",
             new { email = user.Email, code = token }, protocol: Request.Scheme);
 
@@ -240,7 +239,7 @@ public class AuthController : Controller
             return RedirectToAction("Index", "Home");
         }
 
-        var model = new ResetPasswordDto
+        var model = new ResetPasswordViewModel
         {
             Email = email,
             Code = code,
@@ -258,7 +257,7 @@ public class AuthController : Controller
     /// <returns>Redirects to the confirmation page on success or returns the form with errors</returns>
     [HttpPost]
     [ValidateAntiForgeryToken]
-    public async Task<IActionResult> ResetPassword(ResetPasswordDto model)
+    public async Task<IActionResult> ResetPassword(ResetPasswordViewModel model)
     {
         if (!ModelState.IsValid)
         {
@@ -266,14 +265,14 @@ public class AuthController : Controller
         }
 
         var user = await _userManager.FindByEmailAsync(model.Email);
-        
+    
         if (user == null)
         {
             return RedirectToAction("ResetPasswordConfirmation");
         }
 
         var result = await _userManager.ResetPasswordAsync(user, model.Code, model.Password);
-        
+    
         if (result.Succeeded)
         {
             return RedirectToAction("ResetPasswordConfirmation");

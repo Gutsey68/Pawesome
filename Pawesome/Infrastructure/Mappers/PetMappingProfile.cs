@@ -1,8 +1,8 @@
 using AutoMapper;
 using Pawesome.Models;
 using Pawesome.Models.DTOs;
-using Pawesome.Models.Dtos.Pet;
 using Pawesome.Models.ViewModels;
+using Pawesome.Models.ViewModels.Pet;
 
 namespace Pawesome.Infrastructure.Mappers;
 
@@ -17,18 +17,14 @@ public class PetMappingProfile : Profile
             .ForMember(dest => dest.Species, opt => opt.MapFrom(src => src.AnimalType.Name))
             .ForMember(dest => dest.OwnerName, opt => opt.MapFrom(src => $"{src.User.FirstName} {src.User.LastName}"));
 
-        CreateMap<CreatePetDto, Pet>();
+        CreateMap<CreatePetViewModel, Pet>();
 
-        CreateMap<Pet, UpdatePetDto>()
+        CreateMap<Pet, UpdatePetViewModel>()
             .ForMember(dest => dest.ExistingPhoto, opt => opt.MapFrom(src => src.Photo))
             .ForMember(dest => dest.Photo, opt => opt.Ignore());
-
-        CreateMap<UpdatePetDto, Pet>()
-            .ForMember(dest => dest.Photo, opt => opt.Ignore())
-            .ForMember(dest => dest.User, opt => opt.Ignore())
-            .ForMember(dest => dest.AnimalType, opt => opt.Ignore())
-            .ForMember(dest => dest.PetAdverts, opt => opt.Ignore())
-            .ForMember(dest => dest.UpdatedAt, opt => opt.MapFrom(_ => DateTime.UtcNow));
+    
+        CreateMap<UpdatePetViewModel, Pet>()
+            .ForMember(dest => dest.Photo, opt => opt.Ignore());
             
         CreateMap<Pet, PetSimpleDto>()
             .ForMember(dest => dest.AnimalTypeName, opt =>

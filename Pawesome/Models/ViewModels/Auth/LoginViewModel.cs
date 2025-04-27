@@ -1,6 +1,6 @@
-namespace Pawesome.Models.Dtos.Auth;
+namespace Pawesome.Models.ViewModels.Auth;
 
-public class LoginDto
+public class LoginViewModel
 {
     public required string Email { get; set; }
     public required string Password { get; set; }

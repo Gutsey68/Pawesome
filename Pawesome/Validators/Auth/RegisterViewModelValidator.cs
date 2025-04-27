@@ -1,15 +1,14 @@
 using FluentValidation;
 using Pawesome.Interfaces;
-using Pawesome.Models.DTOs;
-using Pawesome.Models.Dtos.Auth;
+using Pawesome.Models.ViewModels.Auth;
 
 namespace Pawesome.Validators.Auth;
 
-public class RegisterDtoValidator : AbstractValidator<RegisterDto>
+public class RegisterViewModelValidator : AbstractValidator<RegisterViewModel>
 {
     private readonly IUserRepository _userRepository;
 
-    public RegisterDtoValidator(IUserRepository userRepository)
+    public RegisterViewModelValidator(IUserRepository userRepository)
     {
         _userRepository = userRepository;
 

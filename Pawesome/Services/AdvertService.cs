@@ -1,8 +1,8 @@
 using AutoMapper;
 using Pawesome.Interfaces;
 using Pawesome.Models;
-using Pawesome.Models.DTOs;
 using Pawesome.Models.Dtos.Advert;
+using Pawesome.Models.ViewModels.Advert;
 
 namespace Pawesome.Services;
 
@@ -53,13 +53,13 @@ public class AdvertService : IAdvertService
     /// <param name="dto">Data for the pet sitting request</param>
     /// <param name="userId">ID of the user creating the request</param>
     /// <returns>The created pet sitting advertisement DTO</returns>
-    public async Task<PetSittingAdvertDto> CreatePetSittingRequestAsync(PetSittingRequestDto dto, int userId)
+    public async Task<PetSittingAdvertDto> CreatePetSittingRequestAsync(PetSittingRequestViewModel model, int userId)
     {
         var advert = new Advert
         {
-            StartDate = dto.StartDate,
-            EndDate = dto.EndDate,
-            Amount = dto.Amount,
+            StartDate = model.StartDate,
+            EndDate = model.EndDate,
+            Amount = model.Amount,
             Status = "pending",
             CreatedAt = DateTime.UtcNow,
             UpdatedAt = DateTime.UtcNow,
@@ -68,7 +68,7 @@ public class AdvertService : IAdvertService
             Payments = new List<Payment>()
         };
 
-        var createdAdvert = await _repository.CreatePetSittingRequestAsync(advert, dto.PetIds);
+        var createdAdvert = await _repository.CreatePetSittingRequestAsync(advert, model.PetIds);
         return _mapper.Map<PetSittingAdvertDto>(createdAdvert);
     }
 
@@ -78,13 +78,13 @@ public class AdvertService : IAdvertService
     /// <param name="dto">Data for the pet sitting offer</param>
     /// <param name="userId">ID of the user creating the offer</param>
     /// <returns>The created pet sitting advertisement DTO</returns>
-    public async Task<PetSittingAdvertDto> CreatePetSittingOfferAsync(PetSittingOfferDto dto, int userId)
+    public async Task<PetSittingAdvertDto> CreatePetSittingOfferAsync(PetSittingOfferViewModel model, int userId)
     {
         var advert = new Advert
         {
-            StartDate = dto.StartDate,
-            EndDate = dto.EndDate,
-            Amount = dto.Amount,
+            StartDate = model.StartDate,
+            EndDate = model.EndDate,
+            Amount = model.Amount,
             Status = "pending_offer",
             CreatedAt = DateTime.UtcNow,
             UpdatedAt = DateTime.UtcNow,
@@ -93,7 +93,7 @@ public class AdvertService : IAdvertService
             Payments = new List<Payment>()
         };
 
-        var createdAdvert = await _repository.CreatePetSittingOfferAsync(advert, dto.AcceptedAnimalTypeIds);
+        var createdAdvert = await _repository.CreatePetSittingOfferAsync(advert, model.AcceptedAnimalTypeIds);
         return _mapper.Map<PetSittingAdvertDto>(createdAdvert);
     }
 

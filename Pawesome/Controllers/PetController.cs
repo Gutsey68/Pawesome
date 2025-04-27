@@ -4,8 +4,7 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Pawesome.Interfaces;
 using Pawesome.Models;
-using Pawesome.Models.DTOs;
-using Pawesome.Models.Dtos.Pet;
+using Pawesome.Models.ViewModels.Pet;
 
 namespace Pawesome.Controllers;
 
@@ -73,25 +72,24 @@ public class PetController : Controller
     /// <summary>
     /// Handles the pet creation form submission
     /// </summary>
-    /// <param name="petDto">The pet creation data</param>
+    /// <param name="model">The pet creation model containing the pet data</param>
     /// <returns>Redirects to details on success or returns the form with errors</returns>
     [HttpPost]
     [ValidateAntiForgeryToken]
-    public async Task<IActionResult> Create(CreatePetDto petDto)
+    public async Task<IActionResult> Create(CreatePetViewModel model)
     {
         if (!ModelState.IsValid)
         {
-            await PopulateAnimalTypesDropdown(petDto.AnimalTypeId);
-            return View(petDto);
+            await PopulateAnimalTypesDropdown(model.AnimalTypeId);
+            return View(model);
         }
 
         var userId = int.Parse(_userManager.GetUserId(User)!);
-        
-        var petId = await _petService.CreatePetAsync(petDto, userId);
-        
+    
+        var petId = await _petService.CreatePetAsync(model, userId);
+    
         return RedirectToAction(nameof(Details), new { id = petId });
     }
-    
     /// <summary>
     /// Displays the pet edit form
     /// </summary>
@@ -99,54 +97,54 @@ public class PetController : Controller
     /// <returns>The edit view, NotFound if pet doesn't exist, or Forbid if user doesn't own the pet</returns>
     public async Task<IActionResult> Edit(int id)
     {
-        var updatePetDto = await _petService.GetPetForEditAsync(id);
+        var updatePetViewModel = await _petService.GetPetForEditAsync(id);
 
-        if (updatePetDto == null)
+        if (updatePetViewModel == null)
         {
             return NotFound();
         }
 
         var userId = int.Parse(_userManager.GetUserId(User)!);
-        
+    
         var pets = await _petService.GetUserPetsAsync(userId);
-        
+    
         if (pets.All(p => p.Id != id))
         {
             return Forbid();
         }
 
-        await PopulateAnimalTypesDropdown(updatePetDto.AnimalTypeId);
-        
-        return View(updatePetDto);
+        await PopulateAnimalTypesDropdown(updatePetViewModel.AnimalTypeId);
+    
+        return View(updatePetViewModel);
     }
     
     /// <summary>
     /// Handles the pet edit form submission
     /// </summary>
-    /// <param name="petDto">The updated pet data</param>
+    /// <param name="petViewModel">The updated pet data</param>
     /// <returns>Redirects to details on success, returns the form with errors, or Forbid if user doesn't own the pet</returns>
     [HttpPost]
     [ValidateAntiForgeryToken]
-    public async Task<IActionResult> Edit(UpdatePetDto petDto)
+    public async Task<IActionResult> Edit(UpdatePetViewModel petViewModel)
     {
         if (!ModelState.IsValid)
         {
-            await PopulateAnimalTypesDropdown(petDto.AnimalTypeId);
-            return View(petDto);
+            await PopulateAnimalTypesDropdown(petViewModel.AnimalTypeId);
+            return View(petViewModel);
         }
 
         var userId = int.Parse(_userManager.GetUserId(User)!);
-        
+    
         var pets = await _petService.GetUserPetsAsync(userId);
-        
-        if (pets.All(p => p.Id != petDto.Id))
+    
+        if (pets.All(p => p.Id != petViewModel.Id))
         {
             return Forbid();
         }
 
-        await _petService.UpdatePetAsync(petDto);
-        
-        return RedirectToAction(nameof(Details), new { id = petDto.Id });
+        await _petService.UpdatePetAsync(petViewModel);
+    
+        return RedirectToAction(nameof(Details), new { id = petViewModel.Id });
     }
     
     /// <summary>

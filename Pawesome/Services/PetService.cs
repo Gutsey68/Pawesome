@@ -1,9 +1,8 @@
 using AutoMapper;
 using Pawesome.Interfaces;
 using Pawesome.Models;
-using Pawesome.Models.DTOs;
-using Pawesome.Models.Dtos.Pet;
 using Pawesome.Models.ViewModels;
+using Pawesome.Models.ViewModels.Pet;
 
 namespace Pawesome.Services;
 
@@ -59,18 +58,18 @@ public class PetService : IPetService
     /// <summary>
     /// Creates a new pet for a user
     /// </summary>
-    /// <param name="petDto">The pet creation data</param>
+    /// <param name="model">The pet creation data</param>
     /// <param name="userId">The ID of the user who owns the pet</param>
     /// <returns>The ID of the created pet</returns>
-    public async Task<int> CreatePetAsync(CreatePetDto petDto, int userId)
+    public async Task<int> CreatePetAsync(CreatePetViewModel model, int userId)
     {
-        var pet = _mapper.Map<Pet>(petDto);
+        var pet = _mapper.Map<Pet>(model);
         
         pet.UserId = userId;
         
-        if (petDto.Photo != null)
+        if (model.Photo != null)
         {
-            var fileName = await SavePhotoAsync(petDto.Photo);
+            var fileName = await SavePhotoAsync(model.Photo);
             pet.Photo = fileName;
         }
         
@@ -84,20 +83,20 @@ public class PetService : IPetService
     /// <summary>
     /// Updates an existing pet's information
     /// </summary>
-    /// <param name="petDto">The updated pet data</param>
-    public async Task UpdatePetAsync(UpdatePetDto petDto)
+    /// <param name="model">The updated pet data</param>
+    public async Task UpdatePetAsync(UpdatePetViewModel model)
     {
-        var pet = await _petRepository.GetByIdAsync(petDto.Id);
+        var pet = await _petRepository.GetByIdAsync(model.Id);
 
         if (pet != null)
         {
             var oldPhoto = pet.Photo;
 
-            _mapper.Map(petDto, pet);
+            _mapper.Map(model, pet);
 
-            if (petDto.Photo != null && petDto.Photo.Length > 0)
+            if (model.Photo != null && model.Photo.Length > 0)
             {
-                pet.Photo = await SavePhotoAsync(petDto.Photo);
+                pet.Photo = await SavePhotoAsync(model.Photo);
 
                 if (!string.IsNullOrEmpty(oldPhoto))
                 {
@@ -110,7 +109,7 @@ public class PetService : IPetService
             }
 
             await _petRepository.UpdateAsync(pet);
-            
+        
             await _petRepository.SaveChangesAsync();
         }
     }
@@ -186,15 +185,16 @@ public class PetService : IPetService
     /// </summary>
     /// <param name="id">The ID of the pet to edit</param>
     /// <returns>Update pet DTO if found, null otherwise</returns>
-    public async Task<UpdatePetDto?> GetPetForEditAsync(int id)
+    public async Task<UpdatePetViewModel?> GetPetForEditAsync(int id)
     {
         var pet = await _petRepository.GetPetWithDetailsAsync(id);
-        
-        if (pet == null) return null;
-        
-        var updatePetDto = _mapper.Map<UpdatePetDto>(pet);
     
-        return updatePetDto;
+        if (pet == null) return null;
+    
+        var updatePetViewModel = _mapper.Map<UpdatePetViewModel>(pet);
+        updatePetViewModel.ExistingPhoto = pet.Photo;
+    
+        return updatePetViewModel;
     }
 
     public Task<List<PetViewModel>> GetUserPets(int userId)

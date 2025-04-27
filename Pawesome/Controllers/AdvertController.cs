@@ -3,8 +3,7 @@ using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Pawesome.Interfaces;
 using Pawesome.Models;
-using Pawesome.Models.DTOs;
-using Pawesome.Models.Dtos.Advert;
+using Pawesome.Models.ViewModels.Advert;
 
 namespace Pawesome.Controllers;
 
@@ -76,16 +75,16 @@ public class AdvertController : Controller
     public async Task<IActionResult> CreateRequest()
     {
         var user = await _userManager.GetUserAsync(User);
-        
+    
         if (user == null)
         {
             return Challenge();
         }
-        
+    
         var pets = await _petService.GetUserPets(user.Id);
         ViewBag.Pets = pets;
-        
-        return View(new PetSittingRequestDto());
+    
+        return View(new PetSittingRequestViewModel());
     }
 
     /// <summary>
@@ -95,7 +94,7 @@ public class AdvertController : Controller
     /// <returns>Redirects to Details if successful, or returns the form with validation errors</returns>
     [Authorize]
     [HttpPost]
-    public async Task<IActionResult> CreateRequest(PetSittingRequestDto dto)
+    public async Task<IActionResult> CreateRequest(PetSittingRequestViewModel viewModel)
     {
         if (!ModelState.IsValid)
         {
@@ -105,11 +104,11 @@ public class AdvertController : Controller
             {
                 return Challenge();
             }
-            
+        
             var pets = await _petService.GetUserPets(user.Id);
             ViewBag.Pets = pets;
-            
-            return View(dto);
+        
+            return View(viewModel);
         }
 
         var existingUser = await _userManager.GetUserAsync(User);
@@ -118,8 +117,8 @@ public class AdvertController : Controller
         {
             return Challenge();
         }
-        
-        var result = await _advertService.CreatePetSittingRequestAsync(dto, existingUser.Id);
+    
+        var result = await _advertService.CreatePetSittingRequestAsync(viewModel, existingUser.Id);
         return RedirectToAction(nameof(Details), new { id = result.Id });
     }
 
@@ -134,7 +133,7 @@ public class AdvertController : Controller
         var animalTypes = await _animalTypeService.GetAllAnimalTypesAsync();
         ViewBag.AnimalTypes = animalTypes;
 
-        return View(new PetSittingOfferDto());
+        return View(new PetSittingOfferViewModel());
     }
 
     /// <summary>
@@ -144,14 +143,14 @@ public class AdvertController : Controller
     /// <returns>Redirects to Details if successful, or returns the form with validation errors</returns>
     [Authorize]
     [HttpPost]
-    public async Task<IActionResult> CreateOffer(PetSittingOfferDto dto)
+    public async Task<IActionResult> CreateOffer(PetSittingOfferViewModel viewModel)
     {
         if (!ModelState.IsValid)
         {
             var animalTypes = await _animalTypeService.GetAllAnimalTypesAsync();
             ViewBag.AnimalTypes = animalTypes;
-            
-            return View(dto);
+        
+            return View(viewModel);
         }
 
         var user = await _userManager.GetUserAsync(User);
@@ -159,8 +158,8 @@ public class AdvertController : Controller
         {
             return Challenge();
         }
-        
-        var result = await _advertService.CreatePetSittingOfferAsync(dto, user.Id);
+    
+        var result = await _advertService.CreatePetSittingOfferAsync(viewModel, user.Id);
 
         return RedirectToAction(nameof(Details), new { id = result.Id });
     }

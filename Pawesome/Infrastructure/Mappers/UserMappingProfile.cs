@@ -1,8 +1,8 @@
 using AutoMapper;
 using Pawesome.Models;
 using Pawesome.Models.DTOs;
-using Pawesome.Models.Dtos.Auth;
 using Pawesome.Models.ViewModels;
+using Pawesome.Models.ViewModels.Auth;
 
 namespace Pawesome.Infrastructure.Mappers;
 
@@ -10,7 +10,7 @@ public class UserMappingProfile : Profile
 {
     public UserMappingProfile()
     {
-        CreateMap<RegisterDto, User>()
+        CreateMap<RegisterViewModel, User>()
             .ForMember(dest => dest.UserName, opt => opt.MapFrom(src => src.Email))
             .ForMember(dest => dest.Email, opt => opt.MapFrom(src => src.Email))
             .ForMember(dest => dest.FirstName, opt => opt.MapFrom(src => src.FirstName))

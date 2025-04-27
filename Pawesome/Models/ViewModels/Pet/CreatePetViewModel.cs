@@ -1,6 +1,6 @@
-namespace Pawesome.Models.Dtos.Pet;
+namespace Pawesome.Models.ViewModels.Pet;
 
-public class CreatePetDto
+public class CreatePetViewModel
 {
     public required string Name { get; set; }
     public string? Breed { get; set; }

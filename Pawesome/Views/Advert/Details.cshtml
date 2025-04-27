@@ -1,17 +1,14 @@
 @model Pawesome.Models.Dtos.Advert.PetSittingAdvertDto
-@{
-    ViewData["Title"] = "Détails de l'annonce";
-}
 
 <div class="container mt-4">
     <div class="card">
         <div class="card-header d-flex justify-content-between align-items-center">
             <h1>@(Model.IsPetSitter ? "Offre de pet sitting" : "Recherche d'un pet sitter")</h1>
-            <span class="badge bg-@(Model.Status == "pending" ? "warning" : 
-                                   (Model.Status == "accepted" ? "success" : 
+            <span class="badge bg-@(Model.Status == "pending" ? "warning" :
+                                   (Model.Status == "accepted" ? "success" :
                                    (Model.Status == "completed" ? "primary" : "danger")))">
-                @(Model.Status == "pending" ? "En attente" : 
-                  (Model.Status == "accepted" ? "Acceptée" : 
+                @(Model.Status == "pending" ? "En attente" :
+                  (Model.Status == "accepted" ? "Acceptée" :
                   (Model.Status == "completed" ? "Terminée" : "Annulée")))
             </span>
         </div>
@@ -20,10 +17,10 @@
                 <div class="col-md-8">
                     <h5>Période</h5>
                     <p>Du @Model.StartDate.ToString("dd/MM/yyyy") au @Model.EndDate.ToString("dd/MM/yyyy")</p>
-                    
+
                     <h5>Prix</h5>
                     <p>@Model.Amount.ToString("C")</p>
-                    
+
                     @if (!Model.IsPetSitter && Model.Pets.Any())
                     {
                         <h5>Animaux à garder</h5>
@@ -45,8 +42,8 @@
                             }
                         </div>
                     }
-                    
-                    @if (Model.IsPetSitter && Model.AcceptedAnimalTypes != null && Model.AcceptedAnimalTypes.Any())
+
+                    @if (Model.IsPetSitter && Model.AcceptedAnimalTypes?.Any() == true)
                     {
                         <h5>Types d'animaux acceptés</h5>
                         <p>
@@ -55,39 +52,42 @@
                     }
                 </div>
                 <div class="col-md-4">
-                    <div class="card">
-                        <div class="card-header">
-                            Propriétaire
-                        </div>
-                        <div class="card-body">
-                            <div class="d-flex align-items-center">
-                                @if (!string.IsNullOrEmpty(Model.Owner.Photo))
-                                {
-                                    <img src="@Model.Owner.Photo" class="rounded-circle me-3" alt="@Model.Owner.FullName" style="width: 60px; height: 60px; object-fit: cover;">
-                                }
-                                else
-                                {
-                                    <div class="rounded-circle bg-secondary me-3 d-flex align-items-center justify-content-center" style="width: 60px; height: 60px;">
-                                        <i class="bi bi-person text-white" style="font-size: 1.5rem;"></i>
-                                    </div>
-                                }
-                                <div>
-                                    <h5 class="mb-0">@Model.Owner.FullName</h5>
-                                    @if (Model.Owner.Rating.HasValue)
+                    @if (Model.Owner != null)
+                    {
+                        <div class="card">
+                            <div class="card-header">
+                                Propriétaire
+                            </div>
+                            <div class="card-body">
+                                <div class="d-flex align-items-center">
+                                    @if (!string.IsNullOrEmpty(Model.Owner.Photo))
                                     {
-                                        <div class="text-warning">
-                                            @for (int i = 1; i <= 5; i++)
-                                            {
-                                                <i class="bi @(i <= Math.Round(Model.Owner.Rating.Value) ? "bi-star-fill" : "bi-star")"></i>
-                                            }
-                                            <span class="ms-1">(@Model.Owner.Rating)</span>
+                                        <img src="@Model.Owner.Photo" class="rounded-circle me-3" alt="@Model.Owner.FullName" style="width: 60px; height: 60px; object-fit: cover;">
+                                    }
+                                    else
+                                    {
+                                        <div class="rounded-circle bg-secondary me-3 d-flex align-items-center justify-content-center" style="width: 60px; height: 60px;">
+                                            <i class="bi bi-person text-white" style="font-size: 1.5rem;"></i>
                                         </div>
                                     }
+                                    <div>
+                                        <h5 class="mb-0">@Model.Owner.FullName</h5>
+                                        @if (Model.Owner.Rating.HasValue)
+                                        {
+                                            <div class="text-warning">
+                                                @for (int i = 1; i <= 5; i++)
+                                                {
+                                                    <i class="bi @(i <= Math.Round((decimal)Model.Owner.Rating.Value) ? "bi-star-fill" : "bi-star")"></i>
+                                                }
+                                                <span class="ms-1">(@Model.Owner.Rating)</span>
+                                            </div>
+                                        }
+                                    </div>
                                 </div>
                             </div>
                         </div>
-                    </div>
-                    
+                    }
+
                     @if (User.Identity != null && User.Identity.IsAuthenticated)
                     {
                         <div class="mt-4">

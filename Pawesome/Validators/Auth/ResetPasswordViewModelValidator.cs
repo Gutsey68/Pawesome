@@ -1,12 +1,11 @@
 using FluentValidation;
-using Pawesome.Models.DTOs;
-using Pawesome.Models.Dtos.Auth;
+using Pawesome.Models.ViewModels.Auth;
 
 namespace Pawesome.Validators.Auth;
 
-public class ResetPasswordDtoValidator : AbstractValidator<ResetPasswordDto>
+public class ResetPasswordViewModelValidator : AbstractValidator<ResetPasswordViewModel>
 {
-    public ResetPasswordDtoValidator()
+    public ResetPasswordViewModelValidator()
     {
         RuleFor(x => x.Email)
             .NotEmpty().WithMessage("L'email est requis")

@@ -2,7 +2,7 @@ using AutoMapper;
 using Microsoft.AspNetCore.Identity;
 using Pawesome.Interfaces;
 using Pawesome.Models;
-using Pawesome.Models.Dtos.Auth;
+using Pawesome.Models.ViewModels.Auth;
 
 namespace Pawesome.Services;
 
@@ -44,16 +44,16 @@ public class AuthService : IAuthService
     /// An IdentityResult indicating the success or failure of the registration process.
     /// If successful, the user is automatically signed in.
     /// </returns>
-    public async Task<IdentityResult> RegisterUserAsync(RegisterDto registerDto)
+    public async Task<IdentityResult> RegisterUserAsync(RegisterViewModel model)
     {
-        if (await _userRepository.EmailExistsAsync(registerDto.Email))
+        if (await _userRepository.EmailExistsAsync(model.Email))
         {
             return IdentityResult.Failed(new IdentityError { Description = "Cet email est déjà utilisé" });
         }
 
-        var user = _mapper.Map<User>(registerDto);
+        var user = _mapper.Map<User>(model);
     
-        var result = await _userManager.CreateAsync(user, registerDto.Password);
+        var result = await _userManager.CreateAsync(user, model.Password);
     
         if (result.Succeeded)
         {

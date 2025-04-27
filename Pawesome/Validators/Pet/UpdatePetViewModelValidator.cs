@@ -1,11 +1,11 @@
 using FluentValidation;
-using Pawesome.Models.Dtos.Pet;
+using Pawesome.Models.ViewModels.Pet;
 
 namespace Pawesome.Validators.Pet;
 
-public class CreatePetDtoValidator : AbstractValidator<CreatePetDto>
+public class UpdatePetViewModelValidator : AbstractValidator<UpdatePetViewModel>
 {
-    public CreatePetDtoValidator()
+    public UpdatePetViewModelValidator()
     {
         RuleFor(p => p.Name)
             .NotEmpty().WithMessage("Le nom de l'animal est requis")
@@ -22,10 +22,10 @@ public class CreatePetDtoValidator : AbstractValidator<CreatePetDto>
             .NotEmpty().WithMessage("Le type d'animal est requis");
 
         RuleFor(p => p.Photo)
-            .Must(photo => photo == null || 
-                           (photo.Length <= 5 * 1024 * 1024 && 
-                            (photo.ContentType == "image/jpeg" || 
-                             photo.ContentType == "image/png" || 
+            .Must(photo => photo == null ||
+                           (photo.Length <= 5 * 1024 * 1024 &&
+                            (photo.ContentType == "image/jpeg" ||
+                             photo.ContentType == "image/png" ||
                              photo.ContentType == "image/jpg")))
             .WithMessage("Le fichier doit être une image (jpg, jpeg, png) de moins de 5 Mo");
     }

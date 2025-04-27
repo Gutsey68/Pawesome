@@ -1,0 +1,48 @@
+.card {
+    border: 1px solid var(--color-primary-4);
+    border-radius: var(--radius-lg);
+    background-color: var(--color-primary-1);
+    box-shadow: var(--shadow-md);
+}
+
+.card-header {
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-3);
+    padding: var(--space-4);
+}
+
+.card-title {
+    font-size: var(--font-size-xl);
+    font-weight: var(--font-weight-bold);
+    line-height: 1.2;
+    letter-spacing: var(--letter-spacing-1);
+}
+
+.card-description {
+    font-size: var(--font-size-sm);
+    color: var(--color-primary-11);
+}
+
+.card-body {
+    position: relative;
+    padding: var(--space-4);
+}
+
+.card-footer {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: var(--space-4);
+}
+
+
+@media (max-width: 768px) {
+    .card {
+        border-radius: var(--radius-md);
+    }
+
+    .card-header, .card-body, .card-footer {
+        padding: var(--space-3);
+    }
+}

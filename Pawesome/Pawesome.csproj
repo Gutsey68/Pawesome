@@ -99,4 +99,8 @@
         <_ContentIncludedByDefault Remove="wwwroot\lib\jquery\LICENSE.txt" />
     </ItemGroup>
 
+    <ItemGroup>
+      <Folder Include="Models\ViewModels\Auth2\" />
+    </ItemGroup>
+
 </Project>

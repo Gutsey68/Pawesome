@@ -8,5 +8,6 @@
 @import 'components/forms.css';
 @import 'components/badges.css';
 @import 'components/avatar.css';
+@import 'components/cards.css';
 
 @import 'pages/auth.css';

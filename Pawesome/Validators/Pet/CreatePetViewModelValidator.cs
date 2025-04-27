@@ -1,15 +1,12 @@
 using FluentValidation;
-using Pawesome.Models.Dtos.Pet;
+using Pawesome.Models.ViewModels.Pet;
 
 namespace Pawesome.Validators.Pet;
 
-public class UpdatePetDtoValidator : AbstractValidator<UpdatePetDto>
+public class CreatePetViewModelValidator : AbstractValidator<CreatePetViewModel>
 {
-    public UpdatePetDtoValidator()
+    public CreatePetViewModelValidator()
     {
-        RuleFor(p => p.Id)
-            .NotEmpty().WithMessage("L'identifiant de l'animal est requis");
-            
         RuleFor(p => p.Name)
             .NotEmpty().WithMessage("Le nom de l'animal est requis")
             .MaximumLength(255).WithMessage("Le nom ne peut pas dépasser 255 caractères");

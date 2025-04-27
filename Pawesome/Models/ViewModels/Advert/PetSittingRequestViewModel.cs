@@ -1,10 +1,10 @@
-namespace Pawesome.Models.Dtos.Advert;
+namespace Pawesome.Models.ViewModels.Advert;
 
-public class PetSittingOfferDto
+public class PetSittingRequestViewModel
 {
     public DateTime StartDate { get; set; }
     public DateTime EndDate { get; set; }
     public decimal Amount { get; set; }
-    public List<int> AcceptedAnimalTypeIds { get; set; } = new();
+    public List<int> PetIds { get; set; } = new();
     public string? AdditionalInformation { get; set; }
 }

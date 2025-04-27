@@ -1,43 +1,76 @@
-@model Pawesome.Models.Dtos.Pet.CreatePetDto
-<div>
-    <h1>Ajouter un animal</h1>
-    <form asp-action="Create" enctype="multipart/form-data">
-        <div asp-validation-summary="ModelOnly"></div>
-        <div>
-            <label asp-for="Name">Nom</label>
-            <input asp-for="Name" />
-            <span asp-validation-for="Name"></span>
+@model Pawesome.Models.ViewModels.Pet.CreatePetViewModel
+
+<div class="container">
+    <div class="card">
+        <div class="card-header">
+            <h1 class="card-title">Ajouter un animal</h1>
+            <p class="card-description">Remplissez le formulaire pour ajouter un nouvel animal de compagnie</p>
         </div>
-        <div>
-            <label asp-for="AnimalTypeId">Type d'animal</label>
-            <select asp-for="AnimalTypeId" asp-items="ViewBag.AnimalTypes">
-                <option value="">-- Sélectionnez un type --</option>
-            </select>
-            <span asp-validation-for="AnimalTypeId"></span>
+        <div class="card-body">
+            <form asp-action="Create" enctype="multipart/form-data">
+                <div asp-validation-summary="ModelOnly" class="validation-message"></div>
+                <div class="form-group">
+                    <label asp-for="Name" class="form-label">Nom</label>
+                    <input asp-for="Name" class="form-control"
+                           data-val="true"
+                           data-val-required="Le nom de l'animal est requis"
+                           data-val-length="Le nom ne peut pas dépasser 255 caractères"
+                           data-val-length-max="255" />
+                    <span asp-validation-for="Name" class="validation-message"></span>
+                </div>
+                <div class="form-group">
+                    <label asp-for="AnimalTypeId" class="form-label">Type d'animal</label>
+                    <select asp-for="AnimalTypeId" asp-items="ViewBag.AnimalTypes" class="form-control"
+                            data-val="true"
+                            data-val-required="Le type d'animal est requis">
+                        <option value="">-- Sélectionnez un type --</option>
+                    </select>
+                    <span asp-validation-for="AnimalTypeId" class="validation-message"></span>
+                </div>
+                <div class="form-group">
+                    <label asp-for="Breed" class="form-label">Race</label>
+                    <input asp-for="Breed" class="form-control"
+                           data-val="true"
+                           data-val-length="La race ne peut pas dépasser 255 caractères"
+                           data-val-length-max="255" />
+                    <span asp-validation-for="Breed" class="validation-message"></span>
+                </div>
+                <div class="form-group">
+                    <label asp-for="Age" class="form-label">Âge (années)</label>
+                    <input asp-for="Age" type="number" min="0" max="30" class="form-control"
+                           data-val="true"
+                           data-val-range="L'âge doit être compris entre 0 et 30 ans"
+                           data-val-range-min="0"
+                           data-val-range-max="30" />
+                    <span asp-validation-for="Age" class="validation-message"></span>
+                </div>
+                <div class="form-group">
+                    <label asp-for="Info" class="form-label">Informations complémentaires</label>
+                    <textarea asp-for="Info" rows="4" class="form-control"></textarea>
+                    <span asp-validation-for="Info" class="validation-message"></span>
+                </div>
+                <div class="form-group">
+                    <label asp-for="Photo" class="form-label">Photo</label>
+                    <input asp-for="Photo" type="file" accept="image/*" class="form-control"
+                           data-val="true"
+                           data-val-filesize="Le fichier doit être une image (jpg, jpeg, png) de moins de 5 Mo"
+                           data-val-filesize-max="5242880"
+                           data-val-fileextension="Le fichier doit être une image (jpg, jpeg, png)"
+                           data-val-fileextension-extensions="jpg,jpeg,png" />
+                    <span asp-validation-for="Photo" class="validation-message"></span>
+                </div>
+            </form>
         </div>
-        <div>
-            <label asp-for="Breed">Race</label>
-            <input asp-for="Breed" />
-            <span asp-validation-for="Breed"></span>
+        <div class="card-footer">
+            <div>
+                <button type="submit" class="button" form="petForm">Ajouter</button>
+                <a asp-action="Index" class="button" data-variant="secondary">Retour à la liste</a>
+            </div>
         </div>
-        <div>
-            <label asp-for="Age">Âge (années)</label>
-            <input asp-for="Age" type="number" min="0" max="30" />
-            <span asp-validation-for="Age"></span>
-        </div>
-        <div>
-            <label asp-for="Info">Informations complémentaires</label>
-            <textarea asp-for="Info" rows="4"></textarea>
-            <span asp-validation-for="Info"></span>
-        </div>
-        <div>
-            <label asp-for="Photo">Photo</label>
-            <input asp-for="Photo" type="file" accept="image/*" />
-            <span asp-validation-for="Photo"></span>
-        </div>
-        <div>
-            <button type="submit">Ajouter</button>
-            <a asp-action="Index">Retour à la liste</a>
-        </div>
-    </form>
+    </div>
 </div>
+
+@section Scripts {
+    <partial name="_ValidationScriptsPartial" />
+    <script src="~/js/validation-extensions.js"></script>
+}

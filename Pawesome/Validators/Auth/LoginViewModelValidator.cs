@@ -1,12 +1,11 @@
 using FluentValidation;
-using Pawesome.Models.DTOs;
-using Pawesome.Models.Dtos.Auth;
+using Pawesome.Models.ViewModels.Auth;
 
 namespace Pawesome.Validators.Auth;
 
-public class LoginDtoValidator : AbstractValidator<LoginDto>
+public class LoginViewModelValidator : AbstractValidator<LoginViewModel>
 {
-    public LoginDtoValidator()
+    public LoginViewModelValidator()
     {
         RuleFor(x => x.Email)
             .NotEmpty().WithMessage("L'adresse e-mail est requise")

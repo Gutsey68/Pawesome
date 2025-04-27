@@ -2,6 +2,7 @@ using AutoMapper;
 using Pawesome.Models;
 using Pawesome.Models.DTOs;
 using Pawesome.Models.Dtos.Advert;
+using Pawesome.Models.ViewModels.Advert;
 
 namespace Pawesome.Infrastructure.Mappers;
 
@@ -31,7 +32,7 @@ public class AdvertMappingProfile : Profile
             .ForMember(dest => dest.IsPetSitter, opt =>
                 opt.MapFrom(src => src.Status.Contains("offer")));
 
-        CreateMap<PetSittingRequestDto, Advert>()
+        CreateMap<PetSittingRequestViewModel, Advert>()
             .ForMember(dest => dest.StartDate, opt => opt.MapFrom(src =>
                 src.StartDate == default ? DateTime.UtcNow : DateTime.SpecifyKind(src.StartDate, DateTimeKind.Utc)))
             .ForMember(dest => dest.EndDate, opt => opt.MapFrom(src =>
@@ -39,7 +40,7 @@ public class AdvertMappingProfile : Profile
             .ForMember(dest => dest.CreatedAt, opt => opt.MapFrom(src => DateTime.UtcNow))
             .ForMember(dest => dest.UpdatedAt, opt => opt.MapFrom(src => DateTime.UtcNow));
 
-        CreateMap<PetSittingOfferDto, Advert>()
+        CreateMap<PetSittingOfferViewModel, Advert>()
             .ForMember(dest => dest.StartDate, opt => opt.MapFrom(src =>
                 src.StartDate == default ? DateTime.UtcNow : DateTime.SpecifyKind(src.StartDate, DateTimeKind.Utc)))
             .ForMember(dest => dest.EndDate, opt => opt.MapFrom(src =>

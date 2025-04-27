@@ -1,11 +1,11 @@
 using Microsoft.AspNetCore.Identity;
-using Pawesome.Models.Dtos.Auth;
+using Pawesome.Models.ViewModels.Auth;
 
 namespace Pawesome.Interfaces;
 
 public interface IAuthService
 {
-    Task<IdentityResult> RegisterUserAsync(RegisterDto registerDto);
+    Task<IdentityResult> RegisterUserAsync(RegisterViewModel registerDto);
     Task<SignInResult> LoginUserAsync(string email, string password, bool rememberMe);
     Task LogoutAsync();
 }
