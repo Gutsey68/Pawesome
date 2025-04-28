@@ -27,7 +27,12 @@ public class HomeController : Controller
     /// <returns>The index view</returns>
     public IActionResult Index()
     {
-        var cardList = new List<PetCartLandingViewModel>
+        if (User.Identity?.IsAuthenticated == true)
+        {
+            return RedirectToAction("", "dashboard");
+        }
+        
+        var model = new List<PetCartLandingViewModel>
         {
             new PetCartLandingViewModel
             {
@@ -86,33 +91,6 @@ public class HomeController : Controller
 
         };
         
-        var commentList = new List<CommentCardLandingViewModel>
-        {
-            new CommentCardLandingViewModel
-            {
-                Name = "Jean Dupont",
-                AgoMonth = 2,
-                Comment = "Super site ! J'ai trouvé mon compagnon idéal !",
-                StarsNumber = 5,
-                Photo = "/images/landing/guys_1.png",
-            },
-            
-            new CommentCardLandingViewModel
-            {
-                Name = "Marie Curie",
-                AgoMonth = 1,
-                Comment = "Une expérience incroyable ! Mon chat est devenu une star !",
-                StarsNumber = 5,
-                Photo = "/images/landing/girl_1.png",
-            }
-        };
-        
-        var model = new LandingPageViewModel()
-        {
-            PetCards = cardList,
-            CommentCards = commentList
-        };
-        
         return View(model);
     }
 
@@ -134,5 +112,4 @@ public class HomeController : Controller
     {
         return View(new ErrorViewModel { RequestId = Activity.Current?.Id ?? HttpContext.TraceIdentifier });
     }
-    
 }

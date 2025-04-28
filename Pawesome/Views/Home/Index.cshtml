@@ -1,12 +1,19 @@
-﻿@using Pawesome.Models.ViewModels
+﻿@using Pawesome.Controllers
+@using Pawesome.Models.ViewModels
 @{
     ViewData["Title"] = "Home Page";
+    
+    @if(User.Identity?.IsAuthenticated == true)
+    {
+
+    }
 }
 
 <main role="main">
     <div class="home-page">
         <div>
             <div class="pat-background"></div>
+            <div class="pat-background2"></div>
             <div class="header">
                 <h1>Trouver le Petsitter parfait <br/>
                     pour votre animal,<br/>
@@ -57,17 +64,16 @@
         </div>
 
         @* Container 2 / Défilement des fausses annonces *@
-        @*@model PetCartLandingViewModel*@
-
+        @model List<PetCartLandingViewModel>
         <div class="home-page-cards-container">
             <h1>Les Bestioles Qui Cartonnent</h1>
-            @*<div class="container pet-cards-flex-container">
+            <div class="containers pet-cards-flex-container">
                 @{
                     int index = 1;
                 }
                 @foreach (PetCartLandingViewModel card in Model)
                 {
-                    var viewModel = new PetLandingViewModel
+                    var viewModel = new CardLandingViewModel
                     {
                         Card = card,
                         Index = index
@@ -76,7 +82,7 @@
                     <partial name="Home/_CardPartial" model="viewModel"/>
                     index++;
                 }
-            </div>*@
+            </div>
             <button type="button" class="home-page-submission">Voir toute les annonce <img alt="Rechercher" class="icon icon-button-search-l" src="svg/lucide/arrow-right.svg"/></button>
 
         </div>
@@ -106,22 +112,98 @@
         
         <section class="testimonial-section">
             <h1>Ils ont trouvé leur bonheur</h1>
-            @*<div class="testimonials">
-                @{
-                    int index2 = 1;
-                }
-                @foreach (CommentCardLandingViewModel comment in Model)
-                {
-                    var viewModel = new CommentLandingViewModel()
-                    {
-                        Card = comment,
-                        Index = index2
-                    };
-
-                    <partial name="Home/_CardPartial" model="viewModel"/>
-                    index++;
-                }
-            </div>*@
+            <div class="testimonials">
+                <div class="testimonial">
+                    <div class="testimonial-container">
+                        <img alt="mini-profile" src="images/persona/guys_1.jpg"/>
+                        <div class="testimonial-name">
+                            <span>Lucas Bernard</span>
+                            <p>il y a 1 semaine</p>
+                        </div>
+                    </div>
+                    <div class="stars-container">
+                        @{
+                            for (int i = 0; i < 5; i++)
+                            {
+                                <img alt="star" class="star" src="svg/lucide/star.svg"/>
+                            }
+                        }
+                    </div>
+                    <p>Service exceptionnel ! Mon chien Rex était aux anges. Personnel très attentionné, je recommande à 100%.</p>
+                </div>
+                <div class="testimonial">
+                    <div class="testimonial-container">
+                        <img alt="mini-profile" src="images/persona/girl_1.jpg"/>
+                        <div class="testimonial-name">
+                            <span>Emma Dufour</span>
+                            <p>il y a 3 jours</p>
+                        </div>
+                    </div>
+                    <div class="stars-container">
+                        @{
+                            for (int i = 0; i < 4; i++)
+                            {
+                                <img alt="star" class="star" src="svg/lucide/star.svg"/>
+                            }
+                        }
+                    </div>
+                    <p>Très bonne expérience ! Juste un petit délai à l'arrivée, sinon tout était parfait pour mon lapinou.</p>
+                </div>
+                <div class="testimonial">
+                    <div class="testimonial-container">
+                        <img alt="mini-profile" src="images/persona/guys_2.jpg"/>
+                        <div class="testimonial-name">
+                            <span>Antoine Girard</span>
+                            <p>il y a 1 mois</p>
+                        </div>
+                    </div>
+                    <div class="stars-container">
+                        @{
+                            for (int i = 0; i < 3; i++)
+                            {
+                                <img alt="star" class="star" src="svg/lucide/star.svg"/>
+                            }
+                        }
+                    </div>
+                    <p>Bon accueil mais l'endroit était un peu bruyant pour mon chien sensible. Expérience mitigée.</p>
+                </div>
+                <div class="testimonial">
+                    <div class="testimonial-container">
+                        <img alt="mini-profile" src="images/persona/girl_2.jpg"/>
+                        <div class="testimonial-name">
+                            <span>Claire Dupont</span>
+                            <p>il y a 3 mois</p>
+                        </div>
+                    </div>
+                    <div class="stars-container">
+                        @{
+                            for (int i = 0; i < 2; i++)
+                            {
+                                <img alt="star" class="star" src="svg/lucide/star.svg"/>
+                            }
+                        }
+                    </div>
+                    <p>Le service était correct, mais mon chat semblait stressé après son séjour. Peut mieux faire.</p>
+                </div>
+                <div class="testimonial">
+                    <div class="testimonial-container">
+                        <img alt="mini-profile" src="images/persona/guys_3.jpg"/>
+                        <div class="testimonial-name">
+                            <span>Kevin Morel</span>
+                            <p>il y a 5 mois</p>
+                        </div>
+                    </div>
+                    <div class="stars-container">
+                        @{
+                            for (int i = 0; i < 1; i++)
+                            {
+                                <img alt="star" class="star" src="svg/lucide/star.svg"/>
+                            }
+                        }
+                    </div>
+                    <p>Très déçu. Mon chien n'a pas reçu les soins promis. Je ne reviendrai pas.</p>
+                </div>
+            </div>
         </section>
 
 

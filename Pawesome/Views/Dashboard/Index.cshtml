@@ -1,0 +1,59 @@
+﻿@{
+    ViewData["Title"] = "Dashboard";
+}
+
+<main role="main">
+    <div class="home-page">
+        <div>
+            <div class="pat-background"></div>
+            <div class="pat-background2"></div>
+            <div class="header">
+                <h1>Trouver le Petsitter parfait <br/>
+                    pour votre animal,<br/>
+                    de compagnie !
+                </h1>
+                <p>
+                    Réserver facilement des services de garde <br/>
+                    d’animaux fiable et sécurisés
+                </p>
+            </div>
+
+            <div class="research-bar">
+                <input type="text" class="research-bar-date-start" placeholder="Date de début"/>
+                <span class="tiny-separator"></span>
+                <input type="text" placeholder="Date de fin"/>
+                <span class="tiny-separator"></span>
+                <input type="text" placeholder="Lieu"/>
+                <span class="tiny-separator"></span>
+                <input type="text" placeholder="Type d'animal"/>
+
+                <button class="research-button" type="button">
+                    <img alt="Rechercher" class="icon" src="svg/lucide/search.svg"/>
+                </button>
+            </div>
+
+            <div class="home-page-img">
+                <img alt="woman-sitting" src="images/casual-life-3d-young-woman-sitting-on-ground-and-petting-dog.png"/>
+            </div>
+        </div>
+        @* Container 1 / Recherche de petsitting *@
+        <div class="home-page-container">
+            <div class="container-paragraph container-l-10">
+                <h1>
+                    Leur bien-être, votre <br/>
+                    tranquillité.
+                </h1>
+                <p>
+                    Nous prenons soin de vos animaux avec attention, douceur et fiabilité. Confiance et sérénité garanties, même en votre absence.
+                </p>
+                <p>
+                    Parce qu’ils méritent le meilleur, à chaque instant
+                </p>
+                <button type="button" class="home-page-submission">Rechercher un pet sitting <img alt="Rechercher" class="icon icon-button-search-l" src="svg/lucide/arrow-right.svg"/></button>
+            </div>
+            <div class="container-img container-r-4">
+                <img alt="dog" src="images/3d-casual-life-young-man-sitting-in-armchair-with-cat-next-to-him.png"/>
+            </div>
+        </div>
+    </div>
+</main>

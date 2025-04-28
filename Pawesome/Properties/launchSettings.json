@@ -24,7 +24,7 @@
       "commandName": "Executable",
       "workingDirectory": "$(MSBuildProjectDirectory)",
       "executablePath": "dotnet",
-      "commandLineArgs": "watch run debug --no-launch-profile",
+      "commandLineArgs": "watch run debug --launch-profile http",
       "launchBrowser": false
     }
   }
