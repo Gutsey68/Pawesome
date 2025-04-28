@@ -60,6 +60,7 @@ public class AdvertService : IAdvertService
             StartDate = model.StartDate,
             EndDate = model.EndDate,
             Amount = model.Amount,
+            AdditionalInformation = model.AdditionalInformation,
             Status = "pending",
             CreatedAt = DateTime.UtcNow,
             UpdatedAt = DateTime.UtcNow,
@@ -68,7 +69,7 @@ public class AdvertService : IAdvertService
             Payments = new List<Payment>()
         };
 
-        var createdAdvert = await _repository.CreatePetSittingRequestAsync(advert, model.PetIds);
+        var createdAdvert = await _repository.CreatePetSittingRequestAsync(advert, model.PetIds, userId);
         return _mapper.Map<PetSittingAdvertDto>(createdAdvert);
     }
 
@@ -85,6 +86,7 @@ public class AdvertService : IAdvertService
             StartDate = model.StartDate,
             EndDate = model.EndDate,
             Amount = model.Amount,
+            AdditionalInformation = model.AdditionalInformation,
             Status = "pending_offer",
             CreatedAt = DateTime.UtcNow,
             UpdatedAt = DateTime.UtcNow,
@@ -93,7 +95,7 @@ public class AdvertService : IAdvertService
             Payments = new List<Payment>()
         };
 
-        var createdAdvert = await _repository.CreatePetSittingOfferAsync(advert, model.AcceptedAnimalTypeIds);
+        var createdAdvert = await _repository.CreatePetSittingOfferAsync(advert, model.AcceptedAnimalTypeIds, userId);
         return _mapper.Map<PetSittingAdvertDto>(createdAdvert);
     }
 

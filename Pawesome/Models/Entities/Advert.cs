@@ -11,6 +11,9 @@ public class Advert
     public DateTime CreatedAt { get; set; } = DateTime.UtcNow;
     public DateTime UpdatedAt { get; set; } = DateTime.UtcNow;
     
+    public int UserId { get; set; }
+    public User User { get; set; } = null!;
+    
     public required ICollection<PetAdvert> PetAdverts { get; set; }
     public required ICollection<Review> Reviews { get; set; }
     public required ICollection<Payment> Payments { get; set; }

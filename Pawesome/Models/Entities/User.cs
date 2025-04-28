@@ -29,4 +29,5 @@ public class User : IdentityUser<int>
     public required ICollection<Message> ReceivedMessages { get; set; }
     public required ICollection<Review> Reviews { get; set; }
     public required ICollection<Payment> Payments { get; set; }
+    public ICollection<Advert> Adverts { get; set; } = new List<Advert>();
 }

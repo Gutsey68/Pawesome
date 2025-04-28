@@ -28,6 +28,7 @@ public class AppDbContext :  IdentityDbContext<User, IdentityRole<int>, int>
     public DbSet<Review> Reviews { get; set; }
     public DbSet<Payment> Payments { get; set; }
     public DbSet<PetAdvert> PetAdverts { get; set; }
+    public DbSet<AnimalTypeAdvert> AnimalTypeAdverts { get; set; }
 
     /// <summary>
     /// Configures the database model and entity relationships when creating the model.
@@ -58,5 +59,18 @@ public class AppDbContext :  IdentityDbContext<User, IdentityRole<int>, int>
             .WithMany(u => u.ReceivedMessages)
             .HasForeignKey(m => m.ReceiverId)
             .OnDelete(DeleteBehavior.Restrict);
+        
+        modelBuilder.Entity<AnimalTypeAdvert>()
+            .HasKey(ata => new { ata.AnimalTypeId, ata.AdvertId });
+        
+        modelBuilder.Entity<AnimalTypeAdvert>()
+            .HasOne(ata => ata.AnimalType)
+            .WithMany()
+            .HasForeignKey(ata => ata.AnimalTypeId);
+        
+        modelBuilder.Entity<AnimalTypeAdvert>()
+            .HasOne(ata => ata.Advert)
+            .WithMany()
+            .HasForeignKey(ata => ata.AdvertId);
     }
 }

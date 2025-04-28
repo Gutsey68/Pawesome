@@ -28,12 +28,11 @@ public class AdvertRepository : IAdvertRepository
     public async Task<List<Advert>> GetAllAdvertsAsync(bool isPetSitter = false)
     {
         return await _context.Adverts
+            .Include(a => a.User)
+            .Include(a => a.User)
             .Include(a => a.PetAdverts)
-                .ThenInclude(pa => pa.Pet)
-                    .ThenInclude(p => p!.User)
-            .Include(a => a.PetAdverts)
-                .ThenInclude(pa => pa.Pet)
-                    .ThenInclude(p => p!.AnimalType)
+            .ThenInclude(pa => pa.Pet)
+            .ThenInclude(p => p!.AnimalType)
             .Where(a => isPetSitter ? a.Status == "pending_offer" : a.Status == "pending")
             .OrderByDescending(a => a.CreatedAt)
             .ToListAsync();
@@ -47,6 +46,7 @@ public class AdvertRepository : IAdvertRepository
     public async Task<Advert?> GetAdvertByIdAsync(int id)
     {
         return await _context.Adverts
+            .Include(a => a.User) 
             .Include(a => a.PetAdverts)
                 .ThenInclude(pa => pa.Pet)
                     .ThenInclude(p => p!.User)
@@ -60,15 +60,17 @@ public class AdvertRepository : IAdvertRepository
     /// Creates a new pet sitting request and associates it with the specified pets
     /// </summary>
     /// <param name="advert">The advert to create</param>
-    /// <param name="petIds">List of pet IDs to associate with the advert</param>
+    /// <param name="petIds">List of pet IDs to associate with this request</param>
+    /// <param name="userId">ID of the user creating the request</param>
     /// <returns>The created advert with its ID populated</returns>
-    public async Task<Advert> CreatePetSittingRequestAsync(Advert advert, List<int> petIds)
+    public async Task<Advert> CreatePetSittingRequestAsync(Advert advert, List<int> petIds, int userId)
     {
         advert.Status = "pending";
         advert.StartDate = DateTime.SpecifyKind(advert.StartDate, DateTimeKind.Utc);
         advert.EndDate = DateTime.SpecifyKind(advert.EndDate, DateTimeKind.Utc);
         advert.CreatedAt = DateTime.UtcNow;
         advert.UpdatedAt = DateTime.UtcNow;
+        advert.UserId = userId;
 
         await _context.Adverts.AddAsync(advert);
         await _context.SaveChangesAsync();
@@ -97,14 +99,16 @@ public class AdvertRepository : IAdvertRepository
     /// </summary>
     /// <param name="advert">The advert to create</param>
     /// <param name="animalTypeIds">List of animal type IDs that the pet sitter accepts</param>
+    /// <param name="userId">ID of the user creating the offer</param>
     /// <returns>The created advert with its ID populated</returns>
-    public async Task<Advert> CreatePetSittingOfferAsync(Advert advert, List<int> animalTypeIds)
+    public async Task<Advert> CreatePetSittingOfferAsync(Advert advert, List<int> animalTypeIds, int userId)
     {
         advert.Status = "pending_offer";
         advert.StartDate = DateTime.SpecifyKind(advert.StartDate, DateTimeKind.Utc);
         advert.EndDate = DateTime.SpecifyKind(advert.EndDate, DateTimeKind.Utc);
         advert.CreatedAt = DateTime.UtcNow;
         advert.UpdatedAt = DateTime.UtcNow;
+        advert.UserId = userId;
 
         await _context.Adverts.AddAsync(advert);
         await _context.SaveChangesAsync();
@@ -158,10 +162,11 @@ public class AdvertRepository : IAdvertRepository
     public async Task<List<Advert>> GetUserAdvertsAsync(int userId)
     {
         return await _context.Adverts
+            .Include(a => a.User)
             .Include(a => a.PetAdverts)
-                .ThenInclude(pa => pa.Pet)
-                    .ThenInclude(p => p!.User)
-            .Where(a => a.PetAdverts.Any(pa => pa.Pet != null && pa.Pet.UserId == userId))
+            .ThenInclude(pa => pa.Pet)
+            .ThenInclude(p => p!.AnimalType)
+            .Where(a => a.UserId == userId)
             .ToListAsync();
     }
 
@@ -262,7 +267,7 @@ public class AdvertRepository : IAdvertRepository
     /// <returns>True if the advert was deleted successfully, false if it wasn't found</returns>
     public async Task<bool> DeleteAdvertAsync(int advertId)
     {
-        using var transaction = await _context.Database.BeginTransactionAsync();
+        await using var transaction = await _context.Database.BeginTransactionAsync();
         try
         {
             var advert = await _context.Adverts

@@ -36,7 +36,6 @@
                            data-val-range-min="0" />
                     <span asp-validation-for="Amount" class="validation-message"></span>
                 </div>
-                
                 <div class="form-group">
                     <label class="form-label">Animaux à garder</label>
                     @if (ViewBag.Pets != null && ViewBag.Pets.Count > 0)
@@ -52,9 +51,8 @@
                                                 <label class="form-check-label d-flex align-items-center" for="pet-@pet.Id">
                                                     @if (!string.IsNullOrEmpty(pet.Photo))
                                                     {
-                                                        <img src="@pet.Photo" class="rounded me-2" alt="@pet.Name" style="width: 40px; height: 40px; object-fit: cover;">
+                                                        <img src="~/images/pets/@pet.Photo" alt="@pet.Name" class="pet-thumbnail">
                                                     }
-                                                    <span>@pet.Name (@pet.Species)</span>
                                                 </label>
                                             </div>
                                         </div>

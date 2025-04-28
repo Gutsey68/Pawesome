@@ -48,15 +48,16 @@
 
 ### **Adverts**
 
-|Nom du champ|Type de données|Longueur|Contrainte|Description|
-|---|---|---|---|---|
-|id|Int||PK Auto increment|Identifiant unique|
-|startDate|DateTime||Not null|Date de début|
-|endDate|DateTime||Not null|Date de fin|
-|status|Varchar|255|Default 'pending'|Statut de l'annonce|
-|amount|Decimal(10,2)||Not null|Montant de l'annonce|
-|createdAt|Timestamp||Default CURRENT_TIMESTAMP|Date de création|
-|updatedAt|Timestamp||Default CURRENT_TIMESTAMP|Date de mise à jour|
+| Nom du champ   | Type de données | Longueur |Contrainte| Description                 |
+|----------------|-----------------|----------|-|-----------------------------|
+| id             | Int             |          |PK Auto increment| Identifiant unique          |
+| startDate      | DateTime        |          |Not null| Date de début               |
+| endDate        | DateTime        |          |Not null| Date de fin                 |
+| status         | Varchar         | 255      |Default 'pending'| Statut de l'annonce         |
+| amount         | Decimal(10,2)   |          |Not null| Montant de l'annonce        |
+| additionalInfo | Varchar         | 255      || Informations additionnelles |
+| createdAt      | Timestamp       |          |Default CURRENT_TIMESTAMP| Date de création            |
+| updatedAt      | Timestamp       |          |Default CURRENT_TIMESTAMP| Date de mise à jour         |
 
 ### **Notifications**
 
@@ -173,6 +174,16 @@
 |createdAt|Timestamp||Default CURRENT_TIMESTAMP|Date de création|
 |updatedAt|Timestamp||Default CURRENT_TIMESTAMP|Date de mise à jour|
 
+
+### **AnimalTypesAdverts**
+
+| Nom du champ | Type de données | Longueur | Contrainte | Description |
+|-------------|----------------|----------|------------|-------------|
+| animalTypeId | Int |  | PK, FK -> AnimalTypes(id) | Référence au type d'animal |
+| advertId | Int |  | PK, FK -> Adverts(id) | Référence à l'annonce |
+| createdAt | Timestamp |  | Default CURRENT_TIMESTAMP | Date de création |
+| updatedAt | Timestamp |  | Default CURRENT_TIMESTAMP | Date de mise à jour |
+
 ---
 # MLD 
 
@@ -205,3 +216,5 @@ PetsAdverts ( <u> #petId, #advertId</u>, createdAt, updatedAt)
 Reviews ( <u>#userId, #advertId</u>, rate, comment, createdAt, updatedAt)
 
 Payments ( <u>#userId, #advertId</u>, amount, status, createdAt, updatedAt)
+
+AnimalTypesAdverts (<u>#animalTypeId, #advertId</u>, createdAt, updatedAt)

@@ -49,12 +49,11 @@ public class PetController : Controller
     public async Task<IActionResult> Details(int id)
     {
         var pet = await _petService.GetPetDetailsAsync(id);
-        
         if (pet == null)
         {
             return NotFound();
         }
-        
+
         return View(pet);
     }
     
