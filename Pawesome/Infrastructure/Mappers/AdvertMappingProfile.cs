@@ -47,5 +47,19 @@ public class AdvertMappingProfile : Profile
                 src.EndDate == default ? DateTime.UtcNow : DateTime.SpecifyKind(src.EndDate, DateTimeKind.Utc)))
             .ForMember(dest => dest.CreatedAt, opt => opt.MapFrom(src => DateTime.UtcNow))
             .ForMember(dest => dest.UpdatedAt, opt => opt.MapFrom(src => DateTime.UtcNow));
+        
+        CreateMap<UpdatePetSittingRequestViewModel, Advert>()
+            .ForMember(dest => dest.StartDate, opt => opt.MapFrom(src =>
+                DateTime.SpecifyKind(src.StartDate, DateTimeKind.Utc)))
+            .ForMember(dest => dest.EndDate, opt => opt.MapFrom(src =>
+                DateTime.SpecifyKind(src.EndDate, DateTimeKind.Utc)))
+            .ForMember(dest => dest.UpdatedAt, opt => opt.MapFrom(src => DateTime.UtcNow));
+
+        CreateMap<UpdatePetSittingOfferViewModel, Advert>()
+            .ForMember(dest => dest.StartDate, opt => opt.MapFrom(src =>
+                DateTime.SpecifyKind(src.StartDate, DateTimeKind.Utc)))
+            .ForMember(dest => dest.EndDate, opt => opt.MapFrom(src =>
+                DateTime.SpecifyKind(src.EndDate, DateTimeKind.Utc)))
+            .ForMember(dest => dest.UpdatedAt, opt => opt.MapFrom(src => DateTime.UtcNow));
     }
 }

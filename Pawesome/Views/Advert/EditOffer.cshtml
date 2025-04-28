@@ -1,13 +1,14 @@
-@model Pawesome.Models.ViewModels.Advert.PetSittingOfferViewModel
+@model Pawesome.Models.ViewModels.Advert.UpdatePetSittingOfferViewModel
 
 <div class="container">
     <div class="card">
         <div class="card-header">
-            <h1>Proposer mes services de pet sitting</h1>
+            <h1>Modifier mon offre de pet sitting</h1>
         </div>
         <div class="card-body">
-            <form asp-action="CreateOffer" method="post">
+            <form asp-action="EditOffer" method="post">
                 <div asp-validation-summary="ModelOnly" class="validation-message"></div>
+                <input type="hidden" asp-for="Id" />
                 <div class="form-group">
                     <label asp-for="StartDate" class="form-label">Date de début de disponibilité</label>
                     <input asp-for="StartDate" class="form-control" type="date" 
@@ -37,18 +38,17 @@
                     <label class="form-label">Types d'animaux acceptés</label>
                     @if (ViewBag.AnimalTypes != null && ViewBag.AnimalTypes.Count > 0)
                     {
-                        <div class="row row-cols-1 row-cols-sm-2 row-cols-md-3 g-3">
+                        <div class="animals-grid">
                             @foreach (var animalType in ViewBag.AnimalTypes)
                             {
-                                <div class="col">
-                                    <div class="card h-100">
-                                        <div class="card-body">
-                                            <div class="form-check">
-                                                <input class="form-check-input" type="checkbox" name="AcceptedAnimalTypeIds" value="@animalType.Id" id="type-@animalType.Id">
-                                                <label class="form-check-label" for="type-@animalType.Id">
-                                                    @animalType.Name
-                                                </label>
-                                            </div>
+                                <div class="animal-card">
+                                    <div class="card-content">
+                                        <div class="form-check">
+                                            <input class="form-check-input" type="checkbox" name="AcceptedAnimalTypeIds" value="@animalType.Id" id="type-@animalType.Id"
+                                                   @(Model.AcceptedAnimalTypeIds != null && Model.AcceptedAnimalTypeIds.Contains(animalType.Id) ? "checked" : "")>
+                                            <label class="form-check-label" for="type-@animalType.Id">
+                                                @animalType.Name
+                                            </label>
                                         </div>
                                     </div>
                                 </div>
@@ -60,7 +60,7 @@
                     }
                     else
                     {
-                        <div class="alert alert-warning">
+                        <div class="alert">
                             Aucun type d'animal disponible.
                         </div>
                     }
@@ -71,8 +71,8 @@
                     <span asp-validation-for="AdditionalInformation" class="validation-message"></span>
                 </div>
                 <div class="form-group">
-                    <button type="submit" class="button">Publier</button>
-                    <a asp-action="Index" class="button" data-variant="secondary">Annuler</a>
+                    <button type="submit" class="button">Mettre à jour</button>
+                    <a asp-action="Details" asp-route-id="@Model.Id" class="button secondary">Annuler</a>
                 </div>
             </form>
         </div>

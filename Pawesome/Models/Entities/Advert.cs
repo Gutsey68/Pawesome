@@ -7,6 +7,7 @@ public class Advert
     public DateTime EndDate { get; set; }
     public string Status { get; set; } = "pending";
     public decimal Amount { get; set; }
+    public string? AdditionalInformation { get; set; }
     public DateTime CreatedAt { get; set; } = DateTime.UtcNow;
     public DateTime UpdatedAt { get; set; } = DateTime.UtcNow;
     

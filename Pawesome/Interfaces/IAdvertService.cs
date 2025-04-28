@@ -11,4 +11,8 @@ public interface IAdvertService
     Task<PetSittingAdvertDto> CreatePetSittingOfferAsync(PetSittingOfferViewModel model, int userId);
     Task<bool> UpdateAdvertStatusAsync(int advertId, string status);
     Task<List<PetSittingAdvertDto>> GetUserAdvertsAsync(int userId);
+    Task<PetSittingAdvertDto> UpdatePetSittingRequestAsync(UpdatePetSittingRequestViewModel model);
+    Task<PetSittingAdvertDto> UpdatePetSittingOfferAsync(UpdatePetSittingOfferViewModel model);
+    Task<bool> DeleteAdvertAsync(int advertId);
+
 }

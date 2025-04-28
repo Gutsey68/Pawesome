@@ -203,4 +203,230 @@ public class AdvertController : Controller
         
         return View(adverts);
     }
+    
+    /// <summary>
+    /// Displays the form for editing a pet sitting request
+    /// </summary>
+    /// <param name="id">ID of the pet sitting request to edit</param>
+    /// <returns>View containing the edit form with user's pets</returns>
+    [Authorize]
+    [HttpGet]
+    public async Task<IActionResult> EditRequest(int id)
+    {
+        var user = await _userManager.GetUserAsync(User);
+        
+        if (user == null)
+        {
+            return Challenge();
+        }
+        
+        var advert = await _advertService.GetAdvertByIdAsync(id);
+        
+        if (advert == null)
+        {
+            return NotFound();
+        }
+        
+        if (advert.Owner == null || advert.Owner.Id != user.Id)
+        {
+            return Forbid();
+        }
+        
+        var updateModel = new UpdatePetSittingRequestViewModel
+        {
+            Id = advert.Id,
+            StartDate = advert.StartDate,
+            EndDate = advert.EndDate,
+            Amount = advert.Amount,
+            PetIds = advert.Pets.Select(p => p.Id).ToList(),
+            AdditionalInformation = advert.AdditionalInformation
+        };
+        
+        var pets = await _petService.GetUserPets(user.Id);
+        ViewBag.Pets = pets;
+        
+        return View(updateModel);
+    }
+
+    /// <summary>
+    /// Processes the update of a pet sitting request
+    /// </summary>
+    /// <param name="viewModel">Updated data for the pet sitting request</param>
+    /// <returns>Redirects to Details if successful, or returns the form with validation errors</returns>
+    [Authorize]
+    [HttpPost]
+    public async Task<IActionResult> EditRequest(UpdatePetSittingRequestViewModel viewModel)
+    {
+        if (!ModelState.IsValid)
+        {
+            var user = await _userManager.GetUserAsync(User);
+            
+            if (user == null)
+            {
+                return Challenge();
+            }
+            
+            var pets = await _petService.GetUserPets(user.Id);
+            ViewBag.Pets = pets;
+            
+            return View(viewModel);
+        }
+        
+        var result = await _advertService.UpdatePetSittingRequestAsync(viewModel);
+        
+        return RedirectToAction(nameof(Details), new { id = result.Id });
+    }
+
+    /// <summary>
+    /// Displays the form for editing a pet sitting offer
+    /// </summary>
+    /// <param name="id">ID of the pet sitting offer to edit</param>
+    /// <returns>View containing the edit form with animal types</returns>
+    [Authorize]
+    [HttpGet]
+    public async Task<IActionResult> EditOffer(int id)
+    {
+        var user = await _userManager.GetUserAsync(User);
+        
+        if (user == null)
+        {
+            return Challenge();
+        }
+        
+        var advert = await _advertService.GetAdvertByIdAsync(id);
+        
+        if (advert == null)
+        {
+            return NotFound();
+        }
+        
+        if (advert.Owner == null || advert.Owner.Id != user.Id)
+        {
+            return Forbid();
+        }
+        
+        var updateModel = new UpdatePetSittingOfferViewModel
+        {
+            Id = advert.Id,
+            StartDate = advert.StartDate,
+            EndDate = advert.EndDate,
+            Amount = advert.Amount,
+            AcceptedAnimalTypeIds = new List<int>(),
+            AdditionalInformation = advert.AdditionalInformation
+        };
+        
+        var animalTypes = await _animalTypeService.GetAllAnimalTypesAsync();
+        ViewBag.AnimalTypes = animalTypes;
+
+        foreach (var animalType in animalTypes)
+        {
+            if (advert.Pets.Any(p => p.AnimalTypeName == animalType.Name))
+            {
+                updateModel.AcceptedAnimalTypeIds.Add(animalType.Id);
+            }
+        }
+
+        return View(updateModel);
+    }
+
+    /// <summary>
+    /// Processes the update of a pet sitting offer
+    /// </summary>
+    /// <param name="viewModel">Updated data for the pet sitting offer</param>
+    /// <returns>Redirects to Details if successful, or returns the form with validation errors</returns>
+    [Authorize]
+    [HttpPost]
+    public async Task<IActionResult> EditOffer(UpdatePetSittingOfferViewModel viewModel)
+    {
+        if (!ModelState.IsValid)
+        {
+            var animalTypes = await _animalTypeService.GetAllAnimalTypesAsync();
+            ViewBag.AnimalTypes = animalTypes;
+            
+            return View(viewModel);
+        }
+        
+        var result = await _advertService.UpdatePetSittingOfferAsync(viewModel);
+        
+        return RedirectToAction(nameof(Details), new { id = result.Id });
+    }
+    
+    /// <summary>
+    /// Displays the confirmation page for deleting an advert
+    /// </summary>
+    /// <param name="id">The ID of the advert to delete</param>
+    /// <returns>View containing the delete confirmation form</returns>
+    [Authorize]
+    [HttpGet]
+    public async Task<IActionResult> Delete(int id)
+    {
+        var user = await _userManager.GetUserAsync(User);
+    
+        if (user == null)
+        {
+            return Challenge();
+        }
+    
+        var advert = await _advertService.GetAdvertByIdAsync(id);
+    
+        if (advert == null)
+        {
+            return NotFound();
+        }
+    
+        if (advert.Owner == null || advert.Owner.Id != user.Id)
+        {
+            return Forbid();
+        }
+    
+        var viewModel = new DeleteAdvertViewModel
+        {
+            Id = advert.Id,
+            Title = advert.IsPetSitter ? "Offre de pet sitting" : "Demande de pet sitting",
+            IsPetSitter = advert.IsPetSitter,
+            StartDate = advert.StartDate,
+            EndDate = advert.EndDate
+        };
+    
+        return View(viewModel);
+    }
+
+    /// <summary>
+    /// Processes the deletion of an advert
+    /// </summary>
+    /// <param name="id">The ID of the advert to delete</param>
+    /// <returns>Redirects to MyAdverts if successful, or returns NotFound/Forbid as appropriate</returns>
+    [Authorize]
+    [HttpPost, ActionName("Delete")]
+    [ValidateAntiForgeryToken]
+    public async Task<IActionResult> DeleteConfirmed(int id)
+    {
+        var user = await _userManager.GetUserAsync(User);
+    
+        if (user == null)
+        {
+            return Challenge();
+        }
+    
+        var advert = await _advertService.GetAdvertByIdAsync(id);
+    
+        if (advert == null)
+        {
+            return NotFound();
+        }
+    
+        if (advert.Owner == null || advert.Owner.Id != user.Id)
+        {
+            return Forbid();
+        }
+    
+        var result = await _advertService.DeleteAdvertAsync(id);
+    
+        if (!result)
+        {
+            return NotFound();
+        }
+    
+        return RedirectToAction(nameof(MyAdverts));
+    }
 }
