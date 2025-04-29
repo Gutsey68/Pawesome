@@ -20,6 +20,7 @@
                 </div>
             }
             <form asp-controller="Auth" asp-action="Login" method="post">
+                <input type="hidden" id="credential" name="credential" />
                 <div class="login-form">
                     <div class="form-group">
                         <label asp-for="Email">Email :</label>
@@ -49,6 +50,24 @@
                     <div>
                         <p>Pas encore de compte ? <a class="underline" asp-controller="Auth" asp-action="Register">S'inscrire</a></p>
                     </div>
+                    <div class="separator">
+                        <span>ou</span>
+                    </div>
+                    <div id="g_id_onload"
+                         data-client_id="293214798250-hhaj22tlc17aug4ojdmcn81li2sgkfi5.apps.googleusercontent.com"
+                         data-callback="handleCredentialResponse"
+                         data-context="signin"
+                         data-ux_mode="popup"
+                         data-auto_prompt="false">
+                    </div>
+                    <div class="g_id_signin"
+                         data-type="standard"
+                         data-shape="pill"
+                         data-theme="outline"
+                         data-text="signin_with"
+                         data-size="large"
+                         data-logo_alignment="left">
+                    </div>
                 </div>
             </form>
         </div>
@@ -67,4 +86,11 @@
 
 @section Scripts {
     <partial name="_ValidationScriptsPartial" />
+    <script src="https://accounts.google.com/gsi/client" async defer></script>
+    <script>
+        function handleCredentialResponse(response) {
+            document.getElementById('credential').value = response.credential;
+            document.forms[0].submit();
+        }
+    </script>
 }

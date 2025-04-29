@@ -21,60 +21,79 @@
                 <p class="font-sm">Remplissez le formulaire ci-dessous pour vous inscrire</p>
             </div>
             <form asp-controller="Auth" asp-action="Register" method="post">
+                <input type="hidden" id="credential" name="credential" />
                 <div class="register-form">
                     <div class="form-group">
                         <label asp-for="FirstName">Prénom :</label>
-                        <input asp-for="FirstName" type="text" class="form-control" 
-                               data-val="true" 
+                        <input asp-for="FirstName" type="text" class="form-control"
+                               data-val="true"
                                data-val-required="Le prénom est requis"
                                data-val-length="Le prénom ne peut pas dépasser 50 caractères"
-                               data-val-length-max="50" />
+                               data-val-length-max="50"/>
                         <span class="validation-message" asp-validation-for="FirstName"></span>
                     </div>
 
                     <div class="form-group">
                         <label asp-for="LastName">Nom :</label>
                         <input asp-for="LastName" type="text" class="form-control"
-                               data-val="true" 
+                               data-val="true"
                                data-val-required="Le nom est requis"
                                data-val-length="Le nom ne peut pas dépasser 50 caractères"
-                               data-val-length-max="50" />
+                               data-val-length-max="50"/>
                         <span class="validation-message" asp-validation-for="LastName"></span>
                     </div>
 
                     <div class="form-group">
                         <label asp-for="Email">Email :</label>
                         <input asp-for="Email" type="email" class="form-control"
-                               data-val="true" 
+                               data-val="true"
                                data-val-required="L'email est requis"
-                               data-val-email="Format d'email invalide" />
+                               data-val-email="Format d'email invalide"/>
                         <span class="validation-message" asp-validation-for="Email"></span>
                     </div>
 
                     <div class="form-group">
                         <label asp-for="Password">Mot de passe :</label>
                         <input asp-for="Password" type="password" class="form-control"
-                               data-val="true" 
+                               data-val="true"
                                data-val-required="Le mot de passe est requis"
                                data-val-minlength="Le mot de passe doit contenir au moins 8 caractères"
                                data-val-minlength-min="8"
                                data-val-regex="Le mot de passe doit contenir au moins une lettre majuscule, une lettre minuscule, un chiffre et un caractère spécial"
-                               data-val-regex-pattern="^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[^\da-zA-Z]).{8,}$" />
+                               data-val-regex-pattern="^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[^\da-zA-Z]).{8,}$"/>
                         <span class="validation-message" asp-validation-for="Password"></span>
                     </div>
 
                     <div class="form-group">
                         <label asp-for="ConfirmPassword">Confirmer le mot de passe :</label>
                         <input asp-for="ConfirmPassword" type="password" class="form-control"
-                               data-val="true" 
+                               data-val="true"
                                data-val-required="La confirmation du mot de passe est requise"
                                data-val-equalto="Les mots de passe ne correspondent pas"
-                               data-val-equalto-other="*.Password" />
+                               data-val-equalto-other="*.Password"/>
                         <span class="validation-message" asp-validation-for="ConfirmPassword"></span>
                     </div>
                     <button class="button" type="submit">S'inscrire</button>
                     <div>
                         <p>Déjà inscrit ? <a class="underline login-link" asp-controller="Auth" asp-action="Login">Se connecter</a></p>
+                    </div>
+                    <div class="separator">
+                        <span>ou</span>
+                    </div>
+                    <div id="g_id_onload"
+                         data-client_id="293214798250-hhaj22tlc17aug4ojdmcn81li2sgkfi5.apps.googleusercontent.com"
+                         data-callback="handleCredentialResponse"
+                         data-context="signin"
+                         data-ux_mode="popup"
+                         data-auto_prompt="false">
+                    </div>
+                    <div class="g_id_signin"
+                         data-type="standard"
+                         data-shape="pill"
+                         data-theme="outline"
+                         data-text="signin_with"
+                         data-size="large"
+                         data-logo_alignment="left">
                     </div>
                 </div>
             </form>
@@ -85,4 +104,11 @@
 @section Scripts {
     <partial name="_ValidationScriptsPartial" />
     <script src="~/js/validation-extensions.js"></script>
+    <script src="https://accounts.google.com/gsi/client" async defer></script>
+    <script>
+        function handleCredentialResponse(response) {
+            document.getElementById('credential').value = response.credential;
+            document.forms[0].submit();
+        }
+    </script>
 }
