@@ -8,6 +8,7 @@ public class ProfileViewModel
     public required string LastName { get; set; }
     public required string PhoneNumber { get; set; }
     public required string Bio { get; set; }
+    public required string Photo { get; set; }
     public required string Status { get; set; }
     public required bool IsVerified { get; set; }
     public required decimal BalanceAccount { get; set; }

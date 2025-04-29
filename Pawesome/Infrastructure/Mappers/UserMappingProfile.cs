@@ -18,6 +18,7 @@ public class UserMappingProfile : Profile
             .ForMember(dest => dest.LastName, opt => opt.MapFrom(src => src.LastName));
 
         CreateMap<User, ProfileViewModel>()
+            .ForMember(dest => dest.Photo, opt => opt.MapFrom(src => src.Photo))
             .ForMember(dest => dest.Street,
                 opt => opt.MapFrom(src => src.Address.StreetAddress))
             .ForMember(dest => dest.City, opt => opt.MapFrom(src => src.Address.City.Name))

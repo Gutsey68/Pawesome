@@ -54,7 +54,7 @@ public class UserController : Controller
     /// Displays the edit form for a user profile
     /// </summary>
     /// <param name="id">The ID of the user to edit</param>
-    /// <returns>The edit view if user is found, NotFound result otherwise</returns>
+    /// <returns>The edit view if a user is found, NotFound result otherwise</returns>
     public async Task<IActionResult> Edit(int id)
     {
         var updateUserDto = await _userService.GetUserForEditAsync(id);
