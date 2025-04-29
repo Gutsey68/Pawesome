@@ -99,7 +99,7 @@ public static class ServiceCollectionExtensions
         
         // Register services
         services.AddScoped<IAuthService, AuthService>();
-        services.AddScoped<IProfileService, ProfileService>();
+        services.AddScoped<IUserService, UserService>();
         services.AddScoped<IPetService, PetService>();
         services.AddScoped<IEmailService, EmailService>();
         services.AddScoped<IAdvertService, AdvertService>();

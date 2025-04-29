@@ -1,6 +1,6 @@
-﻿namespace Pawesome.Models.DTOs;
+namespace Pawesome.Models.ViewModels.User;
 
-public class UpdateUserDto
+public class UpdateUserViewModel
 {
     public int Id { get; set; }
     public required string LastName { get; set; }

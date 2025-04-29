@@ -3,6 +3,7 @@ using Pawesome.Models;
 using Pawesome.Models.DTOs;
 using Pawesome.Models.ViewModels;
 using Pawesome.Models.ViewModels.Auth;
+using Pawesome.Models.ViewModels.User;
 
 namespace Pawesome.Infrastructure.Mappers;
 
@@ -30,7 +31,7 @@ public class UserMappingProfile : Profile
             .ForMember(dest => dest.FullName, opt => opt.MapFrom(src =>
                 $"{src.FirstName} {src.LastName}"));
         
-        CreateMap<UpdateUserDto, User>()
+        CreateMap<UpdateUserViewModel, User>()
             .ForMember(dest => dest.Photo, opt => opt.Ignore())
             .ForMember(dest => dest.UpdatedAt, opt => opt.MapFrom(_ => DateTime.UtcNow))
             .ForMember(dest => dest.Address, opt => opt.Ignore())
@@ -43,7 +44,7 @@ public class UserMappingProfile : Profile
             .ForMember(dest => dest.Reviews, opt => opt.Ignore())
             .ForMember(dest => dest.Payments, opt => opt.Ignore());
 
-        CreateMap<User, UpdateUserDto>()
+        CreateMap<User, UpdateUserViewModel>()
             .ForMember(dest => dest.ExistingPhoto, opt => opt.MapFrom(src => src.Photo))
             .ForMember(dest => dest.Photo, opt => opt.Ignore());
     }

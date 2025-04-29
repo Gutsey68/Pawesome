@@ -1,0 +1,75 @@
+﻿@model Pawesome.Models.ViewModels.User.UpdateUserViewModel
+
+<div>
+    <h1>Modifier</h1>
+    <form asp-action="Edit" enctype="multipart/form-data">
+        <div asp-validation-summary="ModelOnly"></div>
+        <input type="hidden" asp-for="Id" />
+        <input type="hidden" asp-for="ExistingPhoto" />
+        <div>
+            <label asp-for="LastName">Nom</label>
+            <input asp-for="LastName" 
+                   data-val="true" 
+                   data-val-required="Le nom est requis"
+                   data-val-length="Le nom ne peut pas dépasser 255 caractères"
+                   data-val-length-max="255" />
+            <span asp-validation-for="LastName"></span>
+        </div>
+        <div>
+            <label asp-for="FirstName">Prénom</label>
+            <input asp-for="FirstName" 
+                   data-val="true" 
+                   data-val-required="Le prénom est requis"
+                   data-val-length="Le prénom ne peut pas dépasser 255 caractères"
+                   data-val-length-max="255" />
+            <span asp-validation-for="FirstName"></span>
+        </div>
+        <div>
+            <label asp-for="Bio">Biographie</label>
+            <textarea asp-for="Bio" rows="4"
+                      data-val="true"
+                      data-val-length="La biographie ne peut pas dépasser 1000 caractères"
+                      data-val-length-max="1000"></textarea>
+            <span asp-validation-for="Bio"></span>
+        </div>
+        <div>
+            <label asp-for="PhoneNumber">Numéro de téléphone</label>
+            <input asp-for="PhoneNumber" 
+                   data-val="true" 
+                   data-val-required="Le numéro de téléphone est requis"
+                   data-val-regex="Format de numéro de téléphone invalide"
+                   data-val-regex-pattern="^\+?[0-9\s\-\(\)]+$" />
+            <span asp-validation-for="PhoneNumber"></span>
+        </div>
+        @if (!string.IsNullOrEmpty(Model.ExistingPhoto))
+        {
+            <div>
+                <label>Photo actuelle</label>
+                <div>
+                    <img src="~/images/users/@Model.ExistingPhoto" alt="Photo actuelle" width="200" />
+                </div>
+            </div>
+        }
+        <div>
+            <label asp-for="Photo">Nouvelle photo</label>
+            <input asp-for="Photo" type="file" accept="image/*" 
+                   data-val="true"
+                   data-val-fileextension="Le fichier doit être une image (jpg, jpeg, png)"
+                   data-val-fileextension-extensions=".jpg,.jpeg,.png"
+                   data-val-filesize="Le fichier ne doit pas dépasser 5 Mo"
+                   data-val-filesize-max="5242880" />
+            <small>Laissez vide pour conserver la photo actuelle</small>
+            <span asp-validation-for="Photo"></span>
+        </div>
+        <div>
+            <button type="submit">Enregistrer</button>
+            <a asp-action="Index" asp-route-id="@Model.Id">Annuler</a>
+            <a asp-action="Index">Retour à la liste</a>
+        </div>
+    </form>
+</div>
+
+@section Scripts {
+    <partial name="_ValidationScriptsPartial" />
+    <script src="~/js/validation-extensions.js"></script>
+}
