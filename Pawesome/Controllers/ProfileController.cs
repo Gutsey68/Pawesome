@@ -3,6 +3,7 @@ using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Pawesome.Interfaces;
 using Pawesome.Models;
+using Pawesome.Models.DTOs;
 
 namespace Pawesome.Controllers;
 
@@ -39,7 +40,7 @@ public class ProfileController : Controller
             return RedirectToAction("Login", "Auth");
         }
     
-        var profileViewModel = await _profileService.GetUserProfileAsync(userId);
+        var profileViewModel = await _profileService.GetUserProfileAsync(int.Parse(userId));
 
         if (profileViewModel == null)
         {
@@ -47,5 +48,34 @@ public class ProfileController : Controller
         }
 
         return View(profileViewModel);
+    }
+
+    public async Task<IActionResult> Edit(int id)
+    {
+        var updateUserDto = await _profileService.GetUserForEditAsync(id);
+
+        if (updateUserDto == null)
+        {
+            return NotFound();
+        }
+        
+        return View(updateUserDto);
+    }
+    
+    [HttpPost]
+    [ValidateAntiForgeryToken]
+    public async Task<IActionResult> Edit(UpdateUserDto userDto)
+    {
+
+        var userId = int.Parse(_userManager.GetUserId(User)!);
+        var user = await _profileService.GetUserProfileAsync(userId);
+
+        if (user == null)
+        {
+            return RedirectToAction("Login", "Auth");
+        }
+
+        await _profileService.UpdateUserAsync(userDto);
+        return RedirectToAction(nameof(Index), new { id = userDto.Id });
     }
 }

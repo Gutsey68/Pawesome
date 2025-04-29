@@ -55,6 +55,8 @@
 
         <dt>Membre depuis :</dt>
         <dd>@Model.CreatedAt.ToString("dd/MM/yyyy")</dd>
+        <p>@User.Identity</p>
+        <a asp-action="Edit" asp-route-id="@Model.Id">Modifier mon compte</a>
     </dl>
     <h2>Adresse</h2>
     @if (!string.IsNullOrEmpty(Model.Street) || !string.IsNullOrEmpty(Model.City))

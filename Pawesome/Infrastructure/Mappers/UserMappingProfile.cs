@@ -29,5 +29,22 @@ public class UserMappingProfile : Profile
         CreateMap<User, UserSimpleDto>()
             .ForMember(dest => dest.FullName, opt => opt.MapFrom(src =>
                 $"{src.FirstName} {src.LastName}"));
+        
+        CreateMap<UpdateUserDto, User>()
+            .ForMember(dest => dest.Photo, opt => opt.Ignore())
+            .ForMember(dest => dest.UpdatedAt, opt => opt.MapFrom(_ => DateTime.UtcNow))
+            .ForMember(dest => dest.Address, opt => opt.Ignore())
+            .ForMember(dest => dest.Pets, opt => opt.Ignore())
+            .ForMember(dest => dest.Notifications, opt => opt.Ignore())
+            .ForMember(dest => dest.Reports, opt => opt.Ignore())
+            .ForMember(dest => dest.PasswordResets, opt => opt.Ignore())
+            .ForMember(dest => dest.SentMessages, opt => opt.Ignore())
+            .ForMember(dest => dest.ReceivedMessages, opt => opt.Ignore())
+            .ForMember(dest => dest.Reviews, opt => opt.Ignore())
+            .ForMember(dest => dest.Payments, opt => opt.Ignore());
+
+        CreateMap<User, UpdateUserDto>()
+            .ForMember(dest => dest.ExistingPhoto, opt => opt.MapFrom(src => src.Photo))
+            .ForMember(dest => dest.Photo, opt => opt.Ignore());
     }
 }
