@@ -43,18 +43,15 @@ public class UserRepository : Repository<User>, IUserRepository
     /// </summary>
     /// <param name="userId">The ID of the user to retrieve</param>
     /// <returns>The user with all related details if found, null otherwise</returns>
-    public async Task<User?> GetUserByIdWithDetailsAsync(string userId)
+    public async Task<User?> GetUserByIdWithDetailsAsync(int userId)
     {
-        if (!int.TryParse(userId, out int id))
-        {
-            return null;
-        }
+        
 
         return await _context.Users
             .Include(u => u.Address)
             .ThenInclude(a => a.City)
             .ThenInclude(c => c.Country)
             .Include(u => u.Pets)
-            .FirstOrDefaultAsync(u => u.Id == id);
+            .FirstOrDefaultAsync(u => u.Id == userId);
     }
 }
