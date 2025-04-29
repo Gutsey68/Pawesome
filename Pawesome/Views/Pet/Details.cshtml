@@ -28,11 +28,11 @@
                     <strong>Âge:</strong> @Model.Age an@(Model.Age > 1 ? "s" : "")
                 </div>
             }
-            @if (!string.IsNullOrEmpty(Model.Info))
+            @if (!string.IsNullOrEmpty(Model.AdditionalInfo))
             {
                 <div>
                     <strong>Informations:</strong>
-                    <p>@Model.Info</p>
+                    <p>@Model.AdditionalInfo</p>
                 </div>
             }
             <div>

@@ -50,7 +50,7 @@ public class AdvertService : IAdvertService
     /// <summary>
     /// Creates a new pet sitting request
     /// </summary>
-    /// <param name="dto">Data for the pet sitting request</param>
+    /// <param name="model">Data for the pet sitting request</param>
     /// <param name="userId">ID of the user creating the request</param>
     /// <returns>The created pet sitting advertisement DTO</returns>
     public async Task<PetSittingAdvertDto> CreatePetSittingRequestAsync(PetSittingRequestViewModel model, int userId)
@@ -60,6 +60,7 @@ public class AdvertService : IAdvertService
             StartDate = model.StartDate,
             EndDate = model.EndDate,
             Amount = model.Amount,
+            AdditionalInformation = model.AdditionalInformation,
             Status = "pending",
             CreatedAt = DateTime.UtcNow,
             UpdatedAt = DateTime.UtcNow,
@@ -68,14 +69,14 @@ public class AdvertService : IAdvertService
             Payments = new List<Payment>()
         };
 
-        var createdAdvert = await _repository.CreatePetSittingRequestAsync(advert, model.PetIds);
+        var createdAdvert = await _repository.CreatePetSittingRequestAsync(advert, model.PetIds, userId);
         return _mapper.Map<PetSittingAdvertDto>(createdAdvert);
     }
 
     /// <summary>
     /// Creates a new pet sitting offer
     /// </summary>
-    /// <param name="dto">Data for the pet sitting offer</param>
+    /// <param name="model">Data for the pet sitting offer</param>
     /// <param name="userId">ID of the user creating the offer</param>
     /// <returns>The created pet sitting advertisement DTO</returns>
     public async Task<PetSittingAdvertDto> CreatePetSittingOfferAsync(PetSittingOfferViewModel model, int userId)
@@ -85,6 +86,7 @@ public class AdvertService : IAdvertService
             StartDate = model.StartDate,
             EndDate = model.EndDate,
             Amount = model.Amount,
+            AdditionalInformation = model.AdditionalInformation,
             Status = "pending_offer",
             CreatedAt = DateTime.UtcNow,
             UpdatedAt = DateTime.UtcNow,
@@ -93,7 +95,7 @@ public class AdvertService : IAdvertService
             Payments = new List<Payment>()
         };
 
-        var createdAdvert = await _repository.CreatePetSittingOfferAsync(advert, model.AcceptedAnimalTypeIds);
+        var createdAdvert = await _repository.CreatePetSittingOfferAsync(advert, model.AcceptedAnimalTypeIds, userId);
         return _mapper.Map<PetSittingAdvertDto>(createdAdvert);
     }
 
@@ -116,6 +118,45 @@ public class AdvertService : IAdvertService
     public async Task<List<PetSittingAdvertDto>> GetUserAdvertsAsync(int userId)
     {
         var adverts = await _repository.GetUserAdvertsAsync(userId);
+        
         return _mapper.Map<List<PetSittingAdvertDto>>(adverts);
+    }
+    
+    /// <summary>
+    /// Updates an existing pet sitting request
+    /// </summary>
+    /// <param name="model">Data for updating the pet sitting request</param>
+    /// <returns>The updated pet sitting advertisement DTO</returns>
+    public async Task<PetSittingAdvertDto> UpdatePetSittingRequestAsync(UpdatePetSittingRequestViewModel model)
+    {
+        var advert = _mapper.Map<Advert>(model);
+        
+        var updatedAdvert = await _repository.UpdatePetSittingRequestAsync(advert, model.PetIds);
+        
+        return _mapper.Map<PetSittingAdvertDto>(updatedAdvert);
+    }
+
+    /// <summary>
+    /// Updates an existing pet sitting offer
+    /// </summary>
+    /// <param name="model">Data for updating the pet sitting offer</param>
+    /// <returns>The updated pet sitting advertisement DTO</returns>
+    public async Task<PetSittingAdvertDto> UpdatePetSittingOfferAsync(UpdatePetSittingOfferViewModel model)
+    {
+        var advert = _mapper.Map<Advert>(model);
+        
+        var updatedAdvert = await _repository.UpdatePetSittingOfferAsync(advert, model.AcceptedAnimalTypeIds);
+        
+        return _mapper.Map<PetSittingAdvertDto>(updatedAdvert);
+    }
+    
+    /// <summary>
+    /// Deletes an advert
+    /// </summary>
+    /// <param name="advertId">The ID of the advert to delete</param>
+    /// <returns>True if the deletion was successful, false if the advert wasn't found</returns>
+    public async Task<bool> DeleteAdvertAsync(int advertId)
+    {
+        return await _repository.DeleteAdvertAsync(advertId);
     }
 }

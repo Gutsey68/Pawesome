@@ -6,12 +6,12 @@ namespace Pawesome.Interfaces;
 public interface IPetService
 {
     Task<IEnumerable<PetViewModel>> GetUserPetsAsync(int userId);
-    Task<PetDetailsViewModel?> GetPetDetailsAsync(int id);
     Task<int> CreatePetAsync(CreatePetViewModel model, int userId);
     Task DeletePetAsync(int id);
     Task<IEnumerable<AnimalTypeViewModel>> GetAnimalTypesAsync();
     Task<List<PetViewModel>> GetUserPets(int userId);
     Task<UpdatePetViewModel?> GetPetForEditAsync(int id);
     Task UpdatePetAsync(UpdatePetViewModel model);
+    Task<PetDetailsViewModel?> GetPetDetailsAsync(int id);
     
 }

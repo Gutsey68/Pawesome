@@ -7,8 +7,12 @@ public class Advert
     public DateTime EndDate { get; set; }
     public string Status { get; set; } = "pending";
     public decimal Amount { get; set; }
+    public string? AdditionalInformation { get; set; }
     public DateTime CreatedAt { get; set; } = DateTime.UtcNow;
     public DateTime UpdatedAt { get; set; } = DateTime.UtcNow;
+    
+    public int UserId { get; set; }
+    public User User { get; set; } = null!;
     
     public required ICollection<PetAdvert> PetAdverts { get; set; }
     public required ICollection<Review> Reviews { get; set; }

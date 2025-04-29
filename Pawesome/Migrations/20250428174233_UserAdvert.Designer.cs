@@ -11,15 +11,15 @@ using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 namespace Pawesome.Migrations
 {
     [DbContext(typeof(AppDbContext))]
-    [Migration("20250331175959_SuppCustomRoleTable")]
-    partial class SuppCustomRoleTable
+    [Migration("20250428174233_UserAdvert")]
+    partial class UserAdvert
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
-                .HasAnnotation("ProductVersion", "9.0.3")
+                .HasAnnotation("ProductVersion", "9.0.4")
                 .HasAnnotation("Relational:MaxIdentifierLength", 63);
 
             NpgsqlModelBuilderExtensions.UseIdentityByDefaultColumns(modelBuilder);
@@ -195,6 +195,9 @@ namespace Pawesome.Migrations
 
                     NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("Id"));
 
+                    b.Property<string>("AdditionalInformation")
+                        .HasColumnType("text");
+
                     b.Property<decimal>("Amount")
                         .HasColumnType("numeric");
 
@@ -214,7 +217,12 @@ namespace Pawesome.Migrations
                     b.Property<DateTime>("UpdatedAt")
                         .HasColumnType("timestamp with time zone");
 
+                    b.Property<int>("UserId")
+                        .HasColumnType("integer");
+
                     b.HasKey("Id");
+
+                    b.HasIndex("UserId");
 
                     b.ToTable("Adverts");
                 });
@@ -240,6 +248,27 @@ namespace Pawesome.Migrations
                     b.HasKey("Id");
 
                     b.ToTable("AnimalTypes");
+                });
+
+            modelBuilder.Entity("Pawesome.Models.AnimalTypeAdvert", b =>
+                {
+                    b.Property<int>("AnimalTypeId")
+                        .HasColumnType("integer");
+
+                    b.Property<int>("AdvertId")
+                        .HasColumnType("integer");
+
+                    b.Property<DateTime>("CreatedAt")
+                        .HasColumnType("timestamp with time zone");
+
+                    b.Property<DateTime>("UpdatedAt")
+                        .HasColumnType("timestamp with time zone");
+
+                    b.HasKey("AnimalTypeId", "AdvertId");
+
+                    b.HasIndex("AdvertId");
+
+                    b.ToTable("AnimalTypeAdverts");
                 });
 
             modelBuilder.Entity("Pawesome.Models.City", b =>
@@ -718,6 +747,36 @@ namespace Pawesome.Migrations
                     b.Navigation("City");
                 });
 
+            modelBuilder.Entity("Pawesome.Models.Advert", b =>
+                {
+                    b.HasOne("Pawesome.Models.User", "User")
+                        .WithMany("Adverts")
+                        .HasForeignKey("UserId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("User");
+                });
+
+            modelBuilder.Entity("Pawesome.Models.AnimalTypeAdvert", b =>
+                {
+                    b.HasOne("Pawesome.Models.Advert", "Advert")
+                        .WithMany()
+                        .HasForeignKey("AdvertId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("Pawesome.Models.AnimalType", "AnimalType")
+                        .WithMany()
+                        .HasForeignKey("AnimalTypeId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Advert");
+
+                    b.Navigation("AnimalType");
+                });
+
             modelBuilder.Entity("Pawesome.Models.City", b =>
                 {
                     b.HasOne("Pawesome.Models.Country", "Country")
@@ -902,6 +961,8 @@ namespace Pawesome.Migrations
 
             modelBuilder.Entity("Pawesome.Models.User", b =>
                 {
+                    b.Navigation("Adverts");
+
                     b.Navigation("Notifications");
 
                     b.Navigation("PasswordResets");

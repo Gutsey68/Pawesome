@@ -1,25 +1,24 @@
-@model Pawesome.Models.ViewModels.Advert.PetSittingRequestViewModel
+@model Pawesome.Models.ViewModels.Advert.UpdatePetSittingOfferViewModel
 
-<div class="container mt-4">
+<div class="container">
     <div class="card">
         <div class="card-header">
-            <h1>Demande de pet sitting</h1>
+            <h1>Modifier mon offre de pet sitting</h1>
         </div>
         <div class="card-body">
-            <form asp-action="CreateRequest" method="post">
+            <form asp-action="EditOffer" method="post">
                 <div asp-validation-summary="ModelOnly" class="validation-message"></div>
-                
+                <input type="hidden" asp-for="Id" />
                 <div class="form-group">
-                    <label asp-for="StartDate" class="form-label">Date de début</label>
+                    <label asp-for="StartDate" class="form-label">Date de début de disponibilité</label>
                     <input asp-for="StartDate" class="form-control" type="date" 
                            data-val="true" 
                            data-val-required="La date de début est obligatoire"
                            data-val-must="La date de début doit être future" />
                     <span asp-validation-for="StartDate" class="validation-message"></span>
                 </div>
-                
                 <div class="form-group">
-                    <label asp-for="EndDate" class="form-label">Date de fin</label>
+                    <label asp-for="EndDate" class="form-label">Date de fin de disponibilité</label>
                     <input asp-for="EndDate" class="form-control" type="date" 
                            data-val="true" 
                            data-val-required="La date de fin est obligatoire"
@@ -27,9 +26,8 @@
                            data-val-greaterthan-other="*.StartDate" />
                     <span asp-validation-for="EndDate" class="validation-message"></span>
                 </div>
-                
                 <div class="form-group">
-                    <label asp-for="Amount" class="form-label">Prix proposé</label>
+                    <label asp-for="Amount" class="form-label">Prix demandé (par jour)</label>
                     <input asp-for="Amount" class="form-control" type="number" step="0.01" 
                            data-val="true"
                            data-val-range="Le montant ne peut pas être négatif"
@@ -37,50 +35,44 @@
                     <span asp-validation-for="Amount" class="validation-message"></span>
                 </div>
                 <div class="form-group">
-                    <label class="form-label">Animaux à garder</label>
-                    @if (ViewBag.Pets != null && ViewBag.Pets.Count > 0)
+                    <label class="form-label">Types d'animaux acceptés</label>
+                    @if (ViewBag.AnimalTypes != null && ViewBag.AnimalTypes.Count > 0)
                     {
-                        <div class="row row-cols-1 row-cols-sm-2 row-cols-md-3 g-3">
-                            @foreach (var pet in ViewBag.Pets)
+                        <div class="animals-grid">
+                            @foreach (var animalType in ViewBag.AnimalTypes)
                             {
-                                <div class="col">
-                                    <div class="card h-100">
-                                        <div class="card-body">
-                                            <div class="form-check">
-                                                <input class="form-check-input" type="checkbox" name="PetIds" value="@pet.Id" id="pet-@pet.Id">
-                                                <label class="form-check-label d-flex align-items-center" for="pet-@pet.Id">
-                                                    @if (!string.IsNullOrEmpty(pet.Photo))
-                                                    {
-                                                        <img src="~/images/pets/@pet.Photo" alt="@pet.Name" class="pet-thumbnail">
-                                                    }
-                                                </label>
-                                            </div>
+                                <div class="animal-card">
+                                    <div class="card-content">
+                                        <div class="form-check">
+                                            <input class="form-check-input" type="checkbox" name="AcceptedAnimalTypeIds" value="@animalType.Id" id="type-@animalType.Id"
+                                                   @(Model.AcceptedAnimalTypeIds != null && Model.AcceptedAnimalTypeIds.Contains(animalType.Id) ? "checked" : "")>
+                                            <label class="form-check-label" for="type-@animalType.Id">
+                                                @animalType.Name
+                                            </label>
                                         </div>
                                     </div>
                                 </div>
                             }
                         </div>
-                        <span asp-validation-for="PetIds" class="validation-message"
+                        <span asp-validation-for="AcceptedAnimalTypeIds" class="validation-message" 
                               data-val="true"
-                              data-val-required="Vous devez sélectionner au moins un animal"></span>
+                              data-val-required="Vous devez sélectionner au moins un type d'animal"></span>
                     }
                     else
                     {
-                        <div class="alert alert-warning">
-                            Vous n'avez pas encore ajouté d'animaux. <a asp-controller="Pet" asp-action="Create">Ajouter un animal</a>
+                        <div class="alert">
+                            Aucun type d'animal disponible.
                         </div>
                     }
                 </div>
-                
                 <div class="form-group">
                     <label asp-for="AdditionalInformation" class="form-label">Informations supplémentaires</label>
                     <textarea asp-for="AdditionalInformation" class="form-control" rows="4"></textarea>
                     <span asp-validation-for="AdditionalInformation" class="validation-message"></span>
                 </div>
-                
                 <div class="form-group">
-                    <button type="submit" class="button">Publier</button>
-                    <a asp-action="Index" class="button" data-variant="secondary">Annuler</a>
+                    <button type="submit" class="button">Mettre à jour</button>
+                    <a asp-action="Details" asp-route-id="@Model.Id" class="button secondary">Annuler</a>
                 </div>
             </form>
         </div>
