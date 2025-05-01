@@ -3,6 +3,7 @@ using Pawesome.Models;
 using Pawesome.Models.DTOs;
 using Pawesome.Models.ViewModels;
 using Pawesome.Models.ViewModels.Auth;
+using Pawesome.Models.ViewModels.User;
 
 namespace Pawesome.Infrastructure.Mappers;
 
@@ -17,6 +18,7 @@ public class UserMappingProfile : Profile
             .ForMember(dest => dest.LastName, opt => opt.MapFrom(src => src.LastName));
 
         CreateMap<User, ProfileViewModel>()
+            .ForMember(dest => dest.Photo, opt => opt.MapFrom(src => src.Photo))
             .ForMember(dest => dest.Street,
                 opt => opt.MapFrom(src => src.Address.StreetAddress))
             .ForMember(dest => dest.City, opt => opt.MapFrom(src => src.Address.City.Name))
@@ -29,5 +31,22 @@ public class UserMappingProfile : Profile
         CreateMap<User, UserSimpleDto>()
             .ForMember(dest => dest.FullName, opt => opt.MapFrom(src =>
                 $"{src.FirstName} {src.LastName}"));
+        
+        CreateMap<UpdateUserViewModel, User>()
+            .ForMember(dest => dest.Photo, opt => opt.Ignore())
+            .ForMember(dest => dest.UpdatedAt, opt => opt.MapFrom(_ => DateTime.UtcNow))
+            .ForMember(dest => dest.Address, opt => opt.Ignore())
+            .ForMember(dest => dest.Pets, opt => opt.Ignore())
+            .ForMember(dest => dest.Notifications, opt => opt.Ignore())
+            .ForMember(dest => dest.Reports, opt => opt.Ignore())
+            .ForMember(dest => dest.PasswordResets, opt => opt.Ignore())
+            .ForMember(dest => dest.SentMessages, opt => opt.Ignore())
+            .ForMember(dest => dest.ReceivedMessages, opt => opt.Ignore())
+            .ForMember(dest => dest.Reviews, opt => opt.Ignore())
+            .ForMember(dest => dest.Payments, opt => opt.Ignore());
+
+        CreateMap<User, UpdateUserViewModel>()
+            .ForMember(dest => dest.ExistingPhoto, opt => opt.MapFrom(src => src.Photo))
+            .ForMember(dest => dest.Photo, opt => opt.Ignore());
     }
 }

@@ -39,7 +39,7 @@ public class AuthService : IAuthService
     /// <summary>
     /// Registers a new user in the system.
     /// </summary>
-    /// <param name="registerDto">The registration data provided by the user.</param>
+    /// <param name="model">The registration data provided by the user.</param>
     /// <returns>
     /// An IdentityResult indicating the success or failure of the registration process.
     /// If successful, the user is automatically signed in.
@@ -52,15 +52,15 @@ public class AuthService : IAuthService
         }
 
         var user = _mapper.Map<User>(model);
-    
+
         var result = await _userManager.CreateAsync(user, model.Password);
-    
+
         if (result.Succeeded)
         {
             await _userManager.AddToRoleAsync(user, "User");
             await _signInManager.SignInAsync(user, isPersistent: false);
         }
-    
+
         return result;
     }
 
@@ -76,7 +76,7 @@ public class AuthService : IAuthService
     public async Task<SignInResult> LoginUserAsync(string email, string password, bool rememberMe)
     {
         var user = await _userManager.FindByEmailAsync(email);
-        
+
         if (user == null)
         {
             return SignInResult.Failed;
@@ -92,5 +92,18 @@ public class AuthService : IAuthService
     public async Task LogoutAsync()
     {
         await _signInManager.SignOutAsync();
+    }
+
+    /// <summary>
+    /// Authenticates a user through external providers like Google OAuth.
+    /// </summary>
+    /// <param name="user">The user entity to sign in.</param>
+    /// <returns>
+    /// A task representing the asynchronous external login operation.
+    /// </returns>
+    public async Task ExternalLoginAsync(User user)
+    {
+        await _signInManager.SignOutAsync();
+        await _signInManager.SignInAsync(user, isPersistent: true);
     }
 }

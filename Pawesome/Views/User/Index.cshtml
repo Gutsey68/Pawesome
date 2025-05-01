@@ -6,7 +6,7 @@
     <div class="img-cover">
     </div>  
     <div class="profile-header">
-        <div><img class="avatar avatar-profile" src="" alt=""></div>
+        <div><img class="avatar" data-size="xxl" src="~/images/users/@Model.Photo" alt=""></div>
         <div>
             <div>
                 <h1>@Model.FirstName @Model.LastName</h1>
@@ -15,7 +15,7 @@
                     <p>☑️</p>
                 }
             </div>
-            <p>@Model.Bio Test parce que j'ai pas de bio</p>
+            <p>@Model.Bio</p>
         </div>
     </div>
     <div class="profile-pets">
@@ -55,6 +55,8 @@
 
         <dt>Membre depuis :</dt>
         <dd>@Model.CreatedAt.ToString("dd/MM/yyyy")</dd>
+        <p>@User.Identity</p>
+        <a asp-action="Edit" asp-route-id="@Model.Id">Modifier mon compte</a>
     </dl>
     <h2>Adresse</h2>
     @if (!string.IsNullOrEmpty(Model.Street) || !string.IsNullOrEmpty(Model.City))

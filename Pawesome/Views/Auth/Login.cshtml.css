@@ -109,6 +109,33 @@ main {
     justify-content: space-between;
 }
 
+.separator {
+    display: flex;
+    align-items: center;
+    text-align: center;
+    margin: var(--space-2) 0;
+}
+
+.separator::before,
+.separator::after {
+    content: '';
+    flex: 1;
+    border-bottom: 1px solid var(--color-primary-5);
+}
+
+.separator::before {
+    margin-right: var(--space-3);
+}
+
+.separator::after {
+    margin-left: var(--space-3);
+}
+
+.separator span {
+    color: var(--color-primary-11);
+    font-size: var(--font-size-sm);
+}
+
 @media (min-width: 769px) and (max-width: 1280px) {
     .login-form, .login-header {
         margin: 0 10% 0 0; 
