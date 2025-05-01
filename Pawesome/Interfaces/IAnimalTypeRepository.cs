@@ -1,4 +1,5 @@
 using Pawesome.Models;
+using Pawesome.Models.Entities;
 
 namespace Pawesome.Interfaces;
 

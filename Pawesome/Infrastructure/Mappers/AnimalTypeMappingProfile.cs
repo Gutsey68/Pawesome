@@ -1,6 +1,7 @@
 using AutoMapper;
 using Pawesome.Models;
 using Pawesome.Models.DTOs;
+using Pawesome.Models.Entities;
 using Pawesome.Models.ViewModels;
 
 namespace Pawesome.Infrastructure.Mappers;

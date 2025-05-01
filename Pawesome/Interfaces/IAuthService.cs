@@ -1,5 +1,6 @@
 using Microsoft.AspNetCore.Identity;
 using Pawesome.Models;
+using Pawesome.Models.Entities;
 using Pawesome.Models.ViewModels.Auth;
 
 namespace Pawesome.Interfaces;
