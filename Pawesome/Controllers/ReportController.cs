@@ -67,7 +67,7 @@ public class ReportMvcController : Controller
                 TargetId = model.TargetId,
                 ReportType = model.ReportType,
                 Comment = model.Comment,
-                CreatedAt = DateTime.Now,
+                CreatedAt = DateTime.UtcNow,
                 Status = "Pending"
             };
 
