@@ -12,5 +12,5 @@ public class CreateReportViewModel
     [Required(ErrorMessage = "Le commentaire est obligatoire")]
     [StringLength(500, ErrorMessage = "Le commentaire ne doit pas dépasser 500 caractères")]
     [Display(Name = "Commentaire")]
-    public string? Comment { get; set; }
+    public required string Comment { get; set; }
 }
