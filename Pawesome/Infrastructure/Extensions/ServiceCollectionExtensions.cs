@@ -97,6 +97,7 @@ public static class ServiceCollectionExtensions
         services.AddScoped<IPetRepository, PetRepository>();
         services.AddScoped<IAnimalTypeRepository, AnimalTypeRepository>();
         services.AddScoped<IAdvertRepository, AdvertRepository>();
+        services.AddScoped<IMessageRepository, MessageRepository>();
         
         // Register services
         services.AddScoped<IAuthService, AuthService>();
@@ -105,6 +106,7 @@ public static class ServiceCollectionExtensions
         services.AddScoped<IEmailService, EmailService>();
         services.AddScoped<IAdvertService, AdvertService>();
         services.AddScoped<IAnimalTypeService, AnimalTypeService>();
+        services.AddScoped<IMessageService, MessageService>();
         
         // Register AutoMapper
         services.AddAutoMapper(typeof(Program).Assembly);

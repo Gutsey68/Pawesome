@@ -17,6 +17,8 @@ builder.Services.AddPawesomeDatabase(builder.Configuration)
     .AddPawesomeValidation()
     .AddPawesomeServices();
 
+builder.Services.AddSignalR();
+
 // Configure localization
 var cultureInfo = new CultureInfo("fr-FR");
 var supportedCultures = new[] { cultureInfo };

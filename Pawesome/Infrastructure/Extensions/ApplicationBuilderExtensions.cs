@@ -29,6 +29,13 @@ public static class ApplicationBuilderExtensions
             name: "default",
             pattern: "{controller=Home}/{action=Index}/{id?}");
         
+        app.MapControllerRoute(
+            name: "userProfile",
+            pattern: "User/{id:int}",
+            defaults: new { controller = "User", action = "Profile" });
+        
+        app.MapHub<Hubs.MessageHub>("/messageHub");
+        
         return app;
     }
 }

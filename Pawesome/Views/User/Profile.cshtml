@@ -1,0 +1,107 @@
+@model Pawesome.Models.ViewModels.User.PublicProfileViewModel
+@{
+    ViewData["Title"] = "Profil de " + Model.FullName;
+}
+
+<div class="container">
+    <div>
+        <div>
+            <div>
+                <div>
+                    @if (!string.IsNullOrEmpty(Model.Photo))
+                    {
+                        <img src="~/images/users/@Model.Photo" alt="@Model.FullName" class="rounded-circle img-fluid" style="width: 150px; height: 150px; object-fit: cover;">
+                    }
+                    else
+                    {
+                        <div>
+                            @Model.FullName.Substring(0, 1)
+                        </div>
+                    }
+                </div>
+                <div>
+                    <h3>@Model.FullName</h3>
+                    @if (Model.Rating.HasValue)
+                    {
+                        <div>
+                            <span>
+                                @for (int i = 0; i < Math.Floor(Model.Rating.Value); i++)
+                                {
+                                    <i class="bi bi-star-fill"></i>
+                                }
+                                @if (Model.Rating.Value % 1 >= 0.5)
+                                {
+                                    <i class="bi bi-star-fill"></i>  
+                                }
+                            </span>
+                            <span>@Model.Rating.Value.ToString("0.0")</span>
+                        </div>
+                    }
+                    <p>Membre depuis @Model.CreatedAt.ToString("MMMM yyyy")</p>
+                    
+                    <div>
+                        <a href="@Url.Action("Conversation", "Message", new { otherUserId = Model.Id })" class="button">
+                            🖊️ Envoyer un message
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <div>
+            @if (!string.IsNullOrEmpty(Model.Bio))
+            {
+                <div class="card">
+                    <div class="card-header">
+                        <h4>À propos</h4>
+                    </div>
+                    <div class="card-body">
+                        <p>@Model.Bio</p>
+                    </div>
+                </div>
+            }
+            
+            <div class="card">
+                <div class="card-header">
+                    <h4>Animaux</h4>
+                </div>
+                <div class="card-body">
+                    @if (Model.Pets != null && Model.Pets.Any())
+                    {
+                        <div>
+                            @foreach (var pet in Model.Pets)
+                            {
+                                <div>
+                                    <div class="card">
+                                        <div class="card-body">
+                                            <div>
+                                                @if (!string.IsNullOrEmpty(pet.Photo))
+                                                {
+                                                    <img src="~/images/pets/@pet.Photo" alt="@pet.Name">
+                                                }
+                                                else
+                                                {
+                                                    <div>
+                                                        @pet.Name[..1]
+                                                    </div>
+                                                }
+                                                <div>
+                                                    <h5>@pet.Name</h5>
+                                                    <small>@pet.Species</small>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            }
+                        </div>
+                    }
+                    else
+                    {
+                        <p>Pas d'animaux enregistrés</p>
+                    }
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

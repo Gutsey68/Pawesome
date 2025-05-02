@@ -36,12 +36,7 @@ public class UserService : IUserService
     {
         var user = await _userRepository.GetByIdAsync(userId);
 
-        if (user == null)
-        {
-            return null;
-        }
-
-        return _mapper.Map<UpdateUserViewModel>(user);
+        return user == null ? null : _mapper.Map<UpdateUserViewModel>(user);
     }
 
     /// <summary>
@@ -53,12 +48,7 @@ public class UserService : IUserService
     {
         var user = await _userRepository.GetUserByIdWithDetailsAsync(userId);
 
-        if (user == null)
-        {
-            return null;
-        }
-
-        return _mapper.Map<ProfileViewModel>(user);
+        return user == null ? null : _mapper.Map<ProfileViewModel>(user);
     }
 
     /// <summary>
@@ -75,7 +65,7 @@ public class UserService : IUserService
 
             _mapper.Map(model, user);
 
-            if (model.Photo != null && model.Photo.Length > 0)
+            if (model.Photo is { Length: > 0 })
             {
                 user.Photo = await SavePhotoAsync(model.Photo);
 
@@ -124,5 +114,35 @@ public class UserService : IUserService
         {
             File.Delete(filePath);
         }
+    }
+    
+    /// <summary>
+    /// Retrieves a public user profile for display
+    /// </summary>
+    /// <param name="userId">The ID of the user whose public profile to retrieve</param>
+    /// <param name="currentUserId">The ID of the current user</param>
+    /// <returns>Public profile view model if found, null otherwise</returns>
+    public async Task<PublicProfileViewModel?> GetPublicUserProfileAsync(int userId, int currentUserId)
+    {
+        var user = await _userRepository.GetUserByIdWithDetailsAsync(userId);
+
+        if (user == null)
+        {
+            return null;
+        }
+
+        var profile = new PublicProfileViewModel
+        {
+            Id = user.Id,
+            FullName = $"{user.FirstName} {user.LastName}",
+            Photo = user.Photo,
+            Bio = user.Bio,
+            Rating = user.Rating,
+            CreatedAt = user.CreatedAt,
+            Pets = _mapper.Map<IEnumerable<PetViewModel>>(user.Pets),
+            IsCurrentUser = userId == currentUserId
+        };
+
+        return profile;
     }
 }
