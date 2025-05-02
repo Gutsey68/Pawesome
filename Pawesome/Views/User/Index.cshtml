@@ -23,15 +23,7 @@
         {
             @foreach (var pet in Model.Pets)
             {
-                <div class="card">
-                    <div class="card-header">
-                        <h2>@pet.Name</h2>
-                        <p>@pet.Species</p>
-                    </div>
-                    <div class="card-body">
-                        <img width="200" height="200" src="~/images/pets/@pet.Photo" alt="">
-                    </div>
-                </div>
+                <partial name="_PetCardPartial" model="pet"/>
             }
             <a asp-controller="Pet" asp-action="Index">Voir mes animaux</a>
         }
