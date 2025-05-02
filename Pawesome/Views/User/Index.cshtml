@@ -18,12 +18,25 @@
             <p>@Model.Bio</p>
         </div>
     </div>
-    <div class="profile-pets">
-        @* Cards de tous mes animaux *@
+    <div class="profile-pets container">
+        @if (Model.Pets.Any())
+        {
+            @foreach (var pet in Model.Pets)
+            {
+                <partial name="_PetCardPartial" model="pet"/>
+            }
+            <a asp-controller="Pet" asp-action="Index">Voir mes animaux</a>
+        }
+        else
+        {
+            <p>Aucun animal enregistré</p>
+        }
+        <a asp-controller="Pet" asp-action="Create">Ajouter un animal</a>
     </div>
+
 </div>
 
-<div>
+<div class="container">
     <h2>Informations personnelles</h2>
     <dl>
         <dt>Prénom :</dt>
@@ -79,20 +92,4 @@
     {
         <p>Aucune adresse renseignée</p>
     }
-    <h2>Animaux</h2>
-    @if (Model.Pets.Any())
-    {
-        <ul>
-            @foreach (var pet in Model.Pets)
-            {
-                <li>@pet.Name - @pet.Species</li>
-            }
-        </ul>
-        <a asp-controller="Pet" asp-action="Index">Voir mes animaux</a>
-    }
-    else
-    {
-        <p>Aucun animal enregistré</p>
-    }
-    <a asp-controller="Pet" asp-action="Create">Ajouter un animal</a>
 </div>

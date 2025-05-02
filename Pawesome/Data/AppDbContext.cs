@@ -2,6 +2,7 @@ using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
 using Pawesome.Models;
+using Pawesome.Models.Entities;
 
 public class AppDbContext :  IdentityDbContext<User, IdentityRole<int>, int>
 {

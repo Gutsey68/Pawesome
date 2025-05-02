@@ -3,6 +3,7 @@ using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Pawesome.Interfaces;
 using Pawesome.Models;
+using Pawesome.Models.Entities;
 using Pawesome.Models.ViewModels.User;
 
 namespace Pawesome.Controllers;

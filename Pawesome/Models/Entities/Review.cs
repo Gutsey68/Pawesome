@@ -1,4 +1,4 @@
-namespace Pawesome.Models;
+namespace Pawesome.Models.Entities;
 
 public class Review
 {

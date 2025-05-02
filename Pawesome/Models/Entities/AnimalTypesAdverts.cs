@@ -1,3 +1,5 @@
+using Pawesome.Models.Entities;
+
 namespace Pawesome.Models;
 
 public class AnimalTypeAdvert

@@ -1,5 +1,4 @@
-﻿@using Pawesome.Controllers
-@using Pawesome.Models.ViewModels
+﻿@using Pawesome.Models.ViewModels
 @{
     ViewData["Title"] = "Home Page";
     
@@ -68,19 +67,9 @@
         <div class="home-page-cards-container">
             <h1>Les Bestioles Qui Cartonnent</h1>
             <div class="containers pet-cards-flex-container">
-                @{
-                    int index = 1;
-                }
-                @foreach (PetCartLandingViewModel card in Model)
+                @foreach (var pet in Model)
                 {
-                    var viewModel = new CardLandingViewModel
-                    {
-                        Card = card,
-                        Index = index
-                    };
-
-                    <partial name="Home/_CardPartial" model="viewModel"/>
-                    index++;
+                    <partial name="_PetCardPartial" model="pet"/>
                 }
             </div>
             <button type="button" class="home-page-submission">Voir toute les annonce <img alt="Rechercher" class="icon icon-button-search-l" src="svg/lucide/arrow-right.svg"/></button>

@@ -2,6 +2,7 @@ using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using Pawesome.Data.Seeding;
 using Pawesome.Models;
+using Pawesome.Models.Entities;
 
 namespace Pawesome.Infrastructure.Extensions;
 
