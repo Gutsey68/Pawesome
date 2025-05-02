@@ -72,5 +72,11 @@ public class AppDbContext :  IdentityDbContext<User, IdentityRole<int>, int>
             .HasOne(ata => ata.Advert)
             .WithMany()
             .HasForeignKey(ata => ata.AdvertId);
+        
+        modelBuilder.Entity<Report>()
+            .HasOne(s => s.User)
+            .WithMany()
+            .HasForeignKey(s => s.UserId)
+            .OnDelete(DeleteBehavior.Restrict);
     }
 }

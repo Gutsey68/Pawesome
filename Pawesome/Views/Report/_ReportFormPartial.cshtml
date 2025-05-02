@@ -1,0 +1,26 @@
+﻿@model Pawesome.Models.ViewModels.CreateReportViewModel
+
+<div class="report-form-container">
+    <h3>Signaler un contenu</h3>
+
+    <form asp-action="SubmitReport" asp-controller="ReportMvc" method="post">
+        <div asp-validation-summary="ModelOnly" class="validation-message"></div>
+
+        <input type="hidden" asp-for="TargetId" />
+        <input type="hidden" asp-for="ReportType" />
+
+        <div class="form-group">
+            <label asp-for="Comment" class="form-label">Motif du signalement</label>
+            <textarea asp-for="Comment" class="form-control" rows="4"
+                      placeholder="Veuillez préciser la raison de votre signalement..."
+                      data-val="true"
+                      data-val-required="Le commentaire est obligatoire"></textarea>
+            <span asp-validation-for="Comment" class="validation-message"></span>
+        </div>
+
+        <div class="form-group">
+            <button type="submit" class="button">Envoyer</button>
+            <button type="button" class="button" data-variant="secondary" data-bs-dismiss="modal">Annuler</button>
+        </div>
+    </form>
+</div>
