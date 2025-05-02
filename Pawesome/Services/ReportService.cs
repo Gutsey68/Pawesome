@@ -1,8 +1,5 @@
 ﻿using Pawesome.Interfaces;
-using Pawesome.Models;
-using System;
-using System.Collections.Generic;
-using System.Threading.Tasks;
+using Pawesome.Models.Entities;
 
 namespace Pawesome.Services;
 
@@ -46,7 +43,6 @@ public class ReportService : IReportService
             
         ValidateReport(report);
         
-        // Mettre à jour la date de modification
         report.UpdatedAt = DateTime.UtcNow;
         
         await _reportRepository.UpdateReportAsync(report);

@@ -1,9 +1,6 @@
 ﻿using Microsoft.EntityFrameworkCore;
-using Pawesome.Data;
-using Pawesome.Models;
-using System.Collections.Generic;
-using System.Threading.Tasks;
 using Pawesome.Interfaces;
+using Pawesome.Models.Entities;
 
 namespace Pawesome.Repositories;
 

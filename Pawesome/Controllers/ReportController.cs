@@ -1,12 +1,9 @@
 ﻿using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Pawesome.Interfaces;
-using Pawesome.Models;
 using Pawesome.Models.ViewModels;
-using System;
-using System.Security.Claims;
-using System.Threading.Tasks;
 using Microsoft.AspNetCore.Identity;
+using Pawesome.Models.Entities;
 
 namespace Pawesome.Controllers;
 
@@ -33,7 +30,8 @@ public class ReportMvcController : Controller
         var viewModel = new CreateReportViewModel
         {
             TargetId = targetId,
-            ReportType = reportType
+            ReportType = reportType,
+            Comment = string.Empty
         };
 
         return PartialView("_ReportFormPartial", viewModel);
