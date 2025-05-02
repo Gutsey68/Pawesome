@@ -48,6 +48,7 @@
                                         <div class="card-body">
                                             <div class="form-check">
                                                 <input class="form-check-input" type="checkbox" name="PetIds" value="@pet.Id" id="pet-@pet.Id">
+                                                <p class="form-name">@pet.Name</p>
                                                 <label class="form-check-label d-flex align-items-center" for="pet-@pet.Id">
                                                     @if (!string.IsNullOrEmpty(pet.Photo))
                                                     {

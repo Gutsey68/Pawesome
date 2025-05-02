@@ -10,217 +10,110 @@
             <div class="header"></div>
 
             <div class="research-bar">
-                
+
+                <div class="field-group">
+                    <label>Vous êtes ?</label>
+                    <div class="radio-group">
+                        <label class="radio-option">
+                            <input type="radio" name="animalChoice" value="garde"/> 
+                            Petsitter
+                        </label><br>
+                        <label class="radio-option">
+                            <input type="radio" name="animalChoice" value="faireGarder"/>
+                            Propriétaire d'animal
+                        </label>
+                    </div>
+                </div>
+
+
                 <!--#region Input Annonces -->
-                <div class="field-group">
-                    <label>Je recherche</label>
-                    <input type="text" id="serviceInput" placeholder="Une annonce ?" readonly/>
-                </div>
+                    @* <div class="field-group"> *@
+                    @*     <label>Je recherche</label> *@
+                    @*     <input type="text" id="serviceInput" placeholder="Une annonce ?" readonly/> *@
+                    @* </div> *@
+                    @* *@
+                    @* <div class="popup" id="servicePopup" role="dialog"> *@
+                    @*     <div class="section"> *@
+                    @*         <div class="section-title">Vous souhaiter garder des animaux ?</div> *@
+                    @* *@
+                    @*         <div class="option" data-value="Hébergement"> *@
+                    @*             <div class="icon dogBoarding">🏠</div> *@
+                    @*             <div class="info"> *@
+                    @*                 <b>Hébergement</b> *@
+                    @*                 <span>Garde de plus de 24h, au domicile du gardien</span> *@
+                    @*             </div> *@
+                    @*         </div> *@
+                    @* *@
+                    @*         <div class="option" data-value="Hébergement"> *@
+                    @*             <div class="icon doggyDayCare">🏠</div> *@
+                    @*             <div class="info"> *@
+                    @*                 <b>Hébergement</b> *@
+                    @*                 <span>Garde de plus de 24h, a votre domicile</span> *@
+                    @*             </div> *@
+                    @*         </div> *@
+                    @*     </div> *@
+                    @* *@
+                    @*     <div class="section"> *@
+                    @*         <div class="section-title">Vous souhaiter faire garder animal ?</div> *@
+                    @*         <div class="option" data-value="Hébergement"> *@
+                    @*             <div class="icon dogBoarding">🏠</div> *@
+                    @*             <div class="info"> *@
+                    @*                 <b>Hébergement</b> *@
+                    @*                 <span>Garde de plus de 24h, au domicile du gardien</span> *@
+                    @*             </div> *@
+                    @*         </div> *@
+                    @* *@
+                    @*         <div class="option" data-value="Hébergement"> *@
+                    @*             <div class="icon doggyDayCare">🏠</div> *@
+                    @*             <div class="info"> *@
+                    @*                 <b>Hébergement</b> *@
+                    @*                 <span>Garde de plus de 24h, a votre domicile</span> *@
+                    @*             </div> *@
+                    @*         </div> *@
+                    @* *@
+                    @*     </div> *@
+                    @* </div> *@
 
-                <div class="popup" id="servicePopup" role="dialog">
-                    <div class="section">
-                        <div class="section-title">Au domicile du gardien</div>
-        
-                        <div class="option" data-value="Hébergement">
-                            <div class="icon dogBoarding">🏠</div>
-                            <div class="info">
-                                <b>Hébergement</b>
-                                <span>Garde de 24h, au domicile du gardien</span>
+                    <!--#endregion-->
+
+                    <span class="tiny-separator"></span>
+
+                    <div class="field-group">
+                        <label>Près de</label>
+                        <input type="text" id="location-search" class="search-input" autocomplete="off" spellcheck="false" aria-autocomplete="list" placeholder="Chez vous ?"/>
+                    </div>
+
+                    <div id="search-results" class="search-results"></div>
+
+                    <span class="tiny-separator"></span>
+                    <div class="field-group">
+                        <label>Le</label>
+                        <div id="date-container" class="date-container"></div>
+                        <input type="text" id="calendar-input" placeholder="Quand ?"/>
+                    </div>
+                    <div class="popup calendar" id="calendarPopup" role="dialog">
+                        <div class="datepicker">
+                            <div class="datepicker-top">
+                                <div class="month-selector">
+                                    <button class="arrow"><</button>
+                                    <span class="month-name">May 2025</span>
+                                    <button class="arrow">></button>
+                                </div>
                             </div>
-                        </div>
-                        <div class="option" data-value="Garderie pour chien">
-                            <div class="icon doggyDayCare">🌞</div>
-                            <div class="info">
-                                <b>Garderie pour chien</b>
-                                <span>Garderie de jour chez le gardien</span>
+
+                            <div class="datepicker-calender">
                             </div>
                         </div>
                     </div>
 
-                    <div class="section">
-                        <div class="section-title">À votre domicile</div>
-        
-                        <div class="option" data-value="Promenade chien">
-                            <div class="icon dogWalking">🐕</div>
-                            <div class="info">
-                                <b>Promenade chien</b>
-                                <span>Promenades de 30 minutes minimum</span>
-                            </div>
-                        </div>
-
-                        <div class="option" data-value="Visites à domicile">
-                            <div class="icon homeVisits">🏡</div>
-                            <div class="info">
-                                <b>Visites à domicile</b>
-                                <span>Visites de 30 minutes minimum à votre domicile</span>
-                            </div>
-                        </div>
-
-                        <div class="option" data-value="Gardiennage de maison">
-                            <div class="icon sleepover">🌙</div>
-                            <div class="info">
-                                <b>Gardiennage de maison</b>
-                                <span>Garde de 24h, à votre domicile</span>
-                            </div>
-                        </div>
-                    </div>
+                    <button class="research-button" type="button">
+                        <img alt="Rechercher" class="icon" src="svg/lucide/search.svg"/>
+                    </button>
                 </div>
-
-                <!--#endregion-->
-                
-                <span class="tiny-separator"></span>
-                
-                <div class="field-group">
-                    <label>Près de</label>
-                    <input type="text" id="location-search" class="search-input" autocomplete="off" spellcheck="false" aria-autocomplete="list" placeholder="Chez vous ?" />
-                </div>
-                
-                <div id="search-results" class="search-results"></div>
-                
-                <span class="tiny-separator"></span>
-                <div class="field-group">
-                    <label>Le</label>
-                    <input type="text" id="calendar-input" placeholder="Quand ?" />
-                </div>
-                <div class="popup calendar" id="calendarPopup" role="dialog" >
-                    <div class="datepicker">
-                        <div class="datepicker-top">
-                            <div class="month-selector">
-                                <button class="arrow"><</button>
-                                <span class="month-name">May 2025</span>
-                                <button class="arrow">></button>
-                            </div>
-                        </div>
-
-                        <div class="datepicker-calender">
-                        </div>
-                    </div>
-                </div>
-                
-                <button class="research-button" type="button">
-                    <img alt="Rechercher" class="icon" src="svg/lucide/search.svg" />
-                </button>
-            </div>
         </div>
     </div>
 </main>
 
 <script src="js/searchBar/ServicePopupUtility.js"></script>
 <script src="js/searchBar/LocationSearchUtility.js"></script>
-
-<script>
-  let startDate = null;
-  let endDate = null;
-
-  const calendarBody = document.querySelector('.datepicker-calender');
-  const monthLabel = document.querySelector('.month-name');
-  const prevBtn = document.querySelectorAll('.month-selector .arrow')[0];
-  const nextBtn = document.querySelectorAll('.month-selector .arrow')[1];
-  const calendarInput = document.getElementById('calendar-input');
-
-  let currentDate = new Date();
-
-  function formatDisplayDate(date) {
-    const day = String(date.getDate()).padStart(2, '0');
-    const month = String(date.getMonth() + 1).padStart(2, '0');
-    const year = date.getFullYear();
-    return `${day}/${month}/${year}`;
-  }
-
-  function updateInputField() {
-    if (startDate && !endDate) {
-      calendarInput.value = formatDisplayDate(startDate);
-    } else if (startDate && endDate) {
-      calendarInput.value = `${formatDisplayDate(startDate)} jusqu'à ${formatDisplayDate(endDate)}`;
-    } else {
-      calendarInput.value = '';
-    }
-  }
-
-  function clearSelection() {
-    calendarBody.querySelectorAll('button.date').forEach(btn => {
-      btn.classList.remove('start-date', 'end-date', 'in-range');
-    });
-    startDate = null;
-    endDate = null;
-    updateInputField();
-  }
-
-  function renderCalendar(date) {
-    const year = date.getFullYear();
-    const month = date.getMonth();
-    const daysInMonth = new Date(year, month + 1, 0).getDate();
-
-    monthLabel.textContent = date.toLocaleDateString('fr-FR', {
-      year: 'numeric',
-      month: 'long'
-    });
-
-    calendarBody.innerHTML = '';
-
-    for (let i = 1; i <= daysInMonth; i++) {
-      const btn = document.createElement('button');
-      btn.classList.add('date');
-      btn.id = 'calendar-button';
-      
-      btn.textContent = i;
-
-      const thisDate = new Date(year, month, i);
-
-      if (startDate && thisDate.getTime() === startDate.getTime()) btn.classList.add('start-date');
-      if (endDate && thisDate.getTime() === endDate.getTime()) btn.classList.add('end-date');
-      if (startDate && endDate && thisDate > startDate && thisDate < endDate) btn.classList.add('in-range');
-
-      btn.addEventListener('click', () => {
-          
-        if (!startDate || (startDate && endDate)) {
-          clearSelection();
-          startDate = thisDate;
-          endDate = null;
-        } else {
-          if (thisDate < startDate) {
-            endDate = startDate;
-            startDate = thisDate;
-          } else {
-            endDate = thisDate;
-          }
-        }
-        updateInputField();
-        renderCalendar(currentDate);
-      });
-
-      calendarBody.appendChild(btn);
-    }
-  }
-
-  prevBtn.addEventListener('click', () => {
-    currentDate.setMonth(currentDate.getMonth() - 1);
-    renderCalendar(currentDate);
-  });
-
-  nextBtn.addEventListener('click', () => {
-    currentDate.setMonth(currentDate.getMonth() + 1);
-    renderCalendar(currentDate);
-  });
-
-  renderCalendar(currentDate);
-
-  const calendarPopup = document.getElementById('calendarPopup');
-
-  // Ouvrir le popup au clic sur l'input
-  calendarInput.addEventListener('click', (e) => {
-      e.stopPropagation();
-      calendarPopup.style.display = 'block';
-  });
-
-  calendarPopup.addEventListener('click', (e) => {
-      e.stopPropagation();
-  });
-  
-  document.addEventListener('click', (e) => {
-      if (!calendarPopup.contains(e.target) && e.target !== calendarInput) {
-          calendarPopup.style.display = 'none';
-      }
-  });
-
-</script>
+<script src="js/searchBar/CalendarPopupUtility.js"></script>

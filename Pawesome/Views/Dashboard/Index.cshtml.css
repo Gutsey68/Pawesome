@@ -157,9 +157,57 @@
 }
 
 .field-group label {
-    font-size: 0.75rem;
+    font-size: var(--font-size-sm);
     color: var(--color-primary-12);
 }
+
+.radio-group {
+    display: flex;
+    flex-direction: row;
+    border: 2px solid var(--color-primary-2);
+    border-radius: 8px;
+}
+
+.radio-option {
+    display: flex;
+    align-items: center;
+    padding: 0px 15px;
+    background-color: var(--color-primary-1);
+    border-radius: 8px 8px 8px 8px;
+    cursor: pointer;
+    border: 2px solid transparent;
+    transition: border-color 0.3s, background-color 0.3s;
+    font-weight: 500;
+    user-select: none;
+    position: relative;
+    font-size: var(--font-size-md);
+}
+
+.radio-option:first-child {
+    border-radius: 8px 0px 0px 8px;
+}
+
+.radio-option:last-child {
+    border-radius: 0px 8px 8px 0px;
+}
+
+.radio-option:hover {
+    background-color: var(--color-primary-2);
+}
+
+.radio-option input[type="radio"] {
+    display: none;
+}
+
+.radio-option input[type="radio"]:checked + * {
+    font-weight: 600;
+}
+
+.radio-option:has(input[type="radio"]:checked) {
+    background-color: var(--color-primary-12);
+    color: var(--color-primary-1);
+}
+
 
 /** ===== Section : Popup annonce ====== **/
 
@@ -291,51 +339,6 @@
     border-radius: var(--radius-2xl);
 }
 
-.loading-skeleton {
-    width: 100%;
-    padding: 8px 0;
-}
-
-.skeleton-item {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    padding: 12px 15px;
-    margin-bottom: 8px;
-}
-
-.skeleton-main {
-    flex-grow: 1;
-    margin-right: 15px;
-}
-
-.skeleton-text {
-    height: 16px;
-    background: linear-gradient(90deg, #f0f0f0 25%, #e0e0e0 50%, #f0f0f0 75%);
-    background-size: 200% 100%;
-    animation: shimmer 1.5s infinite;
-    border-radius: 4px;
-    width: 70%;
-}
-
-.skeleton-distance {
-    width: 50px;
-    height: 16px;
-    background: linear-gradient(90deg, #f0f0f0 25%, #e0e0e0 50%, #f0f0f0 75%);
-    background-size: 200% 100%;
-    animation: shimmer 1.5s infinite;
-    border-radius: 4px;
-}
-
-@keyframes shimmer {
-    0% {
-        background-position: -200% 0;
-    }
-    100% {
-        background-position: 200% 0;
-    }
-}
-
 /* ====== Calendrier ====== */
 
 .calendar {
@@ -343,7 +346,7 @@
     border-radius: 12px;
     box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
     padding: 1rem;
-    left: none;
+    right: 0;
     display: none
 }
 
@@ -419,6 +422,14 @@
 
 .current-date:focus{
     background-color: var(--color-primary-12);
+}
+
+.date-container-travel {
+    display: none;
+}
+
+.date-container-travel.show {
+    display: flex;
 }
 
 /* ====== Section : Container 1 ====== */
