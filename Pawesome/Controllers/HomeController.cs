@@ -36,57 +36,52 @@ public class HomeController : Controller
         {
             new PetCartLandingViewModel
             {
-                ImageLink = "/images/landing/cat.png",
+                Photo = "/images/landing/cat.png",
                 Name = "Mozzarella",
                 Species = "Chat",
-                TagColor = "#FFEFD6",
                 City = "Lyon",
                 Country = "France",
-                Description = "A tenté de hacker la litière connectée. Ronronne en binaire."
+                Info = "A tenté de hacker la litière connectée. Ronronne en binaire."
             },
 
             new PetCartLandingViewModel
             { 
-                ImageLink = "/images/landing/rabbit.png",
+                Photo = "/images/landing/rabbit.png",
                 Name = "Jean-Lapin",
-                Species = "Lapin",
-                TagColor = "#E4FFE3",
+                Species = "Rongeur",
                 City = "Bordeaux",
                 Country = "France",
-                Description = "Aime le jazz et les carottes bio. Tape du pied quand il kiffe."
+                Info = "Aime le jazz et les carottes bio. Tape du pied quand il kiffe."
             },
 
             new PetCartLandingViewModel
             {
-                ImageLink = "/images/landing/dog.png",
+                Photo = "/images/landing/dog.png",
                 Name = "Biscotte",
                 Species = "Chien",
-                TagColor = "#E6F4FE",
                 City = "Nice",
                 Country = "France",
-                Description = "Professionnel en câlins. Ronfle plus fort que ton voisin du dessus."
+                Info = "Professionnel en câlins. Ronfle plus fort que ton voisin du dessus."
             },
 
             new PetCartLandingViewModel
             {
-                ImageLink = "/images/landing/dog2.png",
+                Photo = "/images/landing/dog2.png",
                 Name = "Pixel",
                 Species = "Chien",
-                TagColor = "#FFE8D8",
                 City = "Marseille",
                 Country = "France",
-                Description = "Joueur invétéré. Connaît plus de tricks que ton assistant vocal."
+                Info = "Joueur invétéré. Connaît plus de tricks que ton assistant vocal."
             },
 
             new PetCartLandingViewModel
             {
-                ImageLink = "/images/landing/cat2.png",
+                Photo = "/images/landing/cat2.png",
                 Name = "Lady Miaouscar",
                 Species = "Chat",
-                TagColor = "#defffd",
                 City = "Lille",
                 Country = "France",
-                Description = "Critique gastronomique de croquettes. Très exigeante, très fluffy."
+                Info = "Critique gastronomique de croquettes. Très exigeante, très fluffy."
             }
 
         };

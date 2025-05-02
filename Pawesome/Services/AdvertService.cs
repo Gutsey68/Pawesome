@@ -2,6 +2,7 @@ using AutoMapper;
 using Pawesome.Interfaces;
 using Pawesome.Models;
 using Pawesome.Models.Dtos.Advert;
+using Pawesome.Models.Entities;
 using Pawesome.Models.ViewModels.Advert;
 
 namespace Pawesome.Services;

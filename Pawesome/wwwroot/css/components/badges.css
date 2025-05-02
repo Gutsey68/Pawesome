@@ -3,17 +3,13 @@
     align-items: center;
     border-radius: var(--radius-full);
     border: 1px solid transparent;
-    padding: var(--space-1) var(--space-3);
+    padding: 0.125rem 0.625rem;
     font-size: var(--font-size-xs);
     font-weight: var(--font-weight-bold);
     outline: none;
     background-color: var(--color-primary-12);
     color: var(--color-primary-1);
     width: max-content;
-}
-
-.badge:hover {
-    background-color: var(--color-primary-11);
 }
 
 .badge[data-variant='secondary'] {
@@ -51,4 +47,24 @@
 
 .badge[data-variant='outline']:hover {
     background-color: var(--color-primary-3);
+}
+
+.badge[data-variant='Chat'] {
+    background-color: var(--color-crimson);
+    color: var(--color-crimson-foreground);
+}
+
+.badge[data-variant='Chien'] {
+    background-color: var(--color-orange);
+    color: var(--color-orange-foreground);
+}
+
+.badge[data-variant='Oiseau'] {
+    background-color: var(--color-sky);
+    color: var(--color-sky-foreground);
+}
+
+.badge[data-variant='Rongeur'] {
+    background-color: var(--color-lime);
+    color: var(--color-lime-foreground);
 }

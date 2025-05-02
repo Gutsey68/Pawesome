@@ -1,7 +1,9 @@
+using Google.Apis.Auth;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Pawesome.Interfaces;
 using Pawesome.Models;
+using Pawesome.Models.Entities;
 using Pawesome.Models.ViewModels.Auth;
 
 namespace Pawesome.Controllers;
@@ -42,11 +44,17 @@ public class AuthController : Controller
     /// Handles the registration form submission
     /// </summary>
     /// <param name="model">The registration data</param>
+    /// <param name="credential">The credential token provided by Google OAuth</param>
     /// <returns>Redirects to RegisterConfirmation on success, or returns the form with errors</returns>
     [HttpPost]
     [ValidateAntiForgeryToken]
-    public async Task<IActionResult> Register(RegisterViewModel model)
+    public async Task<IActionResult> Register(RegisterViewModel model, string? credential = null)
     {
+        if (!string.IsNullOrEmpty(credential))
+        {
+            return await HandleGoogleAuthentication(credential, model);
+        }
+        
         if (!ModelState.IsValid)
         {
             return View(model);
@@ -138,29 +146,116 @@ public class AuthController : Controller
     public IActionResult Login() => View();
 
     /// <summary>
-    /// Handles the login form submission
+    /// Handles the login form submission and Google OAuth authentication
     /// </summary>
-    /// <param name="model">The login credentials</param>
-    /// <returns>Redirects to the home page on success or returns the form with errors</returns>
+    /// <param name="model">The login credentials for standard login</param>
+    /// <param name="credential">The credential token provided by Google OAuth</param>
+    /// <returns>Redirects to the home page on successful login or returns the form with errors</returns>
     [HttpPost]
     [ValidateAntiForgeryToken]
-    public async Task<IActionResult> Login(LoginViewModel model)
+    public async Task<IActionResult> Login(LoginViewModel model, string? credential = null)
     {
+        if (!string.IsNullOrEmpty(credential))
+        {
+            return await HandleGoogleAuthentication(credential, model);
+        }
+        
         if (!ModelState.IsValid)
         {
             return View(model);
         }
 
-        var result = await _authService.LoginUserAsync(model.Email, model.Password, model.RememberMe);
+        var loginResult = await _authService.LoginUserAsync(model.Email, model.Password, model.RememberMe);
 
-        if (result.Succeeded)
+        if (loginResult.Succeeded)
         {
             return RedirectToAction("Index", "Home");
         }
-    
+
         ModelState.AddModelError(string.Empty, "Email ou mot de passe incorrect.");
-    
         return View(model);
+    }
+
+    /// <summary>
+    /// Handles Google OAuth authentication for both login and registration
+    /// </summary>
+    /// <param name="credential">The credential token provided by Google OAuth</param>
+    /// <param name="viewModel">The view model to return in case of error</param>
+    /// <returns>Redirects to the home page on successful authentication or returns the form with errors</returns>
+    private async Task<IActionResult> HandleGoogleAuthentication(string credential, object viewModel)
+    {
+        try
+        {
+            var settings = new GoogleJsonWebSignature.ValidationSettings
+            {
+                Audience = ["293214798250-hhaj22tlc17aug4ojdmcn81li2sgkfi5.apps.googleusercontent.com"]
+            };
+
+            var payload = await GoogleJsonWebSignature.ValidateAsync(credential, settings);
+            
+            var user = await _userManager.FindByEmailAsync(payload.Email);
+            
+            if (user == null)
+            {
+                var nameParts = payload.Name.Split(' ', 2);
+                var firstName = nameParts.FirstOrDefault() ?? string.Empty;
+                var lastName = nameParts.Length > 1 ? nameParts[1] : string.Empty;
+                
+                user = new User
+                {
+                    UserName = payload.Email,
+                    Email = payload.Email,
+                    EmailConfirmed = true,
+                    FirstName = firstName,
+                    LastName = lastName,
+                    CreatedAt = DateTime.UtcNow,
+                    Address = new Address
+                    {
+                        StreetAddress = "",
+                        City = new City
+                        {
+                            Name = "",
+                            PostalCode = "",
+                            Country = new Country
+                            {
+                                Name = "",
+                                Cities = new List<City>(),
+                            },
+                            Addresses = new List<Address>(),
+                        },
+                        Users = new List<User>(),
+                    },
+                    Pets = new List<Pet>(),
+                    Notifications = new List<Notification>(),
+                    Reports = new List<Report>(),
+                    PasswordResets = new List<PasswordReset>(),
+                    SentMessages = new List<Message>(),
+                    ReceivedMessages = new List<Message>(),
+                    Reviews = new List<Review>(),
+                    Payments = new List<Payment>()
+                };
+                
+                var result = await _userManager.CreateAsync(user);
+                
+                if (result.Succeeded)
+                {
+                    await _userManager.AddToRoleAsync(user, "User");
+                }
+                else
+                {
+                    ModelState.AddModelError(string.Empty, "Erreur lors de la création du compte avec Google.");
+                    return View(viewModel);
+                }
+            }
+
+            await _authService.ExternalLoginAsync(user);
+            return RedirectToAction("Index", "Home");
+        }
+        catch (Exception ex)
+        {
+            ModelState.AddModelError(string.Empty, $"Erreur lors de l'authentification Google : {ex.Message}");
+            return View(viewModel);
+        }
     }
 
     /// <summary>
@@ -171,7 +266,7 @@ public class AuthController : Controller
     public async Task<IActionResult> Logout()
     {
         await _authService.LogoutAsync();
-        
+
         return RedirectToAction("Index", "Home");
     }
 
@@ -204,7 +299,7 @@ public class AuthController : Controller
         }
 
         var token = await _userManager.GeneratePasswordResetTokenAsync(user);
-    
+
         var callbackUrl = Url.Action("ResetPassword", "Auth",
             new { email = user.Email, code = token }, protocol: Request.Scheme);
 
@@ -265,14 +360,14 @@ public class AuthController : Controller
         }
 
         var user = await _userManager.FindByEmailAsync(model.Email);
-    
+
         if (user == null)
         {
             return RedirectToAction("ResetPasswordConfirmation");
         }
 
         var result = await _userManager.ResetPasswordAsync(user, model.Code, model.Password);
-    
+
         if (result.Succeeded)
         {
             return RedirectToAction("ResetPasswordConfirmation");

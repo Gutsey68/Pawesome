@@ -7,53 +7,113 @@
         <div>
             <div class="pat-background"></div>
             <div class="pat-background2"></div>
-            <div class="header">
-                <h1>Trouver le Petsitter parfait <br/>
-                    pour votre animal,<br/>
-                    de compagnie !
-                </h1>
-                <p>
-                    Réserver facilement des services de garde <br/>
-                    d’animaux fiable et sécurisés
-                </p>
-            </div>
+            <div class="header"></div>
 
             <div class="research-bar">
-                <input type="text" class="research-bar-date-start" placeholder="Date de début"/>
-                <span class="tiny-separator"></span>
-                <input type="text" placeholder="Date de fin"/>
-                <span class="tiny-separator"></span>
-                <input type="text" placeholder="Lieu"/>
-                <span class="tiny-separator"></span>
-                <input type="text" placeholder="Type d'animal"/>
 
-                <button class="research-button" type="button">
-                    <img alt="Rechercher" class="icon" src="svg/lucide/search.svg"/>
-                </button>
-            </div>
+                <div class="field-group">
+                    <label>Vous êtes ?</label>
+                    <div class="radio-group">
+                        <label class="radio-option">
+                            <input type="radio" name="animalChoice" value="garde"/> 
+                            Petsitter
+                        </label><br>
+                        <label class="radio-option">
+                            <input type="radio" name="animalChoice" value="faireGarder"/>
+                            Propriétaire d'animal
+                        </label>
+                    </div>
+                </div>
 
-            <div class="home-page-img">
-                <img alt="woman-sitting" src="images/casual-life-3d-young-woman-sitting-on-ground-and-petting-dog.png"/>
-            </div>
-        </div>
-        @* Container 1 / Recherche de petsitting *@
-        <div class="home-page-container">
-            <div class="container-paragraph container-l-10">
-                <h1>
-                    Leur bien-être, votre <br/>
-                    tranquillité.
-                </h1>
-                <p>
-                    Nous prenons soin de vos animaux avec attention, douceur et fiabilité. Confiance et sérénité garanties, même en votre absence.
-                </p>
-                <p>
-                    Parce qu’ils méritent le meilleur, à chaque instant
-                </p>
-                <button type="button" class="home-page-submission">Rechercher un pet sitting <img alt="Rechercher" class="icon icon-button-search-l" src="svg/lucide/arrow-right.svg"/></button>
-            </div>
-            <div class="container-img container-r-4">
-                <img alt="dog" src="images/3d-casual-life-young-man-sitting-in-armchair-with-cat-next-to-him.png"/>
-            </div>
+
+                <!--#region Input Annonces -->
+                    @* <div class="field-group"> *@
+                    @*     <label>Je recherche</label> *@
+                    @*     <input type="text" id="serviceInput" placeholder="Une annonce ?" readonly/> *@
+                    @* </div> *@
+                    @* *@
+                    @* <div class="popup" id="servicePopup" role="dialog"> *@
+                    @*     <div class="section"> *@
+                    @*         <div class="section-title">Vous souhaiter garder des animaux ?</div> *@
+                    @* *@
+                    @*         <div class="option" data-value="Hébergement"> *@
+                    @*             <div class="icon dogBoarding">🏠</div> *@
+                    @*             <div class="info"> *@
+                    @*                 <b>Hébergement</b> *@
+                    @*                 <span>Garde de plus de 24h, au domicile du gardien</span> *@
+                    @*             </div> *@
+                    @*         </div> *@
+                    @* *@
+                    @*         <div class="option" data-value="Hébergement"> *@
+                    @*             <div class="icon doggyDayCare">🏠</div> *@
+                    @*             <div class="info"> *@
+                    @*                 <b>Hébergement</b> *@
+                    @*                 <span>Garde de plus de 24h, a votre domicile</span> *@
+                    @*             </div> *@
+                    @*         </div> *@
+                    @*     </div> *@
+                    @* *@
+                    @*     <div class="section"> *@
+                    @*         <div class="section-title">Vous souhaiter faire garder animal ?</div> *@
+                    @*         <div class="option" data-value="Hébergement"> *@
+                    @*             <div class="icon dogBoarding">🏠</div> *@
+                    @*             <div class="info"> *@
+                    @*                 <b>Hébergement</b> *@
+                    @*                 <span>Garde de plus de 24h, au domicile du gardien</span> *@
+                    @*             </div> *@
+                    @*         </div> *@
+                    @* *@
+                    @*         <div class="option" data-value="Hébergement"> *@
+                    @*             <div class="icon doggyDayCare">🏠</div> *@
+                    @*             <div class="info"> *@
+                    @*                 <b>Hébergement</b> *@
+                    @*                 <span>Garde de plus de 24h, a votre domicile</span> *@
+                    @*             </div> *@
+                    @*         </div> *@
+                    @* *@
+                    @*     </div> *@
+                    @* </div> *@
+
+                    <!--#endregion-->
+
+                    <span class="tiny-separator"></span>
+
+                    <div class="field-group">
+                        <label>Près de</label>
+                        <input type="text" id="location-search" class="search-input" autocomplete="off" spellcheck="false" aria-autocomplete="list" placeholder="Chez vous ?"/>
+                    </div>
+
+                    <div id="search-results" class="search-results"></div>
+
+                    <span class="tiny-separator"></span>
+                    <div class="field-group">
+                        <label>Le</label>
+                        <div id="date-container" class="date-container"></div>
+                        <input type="text" id="calendar-input" placeholder="Quand ?"/>
+                    </div>
+                    <div class="popup calendar" id="calendarPopup" role="dialog">
+                        <div class="datepicker">
+                            <div class="datepicker-top">
+                                <div class="month-selector">
+                                    <button class="arrow"><</button>
+                                    <span class="month-name">May 2025</span>
+                                    <button class="arrow">></button>
+                                </div>
+                            </div>
+
+                            <div class="datepicker-calender">
+                            </div>
+                        </div>
+                    </div>
+
+                    <button class="research-button" type="button">
+                        <img alt="Rechercher" class="icon" src="svg/lucide/search.svg"/>
+                    </button>
+                </div>
         </div>
     </div>
 </main>
+
+<script src="js/searchBar/ServicePopupUtility.js"></script>
+<script src="js/searchBar/LocationSearchUtility.js"></script>
+<script src="js/searchBar/CalendarPopupUtility.js"></script>

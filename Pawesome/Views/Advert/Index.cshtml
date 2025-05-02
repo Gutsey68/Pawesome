@@ -1,5 +1,6 @@
 @model List<Pawesome.Models.Dtos.Advert.PetSittingAdvertDto>
 
+<main role="main">
 <div class="container mt-4">
     <div class="d-flex justify-content-between align-items-center mb-4">
         <h1>Annonces de Pet Sitting</h1>
@@ -8,59 +9,138 @@
             <a asp-action="CreateOffer" class="btn btn-success">Proposer mes services</a>
         </div>
     </div>
+    <div class="container-body">
+        <div class="container-left">
+            <div class="filtres">
 
-    <ul class="nav nav-tabs mb-4">
-        <li class="nav-item">
-            <a class="nav-link @(ViewContext.RouteData.Values["isPetSitter"]?.ToString() == "False" ? "active" : "")" 
-               asp-action="Index" asp-route-isPetSitter="false">Demandes</a>
-        </li>
-        <li class="nav-item">
-            <a class="nav-link @(ViewContext.RouteData.Values["isPetSitter"]?.ToString() == "True" ? "active" : "")" 
-               asp-action="Index" asp-route-isPetSitter="true">Offres</a>
-        </li>
-    </ul>
-
-    @if (!Model.Any())
-    {
-        <div class="alert alert-info">
-            Aucune annonce disponible pour le moment
-        </div>
-    }
-    else
-    {
-        <div class="row row-cols-1 row-cols-md-2 row-cols-lg-3 g-4">
-            @foreach (var advert in Model)
-            {
-                <div class="col">
-                    <div class="card h-100">
-                        <div class="card-body">
-                            <h5 class="card-title">
-                                @(advert.IsPetSitter ? "Offre de pet sitting" : "Recherche d'un pet sitter")
-                            </h5>
-                            <h6 class="card-subtitle mb-2 text-muted">
-                                Du @advert.StartDate.ToString("dd/MM/yyyy") au @advert.EndDate.ToString("dd/MM/yyyy")
-                            </h6>
-                            <p class="card-text">
-                                <strong>Prix:</strong> @advert.Amount.ToString("C")
-                            </p>
-                            <div>
-                                <p>@(advert.Owner != null ? advert.Owner.FullName : "Non spécifié")</p>
-                            </div>
-                            @if (!advert.IsPetSitter && advert.Pets.Any())
-                            {
-                                <p class="card-text">
-                                    <strong>Animaux:</strong>
-                                    @string.Join(", ", advert.Pets.Select(p => p.Name))
-                                </p>
-                            }
-                            <a asp-action="Details" asp-route-id="@advert.Id" class="btn btn-outline-primary">Voir détails</a>
-                        </div>
-                        <div class="card-footer text-muted">
-                            Publiée le @advert.CreatedAt.ToString("dd/MM/yyyy")
-                        </div>
+                <!-- Trier par -->
+                <section class="filtre-section">
+                    <div class="filtre-header">
+                        <h3>Trier par</h3>
+                        <a href="#" class="reset">Tout effacer</a>
                     </div>
+                    <div class="filtre-options">
+                        <label><input type="radio" name="sort" checked> Plus Récentes <span><svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="var(--color-primary-12)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-clock-arrow-up-icon lucide-clock-arrow-up"><path d="M13.228 21.925A10 10 0 1 1 21.994 12.338"/><path d="M12 6v6l1.562.781"/><path d="m14 18 4-4 4 4"/><path d="M18 22v-8"/></svg></span></label>
+                        <label><input type="radio" name="sort"> Plus Anciennes <span><svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="var(--color-primary-12)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-clock-arrow-down-icon lucide-clock-arrow-down"><path d="M12.338 21.994A10 10 0 1 1 21.925 13.227"/><path d="M12 6v6l2 1"/><path d="m14 18 4 4 4-4"/><path d="M18 14v8"/></svg></span></label>
+                        <label><input type="radio" name="sort"> Début proche <span><svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="var(--color-primary-12)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-clock-fading-icon lucide-clock-fading"><path d="M12 2a10 10 0 0 1 7.38 16.75"/><path d="M12 6v6l4 2"/><path d="M2.5 8.875a10 10 0 0 0-.5 3"/><path d="M2.83 16a10 10 0 0 0 2.43 3.4"/><path d="M4.636 5.235a10 10 0 0 1 .891-.857"/><path d="M8.644 21.42a10 10 0 0 0 7.631-.38"/></svg></span></label>
+                    </div>
+                </section>
+
+                <hr>
+
+                <!-- Par prix -->
+                <section class="filtre-section">
+                    <h3>Par prix</h3>
+                    <div class="prix-slider">
+                        <input type="range" min="4" max="180" value="4">
+                        <input type="range" min="4" max="180" value="180">
+                    </div>
+                    <div class="prix-valeurs">
+                        <input type="text" value="4 €">
+                        <input type="text" value="180 €">
+                    </div>
+                </section>
+
+                <hr>
+
+                <!-- Par popularité -->
+                <section class="filtre-section">
+                    <h3>Par popularité</h3>
+                    <label><input type="checkbox" checked> Les plus vue <span>17</span></label>
+                    <label><input type="checkbox"> Les plus contractées <span>25</span></label>
+                    <label><input type="checkbox"> Les mieux notées <span>12</span></label>
+                </section>
+
+                <hr>
+
+                <!-- Par type d’animal -->
+                <section class="filtre-section">
+                    <h3>Par type d’animal</h3>
+                    <label><input type="radio" name="animal"> Tri ascendant <span><svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="var(--color-primary-12)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-arrow-down-az-icon lucide-arrow-down-a-z"><path d="m3 16 4 4 4-4"/><path d="M7 20V4"/><path d="M20 8h-5"/><path d="M15 10V6.5a2.5 2.5 0 0 1 5 0V10"/><path d="M15 14h5l-5 6h5"/></svg></span></label>
+                    <label><input type="radio" name="animal"> Tri descendant <span><svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="var(--color-primary-12)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-arrow-up-az-icon lucide-arrow-up-a-z"><path d="m3 8 4-4 4 4"/><path d="M7 4v16"/><path d="M20 8h-5"/><path d="M15 10V6.5a2.5 2.5 0 0 1 5 0V10"/><path d="M15 14h5l-5 6h5"/></svg></span></label>
+                </section>
+
+                <hr>
+
+                <!-- Par utilisateur -->
+                <section class="filtre-section">
+                    <h3>Par utilisateur</h3>
+                    <label><input type="checkbox" checked> Profil Vérifiée 
+                        <span>17  
+                            <svg width="20" height="20" viewBox="0 0 25 24" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M20.5 13C20.5 18 17 20.5 12.84 21.95C12.6222 22.0238 12.3855 22.0202 12.17 21.94C8 20.5 4.5 18 4.5 13V5.99996C4.5 5.73474 4.60536 5.48039 4.79289 5.29285C4.98043 5.10532 5.23478 4.99996 5.5 4.99996C7.5 4.99996 10 3.79996 11.74 2.27996C11.9519 2.09896 12.2214 1.99951 12.5 1.99951C12.7786 1.99951 13.0481 2.09896 13.26 2.27996C15.01 3.80996 17.5 4.99996 19.5 4.99996C19.7652 4.99996 20.0196 5.10532 20.2071 5.29285C20.3946 5.48039 20.5 5.73474 20.5 5.99996V13Z" stroke="var(--color-primary-12)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+                        </span>
+                    </label>
+                    <label><input type="checkbox"> Meilleur notes utilisateur 
+                        <span>16 
+                            <svg width="20" height="20" viewBox="0 0 21 20" fill="none" xmlns="http://www.w3.org/2000/svg" style="border-radius: 1px;"><path d="M12.0635 7.04785C12.3044 7.78949 12.9956 8.29199 13.7754 8.29199H18.834L14.7412 11.2656C14.1499 11.6954 13.8815 12.4367 14.0488 13.1387L14.0879 13.2783L15.6514 18.0898L11.5576 15.1162L11.4375 15.0352C10.8626 14.6842 10.1374 14.6842 9.5625 15.0352L9.44238 15.1162L5.34766 18.0898L6.91211 13.2783C7.13805 12.5829 6.92019 11.8251 6.37207 11.3555L6.25879 11.2656L2.16602 8.29199H7.22461C7.95551 8.29199 8.6083 7.85058 8.88574 7.18457L8.93652 7.04785L10.5 2.23633L12.0635 7.04785Z" stroke="var(--color-primary-12)"  stroke-width="2"/></svg>
+                        </span>
+                    </label>
+                </section>
+
+            </div>
+        </div>
+        
+        <div class="container-right">
+            <ul class="nav nav-tabs">
+                <li class="nav-item">
+                    <a class="nav-link @(ViewContext.RouteData.Values["isPetSitter"]?.ToString() == "false" ? "active" : "")"
+                       asp-action="Index" asp-route-isPetSitter="false">Demandes</a>
+                </li>
+                <hr/>
+                <li class="nav-item">
+                    <a class="nav-link @(ViewContext.RouteData.Values["isPetSitter"]?.ToString() == "true" ? "active" : "")"
+                       asp-action="Index" asp-route-isPetSitter="true">Offres</a>
+                </li>
+            </ul>
+
+            @if (!Model.Any())
+            {
+                <div class="alert alert-info">u
+                    Aucune annonce disponible pour le moment
+                </div>
+            }
+            else
+            {
+                <div class="grid-rows">
+                    @foreach (var advert in Model)
+                    {
+                        <div class="row">
+                            <div class="card h-100">
+                                <div class="card-body">
+                                    <h5 class="card-title">
+                                        @(advert.IsPetSitter ? "Offre de pet sitting" : "Recherche d'un pet sitter")
+                                    </h5>
+                                    <h6 class="card-subtitle mb-2 text-muted">
+                                        Du @advert.StartDate.ToString("dd/MM/yyyy") au @advert.EndDate.ToString("dd/MM/yyyy")
+                                    </h6>
+                                    <p class="card-text">
+                                        <strong>Prix:</strong> @advert.Amount.ToString("C")
+                                    </p>
+                                    <div>
+                                        <p>@(advert.Owner != null ? advert.Owner.FullName : "Non spécifié")</p>
+                                    </div>
+                                    @if (!advert.IsPetSitter && advert.Pets.Any())
+                                    {
+                                        <p class="card-text">
+                                            <strong>Animaux:</strong>
+                                            @string.Join(", ", advert.Pets.Select(p => p.Name))
+                                            @foreach (var pet in advert.Pets)
+                                            {
+                                                <img src="@pet.Photo" alt="@pet.Name" class="img-thumbnail" style="width: 50px; height: 50px;"/>
+                                            }
+                                        </p>
+                                    }
+                                    <a asp-action="Details" asp-route-id="@advert.Id" class="btn btn-outline-primary">Voir détails</a>
+                                </div>
+                                <div class="card-footer text-muted">
+                                    Publiée le @advert.CreatedAt.ToString("dd/MM/yyyy")
+                                </div>
+                            </div>
+                        </div>
+                    }
                 </div>
             }
         </div>
-    }
+    </div>
 </div>
+</main>

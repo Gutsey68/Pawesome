@@ -1,6 +1,7 @@
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using Pawesome.Models;
+using Pawesome.Models.Entities;
 
 namespace Pawesome.Data.Seeding
 {

@@ -3,6 +3,7 @@ using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Pawesome.Interfaces;
 using Pawesome.Models;
+using Pawesome.Models.Entities;
 using Pawesome.Models.ViewModels.Advert;
 
 namespace Pawesome.Controllers;
@@ -45,6 +46,9 @@ public class AdvertController : Controller
     public async Task<IActionResult> Index(bool isPetSitter = false)
     {
         var adverts = await _advertService.GetAllAdvertsAsync(isPetSitter);
+
+        RouteData.Values["isPetSitter"] = isPetSitter.ToString().ToLower();
+
         return View(adverts);
     }
 
@@ -200,6 +204,8 @@ public class AdvertController : Controller
         }
         
         var adverts = await _advertService.GetUserAdvertsAsync(user.Id);
+        
+        Console.WriteLine("adverts", adverts);
         
         return View(adverts);
     }

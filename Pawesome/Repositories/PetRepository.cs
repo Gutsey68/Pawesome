@@ -1,6 +1,7 @@
 using Microsoft.EntityFrameworkCore;
 using Pawesome.Interfaces;
 using Pawesome.Models;
+using Pawesome.Models.Entities;
 
 namespace Pawesome.Repositories;
 

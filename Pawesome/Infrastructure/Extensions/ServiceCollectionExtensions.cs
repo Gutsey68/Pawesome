@@ -5,6 +5,7 @@ using Microsoft.EntityFrameworkCore;
 using Pawesome.Infrastructure.Filters;
 using Pawesome.Interfaces;
 using Pawesome.Models;
+using Pawesome.Models.Entities;
 using Pawesome.Repositories;
 using Pawesome.Services;
 

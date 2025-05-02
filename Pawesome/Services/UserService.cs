@@ -31,7 +31,7 @@ public class UserService : IUserService
     /// Retrieves user data for editing
     /// </summary>
     /// <param name="userId">The ID of the user to edit</param>
-    /// <returns>Update user view model if found, null otherwise</returns>
+    /// <returns>Update the user view model if found, null otherwise</returns>
     public async Task<UpdateUserViewModel?> GetUserForEditAsync(int userId)
     {
         var user = await _userRepository.GetByIdAsync(userId);

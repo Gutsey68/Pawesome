@@ -1,6 +1,7 @@
 using AutoMapper;
 using Pawesome.Models;
 using Pawesome.Models.DTOs;
+using Pawesome.Models.Entities;
 using Pawesome.Models.ViewModels;
 using Pawesome.Models.ViewModels.Auth;
 using Pawesome.Models.ViewModels.User;
@@ -18,6 +19,7 @@ public class UserMappingProfile : Profile
             .ForMember(dest => dest.LastName, opt => opt.MapFrom(src => src.LastName));
 
         CreateMap<User, ProfileViewModel>()
+            .ForMember(dest => dest.Photo, opt => opt.MapFrom(src => src.Photo))
             .ForMember(dest => dest.Street,
                 opt => opt.MapFrom(src => src.Address.StreetAddress))
             .ForMember(dest => dest.City, opt => opt.MapFrom(src => src.Address.City.Name))

@@ -1,7 +1,8 @@
+
 using System;
 using System.ComponentModel.DataAnnotations;
 
-namespace Pawesome.Models;
+namespace Pawesome.Models.Entities;
 
 public class Report
 {

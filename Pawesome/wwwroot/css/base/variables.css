@@ -36,16 +36,40 @@
     --color-primary-12: #3E332E;
 
     --color-error: #FEEBEC;
+    --color-error-border: #FFCDCE;
     --color-error-foreground: #CE2C31;
 
     --color-warning: #FFF7C2;
+    --color-warning-border: #FFED8A;
     --color-warning-foreground: #AB6400;
 
     --color-success: #E6F6EB;
+    --color-success-border: #C4E8D1;
     --color-success-foreground: #218358;
 
     --color-info: #EDF2FE;
+    --color-info-border: #D2DEFF;
     --color-info-foreground: #3A5BC7;
+    
+    --color-crimson: #FFE9F0;
+    --color-crimson-border: #FACEDD;
+    --color-crimson-foreground: #CB1D63;
+
+    --color-lime: #EEF6D6;
+    --color-lime-border: #D3E7A6;
+    --color-lime-foreground: #5C7C2F;
+    
+    --color-purple: #F7EDFE;
+    --color-purple-border: #EAD5F9;
+    --color-purple-foreground: #8145B5;
+
+    --color-orange: #FFEFD6;
+    --color-orange-border: #FFD19A;
+    --color-orange-foreground: #CC4E00;
+    
+    --color-sky: #E1F6FD;
+    --color-sky-border: #BEE7F5;
+    --color-sky-foreground: #00749E;
 
     /* Spacing */
     --space-1: 0.25rem; /* 4px */
@@ -111,16 +135,40 @@
     --color-primary-12: #F2E1CA;
 
     --color-error: #3B1219;
+    --color-error-border: #611623;
     --color-error-foreground: #FF9592;
 
     --color-warning: #302008;
+    --color-warning-border: #4D3000;
     --color-warning-foreground: #FFCA16;
 
-    --color-success: #3DD68C;
-    --color-success-foreground: #132D21;
+    --color-success: #132D21;
+    --color-success-border: #174933;
+    --color-success-foreground: #3DD68C;
 
     --color-info: #182449;
+    --color-info-border: #253974;
     --color-info-foreground: #9EB1FF;
+
+    --color-crimson: #381525;
+    --color-crimson-border: #5C1839;
+    --color-crimson-foreground: #FF92AD;
+    
+    --color-lime: #1F2917;
+    --color-lime-border: #334423;
+    --color-lime-foreground: #BDE56C;
+
+    --color-purple: #301C3B;
+    --color-purple-border: #48295C;
+    --color-purple-foreground: #D19DFF;
+    
+    --color-orange: #331E0B;
+    --color-orange-border: #562800;
+    --color-orange-foreground: #FFA057;
+
+    --color-sky: #112840;
+    --color-sky-border: #154467;
+    --color-sky-foreground: #75C7F0;
 
     --shadow-sm: 0px 2px 3px -1px rgba(0, 0, 0, 0.25),
     0px 1px 0px 0px rgba(255, 255, 255, 0.03),
