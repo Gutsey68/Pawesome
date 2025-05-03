@@ -134,6 +134,11 @@ public class AuthController : Controller
         }
 
         var result = await _userManager.ConfirmEmailAsync(user, token);
+        
+        if (!result.Succeeded)
+        {
+            return NotFound();
+        }
 
         return View(result.Succeeded ? "ConfirmEmail" : "Error");
     }

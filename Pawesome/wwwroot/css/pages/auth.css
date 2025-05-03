@@ -30,6 +30,10 @@
     background-color: var(--color-primary-3);
 }
 
+.confirmation-message>img {
+    margin: 0 auto;
+}
+
 @media (max-width: 768px) {
     .logo {
         top: var(--space-6);
