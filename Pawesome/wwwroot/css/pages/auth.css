@@ -6,23 +6,17 @@
 
 .logo {
     position: absolute;
-    top: var(--space-8);
-    left: var(--space-8);
+    top: var(--space-4);
+    left: var(--space-11);
 }
 
 .auth-theme-toggle {
     position: absolute;
-    top: var(--space-8);
-    right: var(--space-8);
-}
-
-.auth-theme-toggle {
+    top: var(--space-4);
+    right: var(--space-11);
     background-color: transparent;
     border: 1px solid transparent;
     color: var(--color-primary-12);
-    height: 2rem;
-    width: 2rem;
-    padding: 0;
     border-radius: var(--radius-full);
 }
 
@@ -32,6 +26,22 @@
 
 .confirmation-message>img {
     margin: 0 auto;
+}
+
+.lucide-sun-icon {
+    display: none;
+}
+
+.lucide-moon-icon {
+    display: block;
+}
+
+body.dark .lucide-sun-icon {
+    display: block;
+}
+
+body.dark .lucide-moon-icon {
+    display: none;
 }
 
 @media (max-width: 768px) {

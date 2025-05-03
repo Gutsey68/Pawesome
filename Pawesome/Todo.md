@@ -4,3 +4,4 @@
 - Modifier le mcd (lien advert animal type)
 - Ajouter les webhooks stripe
 - Mapper les infos de google quand on register
+- Enlever le h1 du footer (why ??)

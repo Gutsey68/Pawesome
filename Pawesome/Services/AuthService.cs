@@ -1,3 +1,4 @@
+using System.Security.Claims;
 using AutoMapper;
 using Microsoft.AspNetCore.Identity;
 using Pawesome.Interfaces;
@@ -66,7 +67,7 @@ public class AuthService : IAuthService
     }
 
     /// <summary>
-    /// Authenticates a user with the provided credentials.
+    /// Authenticates a user with the provided credentials and adds claims if necessary.
     /// </summary>
     /// <param name="email">The email address of the user.</param>
     /// <param name="password">The password of the user.</param>
@@ -83,7 +84,22 @@ public class AuthService : IAuthService
             return SignInResult.Failed;
         }
 
-        return await _signInManager.PasswordSignInAsync(user, password, rememberMe, false);
+        var result = await _signInManager.PasswordSignInAsync(user, password, rememberMe, false);
+
+        if (!result.Succeeded) return result;
+        
+        var claims = new List<Claim>();
+        if (!string.IsNullOrEmpty(user.Photo))
+        {
+            claims.Add(new Claim("Photo", user.Photo));
+        }
+        
+        if (claims.Count != 0)
+        {
+            await _userManager.AddClaimsAsync(user, claims);
+        }
+
+        return result;
     }
 
     /// <summary>
@@ -96,7 +112,7 @@ public class AuthService : IAuthService
     }
 
     /// <summary>
-    /// Authenticates a user through external providers like Google OAuth.
+    /// Authenticates a user through external providers like Google OAuth and adds claims to the user.
     /// </summary>
     /// <param name="user">The user entity to sign in.</param>
     /// <returns>
@@ -105,6 +121,18 @@ public class AuthService : IAuthService
     public async Task ExternalLoginAsync(User user)
     {
         await _signInManager.SignOutAsync();
+    
+        var claims = new List<Claim>();
+        if (!string.IsNullOrEmpty(user.Photo))
+        {
+            claims.Add(new Claim("Photo", user.Photo));
+        }
+    
+        if (claims.Count != 0)
+        {
+            await _userManager.AddClaimsAsync(user, claims);
+        }
+    
         await _signInManager.SignInAsync(user, isPersistent: true);
     }
 }

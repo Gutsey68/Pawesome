@@ -1,7 +1,6 @@
 .footer {
     background-color: var(--color-primary-3);
     padding: var(--space-8) 0 var(--space-12) 0;
-    font-family: var(--font-primary);
     font-size: var(--font-size-sm);
     color: var(--color-primary-11);
     font-weight: var(--font-weight-medium);
@@ -11,7 +10,6 @@
     display: flex;
     justify-content: space-between;
     flex-wrap: wrap;
-    max-width: 1400px;
     margin: 0 auto;
     gap: 20px;
 }

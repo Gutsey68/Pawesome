@@ -50,7 +50,7 @@ if (storedPreference === null) {
 
 /**
  * Event listener for system theme preference changes
- * Only applies if user hasn't explicitly chosen a theme
+ * Only applies if the user hasn't explicitly chosen a theme
  */
 window.matchMedia('(prefers-color-scheme: dark)').addEventListener('change', (e) => {
     if (!localStorage.getItem('userChoseTheme')) {
@@ -61,7 +61,7 @@ window.matchMedia('(prefers-color-scheme: dark)').addEventListener('change', (e)
 });
 
 /**
- * Event listener for theme toggle button
+ * Event listener for the theme toggle button 
  * Switches between light and dark themes and stores the preference
  */
 themeToggle.addEventListener('click', function() {
