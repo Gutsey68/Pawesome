@@ -1,0 +1,65 @@
+@model IEnumerable<Pawesome.Models.ViewModels.Payment.PaymentHistoryViewModel>
+
+<div class="container">
+    <div class="card">
+        <div class="card-header">
+            <h2>Historique de vos paiements</h2>
+        </div>
+        <div class="card-body">
+            @if (Model.Any())
+            {
+                <div class="payments-list">
+                    @foreach (var payment in Model)
+                    {
+                        <div class="payment-item">
+                            <div class="payment-header">
+                                <h4>Paiement #@payment.Id</h4>
+                                <span class="payment-status @payment.Status">@GetStatusLabel(payment.Status)</span>
+                            </div>
+                            <div class="payment-details">
+                                <div class="payment-info">
+                                    <p><strong>Date :</strong> @payment.CreatedAt.ToString("dd/MM/yyyy HH:mm")</p>
+                                    <p><strong>Montant :</strong> @payment.Amount €</p>
+                                    <p><strong>Référence :</strong> @payment.SessionId</p>
+                                </div>
+                                <div class="advert-info">
+                                    <p><strong>Annonce liée :</strong> 
+                                        <a asp-controller="Advert" asp-action="Details" asp-route-id="@payment.AdvertId">
+                                            @(payment.IsPetSitter ? "Offre de pet sitting" : "Demande de pet sitting")
+                                        </a>
+                                    </p>
+                                    <p><strong>Période :</strong> Du @payment.StartDate.ToString("dd/MM/yyyy") au @payment.EndDate.ToString("dd/MM/yyyy")</p>
+                                </div>
+                            </div>
+                        </div>
+                    }
+                </div>
+            }
+            else
+            {
+                <div class="empty-state">
+                    <p>Vous n'avez effectué aucun paiement pour le moment.</p>
+                </div>
+            }
+            
+            <div class="actions">
+                <a asp-controller="Home" asp-action="Index" class="button">Retour à l'accueil</a>
+                <a asp-controller="Advert" asp-action="Index" class="button secondary">Voir les annonces</a>
+            </div>
+        </div>
+    </div>
+</div>
+
+@functions {
+    string GetStatusLabel(string status)
+    {
+        return status switch
+        {
+            "pending" => "En attente",
+            "completed" => "Confirmé",
+            "failed" => "Échoué",
+            "refunded" => "Remboursé",
+            _ => status
+        };
+    }
+}

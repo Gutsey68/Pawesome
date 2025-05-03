@@ -1,0 +1,29 @@
+<div class="container">
+  <div class="card">
+    <div class="card-header">
+      <h2>Paiement réussi !</h2>
+    </div>
+    <div class="card-body">
+      <div class="">
+        <span>Votre paiement a bien été enregistré. Merci pour votre réservation !</span>
+      </div>
+            
+      <p>Votre numéro de transaction : <strong>@ViewBag.SessionId</strong></p>
+      <p>Un e-mail de confirmation vous a été envoyé.</p>
+            
+      <hr>
+            
+      <h4>Et maintenant ?</h4>
+      <ul>
+        <li>Vous pouvez contacter le propriétaire de l'annonce pour finaliser les détails</li>
+        <li>Vous recevrez des notifications concernant votre réservation</li>
+        <li>Vous pouvez consulter l'historique de vos paiements dans votre profil</li>
+      </ul>
+            
+      <div class="">
+        <a asp-controller="Home" asp-action="Index" class="button">Retour à l'accueil</a>
+        <a asp-controller="Payment" asp-action="History" class="button">Historique des paiements</a>
+      </div>
+    </div>
+  </div>
+</div>

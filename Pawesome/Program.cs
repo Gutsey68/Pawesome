@@ -15,7 +15,8 @@ builder.Services.AddControllersWithViews(options =>
 builder.Services.AddPawesomeDatabase(builder.Configuration)
     .AddPawesomeIdentity()
     .AddPawesomeValidation()
-    .AddPawesomeServices();
+    .AddPawesomeServices()
+    .AddStripeServices(builder.Configuration);
 
 builder.Services.AddSignalR();
 
