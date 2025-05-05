@@ -1,4 +1,6 @@
 using Pawesome.Models.DTOs;
+using Pawesome.Models.Entities;
+using Pawesome.Models.ViewModels;
 
 namespace Pawesome.Models.Dtos.Advert;
 
@@ -14,5 +16,5 @@ public class PetSittingAdvertDto
     public DateTime UpdatedAt { get; set; }
     public bool IsPetSitter { get; set; }
     public UserSimpleDto? Owner { get; set; }
-    public ICollection<PetSimpleDto> Pets { get; set; } = new List<PetSimpleDto>();
+    public ICollection<PetCartViewModel> PetCartViewModels { get; set; } = new List<PetCartViewModel>();
 }

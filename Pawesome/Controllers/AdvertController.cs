@@ -244,7 +244,7 @@ public class AdvertController : Controller
             StartDate = advert.StartDate,
             EndDate = advert.EndDate,
             Amount = advert.Amount,
-            PetIds = advert.Pets.Select(p => p.Id).ToList(),
+            PetIds = advert.PetCartViewModels.Select(p => p.Id).ToList(),
             AdditionalInformation = advert.AdditionalInformation
         };
         
@@ -326,7 +326,7 @@ public class AdvertController : Controller
 
         foreach (var animalType in animalTypes)
         {
-            if (advert.Pets.Any(p => p.AnimalTypeName == animalType.Name))
+            if (advert.PetCartViewModels.Any(p => p.Species == animalType.Name))
             {
                 updateModel.AcceptedAnimalTypeIds.Add(animalType.Id);
             }

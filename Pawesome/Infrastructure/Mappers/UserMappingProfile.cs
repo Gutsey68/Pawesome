@@ -28,7 +28,7 @@ public class UserMappingProfile : Profile
             .ForMember(dest => dest.Country,
                 opt => opt.MapFrom(src => src.Address.City.Country.Name))
             .ForMember(dest => dest.Pets, opt => opt.MapFrom(src => src.Pets));
-            
+
         CreateMap<User, UserSimpleDto>()
             .ForMember(dest => dest.FullName, opt => opt.MapFrom(src =>
                 $"{src.FirstName} {src.LastName}"));

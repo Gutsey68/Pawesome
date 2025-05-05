@@ -1,17 +1,18 @@
-﻿@using Pawesome.Models.ViewModels
+﻿@using Pawesome.Models.DTOs
+@using Pawesome.Models.ViewModels
 @model dynamic
 
 <div class="landing-card">
     @{
-        string photo = Model is PetCartLandingViewModel ? Model.Photo : (Model is PetViewModel ? "/images/pets/" + Model.Photo : "/images/default-pet.jpg");
-        string name = Model is PetCartLandingViewModel || Model is PetViewModel ? Model.Name : "Animal inconnu";
-        string species = Model is PetCartLandingViewModel ? Model.Species : (Model is PetViewModel ? Model.Species : "Autre");
-        string city = Model is PetCartLandingViewModel ? Model.City : "Lieu non spécifié";
-        string country = Model is PetCartLandingViewModel ? Model.Country : "Pays non spécifié";
-        string description = Model is PetCartLandingViewModel ? Model.Info :  "Pas de description disponible";
+        string photo = Model is PetCartViewModel ? Model.Photo : (Model is PetViewModel ? "/images/pets/" + Model.Photo : "/images/default-pet.jpg");
+        string name = Model is PetCartViewModel || Model is PetViewModel ? Model.Name : "Animal inconnu";
+        string species = Model is PetCartViewModel ? Model.Species : (Model is PetViewModel ? Model.Species : "Autre");
+        string city = Model is PetCartViewModel ? Model.City : "Lieu non spécifié";
+        string country = Model is PetCartViewModel ? Model.Country : "Pays non spécifié";
+        string description = Model is PetCartViewModel ? Model.Info : "Pas de description disponible";
     }
-    
-    <img src="@photo" alt="@name" class="landing-card-image" />
+
+    <img src="@photo" alt="@name" class="landing-card-image"/>
     <div class="landing-card-content">
         <div class="landing-card-header">
             <div class="paw-icon">
