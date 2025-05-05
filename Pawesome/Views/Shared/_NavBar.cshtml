@@ -17,10 +17,10 @@
                 <li class="profile-dropdown">
                     <label class="popup">
                         <input type="checkbox" />
-                        <div tabindex="0">
+                        <div tabindex="0">  
                             @if (!string.IsNullOrEmpty(User.FindFirst("Photo")?.Value))
                             {
-                                <img class="avatar" data-size="md" src="~/images/users/@User.FindFirst("Photo")?.Value" alt="Avatar de l'utilisateur" />
+                                <img class="avatar" data-size="md" src="~/images/users/@User.FindFirst("Photo")?.Value" alt="Avatar de l'utilisateur"/>
                             }
                             else
                             {

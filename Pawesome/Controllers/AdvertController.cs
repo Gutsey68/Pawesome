@@ -1,8 +1,10 @@
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
+using Newtonsoft.Json;
 using Pawesome.Interfaces;
 using Pawesome.Models;
+using Pawesome.Models.Dtos.Advert;
 using Pawesome.Models.Entities;
 using Pawesome.Models.ViewModels.Advert;
 
@@ -43,10 +45,14 @@ public class AdvertController : Controller
     /// <param name="isPetSitter">If true, shows pet sitting offers; if false, shows pet sitting requests</param>
     /// <returns>View containing a list of adverts</returns>
     [HttpGet]
-    public async Task<IActionResult> Index(bool isPetSitter = false)
+    public async Task<IActionResult> Index(
+        bool isPetSitter = false,
+        [FromQuery] SortingOptions? sortOptions = null)
     {
+        
         var adverts = await _advertService.GetAllAdvertsAsync(isPetSitter);
-
+        
+        TempData["SortOptions"] = JsonConvert.SerializeObject(sortOptions);
         RouteData.Values["isPetSitter"] = isPetSitter.ToString().ToLower();
 
         return View(adverts);

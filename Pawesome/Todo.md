@@ -5,3 +5,19 @@
 - Ajouter les webhooks stripe
 - Mapper les infos de google quand on register
 - Enlever le h1 du footer (why ??)
+- Quand changer info user / Changer les claims
+
+
+**Anto Todo:**
+- Tri
+    - (🟠) Recent / Ancien / Début proche 
+    - (❌) Prix [ Tranche Debut / Tranche Fin]
+    - (❌) Pop [ Plus vue, Plus contracter, Mieux notée ]
+    - (❌) Type animal [ asc / dsc]
+    - (❌) Profil Verifier
+    - (❌) Meilleur note
+
+
+- Ajout d'un SortingOption.cs
+- Modification du IAdvertService ✅
+- 

@@ -267,7 +267,7 @@
 .containers {
     position: relative;
     width: 100%;
-    height: 500px;
+    height: 350px;
     display: flex;
     flex-direction: row;
     margin: var(--space-8) 0 var(--space-8) 0;
