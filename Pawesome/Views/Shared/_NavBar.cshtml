@@ -1,4 +1,4 @@
- <nav class="container">
+<nav class="container">
     <a asp-area="" asp-controller="Home" asp-action="Index">Pawesome</a>
     <div>
         <ul>
@@ -14,11 +14,65 @@
                 <li>
                     <a asp-area="" asp-controller="Advert" asp-action="Index">Annonces</a>
                 </li>
-                <li>
-                    <a asp-area="" asp-controller="Auth" asp-action="Logout">Se déconnecter</a>
-                </li>
-                <li>
-                    <a asp-area="" asp-controller="User" asp-action="Index">Mon profil</a>
+                <li class="profile-dropdown">
+                    <label class="popup">
+                        <input type="checkbox" />
+                        <div tabindex="0">
+                            @if (!string.IsNullOrEmpty(User.FindFirst("Photo")?.Value))
+                            {
+                                <img class="avatar" data-size="md" src="~/images/users/@User.FindFirst("Photo")?.Value" alt="Avatar de l'utilisateur" />
+                            }
+                            else
+                            {
+                                <div class="avatar-fallback" data-size="md">
+                                    @User.Identity.Name?.Substring(0, 1)
+                                </div>
+                            }
+                        </div>
+                        <nav class="popup-window">
+                            <ul>
+                                <li>
+                                    <a asp-area="" asp-controller="User" asp-action="Index">
+                                        <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="menu-icon">
+                                            <path d="M19 21v-2a4 4 0 0 0-4-4H9a4 4 0 0 0-4 4v2"/>
+                                            <circle cx="12" cy="7" r="4"/>
+                                        </svg>
+                                        <span>Mon profil</span>
+                                    </a>
+                                </li>
+                                <li>
+                                    <a asp-area="" asp-controller="Pet" asp-action="Index">
+                                        <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="menu-icon">
+                                            <path d="M11.25 16.25h1.5L12 17z"/>
+                                            <path d="M16 14v.5"/>
+                                            <path d="M4.42 11.247A13.152 13.152 0 0 0 4 14.556C4 18.728 7.582 21 12 21s8-2.272 8-6.444a11.702 11.702 0 0 0-.493-3.309"/>
+                                            <path d="M8 14v.5"/>
+                                            <path d="M8.5 8.5c-.384 1.05-1.083 2.028-2.344 2.5-1.931.722-3.576-.297-3.656-1-.113-.994 1.177-6.53 4-7 1.923-.321 3.651.845 3.651 2.235A7.497 7.497 0 0 1 14 5.277c0-1.39 1.844-2.598 3.767-2.277 2.823.47 4.113 6.006 4 7-.08.703-1.725 1.722-3.656 1-1.261-.472-1.855-1.45-2.239-2.5"/>
+                                        </svg>
+                                        <span>Mes animaux</span>
+                                    </a>
+                                </li>
+                                <li>
+                                    <a asp-area="" asp-controller="Message" asp-action="Index">
+                                        <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="menu-icon">
+                                            <path d="M7.9 20A9 9 0 1 0 4 16.1L2 22Z"/>
+                                        </svg>
+                                        <span>Messages</span>
+                                    </a>
+                                </li>
+                                <li>
+                                    <a asp-area="" asp-controller="Auth" asp-action="Logout">
+                                        <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="menu-icon">
+                                            <path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"/>
+                                            <polyline points="16 17 21 12 16 7"/>
+                                            <line x1="21" x2="9" y1="12" y2="12"/>
+                                        </svg>
+                                        <span>Déconnexion</span>
+                                    </a>
+                                </li>
+                            </ul>
+                        </nav>
+                    </label>
                 </li>
             }
             else
@@ -33,11 +87,6 @@
                     <a asp-area="" asp-controller="Auth" asp-action="ForgotPassword">Mot de passe oublié</a>
                 </li>
             }
-            <li>
-                <button id="theme-toggle" class="theme-toggle">
-                    Thème
-                </button>
-            </li>
         </ul>
     </div>
 </nav>

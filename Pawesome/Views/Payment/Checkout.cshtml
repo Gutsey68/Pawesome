@@ -1,0 +1,49 @@
+@model Pawesome.Models.ViewModels.Payment.CheckoutViewModel
+
+<div class="container checkout-container">
+    <div class="card">
+        <div class="card-header">
+            <h2>Finaliser votre paiement</h2>
+        </div>
+        <div class="card-body">
+            <div class="order-summary">
+                <h3>Résumé de votre réservation</h3>
+
+                <div class="summary-details">
+                    <div class="summary-item">
+                        <span class="label">Service :</span>
+                        <span class="value">@Model.ServiceType</span>
+                    </div>
+
+                    <div class="summary-item">
+                        <span class="label">Période :</span>
+                        <span class="value">Du @Model.StartDate.ToString("dd/MM/yyyy") au @Model.EndDate.ToString("dd/MM/yyyy")</span>
+                    </div>
+
+                    <div class="summary-item total">
+                        <span class="label">Montant total :</span>
+                        <span class="value">@Model.Amount €</span>
+                    </div>
+                </div>
+
+                <div class="payment-section">
+                    <h4>Paiement sécurisé</h4>
+                    <p class="secure-info">
+                        <i class="fa fa-lock"></i> Toutes les transactions sont sécurisées et chiffrées.
+                    </p>
+
+                    <form asp-controller="Payment" asp-action="CreateCheckoutSession" method="post">
+                        <input type="hidden" name="advertId" value="@Model.AdvertId" />
+                        <button type="submit" class="payment-button">
+                            Payer avec Stripe
+                        </button>
+                    </form>
+                </div>
+
+                <div class="terms">
+                    <p>En procédant au paiement, vous acceptez nos <a href="#">conditions générales</a> et notre <a href="#">politique de confidentialité</a>.</p>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

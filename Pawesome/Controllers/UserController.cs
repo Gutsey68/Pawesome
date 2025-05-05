@@ -89,4 +89,28 @@ public class UserController : Controller
         await _userService.UpdateUserAsync(model);
         return RedirectToAction(nameof(Index), new { id = model.Id });
     }
+    
+    /// <summary>
+    /// Displays the public profile of another user
+    /// </summary>
+    /// <param name="id">The ID of the user whose profile to display</param>
+    /// <returns>The public profile view if a user is found, NotFound result otherwise</returns>
+    public async Task<IActionResult> Profile(int id)
+    {
+        var currentUserId = int.Parse(_userManager.GetUserId(User)!);
+    
+        if (id == currentUserId)
+        {
+            return RedirectToAction(nameof(Index));
+        }
+    
+        var profileViewModel = await _userService.GetPublicUserProfileAsync(id, currentUserId);
+    
+        if (profileViewModel == null)
+        {
+            return NotFound();
+        }
+    
+        return View(profileViewModel);
+    }
 }

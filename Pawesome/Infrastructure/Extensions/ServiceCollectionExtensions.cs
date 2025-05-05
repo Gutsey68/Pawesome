@@ -2,12 +2,15 @@ using FluentValidation;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc.Infrastructure;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Options;
 using Pawesome.Infrastructure.Filters;
 using Pawesome.Interfaces;
 using Pawesome.Models;
+using Pawesome.Models.Configuration;
 using Pawesome.Models.Entities;
 using Pawesome.Repositories;
 using Pawesome.Services;
+using Stripe;
 
 namespace Pawesome.Infrastructure.Extensions;
 
@@ -97,6 +100,8 @@ public static class ServiceCollectionExtensions
         services.AddScoped<IPetRepository, PetRepository>();
         services.AddScoped<IAnimalTypeRepository, AnimalTypeRepository>();
         services.AddScoped<IAdvertRepository, AdvertRepository>();
+        services.AddScoped<IMessageRepository, MessageRepository>();
+        services.AddScoped<IPaymentRepository, PaymentRepository>();
         
         // Register services
         services.AddScoped<IAuthService, AuthService>();
@@ -105,10 +110,34 @@ public static class ServiceCollectionExtensions
         services.AddScoped<IEmailService, EmailService>();
         services.AddScoped<IAdvertService, AdvertService>();
         services.AddScoped<IAnimalTypeService, AnimalTypeService>();
+        services.AddScoped<IMessageService, MessageService>();
+        services.AddScoped<IPaymentService, PaymentService>();
         
         // Register AutoMapper
         services.AddAutoMapper(typeof(Program).Assembly);
         
+        return services;
+    }
+    
+    /// <summary>
+    /// Adds and configures Stripe payment processing services
+    /// </summary>
+    /// <param name="services">The service collection</param>
+    /// <param name="configuration">The application configuration</param>
+    /// <returns>The service collection for chaining</returns>
+    public static IServiceCollection AddStripeServices(this IServiceCollection services,
+        IConfiguration configuration)
+    {
+        services.Configure<StripeSettings>(configuration.GetSection("Stripe"));
+
+        services.AddSingleton<StripeClient>(serviceProvider => {
+            var stripeSettings = serviceProvider.GetRequiredService<IOptions<StripeSettings>>().Value;
+            return new StripeClient(stripeSettings.SecretKey);
+        });
+
+        var stripeSettings = configuration.GetSection("Stripe").Get<StripeSettings>();
+        StripeConfiguration.ApiKey = stripeSettings?.SecretKey;
+
         return services;
     }
 }

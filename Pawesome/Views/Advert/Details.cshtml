@@ -1,3 +1,4 @@
+@using System.Globalization
 @model Pawesome.Models.Dtos.Advert.PetSittingAdvertDto
 
 <div class="container">
@@ -81,6 +82,23 @@
                     }
                 </div>
             </div>
+            @if (User.Identity?.IsAuthenticated == true && Model.Owner != null && 
+                 User.FindFirst(System.Security.Claims.ClaimTypes.NameIdentifier)?.Value != Model.Owner.Id.ToString() &&
+                 Model.Status == "pending" || Model.Status == "pending_offer")
+            {
+                <div class="card">
+                    <div class="card-header">
+                        <h5>Réserver ce service</h5>
+                    </div>
+                    <div class="card-body">
+                        <p>Prix: @Model.Amount.ToString("C", new CultureInfo("fr-FR"))</p>
+                        <a asp-controller="Payment" asp-action="Checkout" asp-route-advertId="@Model.Id" 
+                           class="button">
+                            Réserver maintenant
+                        </a>
+                    </div>
+                </div>
+            }
             @if (User.Identity?.IsAuthenticated == true && Model.Owner != null && User.FindFirst(System.Security.Claims.ClaimTypes.NameIdentifier)?.Value == Model.Owner.Id.ToString())
             {
                 <div>

@@ -89,8 +89,8 @@
     background-color: var(--color-primary-5);
     border: none;
     color: var(--color-primary-12);
-    height: 2rem;
-    width: 2rem;
+    height: var(--space-7);
+    width: var(--space-7);
     padding: 0;
     border-radius: var(--radius-full);
 }

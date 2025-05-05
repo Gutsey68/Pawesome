@@ -1,0 +1,68 @@
+@model Pawesome.Models.ViewModels.Message.ConversationViewModel
+@{
+    ViewData["Title"] = "Conversation avec " + Model.OtherUserFullName;
+}
+
+<div class="container" data-conversation-id="@Model.OtherUserId">
+    <div>
+        <div>
+            <div>
+                <a href="@Url.Action("Index")">
+                    Retour
+                </a>
+
+                <div>
+                    @if (!string.IsNullOrEmpty(Model.OtherUserPhoto))
+                    {
+                        <img src="@Model.OtherUserPhoto" alt="@Model.OtherUserFullName" class="avatar">
+                    }
+                    else
+                    {
+                        <div class="avatar">
+                            @Model.OtherUserFullName.Substring(0, 1)
+                        </div>
+                    }
+                    <h2>@Model.OtherUserFullName</h2>
+                </div>
+            </div>
+
+            <div id="messages-container">
+                @if (!Model.Messages.Any())
+                {
+                    <div>
+                        <p>Aucun message pour l'instant</p>
+                        <p>Envoyez un message pour commencer la conversation</p>
+                    </div>
+                }
+                else
+                {
+                    @foreach (var message in Model.Messages)
+                    {
+                        <div>
+                            <div>
+                                <p>@message.Content</p>
+                                <p>@message.FormattedDate</p>
+                            </div>
+                        </div>
+                    }
+                }
+            </div>
+
+            <form id="message-form" method="post" action="@Url.Action("SendMessage")">
+                <input type="hidden" name="ReceiverId" id="receiver-id" value="@Model.OtherUserId" />
+                <div>
+                    <input type="text" class="form-control" id="message-input" name="Content" placeholder="Écrivez votre message..." required>
+                    <button type="submit" class="btn btn-primary">
+                        <span id="sending-indicator" style="display: none;" class="spinner-border spinner-border-sm me-1" role="status" aria-hidden="true"></span>
+                        Envoyer
+                    </button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    <script src="~/lib/microsoft/signalr/dist/browser/signalr.min.js"></script>
+    <script src="~/js/messageClient.js"></script>
+}
