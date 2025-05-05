@@ -12,7 +12,6 @@
     <div class="container-body">
         <div class="container-left">
             <div class="filtres">
-
                 <!-- Trier par -->
                 <section class="filtre-section">
                     <div class="filtre-header">
@@ -84,62 +83,41 @@
             <ul class="nav nav-tabs">
                 <li class="nav-item">
                     <a class="nav-link @(ViewContext.RouteData.Values["isPetSitter"]?.ToString() == "false" ? "active" : "")"
-                       asp-action="Index" asp-route-isPetSitter="false">Demandes</a>
+                       asp-action="Index" asp-route-isPetSitter="false" style="width: 100%; display: block">Demandes</a>
                 </li>
                 <hr/>
                 <li class="nav-item">
                     <a class="nav-link @(ViewContext.RouteData.Values["isPetSitter"]?.ToString() == "true" ? "active" : "")"
-                       asp-action="Index" asp-route-isPetSitter="true">Offres</a>
+                       asp-action="Index" asp-route-isPetSitter="true" style="width: 100%; display: block">Offres</a>
                 </li>
             </ul>
-
+            
+            <div class="grid-rows">
             @if (!Model.Any())
             {
-                <div class="alert alert-info">u
+                <div class="alert alert-info">
                     Aucune annonce disponible pour le moment
                 </div>
             }
             else
             {
-                <div class="grid-rows">
-                    @foreach (var advert in Model)
+                @foreach (var advert in Model)
+                {
+                    @if (advert.PetCartViewModels == null || !advert.PetCartViewModels.Any())
                     {
-                        <div class="row">
-                            <div class="card h-100">
-                                <div class="card-body">
-                                    <h5 class="card-title">
-                                        @(advert.IsPetSitter ? "Offre de pet sitting" : "Recherche d'un pet sitter")
-                                    </h5>
-                                    <h6 class="card-subtitle mb-2 text-muted">
-                                        Du @advert.StartDate.ToString("dd/MM/yyyy") au @advert.EndDate.ToString("dd/MM/yyyy")
-                                    </h6>
-                                    <p class="card-text">
-                                        <strong>Prix:</strong> @advert.Amount.ToString("C")
-                                    </p>
-                                    <div>
-                                        <p>@(advert.Owner != null ? advert.Owner.FullName : "Non spécifié")</p>
-                                    </div>
-                                    @if (!advert.IsPetSitter && advert.Pets.Any())
-                                    {
-                                        <p class="card-text">
-                                            <strong>Animaux:</strong>
-                                            @string.Join(", ", advert.Pets.Select(p => p.Name))
-                                            @foreach (var pet in advert.Pets)
-                                            {
-                                                <img src="@pet.Photo" alt="@pet.Name" class="img-thumbnail" style="width: 50px; height: 50px;"/>
-                                            }
-                                        </p>
-                                    }
-                                    <a asp-action="Details" asp-route-id="@advert.Id" class="btn btn-outline-primary">Voir détails</a>
-                                </div>
-                                <div class="card-footer text-muted">
-                                    Publiée le @advert.CreatedAt.ToString("dd/MM/yyyy")
-                                </div>
-                            </div>
-                        </div>
+                        <p>Aucun animal associé à cette annonce.</p>
                     }
-                </div>
+                    else
+                    {
+                        @foreach (var petCart in advert.PetCartViewModels)
+                        {
+                            petCart.Photo = string.IsNullOrEmpty(petCart.Photo) ? "/images/default-pet.jpg" : "/images/pets/" + petCart.Photo;
+                            <partial name="_PetCardPartial" model="petCart" />
+                        }
+                    }
+                }
             }
+            </div>
         </div>
     </div>
 </div>

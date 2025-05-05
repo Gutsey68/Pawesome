@@ -31,11 +31,11 @@
                     {
                         <h3>Types d'animaux acceptés</h3>
                         <div>
-                            @foreach (var pet in Model.Pets)
+                            @foreach (var pet in Model.PetCartViewModels)
                             {
                                 <div>
                                     <div>
-                                        <h4>@pet.AnimalTypeName</h4>
+                                        <h4>@pet.Species</h4>
                                     </div>
                                 </div>
                             }
@@ -45,7 +45,7 @@
                     {
                         <h3>Animaux à garder</h3>
                         <div>
-                            @foreach (var pet in Model.Pets)
+                            @foreach (var pet in Model.PetCartViewModels)
                             {
                                 <div>
                                     @if (!string.IsNullOrEmpty(pet.Photo))
@@ -54,7 +54,7 @@
                                     }
                                     <div>
                                         <h4>@pet.Name</h4>
-                                        <p>@pet.AnimalTypeName</p>
+                                        <p>@pet.Species</p>
                                     </div>
                                 </div>
                             }

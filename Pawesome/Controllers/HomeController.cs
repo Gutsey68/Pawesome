@@ -32,9 +32,9 @@ public class HomeController : Controller
             return RedirectToAction("", "dashboard");
         }
         
-        var model = new List<PetCartLandingViewModel>
+        var model = new List<PetCartViewModel>
         {
-            new PetCartLandingViewModel
+            new PetCartViewModel
             {
                 Photo = "/images/landing/cat.png",
                 Name = "Mozzarella",
@@ -44,7 +44,7 @@ public class HomeController : Controller
                 Info = "A tenté de hacker la litière connectée. Ronronne en binaire."
             },
 
-            new PetCartLandingViewModel
+            new PetCartViewModel
             { 
                 Photo = "/images/landing/rabbit.png",
                 Name = "Jean-Lapin",
@@ -54,7 +54,7 @@ public class HomeController : Controller
                 Info = "Aime le jazz et les carottes bio. Tape du pied quand il kiffe."
             },
 
-            new PetCartLandingViewModel
+            new PetCartViewModel
             {
                 Photo = "/images/landing/dog.png",
                 Name = "Biscotte",
@@ -64,7 +64,7 @@ public class HomeController : Controller
                 Info = "Professionnel en câlins. Ronfle plus fort que ton voisin du dessus."
             },
 
-            new PetCartLandingViewModel
+            new PetCartViewModel
             {
                 Photo = "/images/landing/dog2.png",
                 Name = "Pixel",
@@ -74,7 +74,7 @@ public class HomeController : Controller
                 Info = "Joueur invétéré. Connaît plus de tricks que ton assistant vocal."
             },
 
-            new PetCartLandingViewModel
+            new PetCartViewModel
             {
                 Photo = "/images/landing/cat2.png",
                 Name = "Lady Miaouscar",

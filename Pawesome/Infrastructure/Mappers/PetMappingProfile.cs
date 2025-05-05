@@ -26,12 +26,18 @@ public class PetMappingProfile : Profile
     
         CreateMap<UpdatePetViewModel, Pet>()
             .ForMember(dest => dest.Photo, opt => opt.Ignore());
-            
+
         CreateMap<Pet, PetSimpleDto>()
-            .ForMember(dest => dest.AnimalTypeName, opt => 
-                opt.MapFrom((src, _, _, context) => src.AnimalType.Name))
+            .ForMember(dest => dest.AnimalTypeName, opt => opt.MapFrom(src => src.AnimalType.Name))
             .ForMember(dest => dest.Photo, opt => opt.MapFrom(src => src.Photo))
             .ForMember(dest => dest.Name, opt => opt.MapFrom(src => src.Name))
             .ForMember(dest => dest.Id, opt => opt.MapFrom(src => src.Id));
+        
+        CreateMap<PetSimpleDto, PetCartViewModel>()
+            .ForMember(dest => dest.Id, opt => opt.MapFrom(src => src.Id))
+            .ForMember(dest => dest.Name, opt => opt.MapFrom(src => src.Name))
+            .ForMember(dest => dest.Species, opt => opt.MapFrom(src => src.AnimalTypeName))
+            .ForMember(dest => dest.Photo, opt => opt.MapFrom(src => src.Photo))
+            .ForMember(dest => dest.Info, opt => opt.MapFrom(src => src.Info));
     }
 }
