@@ -163,47 +163,7 @@ public class AdvertService : IAdvertService
     
     public async Task<IEnumerable<PetSittingAdvertDto>> GetAdvertsWithSortingAsync(SortingOptions sortingOptions)
     {
-        var query = _repository.GetAllAdvertsAsync()
-            .Include(a => a.Animal)
-            .Include(a => a.User)
-            .AsQueryable();
-
-        // Appliquer les filtres de tri
-        switch (sortingOptions.SortBy.ToLower())
-        {
-            case "recent":
-                query = sortingOptions.SortDirection == "desc" 
-                    ? query.OrderByDescending(a => a.CreatedAt)
-                    : query.OrderBy(a => a.CreatedAt);
-                break;
-            
-            case "near":
-                // Utiliser la localisation de l'utilisateur pour trier par proximité
-                // Cette logique dépendra de votre implémentation de la géolocalisation
-                break;
-            
-            case "price":
-                if (sortingOptions.StartPrice.HasValue)
-                    query = query.Where(a => a.Price >= sortingOptions.StartPrice);
-                if (sortingOptions.EndPrice.HasValue)
-                    query = query.Where(a => a.Price <= sortingOptions.EndPrice);
-                break;
-        }
-
-        // Appliquer les filtres additionnels
-        if (sortingOptions.MostViewed == true)
-            query = query.OrderByDescending(a => a.ViewCount);
-        
-        if (sortingOptions.MostContracted == true)
-            query = query.OrderByDescending(a => a.ContractCount);
-        
-        if (sortingOptions.BestRated == true)
-            query = query.OrderByDescending(a => a.Rating);
-        
-        if (sortingOptions.VerifiedProfile == true)
-            query = query.Where(a => a.User.IsVerified);
-
-        var adverts = await query.ToListAsync();
+        var adverts = await _repository.GetAdvertsWithSortingAsync(sortingOptions);
         return _mapper.Map<IEnumerable<PetSittingAdvertDto>>(adverts);
     }
 }

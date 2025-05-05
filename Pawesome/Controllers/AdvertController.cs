@@ -53,6 +53,8 @@ public class AdvertController : Controller
         var adverts = await _advertService.GetAllAdvertsAsync(isPetSitter);
         
         TempData["SortOptions"] = JsonConvert.SerializeObject(sortOptions);
+        Console.WriteLine("sortOptions", sortOptions);
+        
         RouteData.Values["isPetSitter"] = isPetSitter.ToString().ToLower();
 
         return View(adverts);

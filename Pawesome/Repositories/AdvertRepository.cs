@@ -1,6 +1,7 @@
 using Microsoft.EntityFrameworkCore;
 using Pawesome.Interfaces;
 using Pawesome.Models;
+using Pawesome.Models.Dtos.Advert;
 using Pawesome.Models.Entities;
 
 namespace Pawesome.Repositories;
@@ -296,4 +297,50 @@ public class AdvertRepository : IAdvertRepository
             throw;
         }
     }
+    
+    public async Task<IEnumerable<Advert>> GetAdvertsWithSortingAsync(SortingOptions sortingOptions)
+    {
+        var query = _context.Adverts
+            .Include(a => a.User)
+            .AsQueryable();
+
+        // Appliquer les filtres et le tri
+        switch (sortingOptions.SortBy.ToLower())
+        {
+            case "recent":
+                query = sortingOptions.SortDirection == "desc" 
+                    ? query.OrderByDescending(a => a.CreatedAt)
+                    : query.OrderBy(a => a.CreatedAt);
+                break;
+
+            case "price":
+                if (sortingOptions.StartPrice.HasValue)
+                    query = query.Where(a => a.Amount >= (decimal)sortingOptions.StartPrice.Value);
+                if (sortingOptions.EndPrice.HasValue)
+                    query = query.Where(a => a.Amount <= (decimal)sortingOptions.EndPrice.Value);
+                break;
+
+            case "near":
+                // Géolocalisation, à inclure si nécessaire
+                //TODO: Check si on peut utiliser la localisation de l'utilisateur pour trier par proximité
+                break;
+        }
+
+        if (sortingOptions.MostViewed == true)
+            query = query.OrderByDescending(a => a.Reviews);
+        
+            //TODO:Ajouter MostContracted
+        if (sortingOptions.MostContracted == true)
+            //query = query.OrderByDescending(a => a.ContractCount);
+
+            //TODO:Ajouter BestRating
+        if (sortingOptions.BestRated == true)
+            //query = query.OrderByDescending(a => a.Rating);
+
+        if (sortingOptions.VerifiedProfile == true)
+            query = query.Where(a => a.User.IsVerified);
+
+        return await query.ToListAsync();
+    }
+
 }
