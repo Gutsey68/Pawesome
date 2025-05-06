@@ -89,6 +89,12 @@ public class AuthService : IAuthService
         if (!result.Succeeded) return result;
         
         var claims = new List<Claim>();
+        
+        claims.Add(new Claim("FirstName", user.FirstName));
+        claims.Add(new Claim("LastName", user.LastName));
+        
+        if (user.Email != null) claims.Add(new Claim("Email", user.Email));
+        
         if (!string.IsNullOrEmpty(user.Photo))
         {
             claims.Add(new Claim("Photo", user.Photo));
@@ -123,6 +129,12 @@ public class AuthService : IAuthService
         await _signInManager.SignOutAsync();
     
         var claims = new List<Claim>();
+        
+        claims.Add(new Claim("FirstName", user.FirstName));
+        claims.Add(new Claim("LastName", user.LastName));
+        
+        if (user.Email != null) claims.Add(new Claim("Email", user.Email));
+
         if (!string.IsNullOrEmpty(user.Photo))
         {
             claims.Add(new Claim("Photo", user.Photo));

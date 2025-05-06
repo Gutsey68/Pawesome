@@ -5,3 +5,4 @@
 - Ajouter les webhooks stripe
 - Mapper les infos de google quand on register
 - Enlever le h1 du footer (why ??)
+-Popup navbar : ajouter des séparateurs, ajouter le thème, mettre le nom et l'email en haut. 
