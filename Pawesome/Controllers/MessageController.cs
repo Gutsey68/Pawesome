@@ -92,11 +92,10 @@ public class MessageController : Controller
     [HttpGet("{otherUserId:int}")]
     public async Task<IActionResult> Conversation(int otherUserId)
     {
-        var userIdStr = User.FindFirstValue(ClaimTypes.NameIdentifier);
-        
-        if (string.IsNullOrEmpty(userIdStr) || !int.TryParse(userIdStr, out var userId))
+        var userIdString = User.FindFirstValue(ClaimTypes.NameIdentifier);
+        if (!int.TryParse(userIdString, out var currentUserId))
         {
-            return Unauthorized();
+            return RedirectToAction("Login", "Auth");
         }
 
         var otherUser = await _userService.GetUserProfileAsync(otherUserId);
@@ -105,18 +104,24 @@ public class MessageController : Controller
             return NotFound();
         }
 
-        var messagesDto = await _messageService.GetConversationAsync(userId, otherUserId);
+        await _messageService.MarkConversationAsReadAsync(currentUserId, otherUserId);
 
-        await _messageService.MarkConversationAsReadAsync(userId, otherUserId);
-        await _hubContext.Clients.User(otherUserId.ToString())
-            .SendAsync("MessagesRead", userId);
+        var messagesDto = await _messageService.GetConversationAsync(currentUserId, otherUserId);
+        var messages = _mapper.Map<List<MessageViewModel>>(messagesDto);
+
+        foreach (var message in messages)
+        {
+            message.IsCurrentUserSender = message.SenderId == currentUserId;
+        }
 
         var viewModel = new ConversationViewModel
         {
             OtherUserId = otherUserId,
-            OtherUserFullName = otherUser.FirstName + " " + otherUser.LastName,
-            OtherUserPhoto = otherUser.Photo,
-            Messages = _mapper.Map<List<MessageViewModel>>(messagesDto),
+            OtherUserFullName = $"{otherUser.FirstName} {otherUser.LastName}",
+            OtherUserPhoto = !string.IsNullOrEmpty(otherUser.Photo) 
+                ? $"/images/users/{otherUser.Photo}" 
+                : null,
+            Messages = messages,
             NewMessage = new CreateMessageViewModel { ReceiverId = otherUserId }
         };
 
