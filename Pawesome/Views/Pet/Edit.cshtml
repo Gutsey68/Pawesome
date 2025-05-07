@@ -1,5 +1,9 @@
 @model Pawesome.Models.ViewModels.Pet.UpdatePetViewModel
 
+@{
+    ViewData["Title"] = "Modifier l'animal";
+}
+
 <div class="container">
     <div>
         <div>
@@ -8,15 +12,15 @@
         <div>
             <form asp-action="Edit" enctype="multipart/form-data">
                 <div asp-validation-summary="ModelOnly" class="validation-message"></div>
-                <input type="hidden" asp-for="Id" />
-                <input type="hidden" asp-for="ExistingPhoto" />
+                <input type="hidden" asp-for="Id"/>
+                <input type="hidden" asp-for="ExistingPhoto"/>
                 <div class="form-group">
                     <label asp-for="Name" class="form-label">Nom</label>
                     <input asp-for="Name" class="form-control"
                            data-val="true"
                            data-val-required="Le nom de l'animal est requis"
                            data-val-length="Le nom ne peut pas dépasser 255 caractères"
-                           data-val-length-max="255" />
+                           data-val-length-max="255"/>
                     <span asp-validation-for="Name" class="validation-message"></span>
                 </div>
                 <div class="form-group">
@@ -33,7 +37,7 @@
                     <input asp-for="Breed" class="form-control"
                            data-val="true"
                            data-val-length="La race ne peut pas dépasser 255 caractères"
-                           data-val-length-max="255" />
+                           data-val-length-max="255"/>
                     <span asp-validation-for="Breed" class="validation-message"></span>
                 </div>
                 <div class="form-group">
@@ -42,7 +46,7 @@
                            data-val="true"
                            data-val-range="L'âge doit être compris entre 0 et 30 ans"
                            data-val-range-min="0"
-                           data-val-range-max="30" />
+                           data-val-range-max="30"/>
                     <span asp-validation-for="Age" class="validation-message"></span>
                 </div>
                 <div class="form-group">
@@ -55,7 +59,8 @@
                     <div class="form-group">
                         <label class="form-label">Photo actuelle</label>
                         <div>
-                            <img src="~/images/pets/@Model.ExistingPhoto" alt="Photo actuelle" width="200" class="img-thumbnail" />
+                            <img src="~/images/pets/@Model.ExistingPhoto" alt="Photo actuelle" width="200"
+                                 class="img-thumbnail"/>
                         </div>
                     </div>
                 }
@@ -66,7 +71,7 @@
                            data-val-filesize="Le fichier doit être une image (jpg, jpeg, png) de moins de 5 Mo"
                            data-val-filesize-max="5242880"
                            data-val-fileextension="Le fichier doit être une image (jpg, jpeg, png)"
-                           data-val-fileextension-extensions="jpg,jpeg,png" />
+                           data-val-fileextension-extensions="jpg,jpeg,png"/>
                     <small class="form-text text-muted">Laissez vide pour conserver la photo actuelle</small>
                     <span asp-validation-for="Photo" class="validation-message"></span>
                 </div>
@@ -81,6 +86,6 @@
 </div>
 
 @section Scripts {
-    <partial name="_ValidationScriptsPartial" />
+    <partial name="_ValidationScriptsPartial"/>
     <script src="~/js/validation-extensions.js"></script>
 }

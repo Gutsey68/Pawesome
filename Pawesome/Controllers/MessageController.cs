@@ -1,5 +1,3 @@
-using AutoMapper;
-using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.SignalR;
 using Pawesome.Hubs;
@@ -7,14 +5,13 @@ using Pawesome.Interfaces;
 using Pawesome.Models.DTOs.Message;
 using Pawesome.Models.ViewModels.Message;
 using System.Security.Claims;
+using AutoMapper;
 
 namespace Pawesome.Controllers;
 
 /// <summary>
-/// Controller for handling messages and conversations between users
+/// Controller for managing messaging between users
 /// </summary>
-[Authorize]
-[Route("messages")]
 public class MessageController : Controller
 {
     private readonly IMessageService _messageService;
@@ -23,12 +20,8 @@ public class MessageController : Controller
     private readonly IHubContext<MessageHub> _hubContext;
 
     /// <summary>
-    /// Initializes a new instance of the MessageController
+    /// Constructor for MessageController
     /// </summary>
-    /// <param name="messageService">Service for message operations</param>
-    /// <param name="userService">Service for user operations</param>
-    /// <param name="mapper">AutoMapper instance for object mapping</param>
-    /// <param name="hubContext">SignalR hub context for real-time communication</param>
     public MessageController(
         IMessageService messageService,
         IUserService userService,
@@ -49,7 +42,7 @@ public class MessageController : Controller
     public async Task<IActionResult> Index()
     {
         var userIdStr = User.FindFirstValue(ClaimTypes.NameIdentifier);
-        
+    
         if (string.IsNullOrEmpty(userIdStr) || !int.TryParse(userIdStr, out var userId))
         {
             return Unauthorized();
@@ -81,6 +74,7 @@ public class MessageController : Controller
             });
         }
 
+        ViewBag.ConversationsViewModel = viewModel;
         return View(viewModel);
     }
 
@@ -105,6 +99,33 @@ public class MessageController : Controller
         }
 
         await _messageService.MarkConversationAsReadAsync(currentUserId, otherUserId);
+
+        var conversationsDto = await _messageService.GetLatestConversationsForUserAsync(currentUserId);
+        var conversationsViewModel = new ConversationsListViewModel
+        {
+            Conversations = []
+        };
+
+        foreach (var conversation in conversationsDto)
+        {
+            var convOtherUserId = conversation.SenderId == currentUserId ? conversation.ReceiverId : conversation.SenderId;
+            var convOtherUserFullName = conversation.SenderId == currentUserId ? conversation.ReceiverFullName : conversation.SenderFullName;
+            var convOtherUserPhoto = conversation.SenderId == currentUserId ? null : conversation.SenderPhoto;
+
+            var unreadCount = await _messageService.GetUnreadMessagesCountFromSenderAsync(currentUserId, convOtherUserId);
+
+            conversationsViewModel.Conversations.Add(new MessageSummaryViewModel
+            {
+                UserId = convOtherUserId,
+                UserFullName = convOtherUserFullName,
+                UserPhoto = convOtherUserPhoto,
+                LastMessageContent = conversation.Content,
+                FormattedDate = conversation.CreatedAt.ToString("dd/MM/yyyy HH:mm"),
+                UnreadCount = unreadCount
+            });
+        }
+
+        ViewBag.ConversationsViewModel = conversationsViewModel;
 
         var messagesDto = await _messageService.GetConversationAsync(currentUserId, otherUserId);
         var messages = _mapper.Map<List<MessageViewModel>>(messagesDto);
@@ -248,6 +269,7 @@ public class MessageController : Controller
 
         return Ok();
     }
+
 
     /// <summary>
     /// API endpoint for getting the count of unread messages

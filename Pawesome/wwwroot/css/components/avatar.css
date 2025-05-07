@@ -21,8 +21,11 @@
 }
 
 .avatar[data-size='lg'] {
-    width: var(--space-9);
-    height: var(--space-9);
+    width: var(--space-8);
+    height: var(--space-8);
+    font-size: var(--space-4);
+    letter-spacing: -2px;
+    font-weight: normal;
 }
 
 .avatar[data-size='xl'] {

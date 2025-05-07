@@ -2,59 +2,12 @@
 
 @{
     ViewData["Title"] = "Messagerie";
+    Layout = "~/Views/Shared/Message/_MessagesLayout.cshtml";
 }
 
-<div class="container messages-page">
-    <div class="messages-container">
-        <h1 class="messages-title">Messagerie</h1>
-
-        @if (!Model.Conversations.Any())
-        {
-            <div class="card">
-                <div class="card-body">
-                    <p>Vous n'avez pas encore de conversations.</p>
-                </div>
-            </div>
-        }
-        else
-        {
-            <div class="conversations-list">
-                @foreach (var conversation in Model.Conversations)
-                {
-                    <a href="@Url.Action("Conversation", new { otherUserId = conversation.UserId })"
-                       class="conversation-item">
-                        <div class="conversation-avatar">
-                            @if (!string.IsNullOrEmpty(conversation.UserPhoto))
-                            {
-                                <div class="avatar" data-size="md">
-                                    <img src="~/images/users/@conversation.UserPhoto" alt="Photo de @conversation.UserFullName" class="avatar-image">
-                                </div>
-                            }
-                            else
-                            {
-                                <div class="avatar" data-size="md">
-                                    <div class="avatar-fallback">
-                                        @conversation.UserFullName.Substring(0, 1).ToUpper()
-                                    </div>
-                                </div>
-                            }
-                        </div>
-                        <div class="conversation-content">
-                            <div class="conversation-header">
-                                <h3 class="conversation-name">@conversation.UserFullName</h3>
-                                <span class="conversation-date">@conversation.FormattedDate</span>
-                            </div>
-                            <p class="conversation-message">@conversation.LastMessageContent</p>
-                        </div>
-                        @if (conversation.UnreadCount > 0)
-                        {
-                            <div class="conversation-status">
-                                <span class="badge" data-variant="secondary">@conversation.UnreadCount</span>
-                            </div>
-                        }
-                    </a>
-                }
-            </div>
-        }
+<div class="empty-conversation-placeholder">
+    <div class="empty-placeholder-content">
+        <h2>Sélectionnez une conversation</h2>
+        <p>Choisissez une conversation dans la liste pour afficher les messages</p>
     </div>
 </div>
