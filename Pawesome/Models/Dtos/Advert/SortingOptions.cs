@@ -2,7 +2,7 @@ namespace Pawesome.Models.Dtos.Advert;
 
 public class SortingOptions
 {
-    public string SortBy { get; set; } = "Near"; // Recent, Last, Near
+    public string SortBy { get; set; } = "recent"; // recent, oldest, soon
     
     public decimal? StartPrice { get; set; }
     public decimal? EndPrice { get; set; }

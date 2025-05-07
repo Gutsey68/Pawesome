@@ -78,6 +78,16 @@ hr {
     height: 18px;
 }
 
+.filtre-section select {
+    width: 100%;
+    padding: 5px;
+    margin-top: var(--space-2);
+    border-radius: var(--radius-lg);
+    background-color: #fff;
+    border: 1px solid #d3c1b5;
+    color: #3f2a1d;
+}
+
 .filtre-options span,
 .filtre-section span {
     display: flex;
@@ -152,6 +162,17 @@ h3 {
 .nav-item:hover {
     background-color: var(--color-primary-10);
     color: var(--color-primary-1);
+}
+
+.form-control {
+    cursor: not-allowed;
+}
+
+.form-control[disabled] {
+    opacity: 1;
+    background-color: var(--color-primary-1);
+    color: var(--color-primary-12);
+    cursor: not-allowed;
 }
 
 /* ======= Cards ======= */

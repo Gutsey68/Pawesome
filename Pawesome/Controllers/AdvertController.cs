@@ -1,9 +1,11 @@
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.VisualStudio.Web.CodeGenerators.Mvc.Templates.Blazor;
 using Newtonsoft.Json;
 using Pawesome.Interfaces;
 using Pawesome.Models;
+using Pawesome.Models.DTOs;
 using Pawesome.Models.Dtos.Advert;
 using Pawesome.Models.Entities;
 using Pawesome.Models.ViewModels.Advert;
@@ -45,18 +47,76 @@ public class AdvertController : Controller
     /// <param name="isPetSitter">If true, shows pet sitting offers; if false, shows pet sitting requests</param>
     /// <returns>View containing a list of adverts</returns>
     [HttpGet]
-    public async Task<IActionResult> Index(
-        bool isPetSitter = false,
-        [FromQuery] SortingOptions? sortOptions = null)
+    // public async Task<IActionResult> Index(
+    //     bool isPetSitter = false,
+    //     [FromQuery] SortingOptions? sortOptions = null)
+    // {
+    //     // Récupération de la liste des adverts en totalitée.
+    //     var adverts = await _advertService.GetAllAdvertsAsync(isPetSitter);
+    //
+    //     // Ajout de la valeur de isPetSitter dans le RouteData
+    //     RouteData.Values["isPetSitter"] = isPetSitter.ToString().ToLower();
+    //     
+    //     //=========== Gestion Prix ==============
+    //     #region Gestion Prix
+    //     
+    //     //Récupération data GET
+    //     var viewMinPrice = (object?)Request.Query["minPrice"].FirstOrDefault();
+    //     var viewMaxPrice = (object?)Request.Query["maxPrice"].FirstOrDefault();
+    //     // Avoir sur l'ensemble des annonce la valeur la plus petite et la plus grande niveau prix
+    //     var minPrice = adverts.Min(a => a.Amount);
+    //     var maxPrice = adverts.Max(a => a.Amount);
+    //     
+    //     ViewData["MinPrice"] = viewMinPrice ?? (int)Math.Round(minPrice);
+    //     ViewData["MaxPrice"] = viewMaxPrice ?? (int)Math.Round(maxPrice);
+    //     
+    //     ViewData["MaxPriceBeforeReload"] = (int)Math.Round(maxPrice);
+    //     ViewData["MinPriceBeforeReload"] = (int)Math.Round(minPrice);
+    //     #endregion
+    //     
+    //     //=========== Gestion Type Animal ==============
+    //     #region Gestion Popularité
+    //     
+    //     //Récupération de la liste des race en fonction des annonces
+    //     var animalType = adverts.SelectMany(a => a.PetCartViewModels)
+    //         .Select(p => p.Species)
+    //         .Distinct()
+    //         .ToList();
+    //     ViewData["AnimalTypes"] = animalType.Select(name => new AnimalTypeDto { Name = name }).ToList();
+    //     
+    //     var selectedAnimalTypes = Request.Query["animalType"].ToString().Split(',', StringSplitOptions.RemoveEmptyEntries);
+    //     ViewData["AnimalTypeInput"] = string.Join(",", selectedAnimalTypes);
+    //     
+    //     foreach (var type in selectedAnimalTypes)
+    //     {
+    //         ViewData[$"AnimalType-{type.Replace(" ", "")}"] = selectedAnimalTypes.Contains(type, StringComparer.OrdinalIgnoreCase) ? "checked" : "";
+    //     }
+    //     #endregion
+    //     
+    //     //=========== Gestion Popularité ==============
+    //     #region Gestion Popularité
+    //     
+    //     //Récupération data GET
+    //     var viewMostViewed = Convert.ToBoolean(Request.Query["mostViewed"].FirstOrDefault());
+    //     var viewMostContracted = Convert.ToBoolean(Request.Query["mostContracted"].FirstOrDefault());
+    //     var viewBestRated = Convert.ToBoolean(Request.Query["bestRated"].FirstOrDefault());
+    //     
+    //     ViewData["MostViewed"] = viewMostViewed ? "checked" : "";
+    //     ViewData["MostContracted"] = viewMostContracted ? "checked" : "";
+    //     ViewData["BestRated"] = viewBestRated ? "checked" : "";
+    //     #endregion
+    //     
+    //     // ========== Gestion Type Animal ==============
+    //     
+    //     
+    //     return View(adverts);
+    // }
+    public async Task<IActionResult> Index(bool isPetSitter, [FromQuery] AdvertViewModel model)
     {
-        
-        var adverts = await _advertService.GetAllAdvertsAsync(isPetSitter);
-        
-        TempData["SortOptions"] = JsonConvert.SerializeObject(sortOptions);
-        Console.WriteLine("sortOptions", sortOptions);
+        var adverts = await _advertService.GetFilteredAdvertsAsync(model.IsPetSitter, model);
         
         RouteData.Values["isPetSitter"] = isPetSitter.ToString().ToLower();
-
+        
         return View(adverts);
     }
 
@@ -334,7 +394,7 @@ public class AdvertController : Controller
 
         foreach (var animalType in animalTypes)
         {
-            if (advert.PetCartViewModels.Any(p => p.Species == animalType.Name))
+            if (advert.PetCartViewModels.Any(p => p.Name == animalType.Name))
             {
                 updateModel.AcceptedAnimalTypeIds.Add(animalType.Id);
             }
