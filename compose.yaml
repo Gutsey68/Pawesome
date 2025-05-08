@@ -9,6 +9,8 @@
       - "traefik.http.routers.pawesome.entrypoints=websecure"
       - "traefik.http.routers.pawesome.tls.certresolver=pawesome"
       - "traefik.http.services.pawesome.loadbalancer.server.port=8080"
+      - "traefik.docker.network=traefik-proxy"
+
     networks:
       - pawesome-network
       - traefik-proxy
