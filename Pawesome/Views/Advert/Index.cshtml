@@ -128,7 +128,7 @@
                                 </label>
                             </section>
     
-                            <button type="submit" class="btn btn-primary" style="margin-top: 20px;">Rechercher</button>
+                            <button type="submit" class="button-submission">Rechercher</button>
                         </form>
                     </div>
                 </div>
@@ -166,7 +166,9 @@
                                     @foreach (var petCart in advert.PetCartViewModels)
                                     {
                                         petCart.Photo = string.IsNullOrEmpty(petCart.Photo) ? "/images/default-pet.jpg" : "/images/pets/" + petCart.Photo;
-                                        <partial name="_PetCardPartial" model="petCart" />
+                                        <a class="card-container" href="@Url.Action("Details", "Advert", new { id = advert.Id, isPetSitter = ViewContext.RouteData.Values["isPetSitter"] })">
+                                            <partial name="_PetCardPartial" model="petCart" />
+                                        </a>
                                     }
                                 }
                             }

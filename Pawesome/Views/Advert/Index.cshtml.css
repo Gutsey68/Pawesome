@@ -34,6 +34,7 @@
 
 .filtre-section {
     margin-bottom: 20px;
+    position: relative;
 }
 
 .filtre-header {
@@ -73,9 +74,32 @@ hr {
 .filtre-options input[type="radio"],
 .filtre-section input[type="checkbox"],
 .filtre-section input[type="radio"] {
-    accent-color: #6a442d;
+    accent-color: var(--color-primary-9);
+    width: 18px;
+    height: 18px;  
+}
+
+.filtre-section input[type="radio"] {
     width: 18px;
     height: 18px;
+    appearance: none;
+    -webkit-appearance: none;
+    accent-color: var(--color-primary-8);
+    border: 1px solid var(--color-primary-8);
+    border-radius: var(--radius-full);
+}
+
+.filtre-options input[type="radio"]:checked::before {
+    content: "";
+    display: block;
+    width: 12px;
+    height: 12px;
+    background-color: var(--color-primary-9);
+    border-radius: 50%;
+    position: relative;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
 }
 
 .filtre-section select {
@@ -85,7 +109,7 @@ hr {
     border-radius: var(--radius-lg);
     background-color: #fff;
     border: 1px solid #d3c1b5;
-    color: #3f2a1d;
+    color: var(--color-primary-12);
 }
 
 .filtre-options span,
@@ -98,6 +122,16 @@ hr {
     margin-left: auto;
     font-size: var(--font-size-sm);
     color: var(--color-primary-12);
+}
+
+.button-submission {
+    width: 100%;
+    margin: 0 auto;
+    color: var(--color-primary-1);
+    background-color: var(--color-primary-12);
+    border-radius: var(--radius-full);
+    padding: var(--space-2) var(--space-4);
+    border: none;
 }
 
 .prix-slider {
@@ -166,6 +200,7 @@ h3 {
 
 .form-control {
     cursor: not-allowed;
+    margin: var(--space-4) 0 0 0;
 }
 
 .form-control[disabled] {

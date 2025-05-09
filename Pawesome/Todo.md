@@ -10,14 +10,13 @@
 
 **Anto Todo:**
 - Tri
-    - (🟠) Recent / Ancien / Début proche 
-    - (❌) Prix [ Tranche Debut / Tranche Fin]
+    - (✅) Recent / Ancien / Début proche 
+    - (✅) Prix [ Tranche Debut / Tranche Fin]
     - (❌) Pop [ Plus vue, Plus contracter, Mieux notée ]
-    - (❌) Type animal [ asc / dsc]
+    - (✅) Type animal [ asc / dsc]
     - (❌) Profil Verifier
     - (❌) Meilleur note
 
-
-- Ajout d'un SortingOption.cs
-- Modification du IAdvertService ✅
-- Ajouter FORM dans le html a check discord pour le code 🟠
+- Quand click sur l'annonce :
+  - (❌) Voir l'entièreté de l'annonce
+  - 

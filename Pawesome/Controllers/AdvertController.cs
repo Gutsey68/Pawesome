@@ -273,8 +273,6 @@ public class AdvertController : Controller
         
         var adverts = await _advertService.GetUserAdvertsAsync(user.Id);
         
-        Console.WriteLine("adverts", adverts);
-        
         return View(adverts);
     }
     

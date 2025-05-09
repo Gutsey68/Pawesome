@@ -3,9 +3,9 @@
     width: 300px;
     height: auto;
     text-align: start;
-    background-color: var(--color-primary-1);
+    background-color: var(--color-primary-2);
     border-radius: 15px;
-    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
     overflow: hidden;
     z-index: 10;
 }

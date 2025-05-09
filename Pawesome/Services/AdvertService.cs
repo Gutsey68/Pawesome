@@ -163,12 +163,6 @@ public class AdvertService : IAdvertService
         return await _repository.DeleteAdvertAsync(advertId);
     }
     
-    public async Task<IEnumerable<PetSittingAdvertDto>> GetAdvertsWithSortingAsync(SortingOptions sortingOptions)
-    {
-        var adverts = await _repository.GetAdvertsWithSortingAsync(sortingOptions);
-        return _mapper.Map<IEnumerable<PetSittingAdvertDto>>(adverts);
-    }
-    
     public async Task<AdvertViewModel> GetFilteredAdvertsAsync(bool isPetSitter, AdvertViewModel model)
     {
         // Récupérer toutes les annonces selon le type (offre ou demande)
