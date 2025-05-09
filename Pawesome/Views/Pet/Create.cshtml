@@ -1,5 +1,9 @@
 @model Pawesome.Models.ViewModels.Pet.CreatePetViewModel
 
+@{
+    ViewData["Title"] = "Ajouter un animal";
+}
+
 <div class="container">
     <div class="card">
         <div class="card-header">
@@ -15,7 +19,7 @@
                            data-val="true"
                            data-val-required="Le nom de l'animal est requis"
                            data-val-length="Le nom ne peut pas dépasser 255 caractères"
-                           data-val-length-max="255" />
+                           data-val-length-max="255"/>
                     <span asp-validation-for="Name" class="validation-message"></span>
                 </div>
                 <div class="form-group">
@@ -32,7 +36,7 @@
                     <input asp-for="Breed" class="form-control"
                            data-val="true"
                            data-val-length="La race ne peut pas dépasser 255 caractères"
-                           data-val-length-max="255" />
+                           data-val-length-max="255"/>
                     <span asp-validation-for="Breed" class="validation-message"></span>
                 </div>
                 <div class="form-group">
@@ -41,7 +45,7 @@
                            data-val="true"
                            data-val-range="L'âge doit être compris entre 0 et 30 ans"
                            data-val-range-min="0"
-                           data-val-range-max="30" />
+                           data-val-range-max="30"/>
                     <span asp-validation-for="Age" class="validation-message"></span>
                 </div>
                 <div class="form-group">
@@ -56,7 +60,7 @@
                            data-val-filesize="Le fichier doit être une image (jpg, jpeg, png) de moins de 5 Mo"
                            data-val-filesize-max="5242880"
                            data-val-fileextension="Le fichier doit être une image (jpg, jpeg, png)"
-                           data-val-fileextension-extensions="jpg,jpeg,png" />
+                           data-val-fileextension-extensions="jpg,jpeg,png"/>
                     <span asp-validation-for="Photo" class="validation-message"></span>
                 </div>
             </form>
@@ -71,6 +75,7 @@
 </div>
 
 @section Scripts {
-    <partial name="_ValidationScriptsPartial" />
+    <partial name="_ValidationScriptsPartial"/>
     <script src="~/js/validation-extensions.js"></script>
 }
+

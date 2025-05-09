@@ -1,68 +1,65 @@
 @model Pawesome.Models.ViewModels.Message.ConversationViewModel
 @{
     ViewData["Title"] = "Conversation avec " + Model.OtherUserFullName;
+    Layout = "~/Views/Shared/Message/_MessagesLayout.cshtml";
 }
 
-<div class="container" data-conversation-id="@Model.OtherUserId">
-    <div>
-        <div>
-            <div>
-                <a href="@Url.Action("Index")">
-                    Retour
-                </a>
-
-                <div>
-                    @if (!string.IsNullOrEmpty(Model.OtherUserPhoto))
-                    {
-                        <img src="@Model.OtherUserPhoto" alt="@Model.OtherUserFullName" class="avatar">
-                    }
-                    else
-                    {
-                        <div class="avatar">
-                            @Model.OtherUserFullName.Substring(0, 1)
-                        </div>
-                    }
-                    <h2>@Model.OtherUserFullName</h2>
-                </div>
-            </div>
-
-            <div id="messages-container">
-                @if (!Model.Messages.Any())
+<div class="conversation-page" data-conversation-id="@Model.OtherUserId">
+    <div class="conversation-container">
+        <div class="conversation-header">
+            <div class="user-info">
+                @if (!string.IsNullOrEmpty(Model.OtherUserPhoto))
                 {
-                    <div>
-                        <p>Aucun message pour l'instant</p>
-                        <p>Envoyez un message pour commencer la conversation</p>
+                    <div class="avatar" data-size="md">
+                        <img src="@Model.OtherUserPhoto" alt="@Model.OtherUserFullName" class="avatar-image">
                     </div>
                 }
                 else
                 {
-                    @foreach (var message in Model.Messages)
-                    {
-                        <div>
-                            <div>
-                                <p>@message.Content</p>
-                                <p>@message.FormattedDate</p>
-                            </div>
+                    <div class="avatar" data-size="md">
+                        <div class="avatar-fallback">
+                            @Model.OtherUserFullName.Substring(0, 1).ToUpper()
                         </div>
-                    }
+                    </div>
                 }
+                <h2 class="user-name">@Model.OtherUserFullName</h2>
             </div>
-
-            <form id="message-form" method="post" action="@Url.Action("SendMessage")">
-                <input type="hidden" name="ReceiverId" id="receiver-id" value="@Model.OtherUserId" />
-                <div>
-                    <input type="text" class="form-control" id="message-input" name="Content" placeholder="Écrivez votre message..." required>
-                    <button type="submit" class="btn btn-primary">
-                        <span id="sending-indicator" style="display: none;" class="spinner-border spinner-border-sm me-1" role="status" aria-hidden="true"></span>
-                        Envoyer
-                    </button>
-                </div>
-            </form>
         </div>
+
+        <div id="messages-container" class="messages-container">
+            @if (!Model.Messages.Any())
+            {
+                <div class="empty-conversation">
+                    <p class="empty-title">Aucun message pour l'instant</p>
+                    <p class="empty-subtitle">Envoyez un message pour commencer la conversation</p>
+                </div>
+            }
+            else
+            {
+                @foreach (var message in Model.Messages)
+                {
+                    <div class="message-wrapper @(message.IsCurrentUserSender ? "message-outgoing" : "message-incoming")">
+                        <div class="message">
+                            <p class="message-content">@message.Content</p>
+                            <p class="message-time">@message.FormattedDate</p>
+                        </div>
+                    </div>
+                }
+            }
+        </div>
+
+        <form id="message-form" method="post" action="@Url.Action("SendMessage")" class="message-form">
+            <input type="hidden" name="ReceiverId" id="receiver-id" value="@Model.OtherUserId" />
+            <div class="message-input-container">
+                <input type="text" id="message-input" name="Content" placeholder="Écrivez votre message..." required>
+                <button type="submit" class="button" data-variant="icon">
+                    <span id="sending-indicator" style="display: none;" class="spinner" role="status" aria-hidden="true"></span>
+                    <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                        <path d="m22 2-7 20-4-9-9-4 20-7z"/>
+                        <path d="M22 2 11 13"/>
+                    </svg>
+                </button>
+            </div>
+        </form>
     </div>
 </div>
-
-@section Scripts {
-    <script src="~/lib/microsoft/signalr/dist/browser/signalr.min.js"></script>
-    <script src="~/js/messageClient.js"></script>
-}

@@ -1,12 +1,26 @@
 @model Pawesome.Models.ViewModels.ProfileViewModel
+
 @{
     ViewData["Title"] = "Mon Profil";
 }
+
 <div class="container">
     <div class="img-cover">
-    </div>  
+    </div>
     <div class="profile-header">
-        <div><img class="avatar" data-size="xxl" src="~/images/users/@Model.Photo" alt=""></div>
+        <div>
+            @if (!string.IsNullOrEmpty(User.FindFirst("Photo")?.Value))
+            {
+                <img class="avatar" data-size="xxl" src="~/images/users/@Model.Photo"
+                     alt="Image de profil de l'utilisateur"/>
+            }
+            else
+            {
+                <div class="avatar avatar-fallback" data-size="xxl">
+                    @Model.FirstName?.Substring(0, 1).ToUpper() @Model.LastName?.Substring(0, 1).ToUpper()
+                </div>
+            }
+        </div>
         <div>
             <div>
                 <h1>@Model.FirstName @Model.LastName</h1>
@@ -25,6 +39,7 @@
             {
                 <partial name="_PetCardPartial" model="pet"/>
             }
+
             <a asp-controller="Pet" asp-action="Index">Voir mes animaux</a>
         }
         else

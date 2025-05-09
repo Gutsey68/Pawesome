@@ -18,7 +18,13 @@ public static class ApplicationBuilderExtensions
             app.UseHsts();
         }
 
-        app.UseHttpsRedirection();
+        //app.UseHttpsRedirection();
+        if (app.Environment.IsDevelopment())
+        {
+            app.UseHttpsRedirection();
+        }
+
+        app.UseForwardedHeaders();
         app.UseRequestLocalization();
         app.UseStaticFiles();
         app.UseRouting();

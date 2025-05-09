@@ -20,3 +20,4 @@
 - Quand click sur l'annonce :
   - (❌) Voir l'entièreté de l'annonce
   - 
+-Popup navbar : ajouter des séparateurs, ajouter le thème, mettre le nom et l'email en haut. 

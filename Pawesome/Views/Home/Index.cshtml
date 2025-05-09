@@ -1,6 +1,11 @@
 ﻿@using Pawesome.Models.ViewModels
 @{
-    ViewData["Title"] = "Home Page";
+    ViewData["Title"] = "Accueil";
+    
+    @if(User.Identity?.IsAuthenticated == true)
+    {
+
+    }
 }
 
 <main role="main">

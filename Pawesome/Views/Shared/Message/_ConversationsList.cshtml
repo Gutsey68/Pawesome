@@ -1,0 +1,53 @@
+@model Pawesome.Models.ViewModels.Message.ConversationsListViewModel
+
+<div class="conversations-list-container">
+    <h2 class="messages-title">Messagerie</h2>
+
+    @if (!Model.Conversations.Any())
+    {
+        <div class="empty-conversations">
+            <p>Vous n'avez pas encore de conversations.</p>
+        </div>
+    }
+    else
+    {
+        <div class="conversations-list">
+            @foreach (var conversation in Model.Conversations)
+            {
+                <a href="@Url.Action("Conversation", "Message", new { otherUserId = conversation.UserId })"
+                   class="conversation-item @(ViewContext.RouteData.Values["otherUserId"]?.ToString() == conversation.UserId.ToString() ? "active" : "")">
+                    <div class="conversation-avatar">
+                        @if (!string.IsNullOrEmpty(conversation.UserPhoto))
+                        {
+                            <div class="avatar" data-size="lg">
+                                <img src="~/images/users/@conversation.UserPhoto"
+                                     alt="Photo de @conversation.UserFullName" class="avatar-image">
+                            </div>
+                        }
+                        else
+                        {
+                            <div class="avatar" data-size="lg">
+                                <div class="avatar-fallback">
+                                    @conversation.UserFullName.Substring(0, 1).ToUpper()
+                                </div>
+                            </div>
+                        }
+                    </div>
+                    <div class="conversation-content">
+                        <div class="conversation-header">
+                            <h3 class="conversation-name">@conversation.UserFullName</h3>
+                            <span class="conversation-date">@conversation.FormattedDate</span>
+                        </div>
+                        <p class="conversation-message">@conversation.LastMessageContent</p>
+                    </div>
+                    @if (conversation.UnreadCount > 0)
+                    {
+                        <p class="conversation-status">
+                            @conversation.UnreadCount
+                        </p>
+                    }
+                </a>
+            }
+        </div>
+    }
+</div>

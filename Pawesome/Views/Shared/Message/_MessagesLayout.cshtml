@@ -1,0 +1,19 @@
+@{
+Layout = "_Layout";
+}
+
+<div class="messaging-container container">
+    <div class="conversations-sidebar">
+        @if (ViewBag.ConversationsViewModel != null)
+        {
+            @await Html.PartialAsync("Message/_ConversationsList", (object)ViewBag.ConversationsViewModel)
+            }
+        else
+        {
+        @await Html.PartialAsync("Message/_ConversationsList", (object)Model)
+        }
+    </div>
+    <div class="selected-conversation">
+        @RenderBody()
+    </div>
+</div>

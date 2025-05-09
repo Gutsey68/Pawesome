@@ -1,15 +1,19 @@
 @model Pawesome.Models.ViewModels.PetDetailsViewModel
 
+@{
+    ViewData["Title"] = "Profil de " + Model.Name;
+}
+
 <div>
     <h1>Détails</h1>
     <div>
         @if (!string.IsNullOrEmpty(Model.Photo))
         {
-            <img src="~/images/pets/@Model.Photo" alt="@Model.Name" width="200" />
+            <img src="~/images/pets/@Model.Photo" alt="@Model.Name" width="200"/>
         }
         else
         {
-            <img src="~/images/pet-placeholder.jpg" alt="Image par défaut" width="200" />
+            <img src="~/images/pet-placeholder.jpg" alt="Image par défaut" width="200"/>
         }
         <div>
             <h3>@Model.Name</h3>
@@ -38,7 +42,7 @@
             <div>
                 <strong>Propriétaire:</strong> @Model.OwnerName
             </div>
-            
+
             <div>
                 <strong>Date d'ajout:</strong> @Model.CreatedAt.ToString("dd/MM/yyyy")
             </div>
