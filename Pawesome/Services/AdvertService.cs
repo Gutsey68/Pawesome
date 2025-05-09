@@ -1,6 +1,8 @@
 using AutoMapper;
+using Azure.Core;
 using Pawesome.Interfaces;
 using Pawesome.Models;
+using Pawesome.Models.DTOs;
 using Pawesome.Models.Dtos.Advert;
 using Pawesome.Models.Entities;
 using Pawesome.Models.ViewModels.Advert;
@@ -159,5 +161,101 @@ public class AdvertService : IAdvertService
     public async Task<bool> DeleteAdvertAsync(int advertId)
     {
         return await _repository.DeleteAdvertAsync(advertId);
+    }
+    
+    public async Task<AdvertViewModel> GetFilteredAdvertsAsync(bool isPetSitter, AdvertViewModel model)
+    {
+        // Récupérer toutes les annonces selon le type (offre ou demande)
+        var allAdverts = await GetAllAdvertsAsync(isPetSitter);
+        
+        // Filtrer par prix
+        var filteredAdverts = allAdverts
+            .Where(a => a.Amount >= model.MinPrice && a.Amount <= model.MaxPrice);
+        
+        // Filtrer par type d'animal
+        var animalType = allAdverts.SelectMany(a => a.PetCartViewModels)
+            .Select(p => p.Species)
+            .Distinct()
+            .ToList();
+        
+        model.AnimalTypes = animalType.Select(name => new AnimalTypeAdvert
+        {
+            AnimalType = new AnimalType
+            {
+                Name = name
+            }
+        }).ToList();
+        
+        // Filter par prix
+        model.MinPrice = model.MinPrice != 0 ? (int)Math.Round(model.MinPrice) : (int)Math.Round(allAdverts.Min(a => a.Amount));
+        model.MaxPrice = model.MaxPrice != 0 ? (int)Math.Round(model.MaxPrice) : (int)Math.Round(allAdverts.Max(a => a.Amount));
+        
+        model.MinPriceBeforeReload = model.MinPriceBeforeReload != 0 ? (int)Math.Round(model.MinPriceBeforeReload) : (int)Math.Round(allAdverts.Min(a => a.Amount));
+        model.MaxPriceBeforeReload = model.MaxPriceBeforeReload != 0 ? (int)Math.Round(model.MaxPriceBeforeReload) : (int)Math.Round(allAdverts.Max(a => a.Amount));
+        
+        // Appliquer les filtres de popularité
+        var query = filteredAdverts.AsQueryable();
+
+        // if (model.MostViewed)
+        // {
+        //     query = query.OrderByDescending(a => a.ViewCount);
+        // }
+        //
+        // if (model.MostContracted)
+        // {
+        //     query = query.OrderByDescending(a => a.ContractCount);
+        // }
+        //
+        // if (model.BestRated)
+        // {
+        //     query = query.OrderByDescending(a => a.Rating);
+        // }
+
+        // Appliquer les options de tri
+        if (model.SortOptions != null)
+        {
+            switch (model.SortOptions.SortBy)
+            {
+                case "recent":
+                    query = model.SortOptions.SortDirection == "asc" 
+                        ? query.OrderBy(a => a.CreatedAt)
+                        : query.OrderByDescending(a => a.CreatedAt);
+                    break;
+                case "oldest":
+                    query = model.SortOptions.SortDirection == "asc"
+                        ? query.OrderByDescending(a => a.CreatedAt) 
+                        : query.OrderBy(a => a.CreatedAt);
+                    break;
+                case "soon":
+                    query = model.SortOptions.SortDirection == "asc"
+                        ? query.OrderBy(a => a.StartDate)
+                        : query.OrderByDescending(a => a.StartDate);
+                    break;
+            }
+        }
+        
+        // Appliquer le tri par prix
+        if (model.MinPrice > 0)
+        {
+            query = query.Where(a => a.Amount >= model.MinPrice);
+        }
+
+        if (model.MaxPrice > 0 && model.MaxPrice < int.MaxValue)
+        {
+            query = query.Where(a => a.Amount <= model.MaxPrice);
+        }
+        
+        // Appliquer le tri par type d'animal
+        if (model.SelectedAnimalTypes != null && model.SelectedAnimalTypes.Length > 0)
+        {
+            query = query.Where(a => a.PetCartViewModels
+                .Any(p => model.SelectedAnimalTypes.Contains(p.Species)));
+        }
+        
+        // Mettre à jour le modèle avec les annonces filtrées et triées
+        model.Adverts = query.ToList();
+        
+        // Retourner le modèle mis à jour
+        return model;
     }
 }

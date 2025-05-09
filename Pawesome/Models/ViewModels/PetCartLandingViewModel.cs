@@ -1,4 +1,6 @@
-﻿namespace Pawesome.Models.ViewModels;
+﻿using Pawesome.Models.Entities;
+
+namespace Pawesome.Models.ViewModels;
 
 public class PetCartViewModel
 {

@@ -5,48 +5,6 @@
     let userLocation = null;
     let locationPromise;
 
-    // Attendez que la géolocalisation soit initialisée
-    try {
-        initializeGeolocation();
-    } catch (error) {
-        console.error("Impossible d'obtenir la géolocalisation:", error);
-    }
-
-    // Le reste du code...
-    // Obtenir la géolocalisation
-    if ("geolocation" in navigator) {
-        navigator.geolocation.getCurrentPosition(
-            function(position) {
-                userLocation = {
-                    lat: position.coords.latitude,
-                    lon: position.coords.longitude
-                };
-            },
-            function(error) {
-                console.error("Erreur de géolocalisation:", error);
-            }
-        );
-    }
-
-    // Calcul de distance
-    function getDistance(lat1, lon1, lat2, lon2) {
-        const R = 6371;
-        const dLat = (lat2 - lat1) * Math.PI / 180;
-        const dLon = (lon2 - lon1) * Math.PI / 180;
-        const a = Math.sin(dLat/2) * Math.sin(dLat/2) +
-            Math.cos(lat1 * Math.PI / 180) * Math.cos(lat2 * Math.PI / 180) *
-            Math.sin(dLon/2) * Math.sin(dLon/2);
-        const c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1-a));
-        return R * c;
-    }
-
-    function formatDistance(distance) {
-        if (distance < 1) {
-            return `${Math.round(distance * 1000)} m`;
-        }
-        return `${Math.round(distance * 10) / 10} km`;
-    }
-
     // Style CSS pour les résultats
     const style = document.createElement('style');
     style.textContent = `
@@ -92,48 +50,12 @@
             searchResults.style.display = 'none';
             return;
         }
-
+        
         try {
-            // Attendre la géolocalisation
-            await locationPromise;
-
             const url = `https://geo.api.gouv.fr/communes?nom=${encodeURIComponent(query)}&boost=population&limit=10&fields=nom,code,centre`;
             const response = await fetch(url);
             const data = await response.json();
-
-            // Calcul des distances...
-            const resultsPromises = data.map(async commune => {
-                if (!commune.centre || !userLocation) {
-                    return { ...commune, distance: null };
-                }
-
-                const distance = await new Promise(resolve => {
-                    setTimeout(() => {
-                        const dist = getDistance(
-                            userLocation.lat,
-                            userLocation.lon,
-                            commune.centre.coordinates[1],
-                            commune.centre.coordinates[0]
-                        );
-                        resolve(dist);
-                    }, 100);
-                });
-
-                return {
-                    ...commune,
-                    distance
-                };
-            });
-
-            const results = await Promise.all(resultsPromises);
-            const sortedResults = results.sort((a, b) => {
-                if (a.distance !== null && b.distance !== null) {
-                    return a.distance - b.distance;
-                }
-                return 0;
-            });
-
-            displayResults(sortedResults);
+            displayResults(data);
         } catch (error) {
             console.error('Erreur lors de la recherche:', error);
             searchResults.style.display = 'none';
@@ -159,7 +81,6 @@
                 <div class="result-main">
                     <div class="city-name">${result.nom}</div>
                 </div>
-                <div class="result-distance">${formatDistance(result.distance)}</div>
             `;
 
                 div.addEventListener('click', () => {
@@ -195,26 +116,3 @@
         }
     });
 });
-
-// Modifiez la partie de géolocalisation comme ceci :
-function initializeGeolocation() {
-    return new Promise((resolve, reject) => {
-        if ("geolocation" in navigator) {
-            navigator.geolocation.getCurrentPosition(
-                function(position) {
-                    userLocation = {
-                        lat: position.coords.latitude,
-                        lon: position.coords.longitude
-                    };
-                    resolve(userLocation);
-                },
-                function(error) {
-                    console.error("Erreur de géolocalisation:", error);
-                    reject(error);
-                }
-            );
-        } else {
-            reject("Géolocalisation non supportée");
-        }
-    });
-}

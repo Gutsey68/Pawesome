@@ -12,5 +12,5 @@ public class AnimalType
     public DateTime CreatedAt { get; set; } = DateTime.UtcNow;
     public DateTime UpdatedAt { get; set; } = DateTime.UtcNow;
 
-    public required ICollection<Pet> Pets { get; set; }
+    public ICollection<Pet>? Pets { get; set; }
 }

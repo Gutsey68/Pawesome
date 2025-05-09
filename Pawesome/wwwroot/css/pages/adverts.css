@@ -1,4 +1,4 @@
-.nav-link.active {
+.active {
     background-color: var(--color-primary-12);
     color: var(--color-primary-1);
     font-weight: bold;

@@ -1,132 +1,243 @@
 @using System.Globalization
 @model Pawesome.Models.Dtos.Advert.PetSittingAdvertDto
 
-<div class="container">
-    <div class="card">
-        <div class="card-header">
-            <h1>@(Model.IsPetSitter ? "Offre de pet sitting" : "Demande de pet sitting")</h1>
+<main role="main">
+    <div class="advert-container">
+        <div class="advert-header">
+            <h1 class="advert-title">
+                @if (Model.IsPetSitter)
+                {
+                    <span>Offre de pet sitting</span>
+                }
+                else
+                {
+                    <span>Demande de pet sitting</span>
+                }
+            </h1>
         </div>
-        <div class="card-body">
-            <div>
-                <div>
-                    <h3>Détails</h3>
-                    <dl>
-                        <dt>Date de début</dt>
-                        <dd>@Model.StartDate.ToString("dd/MM/yyyy")</dd>
-                        <dt>Date de fin</dt>
-                        <dd>@Model.EndDate.ToString("dd/MM/yyyy")</dd>
-                        <dt>Montant</dt>
-                        <dd>@Model.Amount €</dd>
-                        <dt>Statut</dt>
-                        <dd>@Model.Status</dd>
-                        @if (!string.IsNullOrEmpty(Model.AdditionalInformation))
+
+        <div class="advert-main-card">
+            <section class="advert-section">
+                <h2 class="section-title">Détails de l'annonce</h2>
+                <ul class="details-list">
+                    <li>
+                        <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                            <rect x="3" y="4" width="18" height="18" rx="2" ry="2"></rect>
+                            <line x1="16" y1="2" x2="16" y2="6"></line>
+                            <line x1="8" y1="2" x2="8" y2="6"></line>
+                            <line x1="3" y1="10" x2="21" y2="10"></line>
+                        </svg>
+                        <strong>Début :</strong> @Model.StartDate.ToString("dd/MM/yyyy")
+                    </li>
+                    <li>
+                        <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                            <rect x="3" y="4" width="18" height="18" rx="2" ry="2"></rect>
+                            <line x1="16" y1="2" x2="16" y2="6"></line>
+                            <line x1="8" y1="2" x2="8" y2="6"></line>
+                            <line x1="3" y1="10" x2="21" y2="10"></line>
+                        </svg>
+                        <strong>Fin :</strong> @Model.EndDate.ToString("dd/MM/yyyy")
+                    </li>
+                    <li>
+                        <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                            <circle cx="12" cy="12" r="10"></circle>
+                            <line x1="12" y1="8" x2="12" y2="12"></line>
+                            <line x1="12" y1="16" x2="12.01" y2="16"></line>
+                        </svg>
+                        <strong>Statut :</strong> 
+                        <span class="status-badge @GetStatusClass(Model.Status)">
+                            @GetFrenchStatus(Model.Status)
+                        </span>
+                    </li>
+                    <li>
+                        <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                            <rect x="2" y="4" width="20" height="16" rx="2"></rect>
+                            <path d="M7 15h0M2 9.5h20"></path>
+                        </svg>
+                        <strong>Montant :</strong> @Model.Amount.ToString("C", new CultureInfo("fr-FR"))
+                    </li>
+                    @if (!string.IsNullOrEmpty(Model.AdditionalInformation))
+                    {
+                        <li class="commentary">
+                            <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                <path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"></path>
+                            </svg>
+                            <strong>Infos supplémentaires :</strong> @Model.AdditionalInformation
+                        </li>
+                    }
+                </ul>
+            </section>
+        </div>
+
+
+        <div class="advert-main-card">
+            <section class="advert-section">
+                <h2 class="section-title">
+                    @(Model.IsPetSitter ? "Types d'animaux acceptés" : "Animaux à garder")
+                </h2>
+                <div class="pet-grid">
+                    @foreach (var pet in Model.PetCartViewModels)
+                    {
+                        pet.Photo = string.IsNullOrEmpty(pet.Photo) ? "/images/default-pet.jpg" : "/images/pets/" + pet.Photo;
+                        <partial name="_PetCardPartial" model="pet" />
+                    }
+                </div>
+            </section>
+        </div>
+
+
+        <div class="advert-main-card">
+            <section class="advert-section">
+                <h2 class="section-title">Contact</h2>
+                @if (Model.Owner != null)
+                {
+                    <div class="owner-info">
+                        @if (!string.IsNullOrEmpty(Model.Owner.Photo))
                         {
-                            <dt>Détails de l'annonce</dt>
-                            <dd>@Model.AdditionalInformation</dd>
+                            <img src="/images/users/@Model.Owner.Photo" alt="Photo de @Model.Owner.FullName" class="owner-photo" />
                         }
-                    </dl>
-                </div>
-                <div>
-                    @if (Model.IsPetSitter)
-                    {
-                        <h3>Types d'animaux acceptés</h3>
-                        <div>
-                            @foreach (var pet in Model.PetCartViewModels)
-                            {
-                                <div>
-                                    <div>
-                                        <h4>@pet.Species</h4>
-                                    </div>
-                                </div>
-                            }
-                        </div>
-                    }
-                    else
-                    {
-                        <h3>Animaux à garder</h3>
-                        <div>
-                            @foreach (var pet in Model.PetCartViewModels)
-                            {
-                                <div>
-                                    @if (!string.IsNullOrEmpty(pet.Photo))
+                        else
+                        {
+                            <img src="/images/default-user.jpg" alt="Photo de profil par défaut" class="owner-photo" />
+                        }
+                        <div class="owner-details">
+                            <h4 class="owner-name">@Model.Owner.FullName</h4>
+                            <div class="owner-rating">
+                                <span class="stars">
+                                    @for (int i = 1; i <= 5; i++)
                                     {
-                                        <img src="~/images/pets/@pet.Photo" alt="@pet.Name" class="pet-thumbnail">
+                                        if (i <= Math.Round((decimal?)Model.Owner.Rating ?? 0))
+                                        {
+                                            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="currentColor" stroke="currentColor" stroke-width="2">
+                                                <polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"></polygon>
+                                            </svg>
+                                        }
+                                        else
+                                        {
+                                            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                                <polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"></polygon>
+                                            </svg>
+                                        }
                                     }
-                                    <div>
-                                        <h4>@pet.Name</h4>
-                                        <p>@pet.Species</p>
-                                    </div>
-                                </div>
-                            }
-                        </div>
-                        
-                    }
-                </div>
-            </div>
-            <div>
-                <div>
-                    <h3>Contact</h3>
-                    @if (Model.Owner != null)
-                    {
-                        <div>
-                            @if (!string.IsNullOrEmpty(Model.Owner.Photo))
-                            {
-                                <img src="@Model.Owner.Photo" alt="Photo profil">
-                            }
-                            <div>
-                                <h4>@Model.Owner.FullName </h4>
-                                <p>Note : @Model.Owner.Rating/5</p>
-                                <a asp-controller="User" asp-action="Profile" asp-route-id="@Model.Owner.Id" class="button secondary">Voir le profil</a>
+                                </span>
+                                <span>@Model.Owner.Rating/5</span>
                             </div>
+                            <a asp-controller="User" asp-action="Profile" asp-route-id="@Model.Owner.Id" class="button">
+                                <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                    <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path>
+                                    <circle cx="12" cy="7" r="4"></circle>
+                                </svg>
+                                Voir le profil
+                            </a>
                         </div>
-                    }
-                </div>
-            </div>
-            @if (User.Identity?.IsAuthenticated == true && Model.Owner != null && 
-                 User.FindFirst(System.Security.Claims.ClaimTypes.NameIdentifier)?.Value != Model.Owner.Id.ToString() &&
-                 Model.Status == "pending" || Model.Status == "pending_offer")
-            {
-                <div class="card">
-                    <div class="card-header">
-                        <h5>Réserver ce service</h5>
                     </div>
-                    <div class="card-body">
-                        <p>Prix: @Model.Amount.ToString("C", new CultureInfo("fr-FR"))</p>
-                        <a asp-controller="Payment" asp-action="Checkout" asp-route-advertId="@Model.Id" 
-                           class="button">
-                            Réserver maintenant
+                }
+            </section>
+        </div>
+
+
+        @if (User.Identity?.IsAuthenticated == true && Model.Owner != null &&
+             User.FindFirst(System.Security.Claims.ClaimTypes.NameIdentifier)?.Value != Model.Owner.Id.ToString() &&
+             (Model.Status == "pending" || Model.Status == "pending_offer"))
+        {
+            <div class="advert-main-card">
+                <section class="advert-section booking-section">
+                    <h2 class="section-title">Réserver ce service</h2>
+                    <div class="price-container">
+                        <p class="price">@Model.Amount</p>
+                    </div>
+                    <a asp-controller="Payment" asp-action="Checkout" asp-route-advertId="@Model.Id" class="btn-primary">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                            <rect x="1" y="4" width="22" height="16" rx="2" ry="2"></rect>
+                            <line x1="1" y1="10" x2="23" y2="10"></line>
+                        </svg>
+                        Réserver maintenant
+                    </a>
+                </section>
+            </div>
+        }
+
+        @if (User.Identity?.IsAuthenticated == true && Model.Owner != null &&
+             User.FindFirst(System.Security.Claims.ClaimTypes.NameIdentifier)?.Value == Model.Owner.Id.ToString())
+        {
+            <div class="advert-main-card">
+                <section class="advert-section owner-actions">
+                    <h2 class="section-title">Mes actions</h2>
+                    <div class="action-buttons">
+                        @if (Model.IsPetSitter)
+                        {
+                            <a asp-action="EditOffer" asp-route-id="@Model.Id" class="btn-primary">
+                                <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                    <path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"></path>
+                                    <path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"></path>
+                                </svg>
+                                Modifier mon offre
+                            </a>
+                        }
+                        else
+                        {
+                            <a asp-action="EditRequest" asp-route-id="@Model.Id" class="btn-primary">
+                                <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                    <path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"></path>
+                                    <path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"></path>
+                                </svg>
+                                Modifier ma demande
+                            </a>
+                        }
+
+                        @if (Model.Status == "pending" || Model.Status == "pending_offer")
+                        {
+                            <form asp-action="UpdateStatus" method="post" class="inline-form">
+                                <input type="hidden" name="advertId" value="@Model.Id" />
+                                <input type="hidden" name="status" value="canceled" />
+                                <button type="submit" class="button">
+                                    <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                        <circle cx="12" cy="12" r="10"></circle>
+                                        <line x1="15" y1="9" x2="9" y2="15"></line>
+                                        <line x1="9" y1="9" x2="15" y2="15"></line>
+                                    </svg>
+                                    Annuler
+                                </button>
+                            </form>
+                        }
+
+                        <a asp-action="Delete" asp-route-id="@Model.Id" class="btn-danger">
+                            <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                <polyline points="3 6 5 6 21 6"></polyline>
+                                <path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"></path>
+                            </svg>
+                            Supprimer
                         </a>
                     </div>
-                </div>
-            }
-            @if (User.Identity?.IsAuthenticated == true && Model.Owner != null && User.FindFirst(System.Security.Claims.ClaimTypes.NameIdentifier)?.Value == Model.Owner.Id.ToString())
-            {
-                <div>
-                    <div>
-                        <h3>Actions</h3>
-                        <div>
-                            @if (Model.IsPetSitter)
-                            {
-                                <a asp-action="EditOffer" asp-route-id="@Model.Id" class="button primary">Modifier mon offre</a>
-                            }
-                            else
-                            {
-                                <a asp-action="EditRequest" asp-route-id="@Model.Id" class="button primary">Modifier ma demande</a>
-                            }
-
-                            @if (Model.Status == "pending" || Model.Status == "pending_offer")
-                            {
-                                <form asp-action="UpdateStatus" method="post">
-                                    <input type="hidden" name="advertId" value="@Model.Id" />
-                                    <input type="hidden" name="status" value="canceled" />
-                                    <button type="submit" class="button">Annuler mon annonce</button>
-                                </form>
-                            }
-                            <a asp-action="Delete" asp-route-id="@Model.Id" class="button danger">Supprimer</a>
-                        </div>
-                    </div>
-                </div>
-            }
-        </div>
+                </section>
+            </div>
+        }
     </div>
-</div>
+</main>
+
+@functions {
+    public string GetStatusClass(string status)
+    {
+        return status switch
+        {
+            "pending" or "pending_offer" => "status-pending",
+            "accepted" => "status-accepted",
+            "completed" => "status-completed",
+            "canceled" => "status-canceled",
+            _ => ""
+        };
+    }
+    
+    public string GetFrenchStatus(string status)
+    {
+        return status switch
+        {
+            "pending" => "En attente",
+            "pending_offer" => "Offre en attente",
+            "accepted" => "Accepté",
+            "completed" => "Terminé",
+            "canceled" => "Annulé",
+            _ => status
+        };
+    }
+}

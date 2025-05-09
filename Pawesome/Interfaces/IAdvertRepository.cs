@@ -1,4 +1,5 @@
 using Pawesome.Models;
+using Pawesome.Models.Dtos.Advert;
 using Pawesome.Models.Entities;
 
 namespace Pawesome.Interfaces;
@@ -14,4 +15,6 @@ public interface IAdvertRepository
     Task<Advert> UpdatePetSittingRequestAsync(Advert advert, List<int> petIds);
     Task<Advert> UpdatePetSittingOfferAsync(Advert advert, List<int> animalTypeIds);
     Task<bool> DeleteAdvertAsync(int advertId);
+    
+    Task<IEnumerable<Advert>> GetAdvertsWithSortingAsync(SortingOptions sortingOptions);
 }
