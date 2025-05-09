@@ -59,4 +59,9 @@
         <_ContentIncludedByDefault Remove="wwwroot\lib\jquery\LICENSE.txt" />
     </ItemGroup>
 
+    <ItemGroup>
+      <Folder Include="wwwroot\images\pets\" />
+      <Folder Include="wwwroot\images\users\" />
+    </ItemGroup>
+
 </Project>

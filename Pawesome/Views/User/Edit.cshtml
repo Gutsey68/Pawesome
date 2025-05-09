@@ -4,76 +4,91 @@
     ViewData["Title"] = "Modifier le profil";
 }
 
-<div>
-    <h1>Modifier</h1>
-    <form asp-action="Edit" enctype="multipart/form-data">
-        <div asp-validation-summary="ModelOnly"></div>
+<main role="main" class="container profile-edit-container">
+    <h1 class="profile-edit-title">Modifier mon profil</h1>
+    @if (ViewData.ModelState.ErrorCount > 0)
+    {
+        <div class="validation-summary" role="alert" aria-labelledby="validation-summary-title">
+            <h2 id="validation-summary-title">Des erreurs sont survenues</h2>
+            <div asp-validation-summary="ModelOnly"></div>
+        </div>
+    }
+    <form asp-action="Edit" enctype="multipart/form-data" class="profile-edit-form">
         <input type="hidden" asp-for="Id"/>
         <input type="hidden" asp-for="ExistingPhoto"/>
-        <div>
-            <label asp-for="LastName">Nom</label>
-            <input asp-for="LastName"
+        <div class="form-group">
+            <label asp-for="LastName" class="form-label">Nom</label>
+            <input asp-for="LastName" type="text" aria-required="true"
                    data-val="true"
                    data-val-required="Le nom est requis"
                    data-val-length="Le nom ne peut pas dépasser 255 caractères"
                    data-val-length-max="255"/>
-            <span asp-validation-for="LastName"></span>
+            <span asp-validation-for="LastName" class="validation-message"></span>
         </div>
-        <div>
-            <label asp-for="FirstName">Prénom</label>
-            <input asp-for="FirstName"
+        <div class="form-group">
+            <label asp-for="FirstName" class="form-label">Prénom</label>
+            <input asp-for="FirstName" type="text" aria-required="true"
                    data-val="true"
                    data-val-required="Le prénom est requis"
                    data-val-length="Le prénom ne peut pas dépasser 255 caractères"
                    data-val-length-max="255"/>
-            <span asp-validation-for="FirstName"></span>
+            <span asp-validation-for="FirstName" class="validation-message"></span>
         </div>
-        <div>
-            <label asp-for="Bio">Biographie</label>
+        <div class="form-group">
+            <label asp-for="Bio" class="form-label">Biographie</label>
             <textarea asp-for="Bio" rows="4"
                       data-val="true"
                       data-val-length="La biographie ne peut pas dépasser 1000 caractères"
                       data-val-length-max="1000"></textarea>
-            <span asp-validation-for="Bio"></span>
+            <span asp-validation-for="Bio" class="validation-message"></span>
         </div>
-        <div>
-            <label asp-for="PhoneNumber">Numéro de téléphone</label>
-            <input asp-for="PhoneNumber"
+        <div class="form-group">
+            <label asp-for="PhoneNumber" class="form-label">Numéro de téléphone</label>
+            <input asp-for="PhoneNumber" type="tel" aria-required="false"
                    data-val="true"
-                   data-val-required="Le numéro de téléphone est requis"
-                   data-val-regex="Format de numéro de téléphone invalide"
-                   data-val-regex-pattern="^\+?[0-9\s\-\(\)]+$"/>
-            <span asp-validation-for="PhoneNumber"></span>
+                   data-val-regex="Le numéro de téléphone doit être au format français (ex: 06 12 34 56 78 ou +33 6 12 34 56 78)"
+                   data-val-regex-pattern="^(?:(?:\+|00)33|0)\s*[1-9](?:[\s.-]*\d{2}){4}$"/>
+            <span asp-validation-for="PhoneNumber" class="validation-message"></span>
         </div>
-        @if (!string.IsNullOrEmpty(Model.ExistingPhoto))
-        {
-            <div>
-                <label>Photo actuelle</label>
-                <div>
-                    <img src="~/images/users/@Model.ExistingPhoto" alt="Photo actuelle" width="200"/>
+        <fieldset class="form-group">
+            <legend>Photo de profil</legend>
+            @if (!string.IsNullOrEmpty(Model.ExistingPhoto))
+            {
+                <div class="current-photo-container">
+                    <h3 class="font-sm font-weight-medium">Photo actuelle</h3>
+                    <figure>
+                        <div class="avatar" data-size="xxl">
+                            <img src="~/images/users/@Model.ExistingPhoto" alt="Photo de profil actuelle"
+                                 class="avatar-image"/>
+                        </div>
+                    </figure>
                 </div>
+            }
+            <div class="photo-input-container">
+                <label asp-for="Photo" class="form-label">Nouvelle photo</label>
+                <input asp-for="Photo" type="file" accept="image/jpeg,image/png" aria-describedby="photo-instructions"
+                       data-val="true"
+                       data-val-fileextension="Le fichier doit être une image (jpg, jpeg, png)"
+                       data-val-fileextension-extensions=".jpg,.jpeg,.png"
+                       data-val-filesize="Le fichier ne doit pas dépasser 5 Mo"
+                       data-val-filesize-max="5242880"/>
+                <p id="photo-instructions" class="photo-instructions">Formats acceptés : JPG, JPEG, PNG (max. 5 Mo).</p>
+                <span asp-validation-for="Photo" class="validation-message"></span>
             </div>
-        }
-        <div>
-            <label asp-for="Photo">Nouvelle photo</label>
-            <input asp-for="Photo" type="file" accept="image/*"
-                   data-val="true"
-                   data-val-fileextension="Le fichier doit être une image (jpg, jpeg, png)"
-                   data-val-fileextension-extensions=".jpg,.jpeg,.png"
-                   data-val-filesize="Le fichier ne doit pas dépasser 5 Mo"
-                   data-val-filesize-max="5242880"/>
-            <small>Laissez vide pour conserver la photo actuelle</small>
-            <span asp-validation-for="Photo"></span>
-        </div>
-        <div>
-            <button type="submit">Enregistrer</button>
-            <a asp-action="Index" asp-route-id="@Model.Id">Annuler</a>
-            <a asp-action="Index">Retour à la liste</a>
+        </fieldset>
+        <div class="actions-container">
+            <button type="submit" class="button">Enregistrer les modifications</button>
+            <a asp-action="Index" asp-route-id="@Model.Id" class="button" data-variant="outline">Annuler</a>
         </div>
     </form>
-</div>
+</main>
 
 @section Scripts {
     <partial name="_ValidationScriptsPartial"/>
     <script src="~/js/validation-extensions.js"></script>
+    <script>
+        $(document).ready(function () {
+            $("#PhoneNumber").rules("remove", "required");
+        });
+    </script>
 }

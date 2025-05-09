@@ -2,7 +2,6 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Pawesome.Interfaces;
-using Pawesome.Models;
 using Pawesome.Models.Entities;
 using Pawesome.Models.ViewModels.User;
 
@@ -16,16 +15,22 @@ public class UserController : Controller
 {
     private readonly IUserService _userService;
     private readonly UserManager<User> _userManager;
+    private readonly SignInManager<User> _signInManager;
 
     /// <summary>
     /// Initializes a new instance of the UserController
     /// </summary>
     /// <param name="userService">Service for handling profile operations</param>
     /// <param name="userManager">The user manager for handling user operations</param>
-    public UserController(IUserService userService, UserManager<User> userManager)
+    /// <param name="signInManager">The sign-in manager for handling user sign-in operations</param>
+    public UserController(
+        IUserService userService, 
+        UserManager<User> userManager,
+        SignInManager<User> signInManager)
     {
         _userService = userService;
         _userManager = userManager;
+        _signInManager = signInManager;
     }
 
     /// <summary>
@@ -77,6 +82,10 @@ public class UserController : Controller
     [ValidateAntiForgeryToken]
     public async Task<IActionResult> Edit(UpdateUserViewModel model)
     {
+        if (!ModelState.IsValid)
+        {
+            return View(model);
+        }
 
         var userId = int.Parse(_userManager.GetUserId(User)!);
         var user = await _userService.GetUserProfileAsync(userId);
@@ -87,6 +96,9 @@ public class UserController : Controller
         }
 
         await _userService.UpdateUserAsync(model);
+    
+        await _signInManager.RefreshSignInAsync(await _userManager.FindByIdAsync(userId.ToString()) ?? throw new InvalidOperationException());
+    
         return RedirectToAction(nameof(Index), new { id = model.Id });
     }
     

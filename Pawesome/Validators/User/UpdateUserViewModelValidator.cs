@@ -20,8 +20,9 @@ public class UpdateUserViewModelValidator: AbstractValidator<UpdateUserViewModel
             .WithMessage("La biographie ne peut pas dépasser 1000 caractères");
 
         RuleFor(u => u.PhoneNumber)
-            .NotEmpty().WithMessage("Le numéro de téléphone est requis")
-            .Matches(@"^\+?[0-9\s\-\(\)]+$").WithMessage("Format de numéro de téléphone invalide");
+            .Matches(@"^(?:(?:\+|00)33|0)\s*[1-9](?:[\s.-]*\d{2}){4}$")
+            .When(u => !string.IsNullOrEmpty(u.PhoneNumber))
+            .WithMessage("Le numéro de téléphone doit être au format français (ex: 06 12 34 56 78)");
 
         RuleFor(u => u.Photo)
             .Must(photo => photo == null ||

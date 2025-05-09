@@ -11,12 +11,13 @@
                 <div>
                     @if (!string.IsNullOrEmpty(Model.Photo))
                     {
-                        <img src="~/images/users/@Model.Photo" alt="@Model.FullName" class="rounded-circle img-fluid"
-                             style="width: 150px; height: 150px; object-fit: cover;">
+                        <div class="avatar" data-size="xxl">
+                            <img src="~/images/users/@Model.Photo" alt="@Model.FullName" class="avatar-image" />
+                        </div>
                     }
                     else
                     {
-                        <div>
+                        <div class="avatar avatar-fallback" data-size="xxl">
                             @Model.FullName.Substring(0, 1)
                         </div>
                     }

@@ -1,5 +1,8 @@
+using System.Security.Claims;
 using AutoMapper;
+using Microsoft.AspNetCore.Identity;
 using Pawesome.Interfaces;
+using Pawesome.Models.Entities;
 using Pawesome.Models.ViewModels;
 using Pawesome.Models.ViewModels.User;
 
@@ -13,6 +16,7 @@ public class UserService : IUserService
     private readonly IUserRepository _userRepository;
     private readonly IMapper _mapper;
     private readonly IWebHostEnvironment _environment;
+    private readonly UserManager<User> _userManager;
 
     /// <summary>
     /// Initializes a new instance of the UserService
@@ -20,11 +24,17 @@ public class UserService : IUserService
     /// <param name="userRepository">Repository for user operations</param>
     /// <param name="mapper">AutoMapper instance for object mapping</param>
     /// <param name="environment">Web host environment for file operations</param>
-    public UserService(IUserRepository userRepository, IMapper mapper, IWebHostEnvironment environment)
+    /// <param name="userManager">User manager for user-related operations</param>
+    public UserService(
+        IUserRepository userRepository, 
+        IMapper mapper, 
+        IWebHostEnvironment environment, 
+        UserManager<User> userManager)
     {
         _userRepository = userRepository;
         _mapper = mapper;
         _environment = environment;
+        _userManager = userManager;
     }
 
     /// <summary>
@@ -81,6 +91,8 @@ public class UserService : IUserService
 
             await _userRepository.UpdateAsync(user);
             await _userRepository.SaveChangesAsync();
+            
+            await UpdateUserClaimsAsync(user);
         }
     }
 
@@ -144,5 +156,34 @@ public class UserService : IUserService
         };
 
         return profile;
+    }
+    
+    /// <summary>
+    /// Updates the user's claims in the identity system
+    /// </summary>
+    /// <param name="user">The user whose claims to update</param>
+    /// <returns>A task representing the asynchronous operation</returns>
+    private async Task UpdateUserClaimsAsync(Models.Entities.User user)
+    {
+        var existingClaims = await _userManager.GetClaimsAsync(user);
+        await _userManager.RemoveClaimsAsync(user, existingClaims);
+    
+        var claims = new List<Claim>
+        {
+            new Claim("FirstName", user.FirstName),
+            new Claim("LastName", user.LastName)
+        };
+    
+        if (user.Email != null) 
+        {
+            claims.Add(new Claim("Email", user.Email));
+        }
+    
+        if (!string.IsNullOrEmpty(user.Photo))
+        {
+            claims.Add(new Claim("Photo", user.Photo));
+        }
+    
+        await _userManager.AddClaimsAsync(user, claims);
     }
 }

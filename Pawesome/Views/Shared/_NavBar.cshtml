@@ -16,7 +16,9 @@
                         <div tabindex="0">  
                             @if (!string.IsNullOrEmpty(User.FindFirst("Photo")?.Value))
                             {
-                                <img class="avatar" data-size="md" src="~/images/users/@User.FindFirst("Photo")?.Value" alt="Avatar de l'utilisateur"/>
+                                <div class="avatar" data-size="md">
+                                    <img class="avatar-image" src="~/images/users/@User.FindFirst("Photo")?.Value" alt="Avatar de l'utilisateur"/>
+                                </div>
                             }
                             else
                             {

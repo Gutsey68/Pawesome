@@ -8,6 +8,6 @@ public class UpdateUserViewModel
     public required string? Bio { get; set; }
     public required IFormFile? Photo { get; set; }
     public required string? ExistingPhoto { get; set; }
-    public required string PhoneNumber { get; set; }
+    public required string? PhoneNumber { get; set; }
     //TODO [Tara] : ajouter menu déroulant addresses & de quoi modifier adresses 
 }
