@@ -9,5 +9,10 @@ public class UpdateUserViewModel
     public required IFormFile? Photo { get; set; }
     public required string? ExistingPhoto { get; set; }
     public required string? PhoneNumber { get; set; }
-    //TODO [Tara] : ajouter menu déroulant addresses & de quoi modifier adresses 
+
+    public string? StreetAddress { get; set; }
+    public string? AdditionalInfo { get; set; }
+    public string? City { get; set; }
+    public string? PostalCode { get; set; }
+    public string? Country { get; set; } = "France"; 
 }

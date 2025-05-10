@@ -102,6 +102,9 @@ public static class ServiceCollectionExtensions
         services.AddScoped<IAdvertRepository, AdvertRepository>();
         services.AddScoped<IMessageRepository, MessageRepository>();
         services.AddScoped<IPaymentRepository, PaymentRepository>();
+        services.AddScoped<ICityRepository, CityRepository>();
+        services.AddScoped<ICountryRepository, CountryRepository>();
+        services.AddScoped<IAddressRepository, AddressRepository>();
         
         // Register services
         services.AddScoped<IAuthService, AuthService>();

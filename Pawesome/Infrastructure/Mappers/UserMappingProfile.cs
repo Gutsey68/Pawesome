@@ -48,6 +48,11 @@ public class UserMappingProfile : Profile
 
         CreateMap<User, UpdateUserViewModel>()
             .ForMember(dest => dest.ExistingPhoto, opt => opt.MapFrom(src => src.Photo))
-            .ForMember(dest => dest.Photo, opt => opt.Ignore());
+            .ForMember(dest => dest.Photo, opt => opt.Ignore())
+            .ForMember(dest => dest.StreetAddress, opt => opt.MapFrom(src => src.Address.StreetAddress))
+            .ForMember(dest => dest.AdditionalInfo, opt => opt.MapFrom(src => src.Address.AdditionalInfo))
+            .ForMember(dest => dest.City, opt => opt.MapFrom(src => src.Address.City.Name))
+            .ForMember(dest => dest.PostalCode, opt => opt.MapFrom(src => src.Address.City.PostalCode))
+            .ForMember(dest => dest.Country, opt => opt.MapFrom(src => src.Address.City.Country.Name));
     }
 }

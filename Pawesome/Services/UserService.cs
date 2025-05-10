@@ -17,6 +17,9 @@ public class UserService : IUserService
     private readonly IMapper _mapper;
     private readonly IWebHostEnvironment _environment;
     private readonly UserManager<User> _userManager;
+    private readonly ICityRepository _cityRepository;
+    private readonly ICountryRepository _countryRepository;
+    private readonly IAddressRepository _addressRepository;
 
     /// <summary>
     /// Initializes a new instance of the UserService
@@ -25,16 +28,25 @@ public class UserService : IUserService
     /// <param name="mapper">AutoMapper instance for object mapping</param>
     /// <param name="environment">Web host environment for file operations</param>
     /// <param name="userManager">User manager for user-related operations</param>
+    /// <param name="cityRepository">Repository for city operations</param>
+    /// <param name="countryRepository">Repository for country operations</param>
+    /// <param name="addressRepository">Repository for address operations</param>
     public UserService(
         IUserRepository userRepository, 
         IMapper mapper, 
         IWebHostEnvironment environment, 
+        ICityRepository cityRepository,
+        ICountryRepository countryRepository,
+        IAddressRepository addressRepository,
         UserManager<User> userManager)
     {
         _userRepository = userRepository;
         _mapper = mapper;
         _environment = environment;
         _userManager = userManager;
+        _cityRepository = cityRepository;
+        _countryRepository = countryRepository;
+        _addressRepository = addressRepository;
     }
 
     /// <summary>
@@ -88,6 +100,8 @@ public class UserService : IUserService
             {
                 user.Photo = oldPhoto;
             }
+
+            await UpdateUserAddressAsync(user, model);
 
             await _userRepository.UpdateAsync(user);
             await _userRepository.SaveChangesAsync();
@@ -159,10 +173,11 @@ public class UserService : IUserService
     }
     
     /// <summary>
-    /// Updates the user's claims in the identity system
+    /// Updates the user's claims in the identity system.
+    /// Removes all existing claims and adds updated claims for first name, last name, email, and photo.
     /// </summary>
-    /// <param name="user">The user whose claims to update</param>
-    /// <returns>A task representing the asynchronous operation</returns>
+    /// <param name="user">The user whose claims to update.</param>
+    /// <returns>A task representing the asynchronous operation.</returns>
     private async Task UpdateUserClaimsAsync(Models.Entities.User user)
     {
         var existingClaims = await _userManager.GetClaimsAsync(user);
@@ -185,5 +200,56 @@ public class UserService : IUserService
         }
     
         await _userManager.AddClaimsAsync(user, claims);
+    }
+    
+    /// <summary>
+    /// Updates the user's address information.
+    /// Ensures the country and city exist in the database, creates them if necessary,
+    /// and updates the user's address with the provided street address, additional info, and city.
+    /// </summary>
+    /// <param name="user">The user whose address will be updated.</param>
+    /// <param name="model">The view model containing the new address information.</param>
+    /// <returns>A task representing the asynchronous operation.</returns>
+    private async Task UpdateUserAddressAsync(User user, UpdateUserViewModel model)
+    {
+        if (!string.IsNullOrEmpty(model.StreetAddress) && !string.IsNullOrEmpty(model.City))
+        {
+            var country = await _countryRepository.GetByNameAsync("France");
+
+            if (country == null)
+            {
+                country = new Country {
+                    Name = "France",
+                    Cities = new List<City>()
+                };
+                await _countryRepository.AddAsync(country);
+                await _countryRepository.SaveChangesAsync();
+            }
+
+            var city = await _cityRepository.GetByNameAndPostalCodeAsync(model.City, model.PostalCode ?? "00000");
+
+            if (city == null)
+            {
+                city = new City
+                {
+                    Name = model.City,
+                    PostalCode = model.PostalCode ?? "00000",
+                    Country = country,
+                    CountryId = country.Id,
+                    Addresses = new List<Address>()
+                };
+                await _cityRepository.AddAsync(city);
+                await _cityRepository.SaveChangesAsync();
+            }
+
+            user.Address.StreetAddress = model.StreetAddress;
+            user.Address.AdditionalInfo = model.AdditionalInfo;
+            user.Address.CityId = city.Id;
+            user.Address.City = city;
+            user.Address.UpdatedAt = DateTime.UtcNow;
+                
+            await _addressRepository.UpdateAsync(user.Address);
+            await _addressRepository.SaveChangesAsync();
+        }
     }
 }
