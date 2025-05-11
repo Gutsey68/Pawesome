@@ -9,6 +9,7 @@ namespace Pawesome.Helpers
         /// Returns the URL for a user's photo.
         /// If the photo path is null or empty, returns the placeholder avatar image URL.
         /// If the photo path starts with "external:", returns the external URL.
+        /// If the photo path starts with "http", returns it as is (external).
         /// Otherwise, returns the local user image URL.
         /// </summary>
         /// <param name="photoPath">The path or external URL of the user's photo.</param>
@@ -18,15 +19,17 @@ namespace Pawesome.Helpers
             if (string.IsNullOrEmpty(photoPath))
                 return "/images/placeholder-avatar.png";
 
-            return photoPath.StartsWith("external:")
-                ? photoPath.Substring(9)
-                : $"/images/users/{photoPath}";
+            if (photoPath.StartsWith("external:"))
+                return photoPath.Substring(9);
+
+            return photoPath.StartsWith("http", System.StringComparison.OrdinalIgnoreCase) ? photoPath : $"/images/users/{photoPath}";
         }
         
         /// <summary>
         /// Returns the URL for a pet's photo.
         /// If the photo path is null or empty, returns the placeholder pet image URL.
         /// If the photo path starts with "external:", returns the external URL.
+        /// If the photo path starts with "http", returns it as is (external).
         /// Otherwise, returns the local pet image URL.
         /// </summary>
         /// <param name="photoPath">The path or external URL of the pet's photo.</param>
@@ -36,9 +39,10 @@ namespace Pawesome.Helpers
             if (string.IsNullOrEmpty(photoPath))
                 return "/images/placeholder-pet.png";
                 
-            return photoPath.StartsWith("external:")
-                ? photoPath.Substring(9)
-                : $"/images/pets/{photoPath}";
+            if (photoPath.StartsWith("external:"))
+                return photoPath.Substring(9);
+
+            return photoPath.StartsWith("http", System.StringComparison.OrdinalIgnoreCase) ? photoPath : $"/images/pets/{photoPath}";
         }
     }
 }

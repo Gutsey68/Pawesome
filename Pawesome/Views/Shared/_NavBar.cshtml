@@ -1,3 +1,5 @@
+@using Pawesome.Helpers
+
 <nav class="container">
     <a asp-area="" asp-controller="Home" asp-action="Index">Pawesome</a>
     <div>
@@ -18,7 +20,7 @@
                             {
                                 var photoUrl = User.FindFirst("Photo")?.Value;
                                 <div class="avatar" data-size="md">
-                                    <img class="avatar-image" src="@if (photoUrl != null) { @ImageHelper.GetPhotoUrl(photoUrl) }" alt="Avatar de l'utilisateur"/>
+                                    <img class="avatar-image" src="@ImageHelper.GetPhotoUrl(photoUrl)" alt="Avatar de l'utilisateur"/>
                                 </div>
                             }
                             else

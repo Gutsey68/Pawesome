@@ -1,4 +1,5 @@
 @model Pawesome.Models.ViewModels.Message.ConversationsListViewModel
+@using Pawesome.Helpers
 
 <div class="conversations-list-container">
     <h2 class="messages-title">Messagerie</h2>
@@ -20,7 +21,7 @@
                         @if (!string.IsNullOrEmpty(conversation.UserPhoto))
                         {
                             <div class="avatar" data-size="lg">
-                                <img src="~/images/users/@conversation.UserPhoto"
+                                <img src="@ImageHelper.GetPhotoUrl(conversation.UserPhoto)"
                                      alt="Photo de @conversation.UserFullName" class="avatar-image">
                             </div>
                         }
@@ -51,3 +52,4 @@
         </div>
     }
 </div>
+

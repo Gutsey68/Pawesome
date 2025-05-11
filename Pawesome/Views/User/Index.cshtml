@@ -11,7 +11,9 @@
         <div>
             @if (!string.IsNullOrEmpty(User.FindFirst("Photo")?.Value))
             {
-                <img class="avatar" data-size="xxl" src="@ImageHelper.GetPhotoUrl(Model.Photo)" alt="Image de profil de l'utilisateur"/>
+                <div class="avatar" data-size="xxl">
+                    <img class="avatar-image" data-size="xxl" src="@ImageHelper.GetPhotoUrl(Model.Photo)" alt="Image de profil de l'utilisateur"/>
+                </div>
             }
             else
             {

@@ -139,8 +139,10 @@ public class MessageController : Controller
         {
             OtherUserId = otherUserId,
             OtherUserFullName = $"{otherUser.FirstName} {otherUser.LastName}",
-            OtherUserPhoto = !string.IsNullOrEmpty(otherUser.Photo) 
-                ? $"/images/users/{otherUser.Photo}" 
+            OtherUserPhoto = !string.IsNullOrEmpty(otherUser.Photo)
+                ? (otherUser.Photo.StartsWith("http", StringComparison.OrdinalIgnoreCase)
+                    ? otherUser.Photo
+                    : $"/images/users/{otherUser.Photo}")
                 : null,
             Messages = messages,
             NewMessage = new CreateMessageViewModel { ReceiverId = otherUserId }

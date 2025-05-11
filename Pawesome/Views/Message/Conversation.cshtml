@@ -11,7 +11,7 @@
                 @if (!string.IsNullOrEmpty(Model.OtherUserPhoto))
                 {
                     <div class="avatar" data-size="md">
-                        <img src="@Model.OtherUserPhoto" alt="@Model.OtherUserFullName" class="avatar-image">
+                        <img src="@ImageHelper.GetPhotoUrl(Model.OtherUserPhoto)" alt="@Model.OtherUserFullName" class="avatar-image">
                     </div>
                 }
                 else
@@ -63,3 +63,4 @@
         </form>
     </div>
 </div>
+
