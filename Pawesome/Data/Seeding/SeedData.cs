@@ -155,11 +155,11 @@ namespace Pawesome.Data.Seeding
             var admin = new User
             {
                 LastName = "Admin",
-                FirstName = "Super",
+                FirstName = "Brice",
                 Email = "admin@pawesome.com",
                 UserName = "admin@pawesome.com",
                 Bio = "Administrateur de la plateforme Pawesome",
-                Photo = "admin.jpg",
+                Photo = "brice.jpg",
                 Rating = 5.0f,
                 Status = "Active",
                 IsVerified = true,
@@ -190,7 +190,7 @@ namespace Pawesome.Data.Seeding
                 Email = "user1@example.com",
                 UserName = "user1@example.com",
                 Bio = "Amoureux des animaux depuis toujours",
-                Photo = "jean.jpg",
+                Photo = "images/persona/guys_2.jpg",
                 Rating = 4.5f,
                 Status = "Active",
                 IsVerified = true,
@@ -221,7 +221,7 @@ namespace Pawesome.Data.Seeding
                 Email = "sophie@example.com",
                 UserName = "sophie@example.com",
                 Bio = "Passionnée par les chiens et chats",
-                Photo = "sophie.jpg",
+                Photo = "images/persona/girl_1.jpg",
                 Rating = 4.8f,
                 Status = "Active",
                 IsVerified = true,
@@ -398,7 +398,24 @@ namespace Pawesome.Data.Seeding
                 Reviews = new List<Review>(),
                 Payments = new List<Payment>(),
                 CreatedAt = DateTime.UtcNow,
-                UpdatedAt = DateTime.UtcNow
+                UpdatedAt = DateTime.UtcNow,
+                Address = new Address
+                {
+                    StreetAddress = "123 Rue de Paris",
+                    City = new City
+                    {
+                        Name = "Paris",
+                        PostalCode = "75000",
+                        Country = new Country
+                        {
+                            Name = "France",
+                            Cities = new List<City>(),
+                            CreatedAt = DateTime.UtcNow,
+                            UpdatedAt = DateTime.UtcNow
+                        },
+                        Addresses = new List<Address>(),
+                    }
+                }
             };
             
             var advert2 = new Advert
@@ -412,7 +429,24 @@ namespace Pawesome.Data.Seeding
                 Reviews = new List<Review>(),
                 Payments = new List<Payment>(),
                 CreatedAt = DateTime.UtcNow,
-                UpdatedAt = DateTime.UtcNow
+                UpdatedAt = DateTime.UtcNow,
+                Address = new Address
+                {
+                    StreetAddress = "456 Avenue Victor Hugo",
+                    City = new City
+                    {
+                        Name = "Lyon",
+                        PostalCode = "69000",
+                        Country = new Country
+                        {
+                            Name = "France",
+                            Cities = new List<City>(),
+                            CreatedAt = DateTime.UtcNow,
+                            UpdatedAt = DateTime.UtcNow
+                        },
+                        Addresses = new List<Address>(),
+                    }
+                }
             };
 
             var advert3 = new Advert
@@ -426,7 +460,24 @@ namespace Pawesome.Data.Seeding
                 Reviews = new List<Review>(),
                 Payments = new List<Payment>(),
                 CreatedAt = DateTime.UtcNow,
-                UpdatedAt = DateTime.UtcNow
+                UpdatedAt = DateTime.UtcNow,
+                Address = new Address
+                {
+                    StreetAddress = "789 Boulevard Saint-Germain",
+                    City = new City
+                    {
+                        Name = "Bordeaux",
+                        PostalCode = "33000",
+                        Country = new Country
+                        {
+                            Name = "France",
+                            Cities = new List<City>(),
+                            CreatedAt = DateTime.UtcNow,
+                            UpdatedAt = DateTime.UtcNow
+                        },
+                        Addresses = new List<Address>(),
+                    }
+                }
             };
 
             var advert4 = new Advert
@@ -440,14 +491,30 @@ namespace Pawesome.Data.Seeding
                 Reviews = new List<Review>(),
                 Payments = new List<Payment>(),
                 CreatedAt = DateTime.UtcNow,
-                UpdatedAt = DateTime.UtcNow
+                UpdatedAt = DateTime.UtcNow,
+                Address = new Address
+                {
+                    StreetAddress = "101 Rue de la Paix",
+                    City = new City
+                    {
+                        Name = "Nice",
+                        PostalCode = "06000",
+                        Country = new Country
+                        {
+                            Name = "France",
+                            Cities = new List<City>(),
+                            CreatedAt = DateTime.UtcNow,
+                            UpdatedAt = DateTime.UtcNow
+                        },
+                        Addresses = new List<Address>(),
+                    }
+                }
             };
             
             context.Adverts.AddRange(advert1, advert2, advert3, advert4);
             context.SaveChanges();
 
             var pets = context.Pets.ToList();
-            var adverts = context.Adverts.ToList();
 
             context.PetAdverts.AddRange(
                 new PetAdvert { 
