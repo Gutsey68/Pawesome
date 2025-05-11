@@ -12,4 +12,5 @@ public class MessageDto
     public string SenderFullName { get; set; } = null!;
     public string ReceiverFullName { get; set; } = null!;
     public string? SenderPhoto { get; set; }
+    public string? ReceiverPhoto { get; set; } 
 }

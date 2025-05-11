@@ -15,11 +15,13 @@ public class MessageMappingProfile : Profile
             .ForMember(dest => dest.ReceiverFullName,
                 opt => opt.MapFrom(src => $"{src.Receiver.FirstName} {src.Receiver.LastName}"))
             .ForMember(dest => dest.SenderPhoto,
-                opt => opt.MapFrom(src => src.Sender.Photo));
+                opt => opt.MapFrom(src => src.Sender.Photo))
+            .ForMember(dest => dest.ReceiverPhoto,
+                opt => opt.MapFrom(src => src.Receiver.Photo));
         
         CreateMap<MessageDto, MessageViewModel>()
             .ForMember(dest => dest.FormattedDate,
-                opt => opt.MapFrom(src => src.CreatedAt.ToString("dd/MM/yyyy HH:mm")));
+                opt => opt.MapFrom(src => src.CreatedAt.ToLocalTime().ToString("dd/MM/yyyy HH:mm")));
         
         CreateMap<CreateMessageViewModel, CreateMessageDto>();
     }

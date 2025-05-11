@@ -40,6 +40,10 @@ function getPhotoUrl(photoPath) {
         return photoPath;
     }
 
+    if (photoPath.startsWith("/images/users/", 0)) {
+        return photoPath;
+    }
+
     return `/images/users/${photoPath}`;
 }
 
@@ -143,6 +147,12 @@ document.addEventListener('DOMContentLoaded', function () {
      */
     connection.on("MessageSent", function (message) {
         const messagesContainer = document.getElementById('messages-container');
+        const sendButton = document.getElementById('send-message-btn');
+
+        if (sendButton) {
+            sendButton.classList.remove('is-loading');
+        }
+
         if (messagesContainer) {
             const isEmpty = messagesContainer.querySelector('.empty-conversation');
             if (isEmpty) {
@@ -161,7 +171,6 @@ document.addEventListener('DOMContentLoaded', function () {
             messagesContainer.scrollTop = messagesContainer.scrollHeight;
 
             document.getElementById('message-input').value = '';
-            document.getElementById('sending-indicator').style.display = 'none';
         }
     });
 
@@ -189,15 +198,13 @@ document.addEventListener('DOMContentLoaded', function () {
 
             const messageInput = document.getElementById('message-input');
             const receiverId = document.getElementById('receiver-id').value;
+            const sendButton = document.getElementById('send-message-btn');
 
             if (!messageInput.value.trim()) {
                 return;
             }
 
-            const sendingIndicator = document.getElementById('sending-indicator');
-            if (sendingIndicator) {
-                sendingIndicator.style.display = 'inline';
-            }
+            sendButton.classList.add('is-loading');
 
             fetch('/api/send', {
                 method: 'POST',
@@ -217,9 +224,8 @@ document.addEventListener('DOMContentLoaded', function () {
                 })
                 .catch(error => {
                     console.error("Erreur :", error);
-                    if (sendingIndicator) {
-                        sendingIndicator.style.display = 'none';
-                    }
+                    
+                    sendButton.classList.remove('is-loading');
                     alert("Le message n'a pas pu être envoyé. Veuillez réessayer.");
                 });
         });
@@ -242,4 +248,3 @@ document.addEventListener('DOMContentLoaded', function () {
         }
     }
 });
-

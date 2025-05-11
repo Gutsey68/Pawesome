@@ -109,7 +109,8 @@ public class MessageService : IMessageService
             SenderId = currentUserId,
             ReceiverId = messageDto.ReceiverId,
             Sender = sender,
-            Receiver = receiver
+            Receiver = receiver,
+            CreatedAt = DateTime.UtcNow 
         };
 
         await _messageRepository.AddAsync(message);

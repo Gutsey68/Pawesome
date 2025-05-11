@@ -18,10 +18,10 @@
                 <a href="@Url.Action("Conversation", "Message", new { otherUserId = conversation.UserId })"
                    class="conversation-item @(ViewContext.RouteData.Values["otherUserId"]?.ToString() == conversation.UserId.ToString() ? "active" : "")">
                     <div class="conversation-avatar">
-                        @if (!string.IsNullOrEmpty(conversation.UserPhoto))
+                        @if (!string.IsNullOrEmpty(@conversation.UserPhoto))
                         {
                             <div class="avatar" data-size="lg">
-                                <img src="@ImageHelper.GetPhotoUrl(conversation.UserPhoto)"
+                                <img src="@ImageHelper.GetPhotoUrl(@conversation.UserPhoto)"
                                      alt="Photo de @conversation.UserFullName" class="avatar-image">
                             </div>
                         }

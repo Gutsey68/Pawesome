@@ -59,7 +59,7 @@ public class MessageController : Controller
         {
             var otherUserId = conversation.SenderId == userId ? conversation.ReceiverId : conversation.SenderId;
             var otherUserFullName = conversation.SenderId == userId ? conversation.ReceiverFullName : conversation.SenderFullName;
-            var otherUserPhoto = conversation.SenderId == userId ? null : conversation.SenderPhoto;
+            var otherUserPhoto = conversation.SenderId == userId ? conversation.ReceiverPhoto : conversation.SenderPhoto;
 
             var unreadCount = await _messageService.GetUnreadMessagesCountFromSenderAsync(userId, otherUserId);
 
@@ -110,7 +110,7 @@ public class MessageController : Controller
         {
             var convOtherUserId = conversation.SenderId == currentUserId ? conversation.ReceiverId : conversation.SenderId;
             var convOtherUserFullName = conversation.SenderId == currentUserId ? conversation.ReceiverFullName : conversation.SenderFullName;
-            var convOtherUserPhoto = conversation.SenderId == currentUserId ? null : conversation.SenderPhoto;
+            var convOtherUserPhoto = conversation.SenderId == currentUserId ? conversation.ReceiverPhoto : conversation.SenderPhoto;
 
             var unreadCount = await _messageService.GetUnreadMessagesCountFromSenderAsync(currentUserId, convOtherUserId);
 
@@ -139,11 +139,7 @@ public class MessageController : Controller
         {
             OtherUserId = otherUserId,
             OtherUserFullName = $"{otherUser.FirstName} {otherUser.LastName}",
-            OtherUserPhoto = !string.IsNullOrEmpty(otherUser.Photo)
-                ? (otherUser.Photo.StartsWith("http", StringComparison.OrdinalIgnoreCase)
-                    ? otherUser.Photo
-                    : $"/images/users/{otherUser.Photo}")
-                : null,
+            OtherUserPhoto = otherUser.Photo,
             Messages = messages,
             NewMessage = new CreateMessageViewModel { ReceiverId = otherUserId }
         };
