@@ -3,6 +3,7 @@
     build:
       context: .
       dockerfile: Pawesome/Dockerfile
+    restart: unless-stopped
     labels:
       - "traefik.enable=true"
       - "traefik.http.routers.pawesome.rule=Host(`pawesome.club`)"
@@ -10,7 +11,6 @@
       - "traefik.http.routers.pawesome.tls.certresolver=pawesome"
       - "traefik.http.services.pawesome.loadbalancer.server.port=8080"
       - "traefik.docker.network=traefik-proxy"
-
     networks:
       - pawesome-network
       - traefik-proxy
@@ -20,10 +20,11 @@
 
   pawesome-db:
     image: postgres:latest
+    restart: unless-stopped
     environment:
-      POSTGRES_USER: pawesome
-      POSTGRES_PASSWORD: pawesome
-      POSTGRES_DB: pawesome
+      POSTGRES_USER: ${POSTGRES_USER}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
+      POSTGRES_DB: ${POSTGRES_DB}
     volumes:
       - db_data:/var/lib/postgresql/data
     networks:
