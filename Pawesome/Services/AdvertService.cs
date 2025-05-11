@@ -1,8 +1,6 @@
 using AutoMapper;
-using Azure.Core;
 using Pawesome.Interfaces;
 using Pawesome.Models;
-using Pawesome.Models.DTOs;
 using Pawesome.Models.Dtos.Advert;
 using Pawesome.Models.Entities;
 using Pawesome.Models.ViewModels.Advert;
@@ -69,7 +67,22 @@ public class AdvertService : IAdvertService
             UpdatedAt = DateTime.UtcNow,
             PetAdverts = new List<PetAdvert>(),
             Reviews = new List<Review>(),
-            Payments = new List<Payment>()
+            Payments = new List<Payment>(),
+            Address = new Address
+            {
+                StreetAddress = "",
+                City = new City
+                {
+                    Name = "",
+                    PostalCode = "",
+                    Country = new Country
+                    {
+                        Name = "",
+                        Cities = new List<City>()
+                    },
+                    Addresses = new List<Address>()
+                }
+            }
         };
 
         var createdAdvert = await _repository.CreatePetSittingRequestAsync(advert, model.PetIds, userId);
@@ -95,7 +108,22 @@ public class AdvertService : IAdvertService
             UpdatedAt = DateTime.UtcNow,
             PetAdverts = new List<PetAdvert>(),
             Reviews = new List<Review>(),
-            Payments = new List<Payment>()
+            Payments = new List<Payment>(),
+            Address = new Address
+            {
+                StreetAddress = "",
+                City = new City
+                {
+                    Name = "",
+                    PostalCode = "",
+                    Country = new Country
+                    {
+                        Name = "",
+                        Cities = new List<City>()
+                    },
+                    Addresses = new List<Address>()
+                }
+            }
         };
 
         var createdAdvert = await _repository.CreatePetSittingOfferAsync(advert, model.AcceptedAnimalTypeIds, userId);

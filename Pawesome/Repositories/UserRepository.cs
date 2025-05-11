@@ -1,4 +1,5 @@
 using Microsoft.EntityFrameworkCore;
+using Pawesome.Data;
 using Pawesome.Interfaces;
 using Pawesome.Models;
 using Pawesome.Models.Entities;
@@ -46,11 +47,8 @@ public class UserRepository : Repository<User>, IUserRepository
     /// <returns>The user with all related details if found, null otherwise</returns>
     public async Task<User?> GetUserByIdWithDetailsAsync(int userId)
     {
-        
-
         return await _context.Users
-            .Include(u => u.Address)
-            .ThenInclude(a => a.City)
+            .Include(u => u.Address!.City)
             .ThenInclude(c => c.Country)
             .Include(u => u.Pets)
             .FirstOrDefaultAsync(u => u.Id == userId);

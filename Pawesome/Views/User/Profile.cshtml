@@ -12,7 +12,7 @@
                     @if (!string.IsNullOrEmpty(Model.Photo))
                     {
                         <div class="avatar" data-size="xxl">
-                            <img src="~/images/users/@Model.Photo" alt="@Model.FullName" class="avatar-image" />
+                            <img src="@ImageHelper.GetPhotoUrl(Model.Photo)" alt="@Model.FullName" class="avatar-image" />
                         </div>
                     }
                     else
@@ -80,7 +80,7 @@
                                             <div>
                                                 @if (!string.IsNullOrEmpty(pet.Photo))
                                                 {
-                                                    <img src="~/images/pets/@pet.Photo" alt="@pet.Name">
+                                                    <img src="@ImageHelper.GetPetPhotoUrl(pet.Photo)" alt="@pet.Name">
                                                 }
                                                 else
                                                 {

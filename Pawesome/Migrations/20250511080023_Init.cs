@@ -13,31 +13,12 @@ namespace Pawesome.Migrations
         protected override void Up(MigrationBuilder migrationBuilder)
         {
             migrationBuilder.CreateTable(
-                name: "Adverts",
-                columns: table => new
-                {
-                    Id = table.Column<int>(type: "integer", nullable: false)
-                        .Annotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn),
-                    StartDate = table.Column<DateTime>(type: "timestamp with time zone", nullable: false),
-                    EndDate = table.Column<DateTime>(type: "timestamp with time zone", nullable: false),
-                    Status = table.Column<string>(type: "text", nullable: false),
-                    Amount = table.Column<decimal>(type: "numeric", nullable: false),
-                    AdditionalInformation = table.Column<string>(type: "text", nullable: true),
-                    CreatedAt = table.Column<DateTime>(type: "timestamp with time zone", nullable: false),
-                    UpdatedAt = table.Column<DateTime>(type: "timestamp with time zone", nullable: false)
-                },
-                constraints: table =>
-                {
-                    table.PrimaryKey("PK_Adverts", x => x.Id);
-                });
-
-            migrationBuilder.CreateTable(
                 name: "AnimalTypes",
                 columns: table => new
                 {
                     Id = table.Column<int>(type: "integer", nullable: false)
                         .Annotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn),
-                    Name = table.Column<string>(type: "text", nullable: false),
+                    Name = table.Column<string>(type: "character varying(255)", maxLength: 255, nullable: false),
                     CreatedAt = table.Column<DateTime>(type: "timestamp with time zone", nullable: false),
                     UpdatedAt = table.Column<DateTime>(type: "timestamp with time zone", nullable: false)
                 },
@@ -67,39 +48,13 @@ namespace Pawesome.Migrations
                 {
                     Id = table.Column<int>(type: "integer", nullable: false)
                         .Annotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn),
-                    Name = table.Column<string>(type: "text", nullable: false),
+                    Name = table.Column<string>(type: "character varying(255)", maxLength: 255, nullable: false),
                     CreatedAt = table.Column<DateTime>(type: "timestamp with time zone", nullable: false),
                     UpdatedAt = table.Column<DateTime>(type: "timestamp with time zone", nullable: false)
                 },
                 constraints: table =>
                 {
                     table.PrimaryKey("PK_Countries", x => x.Id);
-                });
-
-            migrationBuilder.CreateTable(
-                name: "AnimalTypeAdverts",
-                columns: table => new
-                {
-                    AnimalTypeId = table.Column<int>(type: "integer", nullable: false),
-                    AdvertId = table.Column<int>(type: "integer", nullable: false),
-                    CreatedAt = table.Column<DateTime>(type: "timestamp with time zone", nullable: false),
-                    UpdatedAt = table.Column<DateTime>(type: "timestamp with time zone", nullable: false)
-                },
-                constraints: table =>
-                {
-                    table.PrimaryKey("PK_AnimalTypeAdverts", x => new { x.AnimalTypeId, x.AdvertId });
-                    table.ForeignKey(
-                        name: "FK_AnimalTypeAdverts_Adverts_AdvertId",
-                        column: x => x.AdvertId,
-                        principalTable: "Adverts",
-                        principalColumn: "Id",
-                        onDelete: ReferentialAction.Cascade);
-                    table.ForeignKey(
-                        name: "FK_AnimalTypeAdverts_AnimalTypes_AnimalTypeId",
-                        column: x => x.AnimalTypeId,
-                        principalTable: "AnimalTypes",
-                        principalColumn: "Id",
-                        onDelete: ReferentialAction.Cascade);
                 });
 
             migrationBuilder.CreateTable(
@@ -129,11 +84,12 @@ namespace Pawesome.Migrations
                 {
                     Id = table.Column<int>(type: "integer", nullable: false)
                         .Annotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn),
-                    Name = table.Column<string>(type: "text", nullable: false),
-                    PostalCode = table.Column<string>(type: "text", nullable: false),
+                    Name = table.Column<string>(type: "character varying(255)", maxLength: 255, nullable: false),
+                    PostalCode = table.Column<string>(type: "character varying(20)", maxLength: 20, nullable: false),
                     CreatedAt = table.Column<DateTime>(type: "timestamp with time zone", nullable: false),
                     UpdatedAt = table.Column<DateTime>(type: "timestamp with time zone", nullable: false),
-                    CountryId = table.Column<int>(type: "integer", nullable: false)
+                    CountryId = table.Column<int>(type: "integer", nullable: false),
+                    CountryId1 = table.Column<int>(type: "integer", nullable: true)
                 },
                 constraints: table =>
                 {
@@ -144,6 +100,11 @@ namespace Pawesome.Migrations
                         principalTable: "Countries",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Cascade);
+                    table.ForeignKey(
+                        name: "FK_Cities_Countries_CountryId1",
+                        column: x => x.CountryId1,
+                        principalTable: "Countries",
+                        principalColumn: "Id");
                 });
 
             migrationBuilder.CreateTable(
@@ -152,11 +113,12 @@ namespace Pawesome.Migrations
                 {
                     Id = table.Column<int>(type: "integer", nullable: false)
                         .Annotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn),
-                    StreetAddress = table.Column<string>(type: "text", nullable: false),
-                    AdditionalInfo = table.Column<string>(type: "text", nullable: true),
+                    StreetAddress = table.Column<string>(type: "character varying(255)", maxLength: 255, nullable: false),
+                    AdditionalInfo = table.Column<string>(type: "character varying(255)", maxLength: 255, nullable: true),
                     CreatedAt = table.Column<DateTime>(type: "timestamp with time zone", nullable: false),
                     UpdatedAt = table.Column<DateTime>(type: "timestamp with time zone", nullable: false),
-                    CityId = table.Column<int>(type: "integer", nullable: false)
+                    CityId = table.Column<int>(type: "integer", nullable: false),
+                    CityId1 = table.Column<int>(type: "integer", nullable: true)
                 },
                 constraints: table =>
                 {
@@ -167,6 +129,11 @@ namespace Pawesome.Migrations
                         principalTable: "Cities",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Cascade);
+                    table.ForeignKey(
+                        name: "FK_Addresses_Cities_CityId1",
+                        column: x => x.CityId1,
+                        principalTable: "Cities",
+                        principalColumn: "Id");
                 });
 
             migrationBuilder.CreateTable(
@@ -175,17 +142,17 @@ namespace Pawesome.Migrations
                 {
                     Id = table.Column<int>(type: "integer", nullable: false)
                         .Annotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn),
-                    LastName = table.Column<string>(type: "text", nullable: false),
-                    FirstName = table.Column<string>(type: "text", nullable: false),
+                    LastName = table.Column<string>(type: "character varying(255)", maxLength: 255, nullable: false),
+                    FirstName = table.Column<string>(type: "character varying(255)", maxLength: 255, nullable: false),
                     Bio = table.Column<string>(type: "text", nullable: true),
-                    Photo = table.Column<string>(type: "text", nullable: true),
+                    Photo = table.Column<string>(type: "character varying(255)", maxLength: 255, nullable: true),
                     Rating = table.Column<float>(type: "real", nullable: true),
-                    Status = table.Column<string>(type: "text", nullable: true),
+                    Status = table.Column<string>(type: "character varying(255)", maxLength: 255, nullable: true),
                     IsVerified = table.Column<bool>(type: "boolean", nullable: false),
                     BalanceAccount = table.Column<decimal>(type: "numeric", nullable: false),
                     OnboardingStep = table.Column<int>(type: "integer", nullable: false),
                     IsOnboardingCompleted = table.Column<bool>(type: "boolean", nullable: false),
-                    CompletedProfile = table.Column<int>(type: "integer", nullable: false),
+                    CompletedProfile = table.Column<int>(type: "integer", maxLength: 100, nullable: false),
                     CreatedAt = table.Column<DateTime>(type: "timestamp with time zone", nullable: false),
                     UpdatedAt = table.Column<DateTime>(type: "timestamp with time zone", nullable: false),
                     AddressId = table.Column<int>(type: "integer", nullable: true),
@@ -211,7 +178,41 @@ namespace Pawesome.Migrations
                         name: "FK_AspNetUsers_Addresses_AddressId",
                         column: x => x.AddressId,
                         principalTable: "Addresses",
-                        principalColumn: "Id");
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Restrict);
+                });
+
+            migrationBuilder.CreateTable(
+                name: "Adverts",
+                columns: table => new
+                {
+                    Id = table.Column<int>(type: "integer", nullable: false)
+                        .Annotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn),
+                    StartDate = table.Column<DateTime>(type: "timestamp with time zone", nullable: false),
+                    EndDate = table.Column<DateTime>(type: "timestamp with time zone", nullable: false),
+                    Status = table.Column<string>(type: "character varying(255)", maxLength: 255, nullable: false),
+                    Amount = table.Column<decimal>(type: "numeric", nullable: false),
+                    AdditionalInformation = table.Column<string>(type: "character varying(255)", maxLength: 255, nullable: true),
+                    CreatedAt = table.Column<DateTime>(type: "timestamp with time zone", nullable: false),
+                    UpdatedAt = table.Column<DateTime>(type: "timestamp with time zone", nullable: false),
+                    UserId = table.Column<int>(type: "integer", nullable: false),
+                    AddressId = table.Column<int>(type: "integer", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_Adverts", x => x.Id);
+                    table.ForeignKey(
+                        name: "FK_Adverts_Addresses_AddressId",
+                        column: x => x.AddressId,
+                        principalTable: "Addresses",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Restrict);
+                    table.ForeignKey(
+                        name: "FK_Adverts_AspNetUsers_UserId",
+                        column: x => x.UserId,
+                        principalTable: "AspNetUsers",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Restrict);
                 });
 
             migrationBuilder.CreateTable(
@@ -306,7 +307,7 @@ namespace Pawesome.Migrations
                     Id = table.Column<int>(type: "integer", nullable: false)
                         .Annotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn),
                     Content = table.Column<string>(type: "text", nullable: false),
-                    Status = table.Column<string>(type: "text", nullable: false),
+                    Status = table.Column<string>(type: "character varying(255)", maxLength: 255, nullable: false),
                     CreatedAt = table.Column<DateTime>(type: "timestamp with time zone", nullable: false),
                     UpdatedAt = table.Column<DateTime>(type: "timestamp with time zone", nullable: false),
                     SenderId = table.Column<int>(type: "integer", nullable: false),
@@ -357,7 +358,7 @@ namespace Pawesome.Migrations
                 {
                     Id = table.Column<int>(type: "integer", nullable: false)
                         .Annotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn),
-                    Token = table.Column<string>(type: "text", nullable: false),
+                    Token = table.Column<string>(type: "character varying(255)", maxLength: 255, nullable: false),
                     IsValid = table.Column<bool>(type: "boolean", nullable: false),
                     ExpiresAt = table.Column<DateTime>(type: "timestamp with time zone", nullable: false),
                     CreatedAt = table.Column<DateTime>(type: "timestamp with time zone", nullable: false),
@@ -376,48 +377,21 @@ namespace Pawesome.Migrations
                 });
 
             migrationBuilder.CreateTable(
-                name: "Payments",
-                columns: table => new
-                {
-                    UserId = table.Column<int>(type: "integer", nullable: false),
-                    AdvertId = table.Column<int>(type: "integer", nullable: false),
-                    Amount = table.Column<decimal>(type: "numeric", nullable: false),
-                    Status = table.Column<string>(type: "text", nullable: false),
-                    CreatedAt = table.Column<DateTime>(type: "timestamp with time zone", nullable: false),
-                    UpdatedAt = table.Column<DateTime>(type: "timestamp with time zone", nullable: false)
-                },
-                constraints: table =>
-                {
-                    table.PrimaryKey("PK_Payments", x => new { x.UserId, x.AdvertId });
-                    table.ForeignKey(
-                        name: "FK_Payments_Adverts_AdvertId",
-                        column: x => x.AdvertId,
-                        principalTable: "Adverts",
-                        principalColumn: "Id",
-                        onDelete: ReferentialAction.Cascade);
-                    table.ForeignKey(
-                        name: "FK_Payments_AspNetUsers_UserId",
-                        column: x => x.UserId,
-                        principalTable: "AspNetUsers",
-                        principalColumn: "Id",
-                        onDelete: ReferentialAction.Cascade);
-                });
-
-            migrationBuilder.CreateTable(
                 name: "Pets",
                 columns: table => new
                 {
                     Id = table.Column<int>(type: "integer", nullable: false)
                         .Annotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn),
-                    Name = table.Column<string>(type: "text", nullable: false),
-                    Breed = table.Column<string>(type: "text", nullable: true),
+                    Name = table.Column<string>(type: "character varying(255)", maxLength: 255, nullable: false),
+                    Breed = table.Column<string>(type: "character varying(255)", maxLength: 255, nullable: true),
                     Age = table.Column<int>(type: "integer", nullable: true),
-                    Photo = table.Column<string>(type: "text", nullable: true),
+                    Photo = table.Column<string>(type: "character varying(255)", maxLength: 255, nullable: true),
                     Info = table.Column<string>(type: "text", nullable: true),
                     CreatedAt = table.Column<DateTime>(type: "timestamp with time zone", nullable: false),
                     UpdatedAt = table.Column<DateTime>(type: "timestamp with time zone", nullable: false),
                     UserId = table.Column<int>(type: "integer", nullable: false),
-                    AnimalTypeId = table.Column<int>(type: "integer", nullable: false)
+                    AnimalTypeId = table.Column<int>(type: "integer", nullable: false),
+                    AnimalTypeId1 = table.Column<int>(type: "integer", nullable: true)
                 },
                 constraints: table =>
                 {
@@ -428,6 +402,11 @@ namespace Pawesome.Migrations
                         principalTable: "AnimalTypes",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Cascade);
+                    table.ForeignKey(
+                        name: "FK_Pets_AnimalTypes_AnimalTypeId1",
+                        column: x => x.AnimalTypeId1,
+                        principalTable: "AnimalTypes",
+                        principalColumn: "Id");
                     table.ForeignKey(
                         name: "FK_Pets_AspNetUsers_UserId",
                         column: x => x.UserId,
@@ -445,13 +424,74 @@ namespace Pawesome.Migrations
                     Comment = table.Column<string>(type: "text", nullable: true),
                     CreatedAt = table.Column<DateTime>(type: "timestamp with time zone", nullable: false),
                     UpdatedAt = table.Column<DateTime>(type: "timestamp with time zone", nullable: false),
-                    UserId = table.Column<int>(type: "integer", nullable: false)
+                    UserId = table.Column<int>(type: "integer", nullable: false),
+                    IsResolved = table.Column<bool>(type: "boolean", nullable: false),
+                    TargetId = table.Column<int>(type: "integer", nullable: false),
+                    ReportType = table.Column<string>(type: "character varying(50)", maxLength: 50, nullable: false),
+                    Status = table.Column<string>(type: "character varying(20)", maxLength: 20, nullable: false)
                 },
                 constraints: table =>
                 {
                     table.PrimaryKey("PK_Reports", x => x.Id);
                     table.ForeignKey(
                         name: "FK_Reports_AspNetUsers_UserId",
+                        column: x => x.UserId,
+                        principalTable: "AspNetUsers",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Restrict);
+                });
+
+            migrationBuilder.CreateTable(
+                name: "AnimalTypeAdverts",
+                columns: table => new
+                {
+                    AnimalTypeId = table.Column<int>(type: "integer", nullable: false),
+                    AdvertId = table.Column<int>(type: "integer", nullable: false),
+                    CreatedAt = table.Column<DateTime>(type: "timestamp with time zone", nullable: false),
+                    UpdatedAt = table.Column<DateTime>(type: "timestamp with time zone", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_AnimalTypeAdverts", x => new { x.AnimalTypeId, x.AdvertId });
+                    table.ForeignKey(
+                        name: "FK_AnimalTypeAdverts_Adverts_AdvertId",
+                        column: x => x.AdvertId,
+                        principalTable: "Adverts",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
+                    table.ForeignKey(
+                        name: "FK_AnimalTypeAdverts_AnimalTypes_AnimalTypeId",
+                        column: x => x.AnimalTypeId,
+                        principalTable: "AnimalTypes",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
+                });
+
+            migrationBuilder.CreateTable(
+                name: "Payments",
+                columns: table => new
+                {
+                    UserId = table.Column<int>(type: "integer", nullable: false),
+                    AdvertId = table.Column<int>(type: "integer", nullable: false),
+                    Id = table.Column<int>(type: "integer", nullable: false),
+                    Amount = table.Column<decimal>(type: "numeric", nullable: false),
+                    Status = table.Column<string>(type: "character varying(255)", maxLength: 255, nullable: false),
+                    SessionId = table.Column<string>(type: "character varying(255)", maxLength: 255, nullable: true),
+                    PaymentIntentId = table.Column<string>(type: "character varying(255)", maxLength: 255, nullable: true),
+                    CreatedAt = table.Column<DateTime>(type: "timestamp with time zone", nullable: false),
+                    UpdatedAt = table.Column<DateTime>(type: "timestamp with time zone", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_Payments", x => new { x.UserId, x.AdvertId });
+                    table.ForeignKey(
+                        name: "FK_Payments_Adverts_AdvertId",
+                        column: x => x.AdvertId,
+                        principalTable: "Adverts",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
+                    table.ForeignKey(
+                        name: "FK_Payments_AspNetUsers_UserId",
                         column: x => x.UserId,
                         principalTable: "AspNetUsers",
                         principalColumn: "Id",
@@ -518,6 +558,21 @@ namespace Pawesome.Migrations
                 column: "CityId");
 
             migrationBuilder.CreateIndex(
+                name: "IX_Addresses_CityId1",
+                table: "Addresses",
+                column: "CityId1");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_Adverts_AddressId",
+                table: "Adverts",
+                column: "AddressId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_Adverts_UserId",
+                table: "Adverts",
+                column: "UserId");
+
+            migrationBuilder.CreateIndex(
                 name: "IX_AnimalTypeAdverts_AdvertId",
                 table: "AnimalTypeAdverts",
                 column: "AdvertId");
@@ -570,6 +625,11 @@ namespace Pawesome.Migrations
                 column: "CountryId");
 
             migrationBuilder.CreateIndex(
+                name: "IX_Cities_CountryId1",
+                table: "Cities",
+                column: "CountryId1");
+
+            migrationBuilder.CreateIndex(
                 name: "IX_Messages_ReceiverId",
                 table: "Messages",
                 column: "ReceiverId");
@@ -603,6 +663,11 @@ namespace Pawesome.Migrations
                 name: "IX_Pets_AnimalTypeId",
                 table: "Pets",
                 column: "AnimalTypeId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_Pets_AnimalTypeId1",
+                table: "Pets",
+                column: "AnimalTypeId1");
 
             migrationBuilder.CreateIndex(
                 name: "IX_Pets_UserId",

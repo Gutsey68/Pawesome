@@ -4,18 +4,13 @@ using Microsoft.EntityFrameworkCore;
 using Pawesome.Models;
 using Pawesome.Models.Entities;
 
-public class AppDbContext :  IdentityDbContext<User, IdentityRole<int>, int>
-{
-    /// <summary>
-    /// Initializes a new instance of the AppDbContext with the specified options.
-    /// </summary>
-    /// <param name="options">The options to be used by this context.</param>
+namespace Pawesome.Data;
 
-        public AppDbContext(DbContextOptions<AppDbContext> options)
-            : base(options)
-        {
-        }
-        
+public class AppDbContext : IdentityDbContext<User, IdentityRole<int>, int>
+{
+    public AppDbContext(DbContextOptions<AppDbContext> options)
+        : base(options) { }
+
     public DbSet<Pet> Pets { get; set; }
     public DbSet<AnimalType> AnimalTypes { get; set; }
     public DbSet<Advert> Adverts { get; set; }
@@ -31,17 +26,25 @@ public class AppDbContext :  IdentityDbContext<User, IdentityRole<int>, int>
     public DbSet<PetAdvert> PetAdverts { get; set; }
     public DbSet<AnimalTypeAdvert> AnimalTypeAdverts { get; set; }
 
-    /// <summary>
-    /// Configures the database model and entity relationships when creating the model.
-    /// Overrides the base OnModelCreating method from DbContext.
-    /// </summary>
-    /// <param name="modelBuilder">The builder being used to construct the model for this context.</param>
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
         base.OnModelCreating(modelBuilder);
-        
+
         modelBuilder.Entity<PetAdvert>()
             .HasKey(pa => new { pa.PetId, pa.AdvertId });
+
+        modelBuilder.Entity<AnimalTypeAdvert>()
+            .HasKey(ata => new { ata.AnimalTypeId, ata.AdvertId });
+
+        modelBuilder.Entity<AnimalTypeAdvert>()
+            .HasOne(ata => ata.AnimalType)
+            .WithMany()
+            .HasForeignKey(ata => ata.AnimalTypeId);
+
+        modelBuilder.Entity<AnimalTypeAdvert>()
+            .HasOne(ata => ata.Advert)
+            .WithMany()
+            .HasForeignKey(ata => ata.AdvertId);
 
         modelBuilder.Entity<Review>()
             .HasKey(r => new { r.UserId, r.AdvertId });
@@ -54,30 +57,71 @@ public class AppDbContext :  IdentityDbContext<User, IdentityRole<int>, int>
             .WithMany(u => u.SentMessages)
             .HasForeignKey(m => m.SenderId)
             .OnDelete(DeleteBehavior.Restrict);
-        
+
         modelBuilder.Entity<Message>()
             .HasOne(m => m.Receiver)
             .WithMany(u => u.ReceivedMessages)
             .HasForeignKey(m => m.ReceiverId)
             .OnDelete(DeleteBehavior.Restrict);
-        
-        modelBuilder.Entity<AnimalTypeAdvert>()
-            .HasKey(ata => new { ata.AnimalTypeId, ata.AdvertId });
-        
-        modelBuilder.Entity<AnimalTypeAdvert>()
-            .HasOne(ata => ata.AnimalType)
-            .WithMany()
-            .HasForeignKey(ata => ata.AnimalTypeId);
-        
-        modelBuilder.Entity<AnimalTypeAdvert>()
-            .HasOne(ata => ata.Advert)
-            .WithMany()
-            .HasForeignKey(ata => ata.AdvertId);
-        
+
         modelBuilder.Entity<Report>()
-            .HasOne(s => s.User)
-            .WithMany()
-            .HasForeignKey(s => s.UserId)
+            .HasOne(r => r.User)
+            .WithMany(u => u.Reports)
+            .HasForeignKey(r => r.UserId)
             .OnDelete(DeleteBehavior.Restrict);
+
+        modelBuilder.Entity<Advert>()
+            .HasOne(a => a.User)
+            .WithMany(u => u.Adverts)
+            .HasForeignKey(a => a.UserId)
+            .OnDelete(DeleteBehavior.Restrict);
+
+        modelBuilder.Entity<Advert>()
+            .HasOne(a => a.Address)
+            .WithMany(ad => ad.Adverts)
+            .HasForeignKey(a => a.AddressId)
+            .OnDelete(DeleteBehavior.Restrict);
+
+        modelBuilder.Entity<User>()
+            .HasOne(u => u.Address)
+            .WithMany(a => a.Users)
+            .HasForeignKey(u => u.AddressId)
+            .OnDelete(DeleteBehavior.Restrict);
+
+        modelBuilder.Entity<Pet>()
+            .HasOne(p => p.User)
+            .WithMany(u => u.Pets)
+            .HasForeignKey(p => p.UserId)
+            .OnDelete(DeleteBehavior.Cascade);
+
+        modelBuilder.Entity<Pet>()
+            .HasOne(p => p.AnimalType)
+            .WithMany()
+            .HasForeignKey(p => p.AnimalTypeId)
+            .OnDelete(DeleteBehavior.Cascade);
+
+        modelBuilder.Entity<Notification>()
+            .HasOne(n => n.User)
+            .WithMany(u => u.Notifications)
+            .HasForeignKey(n => n.UserId)
+            .OnDelete(DeleteBehavior.Cascade);
+
+        modelBuilder.Entity<PasswordReset>()
+            .HasOne(pr => pr.User)
+            .WithMany(u => u.PasswordResets)
+            .HasForeignKey(pr => pr.UserId)
+            .OnDelete(DeleteBehavior.Cascade);
+
+        modelBuilder.Entity<City>()
+            .HasOne(c => c.Country)
+            .WithMany()
+            .HasForeignKey(c => c.CountryId)
+            .OnDelete(DeleteBehavior.Cascade);
+
+        modelBuilder.Entity<Address>()
+            .HasOne(a => a.City)
+            .WithMany()
+            .HasForeignKey(a => a.CityId)
+            .OnDelete(DeleteBehavior.Cascade);
     }
 }

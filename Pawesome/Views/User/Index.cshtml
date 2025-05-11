@@ -4,15 +4,14 @@
     ViewData["Title"] = "Mon Profil";
 }
 
-<div class="container">
+<main role="main" class="container">
     <div class="img-cover">
     </div>
     <div class="profile-header">
         <div>
             @if (!string.IsNullOrEmpty(User.FindFirst("Photo")?.Value))
             {
-                <img class="avatar" data-size="xxl" src="~/images/users/@Model.Photo"
-                     alt="Image de profil de l'utilisateur"/>
+                <img class="avatar" data-size="xxl" src="@ImageHelper.GetPhotoUrl(Model.Photo)" alt="Image de profil de l'utilisateur"/>
             }
             else
             {
@@ -49,7 +48,7 @@
         <a asp-controller="Pet" asp-action="Create">Ajouter un animal</a>
     </div>
 
-</div>
+</main>
 
 <div class="container">
     <h2>Informations personnelles</h2>

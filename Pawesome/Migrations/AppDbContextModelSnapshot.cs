@@ -4,6 +4,7 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
+using Pawesome.Data;
 
 #nullable disable
 
@@ -189,6 +190,9 @@ namespace Pawesome.Migrations
                     b.Property<int>("CityId")
                         .HasColumnType("integer");
 
+                    b.Property<int?>("CityId1")
+                        .HasColumnType("integer");
+
                     b.Property<DateTime>("CreatedAt")
                         .HasColumnType("timestamp with time zone");
 
@@ -204,6 +208,8 @@ namespace Pawesome.Migrations
 
                     b.HasIndex("CityId");
 
+                    b.HasIndex("CityId1");
+
                     b.ToTable("Addresses");
                 });
 
@@ -218,6 +224,9 @@ namespace Pawesome.Migrations
                     b.Property<string>("AdditionalInformation")
                         .HasMaxLength(255)
                         .HasColumnType("character varying(255)");
+
+                    b.Property<int>("AddressId")
+                        .HasColumnType("integer");
 
                     b.Property<decimal>("Amount")
                         .HasColumnType("numeric");
@@ -243,6 +252,8 @@ namespace Pawesome.Migrations
                         .HasColumnType("integer");
 
                     b.HasKey("Id");
+
+                    b.HasIndex("AddressId");
 
                     b.HasIndex("UserId");
 
@@ -284,6 +295,9 @@ namespace Pawesome.Migrations
                     b.Property<int>("CountryId")
                         .HasColumnType("integer");
 
+                    b.Property<int?>("CountryId1")
+                        .HasColumnType("integer");
+
                     b.Property<DateTime>("CreatedAt")
                         .HasColumnType("timestamp with time zone");
 
@@ -303,6 +317,8 @@ namespace Pawesome.Migrations
                     b.HasKey("Id");
 
                     b.HasIndex("CountryId");
+
+                    b.HasIndex("CountryId1");
 
                     b.ToTable("Cities");
                 });
@@ -485,6 +501,9 @@ namespace Pawesome.Migrations
                     b.Property<int>("AnimalTypeId")
                         .HasColumnType("integer");
 
+                    b.Property<int?>("AnimalTypeId1")
+                        .HasColumnType("integer");
+
                     b.Property<string>("Breed")
                         .HasMaxLength(255)
                         .HasColumnType("character varying(255)");
@@ -513,6 +532,8 @@ namespace Pawesome.Migrations
                     b.HasKey("Id");
 
                     b.HasIndex("AnimalTypeId");
+
+                    b.HasIndex("AnimalTypeId1");
 
                     b.HasIndex("UserId");
 
@@ -576,14 +597,9 @@ namespace Pawesome.Migrations
                     b.Property<int>("UserId")
                         .HasColumnType("integer");
 
-                    b.Property<int?>("UserId1")
-                        .HasColumnType("integer");
-
                     b.HasKey("Id");
 
                     b.HasIndex("UserId");
-
-                    b.HasIndex("UserId1");
 
                     b.ToTable("Reports");
                 });
@@ -806,21 +822,33 @@ namespace Pawesome.Migrations
             modelBuilder.Entity("Pawesome.Models.Entities.Address", b =>
                 {
                     b.HasOne("Pawesome.Models.Entities.City", "City")
-                        .WithMany("Addresses")
+                        .WithMany()
                         .HasForeignKey("CityId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
+
+                    b.HasOne("Pawesome.Models.Entities.City", null)
+                        .WithMany("Addresses")
+                        .HasForeignKey("CityId1");
 
                     b.Navigation("City");
                 });
 
             modelBuilder.Entity("Pawesome.Models.Entities.Advert", b =>
                 {
+                    b.HasOne("Pawesome.Models.Entities.Address", "Address")
+                        .WithMany("Adverts")
+                        .HasForeignKey("AddressId")
+                        .OnDelete(DeleteBehavior.Restrict)
+                        .IsRequired();
+
                     b.HasOne("Pawesome.Models.Entities.User", "User")
                         .WithMany("Adverts")
                         .HasForeignKey("UserId")
-                        .OnDelete(DeleteBehavior.Cascade)
+                        .OnDelete(DeleteBehavior.Restrict)
                         .IsRequired();
+
+                    b.Navigation("Address");
 
                     b.Navigation("User");
                 });
@@ -828,10 +856,14 @@ namespace Pawesome.Migrations
             modelBuilder.Entity("Pawesome.Models.Entities.City", b =>
                 {
                     b.HasOne("Pawesome.Models.Entities.Country", "Country")
-                        .WithMany("Cities")
+                        .WithMany()
                         .HasForeignKey("CountryId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
+
+                    b.HasOne("Pawesome.Models.Entities.Country", null)
+                        .WithMany("Cities")
+                        .HasForeignKey("CountryId1");
 
                     b.Navigation("Country");
                 });
@@ -899,10 +931,14 @@ namespace Pawesome.Migrations
             modelBuilder.Entity("Pawesome.Models.Entities.Pet", b =>
                 {
                     b.HasOne("Pawesome.Models.Entities.AnimalType", "AnimalType")
-                        .WithMany("Pets")
+                        .WithMany()
                         .HasForeignKey("AnimalTypeId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
+
+                    b.HasOne("Pawesome.Models.Entities.AnimalType", null)
+                        .WithMany("Pets")
+                        .HasForeignKey("AnimalTypeId1");
 
                     b.HasOne("Pawesome.Models.Entities.User", "User")
                         .WithMany("Pets")
@@ -937,14 +973,10 @@ namespace Pawesome.Migrations
             modelBuilder.Entity("Pawesome.Models.Entities.Report", b =>
                 {
                     b.HasOne("Pawesome.Models.Entities.User", "User")
-                        .WithMany()
+                        .WithMany("Reports")
                         .HasForeignKey("UserId")
                         .OnDelete(DeleteBehavior.Restrict)
                         .IsRequired();
-
-                    b.HasOne("Pawesome.Models.Entities.User", null)
-                        .WithMany("Reports")
-                        .HasForeignKey("UserId1");
 
                     b.Navigation("User");
                 });
@@ -972,13 +1004,16 @@ namespace Pawesome.Migrations
                 {
                     b.HasOne("Pawesome.Models.Entities.Address", "Address")
                         .WithMany("Users")
-                        .HasForeignKey("AddressId");
+                        .HasForeignKey("AddressId")
+                        .OnDelete(DeleteBehavior.Restrict);
 
                     b.Navigation("Address");
                 });
 
             modelBuilder.Entity("Pawesome.Models.Entities.Address", b =>
                 {
+                    b.Navigation("Adverts");
+
                     b.Navigation("Users");
                 });
 

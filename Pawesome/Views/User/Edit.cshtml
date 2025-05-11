@@ -98,7 +98,7 @@
                     <h3 class="font-sm font-weight-medium">Photo actuelle</h3>
                     <figure>
                         <div class="avatar" data-size="xxl">
-                            <img src="~/images/users/@Model.ExistingPhoto" alt="Photo de profil actuelle"
+                            <img src="@ImageHelper.GetPhotoUrl(Model.ExistingPhoto)" alt="Photo de profil actuelle"
                                  class="avatar-image"/>
                         </div>
                     </figure>

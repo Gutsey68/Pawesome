@@ -3,6 +3,7 @@ using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc.Infrastructure;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Options;
+using Pawesome.Data;
 using Pawesome.Infrastructure.Filters;
 using Pawesome.Interfaces;
 using Pawesome.Models;

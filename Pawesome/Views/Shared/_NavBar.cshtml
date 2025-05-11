@@ -16,8 +16,9 @@
                         <div tabindex="0">  
                             @if (!string.IsNullOrEmpty(User.FindFirst("Photo")?.Value))
                             {
+                                var photoUrl = User.FindFirst("Photo")?.Value;
                                 <div class="avatar" data-size="md">
-                                    <img class="avatar-image" src="~/images/users/@User.FindFirst("Photo")?.Value" alt="Avatar de l'utilisateur"/>
+                                    <img class="avatar-image" src="@if (photoUrl != null) { @ImageHelper.GetPhotoUrl(photoUrl) }" alt="Avatar de l'utilisateur"/>
                                 </div>
                             }
                             else

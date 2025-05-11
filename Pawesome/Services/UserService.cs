@@ -9,7 +9,7 @@ using Pawesome.Models.ViewModels.User;
 namespace Pawesome.Services;
 
 /// <summary>
-/// Service handling business logic for user profile operations
+/// Service handling business logic for user profile operations.
 /// </summary>
 public class UserService : IUserService
 {
@@ -22,15 +22,15 @@ public class UserService : IUserService
     private readonly IAddressRepository _addressRepository;
 
     /// <summary>
-    /// Initializes a new instance of the UserService
+    /// Initializes a new instance of the <see cref="UserService"/> class.
     /// </summary>
-    /// <param name="userRepository">Repository for user operations</param>
-    /// <param name="mapper">AutoMapper instance for object mapping</param>
-    /// <param name="environment">Web host environment for file operations</param>
-    /// <param name="userManager">User manager for user-related operations</param>
-    /// <param name="cityRepository">Repository for city operations</param>
-    /// <param name="countryRepository">Repository for country operations</param>
-    /// <param name="addressRepository">Repository for address operations</param>
+    /// <param name="userRepository">Repository for user operations.</param>
+    /// <param name="mapper">AutoMapper instance for object mapping.</param>
+    /// <param name="environment">Web host environment for file operations.</param>
+    /// <param name="cityRepository">Repository for city operations.</param>
+    /// <param name="countryRepository">Repository for country operations.</param>
+    /// <param name="addressRepository">Repository for address operations.</param>
+    /// <param name="userManager">User manager for user-related operations.</param>
     public UserService(
         IUserRepository userRepository, 
         IMapper mapper, 
@@ -50,10 +50,10 @@ public class UserService : IUserService
     }
 
     /// <summary>
-    /// Retrieves user data for editing
+    /// Retrieves user data for editing.
     /// </summary>
-    /// <param name="userId">The ID of the user to edit</param>
-    /// <returns>Update the user view model if found, null otherwise</returns>
+    /// <param name="userId">The ID of the user to edit.</param>
+    /// <returns>Update the user view model if found, null otherwise.</returns>
     public async Task<UpdateUserViewModel?> GetUserForEditAsync(int userId)
     {
         var user = await _userRepository.GetByIdAsync(userId);
@@ -62,10 +62,10 @@ public class UserService : IUserService
     }
 
     /// <summary>
-    /// Retrieves a user's profile information including address and pets
+    /// Retrieves a user's profile information including address and pets.
     /// </summary>
-    /// <param name="userId">The ID of the user whose profile to retrieve</param>
-    /// <returns>Profile view model if found, null otherwise</returns>
+    /// <param name="userId">The ID of the user whose profile to retrieve.</param>
+    /// <returns>Profile view model if found, null otherwise.</returns>
     public async Task<ProfileViewModel?> GetUserProfileAsync(int userId)
     {
         var user = await _userRepository.GetUserByIdWithDetailsAsync(userId);
@@ -74,9 +74,9 @@ public class UserService : IUserService
     }
 
     /// <summary>
-    /// Updates user information based on the provided model
+    /// Updates user information based on the provided model.
     /// </summary>
-    /// <param name="model">The model containing updated user information</param>
+    /// <param name="model">The model containing updated user information.</param>
     public async Task UpdateUserAsync(UpdateUserViewModel model)
     {
         var user = await _userRepository.GetByIdAsync(model.Id);
@@ -111,10 +111,10 @@ public class UserService : IUserService
     }
 
     /// <summary>
-    /// Saves the uploaded photo to the file system
+    /// Saves the uploaded photo to the file system.
     /// </summary>
-    /// <param name="photo">The photo file to save</param>
-    /// <returns>The filename of the saved photo</returns>
+    /// <param name="photo">The photo file to save.</param>
+    /// <returns>The filename of the saved photo.</returns>
     private async Task<string> SavePhotoAsync(IFormFile photo)
     {
         var fileName = $"{Guid.NewGuid()}_{Path.GetFileName(photo.FileName)}";
@@ -129,9 +129,9 @@ public class UserService : IUserService
     }
 
     /// <summary>
-    /// Deletes a photo from the file system
+    /// Deletes a photo from the file system.
     /// </summary>
-    /// <param name="fileName">The filename of the photo to delete</param>
+    /// <param name="fileName">The filename of the photo to delete.</param>
     private void DeletePhoto(string fileName)
     {
         var filePath = Path.Combine(_environment.WebRootPath, "images", "users", fileName);
@@ -143,11 +143,11 @@ public class UserService : IUserService
     }
     
     /// <summary>
-    /// Retrieves a public user profile for display
+    /// Retrieves a public user profile for display.
     /// </summary>
-    /// <param name="userId">The ID of the user whose public profile to retrieve</param>
-    /// <param name="currentUserId">The ID of the current user</param>
-    /// <returns>Public profile view model if found, null otherwise</returns>
+    /// <param name="userId">The ID of the user whose public profile to retrieve.</param>
+    /// <param name="currentUserId">The ID of the current user.</param>
+    /// <returns>Public profile view model if found, null otherwise.</returns>
     public async Task<PublicProfileViewModel?> GetPublicUserProfileAsync(int userId, int currentUserId)
     {
         var user = await _userRepository.GetUserByIdWithDetailsAsync(userId);
@@ -178,7 +178,7 @@ public class UserService : IUserService
     /// </summary>
     /// <param name="user">The user whose claims to update.</param>
     /// <returns>A task representing the asynchronous operation.</returns>
-    private async Task UpdateUserClaimsAsync(Models.Entities.User user)
+    private async Task UpdateUserClaimsAsync(User user)
     {
         var existingClaims = await _userManager.GetClaimsAsync(user);
         await _userManager.RemoveClaimsAsync(user, existingClaims);
@@ -188,7 +188,7 @@ public class UserService : IUserService
             new Claim("FirstName", user.FirstName),
             new Claim("LastName", user.LastName)
         };
-    
+
         if (user.Email != null) 
         {
             claims.Add(new Claim("Email", user.Email));
@@ -242,13 +242,17 @@ public class UserService : IUserService
                 await _cityRepository.SaveChangesAsync();
             }
 
-            user.Address.StreetAddress = model.StreetAddress;
-            user.Address.AdditionalInfo = model.AdditionalInfo;
-            user.Address.CityId = city.Id;
-            user.Address.City = city;
-            user.Address.UpdatedAt = DateTime.UtcNow;
-                
-            await _addressRepository.UpdateAsync(user.Address);
+            if (user.Address != null)
+            {
+                user.Address.StreetAddress = model.StreetAddress;
+                user.Address.AdditionalInfo = model.AdditionalInfo;
+                user.Address.CityId = city.Id;
+                user.Address.City = city;
+                user.Address.UpdatedAt = DateTime.UtcNow;
+
+                await _addressRepository.UpdateAsync(user.Address);
+            }
+
             await _addressRepository.SaveChangesAsync();
         }
     }

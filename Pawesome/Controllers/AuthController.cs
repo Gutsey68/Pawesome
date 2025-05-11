@@ -2,14 +2,13 @@ using Google.Apis.Auth;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Pawesome.Interfaces;
-using Pawesome.Models;
 using Pawesome.Models.Entities;
 using Pawesome.Models.ViewModels.Auth;
 
 namespace Pawesome.Controllers;
 
 /// <summary>
-/// Controller handling user authentication and registration
+/// Controller responsible for user authentication and registration.
 /// </summary>
 public class AuthController : Controller
 {
@@ -18,11 +17,11 @@ public class AuthController : Controller
     private readonly UserManager<User> _userManager;
 
     /// <summary>
-    /// Initializes a new instance of the AuthController
+    /// Initializes a new instance of the <see cref="AuthController"/> class.
     /// </summary>
-    /// <param name="authService">The authentication service for handling login and registration</param>
-    /// <param name="emailService">The email service for sending notifications</param>
-    /// <param name="userManager">The user manager for user operations</param>
+    /// <param name="authService">The authentication service for handling login and registration.</param>
+    /// <param name="emailService">The email service for sending notifications.</param>
+    /// <param name="userManager">The user manager for user operations.</param>
     public AuthController(
         IAuthService authService,
         IEmailService emailService,
@@ -34,18 +33,18 @@ public class AuthController : Controller
     }
 
     /// <summary>
-    /// Displays the registration form
+    /// Displays the registration form.
     /// </summary>
-    /// <returns>The registration view</returns>
+    /// <returns>The registration view.</returns>
     [HttpGet]
     public IActionResult Register() => View();
 
     /// <summary>
-    /// Handles the registration form submission
+    /// Handles the registration form submission.
     /// </summary>
-    /// <param name="model">The registration data</param>
-    /// <param name="credential">The credential token provided by Google OAuth</param>
-    /// <returns>Redirects to RegisterConfirmation on success, or returns the form with errors</returns>
+    /// <param name="model">The registration data.</param>
+    /// <param name="credential">The credential token provided by Google OAuth.</param>
+    /// <returns>Redirects to RegisterConfirmation on success, or returns the form with errors.</returns>
     [HttpPost]
     [ValidateAntiForgeryToken]
     public async Task<IActionResult> Register(RegisterViewModel model, string? credential = null)
@@ -82,16 +81,16 @@ public class AuthController : Controller
     }
 
     /// <summary>
-    /// Sends a confirmation email to the user
+    /// Sends a confirmation email to the user.
     /// </summary>
-    /// <param name="user">The user to send the confirmation email to</param>
-    /// <returns>A task representing the asynchronous operation</returns>
+    /// <param name="user">The user to send the confirmation email to.</param>
+    /// <returns>A task representing the asynchronous operation.</returns>
     private async Task SendEmailConfirmation(User user)
     {
         var token = await _userManager.GenerateEmailConfirmationTokenAsync(user);
 
         var callbackUrl = Url.Action("ConfirmEmail", "Auth",
-            new { userId = user.Id, token = token }, protocol: Request.Scheme);
+            new { userId = user.Id, token }, protocol: Request.Scheme);
 
         if (user.Email != null)
         {
@@ -99,25 +98,25 @@ public class AuthController : Controller
                 user.Email,
                 "Confirmez votre compte Pawesome",
                 $"<h1>Bienvenue sur Pawesome !</h1>" +
-                $"<p>Merci pour votre inscription. Veuillez confirmer votre compte en " +
+                $"<p>Merci de vous être inscrit. Veuillez confirmer votre compte en " +
                 $"<a href='{callbackUrl}'>cliquant ici</a>.</p>" +
                 $"<p>Si vous n'avez pas créé de compte sur Pawesome, veuillez ignorer cet email.</p>");
         }
     }
 
     /// <summary>
-    /// Displays the registration confirmation page
+    /// Displays the registration confirmation page.
     /// </summary>
-    /// <returns>The registration confirmation view</returns>
+    /// <returns>The registration confirmation view.</returns>
     [HttpGet]
     public IActionResult RegisterConfirmation() => View();
 
     /// <summary>
-    /// Confirms a user's email address
+    /// Confirms a user's email address.
     /// </summary>
-    /// <param name="userId">The ID of the user</param>
-    /// <param name="token">The confirmation token</param>
-    /// <returns>Confirmation view on success, error view on failure, or redirects home if parameters are invalid</returns>
+    /// <param name="userId">The ID of the user.</param>
+    /// <param name="token">The confirmation token.</param>
+    /// <returns>Confirmation view on success, error view on failure, or redirects home if parameters are invalid.</returns>
     [HttpGet]
     public async Task<IActionResult> ConfirmEmail(string userId, string token)
     {
@@ -144,18 +143,18 @@ public class AuthController : Controller
     }
 
     /// <summary>
-    /// Displays the login form
+    /// Displays the login form.
     /// </summary>
-    /// <returns>The login view</returns>
+    /// <returns>The login view.</returns>
     [HttpGet]
     public IActionResult Login() => View();
 
     /// <summary>
-    /// Handles the login form submission and Google OAuth authentication
+    /// Handles the login form submission and Google OAuth authentication.
     /// </summary>
-    /// <param name="model">The login credentials for standard login</param>
-    /// <param name="credential">The credential token provided by Google OAuth</param>
-    /// <returns>Redirects to the home page on successful login or returns the form with errors</returns>
+    /// <param name="model">The login credentials for standard login.</param>
+    /// <param name="credential">The credential token provided by Google OAuth.</param>
+    /// <returns>Redirects to the home page on successful login or returns the form with errors.</returns>
     [HttpPost]
     [ValidateAntiForgeryToken]
     public async Task<IActionResult> Login(LoginViewModel model, string? credential = null)
@@ -180,93 +179,11 @@ public class AuthController : Controller
         ModelState.AddModelError(string.Empty, "Email ou mot de passe incorrect.");
         return View(model);
     }
-
+    
     /// <summary>
-    /// Handles Google OAuth authentication for both login and registration
+    /// Logs out the currently logged-in user.
     /// </summary>
-    /// <param name="credential">The credential token provided by Google OAuth</param>
-    /// <param name="viewModel">The view model to return in case of error</param>
-    /// <returns>Redirects to the home page on successful authentication or returns the form with errors</returns>
-    private async Task<IActionResult> HandleGoogleAuthentication(string credential, object viewModel)
-    {
-        try
-        {
-            var settings = new GoogleJsonWebSignature.ValidationSettings
-            {
-                Audience = ["293214798250-hhaj22tlc17aug4ojdmcn81li2sgkfi5.apps.googleusercontent.com"]
-            };
-
-            var payload = await GoogleJsonWebSignature.ValidateAsync(credential, settings);
-            
-            var user = await _userManager.FindByEmailAsync(payload.Email);
-            
-            if (user == null)
-            {
-                var nameParts = payload.Name.Split(' ', 2);
-                var firstName = nameParts.FirstOrDefault() ?? string.Empty;
-                var lastName = nameParts.Length > 1 ? nameParts[1] : string.Empty;
-                
-                user = new User
-                {
-                    UserName = payload.Email,
-                    Email = payload.Email,
-                    EmailConfirmed = true,
-                    FirstName = firstName,
-                    LastName = lastName,
-                    CreatedAt = DateTime.UtcNow,
-                    Address = new Address
-                    {
-                        StreetAddress = "",
-                        City = new City
-                        {
-                            Name = "",
-                            PostalCode = "",
-                            Country = new Country
-                            {
-                                Name = "",
-                                Cities = new List<City>(),
-                            },
-                            Addresses = new List<Address>(),
-                        },
-                        Users = new List<User>(),
-                    },
-                    Pets = new List<Pet>(),
-                    Notifications = new List<Notification>(),
-                    Reports = new List<Report>(),
-                    PasswordResets = new List<PasswordReset>(),
-                    SentMessages = new List<Message>(),
-                    ReceivedMessages = new List<Message>(),
-                    Reviews = new List<Review>(),
-                    Payments = new List<Payment>()
-                };
-                
-                var result = await _userManager.CreateAsync(user);
-                
-                if (result.Succeeded)
-                {
-                    await _userManager.AddToRoleAsync(user, "User");
-                }
-                else
-                {
-                    ModelState.AddModelError(string.Empty, "Erreur lors de la création du compte avec Google.");
-                    return View(viewModel);
-                }
-            }
-
-            await _authService.ExternalLoginAsync(user);
-            return RedirectToAction("Index", "Home");
-        }
-        catch (Exception ex)
-        {
-            ModelState.AddModelError(string.Empty, $"Erreur lors de l'authentification Google : {ex.Message}");
-            return View(viewModel);
-        }
-    }
-
-    /// <summary>
-    /// Logs out the currently logged-in user
-    /// </summary>
-    /// <returns>Redirects to the home page</returns>
+    /// <returns>Redirects to the home page.</returns>
     [HttpGet]
     public async Task<IActionResult> Logout()
     {
@@ -276,17 +193,17 @@ public class AuthController : Controller
     }
 
     /// <summary>
-    /// Displays the forgot password form
+    /// Displays the forgot password form.
     /// </summary>
-    /// <returns>The forgot password view</returns>
+    /// <returns>The forgot password view.</returns>
     [HttpGet]
     public IActionResult ForgotPassword() => View();
 
     /// <summary>
-    /// Handles the forgot password form submission
+    /// Handles the forgot password form submission.
     /// </summary>
-    /// <param name="model">The email address to send password reset instructions to</param>
-    /// <returns>Redirects to the confirmation page in all cases for security</returns>
+    /// <param name="model">The email address to send password reset instructions to.</param>
+    /// <returns>Redirects to the confirmation page in all cases for security.</returns>
     [HttpPost]
     [ValidateAntiForgeryToken]
     public async Task<IActionResult> ForgotPassword(ForgotPasswordViewModel model)
@@ -314,23 +231,23 @@ public class AuthController : Controller
             $"<h1>Réinitialisez votre mot de passe</h1>" +
             $"<p>Veuillez réinitialiser votre mot de passe en <a href='{callbackUrl}'>cliquant ici</a>.</p>" +
             $"<p>Si vous n'avez pas demandé de réinitialisation de mot de passe, veuillez ignorer cet email.</p>");
-
+        
         return RedirectToAction("ForgotPasswordConfirmation");
     }
 
     /// <summary>
-    /// Displays the forgot password confirmation page
+    /// Displays the forgot password confirmation page.
     /// </summary>
-    /// <returns>The forgot password confirmation view</returns>
+    /// <returns>The forgot password confirmation view.</returns>
     [HttpGet]
     public IActionResult ForgotPasswordConfirmation() => View();
 
     /// <summary>
-    /// Displays the reset password form
+    /// Displays the reset password form.
     /// </summary>
-    /// <param name="email">The email address of the user</param>
-    /// <param name="code">The password reset token</param>
-    /// <returns>The reset password view or redirects home if parameters are invalid</returns>
+    /// <param name="email">The email address of the user.</param>
+    /// <param name="code">The password reset token.</param>
+    /// <returns>The reset password view or redirects home if parameters are invalid.</returns>
     [HttpGet]
     public IActionResult ResetPassword(string email, string code)
     {
@@ -351,10 +268,10 @@ public class AuthController : Controller
     }
 
     /// <summary>
-    /// Handles the reset password form submission
+    /// Handles the reset password form submission.
     /// </summary>
-    /// <param name="model">The reset password data including the new password</param>
-    /// <returns>Redirects to the confirmation page on success or returns the form with errors</returns>
+    /// <param name="model">The reset password data including the new password.</param>
+    /// <returns>Redirects to the confirmation page on success or returns the form with errors.</returns>
     [HttpPost]
     [ValidateAntiForgeryToken]
     public async Task<IActionResult> ResetPassword(ResetPasswordViewModel model)
@@ -387,9 +304,152 @@ public class AuthController : Controller
     }
 
     /// <summary>
-    /// Displays the reset password confirmation page
+    /// Displays the reset password confirmation page.
     /// </summary>
-    /// <returns>The reset password confirmation view</returns>
+    /// <returns>The reset password confirmation view.</returns>
     [HttpGet]
     public IActionResult ResetPasswordConfirmation() => View();
+    
+    /// <summary>
+    /// Handles Google authentication for registration or login.
+    /// </summary>
+    /// <param name="credential">The Google OAuth credential token.</param>
+    /// <param name="viewModel">The view model to return in case of error.</param>
+    /// <returns>Redirects to home on success or returns the view with errors.</returns>
+    private async Task<IActionResult> HandleGoogleAuthentication(string credential, object viewModel)
+    {
+        try
+        {
+            var settings = new GoogleJsonWebSignature.ValidationSettings
+            {
+                Audience = ["293214798250-hhaj22tlc17aug4ojdmcn81li2sgkfi5.apps.googleusercontent.com"]
+            };
+
+            var payload = await GoogleJsonWebSignature.ValidateAsync(credential, settings);
+
+            var user = await _userManager.FindByEmailAsync(payload.Email);
+
+            if (user == null)
+            {
+                var nameParts = payload.Name.Split(' ', 2);
+                var firstName = nameParts.FirstOrDefault() ?? string.Empty;
+                var lastName = nameParts.Length > 1 ? nameParts[1] : string.Empty;
+
+                var country = await CreateOrGetCountryAsync("France");
+                var city = await CreateOrGetCityAsync("", "00000", country.Id);
+
+                var address = new Address
+                {
+                    StreetAddress = "",
+                    AdditionalInfo = "",
+                    City = city,
+                    CityId = city.Id,
+                    Users = new List<User>(),
+                    Adverts = new List<Advert>()
+                };
+
+                user = new User
+                {
+                    UserName = payload.Email,
+                    Email = payload.Email,
+                    EmailConfirmed = true,
+                    FirstName = firstName,
+                    LastName = lastName,
+                    CreatedAt = DateTime.UtcNow,
+                    Photo = $"external:{payload.Picture}",
+                    Address = address,
+                    Pets = new List<Pet>(),
+                    Notifications = new List<Notification>(),
+                    Reports = new List<Report>(),
+                    PasswordResets = new List<PasswordReset>(),
+                    SentMessages = new List<Message>(),
+                    ReceivedMessages = new List<Message>(),
+                    Reviews = new List<Review>(),
+                    Payments = new List<Payment>()
+                };
+
+                var result = await _userManager.CreateAsync(user);
+
+                if (result.Succeeded)
+                {
+                    await _userManager.AddToRoleAsync(user, "User");
+                }
+                else
+                {
+                    ModelState.AddModelError(string.Empty, "Erreur lors de la création du compte avec Google.");
+                    return View(viewModel);
+                }
+            }
+
+            await _authService.ExternalLoginAsync(user);
+            return RedirectToAction("Index", "Home");
+        }
+        catch (Exception ex)
+        {
+            ModelState.AddModelError(string.Empty, $"Erreur d'authentification Google : {ex.Message}");
+            return View(viewModel);
+        }
+    }
+
+    /// <summary>
+    /// Retrieves or creates a country by name.
+    /// </summary>
+    /// <param name="countryName">The name of the country.</param>
+    /// <returns>The country entity.</returns>
+    private async Task<Country> CreateOrGetCountryAsync(string countryName)
+    {
+        var countryRepository = HttpContext.RequestServices.GetRequiredService<ICountryRepository>();
+        var country = await countryRepository.GetByNameAsync(countryName);
+        
+        if (country == null)
+        {
+            country = new Country
+            {
+                Name = countryName,
+                Cities = new List<City>()
+            };
+            await countryRepository.AddAsync(country);
+            await countryRepository.SaveChangesAsync();
+        }
+        
+        return country;
+    }
+
+    /// <summary>
+    /// Retrieves or creates a city by name and postal code.
+    /// </summary>
+    /// <param name="cityName">The name of the city.</param>
+    /// <param name="postalCode">The postal code of the city.</param>
+    /// <param name="countryId">The ID of the country.</param>
+    /// <returns>The city entity.</returns>
+    private async Task<City> CreateOrGetCityAsync(string cityName, string postalCode, int countryId)
+    {
+        var cityRepository = HttpContext.RequestServices.GetRequiredService<ICityRepository>();
+        var countryRepository = HttpContext.RequestServices.GetRequiredService<ICountryRepository>();
+        var city = await cityRepository.GetByNameAndPostalCodeAsync(cityName, postalCode);
+
+        if (city == null)
+        {
+            var country = await countryRepository.GetByIdAsync(countryId);
+        
+            if (country == null)
+            {
+                throw new InvalidOperationException($"Country with ID {countryId} not found");
+            }
+        
+            city = new City
+            {
+                Name = cityName,
+                PostalCode = postalCode,
+                CountryId = countryId,
+                Country = country,
+                Addresses = new List<Address>()
+            };
+            await cityRepository.AddAsync(city);
+            await cityRepository.SaveChangesAsync();
+        }
+
+        return city;
+    }
 }
+

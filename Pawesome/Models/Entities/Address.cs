@@ -18,5 +18,6 @@ public class Address
     public int CityId { get; set; }
     
     public required City City { get; set; }
-    public required ICollection<User> Users { get; set; }
+    public ICollection<User> Users { get; set; } = new List<User>();
+    public ICollection<Advert> Adverts { get; set; } = new List<Advert>();
 }

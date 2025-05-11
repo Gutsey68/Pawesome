@@ -5,6 +5,7 @@ namespace Pawesome.Models.Entities;
 
 public class User : IdentityUser<int>
 {
+
     [MaxLength(255)]
     public required string LastName { get; set; }
     
@@ -38,7 +39,7 @@ public class User : IdentityUser<int>
     
     public int? AddressId { get; set; }
     
-    public required Address Address { get; set; }
+    public Address? Address { get; set; }
     public required ICollection<Pet> Pets { get; set; }
     public required ICollection<Notification> Notifications { get; set; }
     public required ICollection<Report> Reports { get; set; }
