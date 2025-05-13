@@ -5,8 +5,6 @@
 }
 
 <main role="main" class="container">
-    <div class="img-cover">
-    </div>
     <div class="profile-header">
         <div>
             @if (!string.IsNullOrEmpty(User.FindFirst("Photo")?.Value))
@@ -22,16 +20,17 @@
                 </div>
             }
         </div>
-        <div>
-            <div>
+        <div class="user-name-bio">
+            <div class="user-name-verified">
                 <h1>@Model.FirstName @Model.LastName</h1>
                 @if (Model.IsVerified)
                 {
-                    <p>☑️</p>
+                    <svg xmlns="http://www.w3.org/2000/svg"  viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-badge-check-icon lucide-badge-check"><path d="M3.85 8.62a4 4 0 0 1 4.78-4.77 4 4 0 0 1 6.74 0 4 4 0 0 1 4.78 4.78 4 4 0 0 1 0 6.74 4 4 0 0 1-4.77 4.78 4 4 0 0 1-6.75 0 4 4 0 0 1-4.78-4.77 4 4 0 0 1 0-6.76Z"/><path d="m9 12 2 2 4-4"/></svg>
                 }
             </div>
             <p>@Model.Bio</p>
         </div>
+        <a asp-action="Edit" asp-route-id="@Model.Id" class="button" data-variant="secondary" data-size="sm">Modifier le profil</a>
     </div>
     <div class="profile-pets container">
         @if (Model.Pets.Any())
@@ -85,7 +84,6 @@
         <dt>Membre depuis :</dt>
         <dd>@Model.CreatedAt.ToString("dd/MM/yyyy")</dd>
         <p>@User.Identity</p>
-        <a asp-action="Edit" asp-route-id="@Model.Id">Modifier mon compte</a>
     </dl>
     <h2>Adresse</h2>
     @if (!string.IsNullOrEmpty(Model.Street) || !string.IsNullOrEmpty(Model.City))

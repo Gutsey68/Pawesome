@@ -34,8 +34,8 @@
 }
 
 .avatar[data-size='xxl'] {
-    width: var(--space-16);
-    height: var(--space-16);
+    width: var(--space-18);
+    height: var(--space-18);
     font-size: var(--space-7);
     font-weight: 300;
     letter-spacing: -4px;

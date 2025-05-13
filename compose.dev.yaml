@@ -23,7 +23,6 @@
     ports:
       - "1025:1025"  # SMTP
       - "8025:8025"  # WEB UI
-    restart: unless-stopped
 
 volumes:
   db_data:
