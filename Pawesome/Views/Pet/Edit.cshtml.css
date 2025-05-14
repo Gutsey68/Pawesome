@@ -1,0 +1,116 @@
+.pet-edit-container {
+    max-width: 40rem;
+    margin: 0 auto var(--space-10) auto;
+    padding: var(--space-4) 0;
+}
+
+.pet-edit-title {
+    margin-bottom: var(--space-4);
+    color: var(--color-primary-12);
+    font-size: var(--font-size-2xl);
+}
+
+.pet-edit-form {
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-4);
+}
+
+.form-group {
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-2);
+}
+
+.form-group label {
+    font-weight: var(--font-weight-medium);
+    color: var(--color-primary-12);
+}
+
+.form-group textarea {
+    min-height: 100px;
+    border-radius: var(--radius-lg);
+    border: 1px solid var(--color-primary-6);
+    padding: var(--space-2);
+    resize: vertical;
+}
+
+.form-group textarea:focus {
+    outline: none;
+    border-color: var(--color-primary-9);
+    box-shadow: 0 0 0 2px var(--color-primary-7);
+}
+
+.current-photo-container {
+    border-radius: var(--radius-lg);
+    padding: var(--space-3);
+    background-color: var(--color-primary-2);
+    border: 1px solid var(--color-primary-4);
+    margin-bottom: var(--space-2);
+}
+
+.current-photo-container img {
+    max-width: 200px;
+    border-radius: var(--radius-md);
+    box-shadow: var(--shadow-sm);
+}
+
+.photo-input-container {
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-2);
+}
+
+.photo-instructions {
+    font-size: var(--font-size-xs);
+    color: var(--color-primary-11);
+}
+
+.actions-container {
+    display: flex;
+    gap: var(--space-3);
+    margin-top: var(--space-4);
+}
+
+.validation-summary {
+    background-color: var(--color-error-3);
+    border: 1px solid var(--color-error-6);
+    border-radius: var(--radius-lg);
+    padding: var(--space-3);
+    margin-bottom: var(--space-4);
+}
+
+.validation-summary h2 {
+    color: var(--color-error-11);
+    font-size: var(--font-size-md);
+    margin-bottom: var(--space-2);
+}
+
+fieldset.form-group {
+    border: 1px solid var(--color-primary-6);
+    border-radius: var(--radius-lg);
+    padding: var(--space-4);
+    margin-bottom: var(--space-4);
+}
+
+fieldset.form-group legend {
+    padding: 0 var(--space-2);
+    font-weight: var(--font-weight-medium);
+    color: var(--color-primary-11);
+}
+
+@media (max-width: 768px) {
+    .pet-edit-container {
+        padding: var(--space-3) var(--space-4);
+    }
+
+    .actions-container {
+        flex-direction: column;
+        gap: var(--space-2);
+    }
+
+    .actions-container a,
+    .actions-container button {
+        width: 100%;
+    }
+}

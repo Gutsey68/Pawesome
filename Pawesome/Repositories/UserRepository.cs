@@ -51,6 +51,7 @@ public class UserRepository : Repository<User>, IUserRepository
             .Include(u => u.Address!.City)
             .ThenInclude(c => c.Country)
             .Include(u => u.Pets)
+            .ThenInclude(p => p.AnimalType)
             .FirstOrDefaultAsync(u => u.Id == userId);
     }
 }

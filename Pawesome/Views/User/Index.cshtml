@@ -32,14 +32,25 @@
         </div>
         <a asp-action="Edit" asp-route-id="@Model.Id" class="button" data-variant="secondary" data-size="sm">Modifier le profil</a>
     </div>
-    <div class="profile-pets container">
+    <div class="profile-pets">
         @if (Model.Pets.Any())
         {
             @foreach (var pet in Model.Pets)
             {
-                <partial name="_PetCardPartial" model="pet"/>
+                <a asp-controller="Pet" asp-action="Details" asp-route-id="@pet.Id" class="pet-card-link">
+                    <div class="pet-card">
+                        <div class="pet-image">
+                            <img src="@ImageHelper.GetPetPhotoUrl(pet.Photo)" alt="Photo de @pet.Name"/>
+                        </div>
+                        <div class="pet-info">
+                            <div class="pet-header">
+                                <p class="pet-name">@pet.Name</p>
+                                <p class="badge" data-variant="@pet.Species">@pet.Species</p>
+                            </div>
+                        </div>
+                    </div>
+                </a>
             }
-
             <a asp-controller="Pet" asp-action="Index">Voir mes animaux</a>
         }
         else
@@ -54,11 +65,6 @@
 <div class="container">
     <h2>Informations personnelles</h2>
     <dl>
-        <dt>Prénom :</dt>
-        <dd>@Model.FirstName</dd>
-
-        <dt>Nom :</dt>
-        <dd>@Model.LastName</dd>
 
         <dt>Email :</dt>
         <dd>@Model.Email</dd>
@@ -66,14 +72,8 @@
         <dt>Téléphone :</dt>
         <dd>@(string.IsNullOrEmpty(Model.PhoneNumber) ? "Non renseigné" : Model.PhoneNumber)</dd>
 
-        <dt>Biographie :</dt>
-        <dd>@(string.IsNullOrEmpty(Model.Bio) ? "Non renseigné" : Model.Bio)</dd>
-
         <dt>Statut :</dt>
         <dd>@(string.IsNullOrEmpty(Model.Status) ? "Non renseigné" : Model.Status)</dd>
-
-        <dt>Compte vérifié :</dt>
-        <dd>@(Model.IsVerified ? "Oui" : "Non")</dd>
 
         <dt>Solde du compte :</dt>
         <dd>@Model.BalanceAccount €</dd>
@@ -83,7 +83,6 @@
 
         <dt>Membre depuis :</dt>
         <dd>@Model.CreatedAt.ToString("dd/MM/yyyy")</dd>
-        <p>@User.Identity</p>
     </dl>
     <h2>Adresse</h2>
     @if (!string.IsNullOrEmpty(Model.Street) || !string.IsNullOrEmpty(Model.City))
@@ -102,8 +101,5 @@
             <dd>@(string.IsNullOrEmpty(Model.Country) ? "Non renseigné" : Model.Country)</dd>
         </dl>
     }
-    else
-    {
-        <p>Aucune adresse renseignée</p>
-    }
+
 </div>
