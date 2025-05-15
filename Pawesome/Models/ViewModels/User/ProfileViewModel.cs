@@ -1,3 +1,5 @@
+using Pawesome.Models.ViewModels.Pet;
+
 namespace Pawesome.Models.ViewModels.User;
 
 public class ProfileViewModel

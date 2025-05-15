@@ -1,0 +1,76 @@
+.container {
+    max-width: 40rem;
+    margin: 0 auto var(--space-10) auto;
+    padding: var(--space-4) 0;
+}
+
+.profile-edit-container {
+    max-width: 40rem;
+    margin: 0 auto var(--space-10) auto;
+    padding: var(--space-4) 0;
+}
+
+.profile-edit-title {
+    margin-bottom: var(--space-4);
+    color: var(--color-primary-12);
+    font-size: var(--font-size-2xl);
+    font-weight: var(--font-weight-medium);
+}
+
+.profile-edit-form {
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-4);
+}
+
+.form-group {
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-2);
+    margin-bottom: var(--space-3);
+}
+
+.form-label {
+    font-weight: var(--font-weight-medium);
+    color: var(--color-primary-12);
+    font-size: var(--font-size-sm);
+}
+
+.validation-message {
+    color: var(--color-error-foreground);
+    font-size: var(--font-size-xs);
+    margin-top: var(--space-1);
+}
+
+.photo-input-container {
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-2);
+}
+
+.photo-instructions {
+    font-size: var(--font-size-xs);
+    color: var(--color-primary-11);
+}
+
+.actions-container {
+    display: flex;
+    gap: var(--space-3);
+    margin-top: var(--space-4);
+}
+
+@media (max-width: 768px) {
+    .profile-edit-container {
+        padding: var(--space-3) var(--space-4);
+    }
+
+    .actions-container {
+        flex-direction: column;
+        gap: var(--space-2);
+    }
+
+    .actions-container a,
+    .actions-container button {
+        width: 100%;
+    }
+}

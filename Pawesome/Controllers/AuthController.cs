@@ -365,7 +365,9 @@ public class AuthController : Controller
                     SentMessages = new List<Message>(),
                     ReceivedMessages = new List<Message>(),
                     Reviews = new List<Review>(),
-                    Payments = new List<Payment>()
+                    Payments = new List<Payment>(),
+                    Status = "Active",
+                    IsVerified = true 
                 };
 
                 var result = await _userManager.CreateAsync(user);

@@ -1,56 +1,62 @@
-@model Pawesome.Models.ViewModels.PetDetailsViewModel
+@model Pawesome.Models.ViewModels.Pet.PetDetailsViewModel
 
-@{
-    ViewData["Title"] = "Profil de " + Model.Name;
-}
-
-<div>
-    <h1>Détails</h1>
-    <div>
-        @if (!string.IsNullOrEmpty(Model.Photo))
-        {
-            <img src="~/images/pets/@Model.Photo" alt="@Model.Name" width="200"/>
-        }
-        else
-        {
-            <img src="~/images/pet-placeholder.jpg" alt="Image par défaut" width="200"/>
-        }
-        <div>
-            <h3>@Model.Name</h3>
-            <div>
-                <strong>Type:</strong> @Model.Species
+<main role="main" class="container pet-profile">
+    <section class="pet-header">
+        <div class="pet-image-container">
+            @if (!string.IsNullOrEmpty(Model.Photo))
+            {
+                <img src="@ImageHelper.GetPetPhotoUrl(Model.Photo)" alt="Photo de @Model.Name" />
+            }
+            else
+            {
+                <img src="~/images/placeholder-pet.png" alt="Image par défaut" />
+            }
+        </div>
+        <div class="pet-info">
+            <div class="pet-name-header">
+                <h1>@Model.Name</h1>
+                <span class="badge" data-variant="@Model.Species">@Model.Species</span>
             </div>
-            @if (!string.IsNullOrEmpty(Model.Breed))
-            {
-                <div>
-                    <strong>Race:</strong> @Model.Breed
-                </div>
-            }
-            @if (Model.Age.HasValue)
-            {
-                <div>
-                    <strong>Âge:</strong> @Model.Age an@(Model.Age > 1 ? "s" : "")
-                </div>
-            }
-            @if (!string.IsNullOrEmpty(Model.AdditionalInfo))
-            {
-                <div>
-                    <strong>Informations:</strong>
-                    <p>@Model.AdditionalInfo</p>
-                </div>
-            }
-            <div>
-                <strong>Propriétaire:</strong> @Model.OwnerName
+            <div class="pet-owner">
+                <span>Propriétaire:</span>
+                <a href="@Url.Action("Profile", "User", new { id = Model.UserId })" class="owner-link">
+                    @Model.OwnerName
+                </a>
             </div>
-
-            <div>
-                <strong>Date d'ajout:</strong> @Model.CreatedAt.ToString("dd/MM/yyyy")
+            <div class="pet-metadata">
+                Ajouté le @Model.CreatedAt.ToString("d MMMM yyyy")
             </div>
         </div>
-        <div>
-            <a asp-action="Edit" asp-route-id="@Model.Id">Modifier</a>
-            <a asp-action="Delete" asp-route-id="@Model.Id">Supprimer</a>
-            <a asp-action="Index">Retour à la liste</a>
-        </div>
+    </section>
+    <h2 class="section-title">Caractéristiques</h2>
+    <section class="characteristics">
+        @if (!string.IsNullOrEmpty(Model.Breed))
+        {
+            <div class="characteristic-card">
+                <div class="characteristic-title">Race</div>
+                <div class="characteristic-value">@Model.Breed</div>
+            </div>
+        }
+        @if (Model.Age.HasValue)
+        {
+            <div class="characteristic-card">
+                <div class="characteristic-title">Âge</div>
+                <div class="characteristic-value">@Model.Age an@(Model.Age > 1 ? "s" : "")</div>
+            </div>
+        }
+    </section>
+    @if (!string.IsNullOrEmpty(Model.AdditionalInfo))
+    {
+        <h2 class="section-title">À propos</h2>
+        <section class="pet-description">
+            <div class="description-content">@Model.AdditionalInfo</div>
+        </section>
+    }
+    <div class="pet-actions">
+        @if (User.Identity?.IsAuthenticated == true && User.FindFirst("Id")?.Value == Model.UserId.ToString())
+        {
+            <a asp-action="Edit" asp-route-id="@Model.Id" class="button" data-variant="outline" data-size="sm">Modifier</a>
+            <a asp-action="Delete" asp-route-id="@Model.Id" class="button" data-variant="destructive" data-size="sm">Supprimer</a>
+        }
     </div>
-</div>
+</main>

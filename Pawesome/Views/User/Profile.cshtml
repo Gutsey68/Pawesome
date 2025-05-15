@@ -1,110 +1,80 @@
 @model Pawesome.Models.ViewModels.User.PublicProfileViewModel
 
 @{
-    ViewData["Title"] = "Profil de " + Model.FullName;
+    ViewData["Title"] = $"Profil de {Model.FullName}";
 }
 
-<div class="container">
-    <div>
+<main role="main" class="container">
+    <div class="profile-header">
         <div>
-            <div>
-                <div>
-                    @if (!string.IsNullOrEmpty(Model.Photo))
-                    {
-                        <div class="avatar" data-size="xxl">
-                            <img src="@ImageHelper.GetPhotoUrl(Model.Photo)" alt="@Model.FullName" class="avatar-image" />
-                        </div>
-                    }
-                    else
-                    {
-                        <div class="avatar avatar-fallback" data-size="xxl">
-                            @Model.FullName.Substring(0, 1)
-                        </div>
-                    }
-                </div>
-                <div>
-                    <h3>@Model.FullName</h3>
-                    @if (Model.Rating.HasValue)
-                    {
-                        <div>
-                            <span>
-                                @for (int i = 0; i < Math.Floor(Model.Rating.Value); i++)
-                                {
-                                    <i class="bi bi-star-fill"></i>
-                                }
-                                @if (Model.Rating.Value % 1 >= 0.5)
-                                {
-                                    <i class="bi bi-star-fill"></i>
-                                }
-                            </span>
-                            <span>@Model.Rating.Value.ToString("0.0")</span>
-                        </div>
-                    }
-                    <p>Membre depuis @Model.CreatedAt.ToString("MMMM yyyy")</p>
-
-                    <div>
-                        <a href="@Url.Action("Conversation", "Message", new { otherUserId = Model.Id })" class="button">
-                            🖊️ Envoyer un message
-                        </a>
-                    </div>
-                </div>
-            </div>
-        </div>
-
-        <div>
-            @if (!string.IsNullOrEmpty(Model.Bio))
+            @if (!string.IsNullOrEmpty(Model.Photo))
             {
-                <div class="card">
-                    <div class="card-header">
-                        <h4>À propos</h4>
-                    </div>
-                    <div class="card-body">
-                        <p>@Model.Bio</p>
-                    </div>
+                <div class="avatar" data-size="xxl">
+                    <img class="avatar-image" data-size="xxl" src="@ImageHelper.GetPhotoUrl(Model.Photo)" alt="Image de profil de @Model.FullName"/>
                 </div>
             }
-
-            <div class="card">
-                <div class="card-header">
-                    <h4>Animaux</h4>
+            else
+            {
+                <div class="avatar avatar-fallback" data-size="xxl">
+                    @Model.FullName?.Split(' ').FirstOrDefault()?.Substring(0, 1).ToUpper() @Model.FullName?.Split(' ').Skip(1).FirstOrDefault()?.Substring(0, 1).ToUpper()
                 </div>
-                <div class="card-body">
-                    @if (Model.Pets != null && Model.Pets.Any())
-                    {
-                        <div>
-                            @foreach (var pet in Model.Pets)
-                            {
-                                <div>
-                                    <div class="card">
-                                        <div class="card-body">
-                                            <div>
-                                                @if (!string.IsNullOrEmpty(pet.Photo))
-                                                {
-                                                    <img src="@ImageHelper.GetPetPhotoUrl(pet.Photo)" alt="@pet.Name">
-                                                }
-                                                else
-                                                {
-                                                    <div>
-                                                        @pet.Name[..1]
-                                                    </div>
-                                                }
-                                                <div>
-                                                    <h5>@pet.Name</h5>
-                                                    <small>@pet.Species</small>
-                                                </div>
-                                            </div>
-                                        </div>
-                                    </div>
-                                </div>
-                            }
-                        </div>
-                    }
-                    else
-                    {
-                        <p>Pas d'animaux enregistrés</p>
-                    }
-                </div>
+            }
+        </div>
+        <div class="user-name-bio">
+            <div class="user-name-verified">
+                <h1>@Model.FullName</h1>
+                @if (!string.IsNullOrEmpty(Model.Bio))
+                {
+                    <p>@Model.Bio</p>
+                }
+                @if (Model.Rating.HasValue && Model.Rating >= 4.5)
+                {
+                    <svg xmlns="http://www.w3.org/2000/svg"  viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-badge-check-icon lucide-badge-check"><path d="M3.85 8.62a4 4 0 0 1 4.78-4.77 4 4 0 0 1 6.74 0 4 4 0 0 1 4.78 4.78 4 4 0 0 1 0 6.74 4 4 0 0 1-4.77 4.78 4 4 0 0 1-6.75 0 4 4 0 0 1-4.78-4.77 4 4 0 0 1 0-6.76Z"/><path d="m9 12 2 2 4-4"/></svg>
+                }
             </div>
+            <p>@Model.Bio</p>
+            @if (Model.Rating.HasValue)
+            {
+                <p class="info-value star-rating">@Html.DisplayStars(Model.Rating)</p>
+            }
+            <p class="member-since">Membre depuis le @Model.CreatedAt.ToString("d MMMM yyyy")</p>
+        </div>
+        <div class="profile-actions">
+            @if (!Model.IsCurrentUser)
+            {
+                <a href="#" class="button" data-variant="outline" data-size="xxs">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-flag-icon lucide-flag"><path d="M4 15s1-1 4-1 5 2 8 2 4-1 4-1V3s-1 1-4 1-5-2-8-2-4 1-4 1z"/><line x1="4" x2="4" y1="22" y2="15"/></svg>
+                    Signaler
+                </a>
+            }
         </div>
     </div>
-</div>
+    <h2 class="section-title">Animaux</h2>
+    <div class="profile-pets">
+        @if (Model.Pets != null && Model.Pets.Any())
+        {
+            @foreach (var pet in Model.Pets)
+            {
+                <a asp-controller="Pet" asp-action="Details" asp-route-id="@pet.Id" class="pet-card-link">
+                    <div class="pet-card">
+                        <div class="pet-image">
+                            <img src="@ImageHelper.GetPetPhotoUrl(pet.Photo)" alt="@pet.Name" />
+                        </div>
+                        <div class="pet-info">
+                            <div class="pet-header">
+                                <h3 class="pet-name">@pet.Name</h3>
+                            </div>
+                            <p class="badge" data-variant="@pet.Species">@pet.Species</p>
+                        </div>
+                    </div>
+                </a>
+            }
+        }
+        else
+        {
+            <div class="no-pets">
+                <p>Cet utilisateur n'a pas encore ajouté d'animal.</p>
+            </div>
+        }
+    </div>
+</main>

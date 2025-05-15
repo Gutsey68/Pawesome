@@ -70,6 +70,8 @@
     --color-sky: #E1F6FD;
     --color-sky-border: #BEE7F5;
     --color-sky-foreground: #00749E;
+    
+    --color-yellow-solid: #FFE629;
 
     /* Spacing */
     --space-1: 0.25rem; /* 4px */
@@ -188,6 +190,8 @@
     --color-sky: #112840;
     --color-sky-border: #154467;
     --color-sky-foreground: #75C7F0;
+    
+    --color-yellow-solid: #FFE629;
 
     --shadow-color: 30deg 13% 13%;
     --shadow-sm:

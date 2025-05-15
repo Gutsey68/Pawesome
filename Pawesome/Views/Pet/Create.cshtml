@@ -4,78 +4,87 @@
     ViewData["Title"] = "Ajouter un animal";
 }
 
-<div class="container">
-    <div class="card">
-        <div class="card-header">
-            <h1 class="card-title">Ajouter un animal</h1>
-            <p class="card-description">Remplissez le formulaire pour ajouter un nouvel animal de compagnie</p>
+<main role="main" class="container profile-edit-container">
+    <h1 class="profile-edit-title">Ajouter un animal</h1>
+    
+    @if (ViewData.ModelState.ErrorCount > 0)
+    {
+        <div class="validation-summary" role="alert" aria-labelledby="validation-summary-title">
+            <h2 id="validation-summary-title">Des erreurs sont survenues</h2>
+            <div asp-validation-summary="ModelOnly"></div>
         </div>
-        <div class="card-body">
-            <form asp-action="Create" enctype="multipart/form-data" id="petForm">
-                <div asp-validation-summary="ModelOnly" class="validation-message"></div>
-                <div class="form-group">
-                    <label asp-for="Name" class="form-label">Nom</label>
-                    <input asp-for="Name" class="form-control"
-                           data-val="true"
-                           data-val-required="Le nom de l'animal est requis"
-                           data-val-length="Le nom ne peut pas dépasser 255 caractères"
-                           data-val-length-max="255"/>
-                    <span asp-validation-for="Name" class="validation-message"></span>
-                </div>
-                <div class="form-group">
-                    <label asp-for="AnimalTypeId" class="form-label">Type d'animal</label>
-                    <select asp-for="AnimalTypeId" asp-items="ViewBag.AnimalTypes" class="form-control"
-                            data-val="true"
-                            data-val-required="Le type d'animal est requis">
-                        <option value="">-- Sélectionnez un type --</option>
-                    </select>
-                    <span asp-validation-for="AnimalTypeId" class="validation-message"></span>
-                </div>
-                <div class="form-group">
-                    <label asp-for="Breed" class="form-label">Race</label>
-                    <input asp-for="Breed" class="form-control"
-                           data-val="true"
-                           data-val-length="La race ne peut pas dépasser 255 caractères"
-                           data-val-length-max="255"/>
-                    <span asp-validation-for="Breed" class="validation-message"></span>
-                </div>
-                <div class="form-group">
-                    <label asp-for="Age" class="form-label">Âge (années)</label>
-                    <input asp-for="Age" type="number" min="0" max="30" class="form-control"
-                           data-val="true"
-                           data-val-range="L'âge doit être compris entre 0 et 30 ans"
-                           data-val-range-min="0"
-                           data-val-range-max="30"/>
-                    <span asp-validation-for="Age" class="validation-message"></span>
-                </div>
-                <div class="form-group">
-                    <label asp-for="Info" class="form-label">Informations complémentaires</label>
-                    <textarea asp-for="Info" rows="4" class="form-control"></textarea>
-                    <span asp-validation-for="Info" class="validation-message"></span>
-                </div>
-                <div class="form-group">
-                    <label asp-for="Photo" class="form-label">Photo</label>
-                    <input asp-for="Photo" type="file" accept="image/*" class="form-control"
-                           data-val="true"
-                           data-val-filesize="Le fichier doit être une image (jpg, jpeg, png) de moins de 5 Mo"
-                           data-val-filesize-max="5242880"
-                           data-val-fileextension="Le fichier doit être une image (jpg, jpeg, png)"
-                           data-val-fileextension-extensions="jpg,jpeg,png"/>
-                    <span asp-validation-for="Photo" class="validation-message"></span>
-                </div>
-            </form>
+    }
+    <form asp-action="Create" enctype="multipart/form-data" id="petForm" class="profile-edit-form">
+        <div class="form-group">
+            <label asp-for="Name" class="form-label" id="name-label">Nom</label>
+            <input asp-for="Name" type="text" 
+                   aria-required="true"
+                   aria-labelledby="name-label"
+                   data-val="true"
+                   data-val-required="Le nom de l'animal est requis"
+                   data-val-length="Le nom ne peut pas dépasser 255 caractères"
+                   data-val-length-max="255"/>
+            <span asp-validation-for="Name" class="validation-message" aria-live="polite"></span>
         </div>
-        <div class="card-footer">
-            <div>
-                <button type="submit" class="button" form="petForm">Ajouter</button>
-                <a asp-action="Index" class="button" data-variant="secondary">Retour à la liste</a>
+        <div class="form-group">
+            <label asp-for="AnimalTypeId" class="form-label" id="animal-type-label">Type d'animal</label>
+            <select asp-for="AnimalTypeId" asp-items="ViewBag.AnimalTypes"
+                    aria-required="true"
+                    aria-labelledby="animal-type-label"
+                    data-val="true"
+                    data-val-required="Le type d'animal est requis">
+                <option value="">-- Sélectionnez un type --</option>
+            </select>
+            <span asp-validation-for="AnimalTypeId" class="validation-message" aria-live="polite"></span>
+        </div>
+        <div class="form-group">
+            <label asp-for="Breed" class="form-label" id="breed-label">Race</label>
+            <input asp-for="Breed" type="text"
+                   aria-labelledby="breed-label"
+                   data-val="true"
+                   data-val-length="La race ne peut pas dépasser 255 caractères"
+                   data-val-length-max="255"/>
+            <span asp-validation-for="Breed" class="validation-message" aria-live="polite"></span>
+        </div>
+        <div class="form-group">
+            <label asp-for="Age" class="form-label" id="age-label">Âge (années)</label>
+            <input asp-for="Age" type="number" min="0" max="30"
+                   aria-labelledby="age-label"
+                   data-val="true"
+                   data-val-range="L'âge doit être compris entre 0 et 30 ans"
+                   data-val-range-min="0"
+                   data-val-range-max="30"/>
+            <span asp-validation-for="Age" class="validation-message" aria-live="polite"></span>
+        </div>
+        <div class="form-group">
+            <label asp-for="Info" class="form-label" id="info-label">Informations complémentaires</label>
+            <textarea asp-for="Info" rows="4"
+                      aria-labelledby="info-label"></textarea>
+            <span asp-validation-for="Info" class="validation-message" aria-live="polite"></span>
+        </div>
+        <div class="form-group">
+            <label asp-for="Photo" class="form-label" id="photo-label">Photo</label>
+            <div class="photo-input-container">
+                <input asp-for="Photo" type="file" accept="image/*"
+                       aria-labelledby="photo-label"
+                       aria-describedby="photo-instructions"
+                       data-val="true"
+                       data-val-filesize="Le fichier doit être une image (jpg, jpeg, png) de moins de 5 Mo"
+                       data-val-filesize-max="5242880"
+                       data-val-fileextension="Le fichier doit être une image (jpg, jpeg, png)"
+                       data-val-fileextension-extensions="jpg,jpeg,png"/>
+                <p id="photo-instructions" class="photo-instructions">Formats acceptés : JPG, JPEG, PNG (max. 5 Mo).</p>
             </div>
+            <span asp-validation-for="Photo" class="validation-message" aria-live="polite"></span>
         </div>
-    </div>
-</div>
+        <div class="actions-container">
+            <button type="submit" class="button">Ajouter</button>
+            <a asp-action="Index" class="button" data-variant="secondary" role="button">Annuler</a>
+        </div>
+    </form>
+</main>
 
 @section Scripts {
     <partial name="_ValidationScriptsPartial"/>
-    <script src="~/js/validation-extensions.js"></script>
+    <script src="~/js/validationExtensions.js"></script>
 }
-

@@ -4,6 +4,7 @@ using Microsoft.AspNetCore.Identity;
 using Pawesome.Interfaces;
 using Pawesome.Models.Entities;
 using Pawesome.Models.ViewModels;
+using Pawesome.Models.ViewModels.Pet;
 using Pawesome.Models.ViewModels.User;
 
 namespace Pawesome.Services;

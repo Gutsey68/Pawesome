@@ -30,19 +30,6 @@ public class PetController : Controller
     }
     
     /// <summary>
-    /// Displays a list of all pets belonging to the current user
-    /// </summary>
-    /// <returns>A view containing the user's pets</returns>
-    public async Task<IActionResult> Index()
-    {
-        var userId = int.Parse(_userManager.GetUserId(User)!);
-        
-        var pets = await _petService.GetUserPetsAsync(userId);
-        
-        return View(pets);
-    }
-    
-    /// <summary>
     /// Displays detailed information about a specific pet
     /// </summary>
     /// <param name="id">The ID of the pet</param>

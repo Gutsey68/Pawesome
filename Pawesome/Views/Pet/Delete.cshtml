@@ -1,35 +1,79 @@
-@model Pawesome.Models.ViewModels.PetDetailsViewModel
+@model Pawesome.Models.ViewModels.Pet.PetDetailsViewModel
 
 @{
-    ViewData["Title"] = "Supprimer un animal";
+    ViewData["Title"] = $"Supprimer {Model.Name}";
 }
 
-<div>
-    <h1>Supprimer</h1>
-    <div>
-        <h3>Êtes-vous sûr de vouloir supprimer cet animal?</h3>
-        <div>
+<main role="main" class="container delete-pet-container">
+    <section class="delete-pet-header">
+        <h1>Êtes-vous sûr de vouloir supprimer cet animal ?</h1>
+        <div class="alert" data-variant="warning">
+            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-alert-triangle">
+                <path d="m21.73 18-8-14a2 2 0 0 0-3.48 0l-8 14A2 2 0 0 0 4 21h16a2 2 0 0 0 1.73-3Z"></path>
+                <path d="M12 9v4"></path>
+                <path d="M12 17h.01"></path>
+            </svg>
+            <div>
+                <h4>Attention</h4>
+                <p>Cette action est irréversible. Toutes les informations concernant cet animal seront définitivement supprimées.</p>
+            </div>
+        </div>
+    </section>
+    <section class="pet-details-card">
+        <div class="pet-image-container">
             @if (!string.IsNullOrEmpty(Model.Photo))
             {
-                <img src="~/images/pets/@Model.Photo" alt="@Model.Name" width="150"/>
+                <img src="@ImageHelper.GetPetPhotoUrl(Model.Photo)" alt="Photo de @Model.Name" />
             }
             else
             {
-                <img src="~/images/pet-placeholder.jpg" alt="Image par défaut" width="150"/>
+                <img src="~/images/placeholder-pet.png" alt="Image par défaut" />
             }
-            <div>
-                <h4>@Model.Name</h4>
-                <p>Type: @Model.Species</p>
+        </div>
+        <div class="pet-details-info">
+            <div class="pet-name-header">
+                <h2>@Model.Name</h2>
+                <span class="badge" data-variant="@Model.Species">@Model.Species</span>
+            </div>
+            
+            <dl class="details-list">
                 @if (!string.IsNullOrEmpty(Model.Breed))
                 {
-                    <p>Race: @Model.Breed</p>
+                    <div class="details-item">
+                        <dt>Race</dt>
+                        <dd>@Model.Breed</dd>
+                    </div>
                 }
-            </div>
+                @if (Model.Age.HasValue)
+                {
+                    <div class="details-item">
+                        <dt>Âge</dt>
+                        <dd>@Model.Age an@(Model.Age > 1 ? "s" : "")</dd>
+                    </div>
+                }
+                <div class="details-item">
+                    <dt>Propriétaire</dt>
+                    <dd>@Model.OwnerName</dd>
+                </div>
+                <div class="details-item">
+                    <dt>Date d'ajout</dt>
+                    <dd>@Model.CreatedAt.ToString("d MMMM yyyy")</dd>
+                </div>
+            </dl>
+            @if (!string.IsNullOrEmpty(Model.AdditionalInfo))
+            {
+                <div class="additional-info">
+                    <h3>Informations supplémentaires</h3>
+                    <p>@Model.AdditionalInfo</p>
+                </div>
+            }
         </div>
-        <form asp-action="DeleteConfirmed" method="post">
-            <input type="hidden" name="id" value="@Model.Id"/>
-            <button type="submit">Supprimer</button>
-            <a asp-action="Index">Annuler</a>
-        </form>
-    </div>
-</div>
+    </section>
+    <form asp-action="Delete" method="post" class="delete-form">
+        <input type="hidden" asp-for="Id" />
+        <div class="form-actions">
+            <a asp-action="Details" asp-route-id="@Model.Id" class="button" data-variant="outline" data-size="md">Annuler</a>
+            <button type="submit" class="button" data-variant="destructive" data-size="md">Confirmer la suppression</button>
+        </div>
+    </form>
+</main>

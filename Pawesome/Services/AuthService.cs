@@ -90,7 +90,8 @@ public class AuthService : IAuthService
         var claims = new List<Claim>
         {
             new Claim("FirstName", user.FirstName),
-            new Claim("LastName", user.LastName)
+            new Claim("LastName", user.LastName),
+            new Claim("Id", user.Id.ToString())
         };
         
         if (user.Email != null) claims.Add(new Claim("Email", user.Email));
@@ -130,7 +131,8 @@ public class AuthService : IAuthService
         var claims = new List<Claim>
         {
             new Claim("FirstName", user.FirstName),
-            new Claim("LastName", user.LastName)
+            new Claim("LastName", user.LastName),
+            new Claim("Id", user.Id.ToString())
         };
 
         if (user.Email != null) claims.Add(new Claim("Email", user.Email));

@@ -28,10 +28,18 @@
                     <svg xmlns="http://www.w3.org/2000/svg"  viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-badge-check-icon lucide-badge-check"><path d="M3.85 8.62a4 4 0 0 1 4.78-4.77 4 4 0 0 1 6.74 0 4 4 0 0 1 4.78 4.78 4 4 0 0 1 0 6.74 4 4 0 0 1-4.77 4.78 4 4 0 0 1-6.75 0 4 4 0 0 1-4.78-4.77 4 4 0 0 1 0-6.76Z"/><path d="m9 12 2 2 4-4"/></svg>
                 }
             </div>
-            <p>@Model.Bio</p>
+            @if (!string.IsNullOrEmpty(Model.Bio))
+            {
+                <p>@Model.Bio</p>
+            }
+            @if (Model.Rating.HasValue)
+            {
+                <p class="info-value star-rating">@Html.DisplayStars(Model.Rating)</p>
+            }
         </div>
         <a asp-action="Edit" asp-route-id="@Model.Id" class="button" data-variant="secondary" data-size="sm">Modifier le profil</a>
     </div>
+    <h2 class="section-title">Mes animaux</h2>
     <div class="profile-pets">
         @if (Model.Pets.Any())
         {
@@ -40,66 +48,83 @@
                 <a asp-controller="Pet" asp-action="Details" asp-route-id="@pet.Id" class="pet-card-link">
                     <div class="pet-card">
                         <div class="pet-image">
-                            <img src="@ImageHelper.GetPetPhotoUrl(pet.Photo)" alt="Photo de @pet.Name"/>
+                            <img src="@ImageHelper.GetPetPhotoUrl(pet.Photo)" alt="@pet.Name" />
                         </div>
                         <div class="pet-info">
                             <div class="pet-header">
-                                <p class="pet-name">@pet.Name</p>
-                                <p class="badge" data-variant="@pet.Species">@pet.Species</p>
+                                <h3 class="pet-name">@pet.Name</h3>
                             </div>
+                            <p class="badge" data-variant="@pet.Species">@pet.Species</p>
                         </div>
                     </div>
                 </a>
             }
-            <a asp-controller="Pet" asp-action="Index">Voir mes animaux</a>
         }
         else
         {
-            <p>Aucun animal enregistré</p>
+            <div class="no-pets">
+                <p>Vous n'avez pas encore ajouté d'animal</p>
+                <a asp-controller="Pet" asp-action="Create" class="button" data-size="sm">Ajouter un animal</a>
+            </div>
         }
-        <a asp-controller="Pet" asp-action="Create">Ajouter un animal</a>
     </div>
-
-</main>
-
-<div class="container">
-    <h2>Informations personnelles</h2>
-    <dl>
-
-        <dt>Email :</dt>
-        <dd>@Model.Email</dd>
-
-        <dt>Téléphone :</dt>
-        <dd>@(string.IsNullOrEmpty(Model.PhoneNumber) ? "Non renseigné" : Model.PhoneNumber)</dd>
-
-        <dt>Statut :</dt>
-        <dd>@(string.IsNullOrEmpty(Model.Status) ? "Non renseigné" : Model.Status)</dd>
-
-        <dt>Solde du compte :</dt>
-        <dd>@Model.BalanceAccount €</dd>
-
-        <dt>Note moyenne :</dt>
-        <dd>@(Model.Rating.HasValue ? $"{Model.Rating}/5" : "Pas encore noté")</dd>
-
-        <dt>Membre depuis :</dt>
-        <dd>@Model.CreatedAt.ToString("dd/MM/yyyy")</dd>
-    </dl>
-    <h2>Adresse</h2>
-    @if (!string.IsNullOrEmpty(Model.Street) || !string.IsNullOrEmpty(Model.City))
+    @if (Model.Pets.Any())
     {
-        <dl>
-            <dt>Rue :</dt>
-            <dd>@(string.IsNullOrEmpty(Model.Street) ? "Non renseigné" : Model.Street)</dd>
-
-            <dt>Ville :</dt>
-            <dd>@(string.IsNullOrEmpty(Model.City) ? "Non renseigné" : Model.City)</dd>
-
-            <dt>Code postal :</dt>
-            <dd>@(string.IsNullOrEmpty(Model.PostalCode) ? "Non renseigné" : Model.PostalCode)</dd>
-
-            <dt>Pays :</dt>
-            <dd>@(string.IsNullOrEmpty(Model.Country) ? "Non renseigné" : Model.Country)</dd>
-        </dl>
+        <a asp-controller="Pet" asp-action="Create" class="button" data-size="sm">
+            <span><svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-circle-plus-icon lucide-circle-plus"><circle cx="12" cy="12" r="10"/><path d="M8 12h8"/><path d="M12 8v8"/></svg></span>
+            Ajouter un animal
+        </a>
     }
-
-</div>
+    <section class="user-info-section">
+        <h2 class="section-title">Informations personnelles</h2>
+        <div class="info-cards">
+            <div class="info-card">
+                <h3>Contact</h3>
+                <div class="info-list">
+                    <div class="info-item">
+                        <span class="info-label">Email</span>
+                        <span class="info-value">@Model.Email</span>
+                    </div>
+                    <div class="info-item">
+                        <span class="info-label">Téléphone</span>
+                        <span class="info-value">@(string.IsNullOrEmpty(Model.PhoneNumber) ? "Non renseigné" : Model.PhoneNumber)</span>
+                    </div>
+                </div>
+            </div>
+            <div class="info-card">
+                <h3>Statut du compte</h3>
+                <div class="info-list">
+                    <div class="info-item">
+                        <span class="info-label">Solde</span>
+                        <span class="info-value">@Model.BalanceAccount.ToString("C")</span>
+                    </div>
+                    <div class="info-item">
+                        <span class="info-label">Membre depuis</span>
+                        <span class="info-value">@Model.CreatedAt.ToString("d MMMM yyyy")</span>
+                    </div>
+                </div>
+            </div>
+            <div class="info-card">
+                <h3>Adresse</h3>
+                <div class="info-list">
+                    <div class="info-item">
+                        <span class="info-label">Rue</span>
+                        <span class="info-value">@(string.IsNullOrEmpty(Model.Street) ? "Non renseigné" : Model.Street)</span>
+                    </div>
+                    <div class="info-item">
+                        <span class="info-label">Code postal</span>
+                        <span class="info-value">@(string.IsNullOrEmpty(Model.PostalCode) ? "Non renseigné" : Model.PostalCode)</span>
+                    </div>
+                    <div class="info-item">
+                        <span class="info-label">Ville</span>
+                        <span class="info-value">@(string.IsNullOrEmpty(Model.City) ? "Non renseigné" : Model.City)</span>
+                    </div>
+                    <div class="info-item">
+                        <span class="info-label">Pays</span>
+                        <span class="info-value">@(string.IsNullOrEmpty(Model.Country) ? "Non renseigné" : Model.Country)</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+</main>
