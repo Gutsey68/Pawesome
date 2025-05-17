@@ -26,18 +26,16 @@ builder.Services.AddPawesomeDatabase(builder.Configuration)
 
 builder.Services.AddSignalR();
 
-// Configure localization
-var cultureInfo = new CultureInfo("fr-FR");
-var supportedCultures = new[] { cultureInfo };
-
-builder.Services.Configure<RequestLocalizationOptions>(options =>
-{
-    options.DefaultRequestCulture = new RequestCulture("fr-FR");
-    options.SupportedCultures = supportedCultures;
-    options.SupportedUICultures = supportedCultures;
-});
-
 var app = builder.Build();
+
+// Configure localization
+var supportedCultures = new[] { new CultureInfo("fr-FR") };
+app.UseRequestLocalization(new RequestLocalizationOptions
+{
+    DefaultRequestCulture = new RequestCulture("fr-FR"),
+    SupportedCultures = supportedCultures,
+    SupportedUICultures = supportedCultures
+});
 
 // Configure the HTTP request pipeline
 app.ConfigurePipeline();

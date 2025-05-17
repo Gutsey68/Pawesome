@@ -1,85 +1,114 @@
 @model Pawesome.Models.ViewModels.Advert.PetSittingOfferViewModel
 
-<div class="container">
-    <div class="card">
-        <div class="card-header">
-            <h1>Proposer mes services de pet sitting</h1>
-        </div>
-        <div class="card-body">
-            <form asp-action="CreateOffer" method="post">
-                <div asp-validation-summary="ModelOnly" class="validation-message"></div>
-                <div class="form-group">
-                    <label asp-for="StartDate" class="form-label">Date de début de disponibilité</label>
-                    <input asp-for="StartDate" class="form-control" type="date" 
-                           data-val="true" 
-                           data-val-required="La date de début est obligatoire"
-                           data-val-must="La date de début doit être future" />
-                    <span asp-validation-for="StartDate" class="validation-message"></span>
-                </div>
-                <div class="form-group">
-                    <label asp-for="EndDate" class="form-label">Date de fin de disponibilité</label>
-                    <input asp-for="EndDate" class="form-control" type="date" 
-                           data-val="true" 
-                           data-val-required="La date de fin est obligatoire"
-                           data-val-greaterthan="La date de fin doit être postérieure à la date de début"
-                           data-val-greaterthan-other="*.StartDate" />
-                    <span asp-validation-for="EndDate" class="validation-message"></span>
-                </div>
-                <div class="form-group">
-                    <label asp-for="Amount" class="form-label">Prix demandé (par jour)</label>
-                    <input asp-for="Amount" class="form-control" type="number" step="0.01" 
-                           data-val="true"
-                           data-val-range="Le montant ne peut pas être négatif"
-                           data-val-range-min="0" />
-                    <span asp-validation-for="Amount" class="validation-message"></span>
-                </div>
-                <div class="form-group">
-                    <label class="form-label">Types d'animaux acceptés</label>
-                    @if (ViewBag.AnimalTypes != null && ViewBag.AnimalTypes.Count > 0)
-                    {
-                        <div class="row row-cols-1 row-cols-sm-2 row-cols-md-3 g-3">
-                            @foreach (var animalType in ViewBag.AnimalTypes)
-                            {
-                                <div class="col">
-                                    <div class="card h-100">
-                                        <div class="card-body">
-                                            <div class="form-check">
-                                                <input class="form-check-input" type="checkbox" name="AcceptedAnimalTypeIds" value="@animalType.Id" id="type-@animalType.Id">
-                                                <label class="form-check-label" for="type-@animalType.Id">
-                                                    @animalType.Name
-                                                </label>
-                                            </div>
+@{
+    ViewData["Title"] = "Proposer mes services de pet sitting";
+}
+
+<main role="main" class="container">
+    <section class="create-offer-section">
+        <h1 class="section-title">Proposer mes services de pet sitting</h1>
+
+        @if (ViewData.ModelState.ErrorCount > 0)
+        {
+            <div class="validation-summary" role="alert" aria-labelledby="validation-summary-title">
+                <h2 id="validation-summary-title">Des erreurs sont survenues</h2>
+                <div asp-validation-summary="ModelOnly"></div>
+            </div>
+        }
+        <div>
+            <div>
+                <form asp-action="CreateOffer" method="post" class="create-offer-form">
+                    <fieldset class="form-group">
+                        <legend>Période de disponibilité</legend>
+                        <div class="date-group">
+                            <div class="form-group">
+                                <label asp-for="StartDate" class="form-label">Date de début</label>
+                                <input asp-for="StartDate" type="date" id="start-date" class="form-control"/>
+                                <span asp-validation-for="StartDate" class="validation-message"></span>
+                            </div>
+
+                            <div class="form-group">
+                                <label asp-for="EndDate" class="form-label">Date de fin</label>
+                                <input asp-for="EndDate" type="date" id="end-date" class="form-control"/>
+                                <span asp-validation-for="EndDate" class="validation-message"></span>
+                            </div>
+                        </div>
+                    </fieldset>
+                    <fieldset class="form-group">
+                        <legend>Tarification</legend>
+                        <div class="form-group">
+                            <label asp-for="Amount" class="form-label">Prix demandé (par jour)</label>
+                            <input asp-for="Amount" type="number" step="0.01" aria-required="true"
+                                   data-val="true"
+                                   data-val-range="Le montant ne peut pas être négatif"
+                                   data-val-range-min="0"/>
+                            <span asp-validation-for="Amount" class="validation-message"></span>
+                        </div>
+                    </fieldset>
+                    <fieldset class="form-group">
+                        <legend>Types d'animaux acceptés</legend>
+                        @if (ViewBag.AnimalTypes != null && ViewBag.AnimalTypes.Count > 0)
+                        {
+                            <div class="animal-types-grid">
+                                @foreach (var animalType in ViewBag.AnimalTypes)
+                                {
+                                    <div class="animal-type-card">
+                                        <div class="form-check">
+                                            <input class="form-check-input" type="checkbox" name="AcceptedAnimalTypeIds"
+                                                   value="@animalType.Id" id="type-@animalType.Id">
+                                            <label class="form-check-label" for="type-@animalType.Id">
+                                                @animalType.Name
+                                            </label>
                                         </div>
                                     </div>
+                                }
+                            </div>
+                            <span asp-validation-for="AcceptedAnimalTypeIds" class="validation-message"
+                                  data-val="true"
+                                  data-val-required="Vous devez sélectionner au moins un type d'animal"></span>
+                        }
+                        else
+                        {
+                            <div class="alert" data-variant="warning">
+                                <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24"
+                                     fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
+                                     stroke-linejoin="round" class="lucide lucide-alert-triangle">
+                                    <path
+                                        d="m21.73 18-8-14a2 2 0 0 0-3.48 0l-8 14A2 2 0 0 0 4 21h16a2 2 0 0 0 1.73-3Z"/>
+                                    <path d="M12 9v4"/>
+                                    <path d="M12 17h.01"/>
+                                </svg>
+                                <div>
+                                    <h4>Attention</h4>
+                                    <p>Aucun type d'animal disponible.</p>
                                 </div>
-                            }
+                            </div>
+                        }
+                    </fieldset>
+                    <fieldset class="form-group">
+                        <legend>Informations complémentaires</legend>
+                        <div class="form-group">
+                            <label asp-for="AdditionalInformation" class="form-label">Détails supplémentaires</label>
+                            <textarea asp-for="AdditionalInformation" rows="4" aria-describedby="info-hint"
+                                      data-val="true"
+                                      data-val-length="Les informations ne peuvent pas dépasser 1000 caractères"
+                                      data-val-length-max="1000"></textarea>
+                            <p id="info-hint" class="info-hint">Précisez votre expérience, les services inclus, ou toute
+                                information utile pour les propriétaires d'animaux.</p>
+                            <span asp-validation-for="AdditionalInformation" class="validation-message"></span>
                         </div>
-                        <span asp-validation-for="AcceptedAnimalTypeIds" class="validation-message" 
-                              data-val="true"
-                              data-val-required="Vous devez sélectionner au moins un type d'animal"></span>
-                    }
-                    else
-                    {
-                        <div class="alert alert-warning">
-                            Aucun type d'animal disponible.
-                        </div>
-                    }
-                </div>
-                <div class="form-group">
-                    <label asp-for="AdditionalInformation" class="form-label">Informations supplémentaires</label>
-                    <textarea asp-for="AdditionalInformation" class="form-control" rows="4"></textarea>
-                    <span asp-validation-for="AdditionalInformation" class="validation-message"></span>
-                </div>
-                <div class="form-group">
-                    <button type="submit" class="button">Publier</button>
-                    <a asp-action="Index" class="button" data-variant="secondary">Annuler</a>
-                </div>
-            </form>
+                    </fieldset>
+                    <div class="actions-container">
+                        <button type="submit" class="button">Publier l'offre</button>
+                        <a asp-action="Index" class="button" data-variant="secondary">Annuler</a>
+                    </div>
+                </form>
+            </div>
         </div>
-    </div>
-</div>
+    </section>
+</main>
 
 @section Scripts {
-    <partial name="_ValidationScriptsPartial" />
-    <script src="~/js/validation-extensions.js"></script>
+    <partial name="_ValidationScriptsPartial"/>
+    <script src="~/js/validationExtensions.js"></script>
 }

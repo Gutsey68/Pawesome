@@ -12,6 +12,8 @@ public static class ApplicationBuilderExtensions
     /// <returns>The configured WebApplication instance</returns>
     public static WebApplication ConfigurePipeline(this WebApplication app)
     {
+        app.UseRequestLocalization();
+        
         if (!app.Environment.IsDevelopment())
         {
             app.UseExceptionHandler("/Home/Error");
@@ -25,7 +27,6 @@ public static class ApplicationBuilderExtensions
         }
 
         app.UseForwardedHeaders();
-        app.UseRequestLocalization();
         app.UseStaticFiles();
         app.UseRouting();
         app.UseAuthentication();

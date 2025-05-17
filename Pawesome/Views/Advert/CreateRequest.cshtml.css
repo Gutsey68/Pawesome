@@ -1,0 +1,147 @@
+.create-request-section {
+    max-width: 50rem;
+    margin: 0 auto var(--space-10) auto;
+    padding: var(--space-4) 0;
+}
+
+.section-title {
+    font-size: var(--font-size-2xl);
+    color: var(--color-primary-12);
+    margin: var(--space-6) 0;
+    font-weight: var(--font-weight-medium);
+}
+
+.create-request-form {
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-6);
+}
+
+fieldset.form-group {
+    border: 1px solid var(--color-primary-6);
+    border-radius: var(--radius-lg);
+    padding: var(--space-4);
+    margin-bottom: var(--space-5);
+}
+
+fieldset.form-group legend {
+    padding: 0 var(--space-2);
+    font-weight: var(--font-weight-medium);
+    color: var(--color-primary-11);
+}
+
+.pets-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(180px, 1fr));
+    gap: var(--space-3);
+    margin-bottom: var(--space-3);
+}
+
+.pet-card-select {
+    position: relative;
+    background-color: var(--color-primary-2);
+    border: 1px solid var(--color-primary-4);
+    border-radius: var(--radius-lg);
+    overflow: hidden;
+    transition: var(--transition);
+    height: 12rem;
+    display: flex;
+    flex-direction: column;
+}
+
+.pet-card-select:hover {
+    background-color: var(--color-primary-3);
+    border-color: var(--color-primary-6);
+}
+
+.pet-card-select.selected {
+    border: 2px solid var(--color-primary-9);
+    background-color: var(--color-primary-3);
+}
+
+.pet-checkbox {
+    position: absolute;
+    top: var(--space-2);
+    right: var(--space-2);
+    z-index: 2;
+}
+
+.pet-details {
+    padding: var(--space-2);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-grow: 1;
+}
+
+.pet-name {
+    font-size: var(--font-size-md);
+    font-weight: var(--font-weight-medium);
+    color: var(--color-primary-12);
+    text-align: center;
+    margin: 0;
+}
+
+.actions-container {
+    display: flex;
+    gap: var(--space-3);
+    margin-top: var(--space-4);
+}
+
+fieldset.form-group .date-group {
+    display: flex;
+    flex-direction: row;
+    gap: var(--space-4);
+    flex-wrap: wrap;
+}
+
+fieldset.form-group .date-group .form-group {
+    flex: 1;
+    min-width: 0;
+}
+
+.info-hint {
+    color: var(--color-primary-11);
+    font-size: var(--font-size-xs);
+    margin-top: var(--space-1);
+}
+
+.no-pets-alert {
+    margin-top: var(--space-2);
+}
+
+@media (max-width: 768px) {
+    .create-request-section {
+        padding: var(--space-3) var(--space-4);
+    }
+
+    .pets-grid {
+        grid-template-columns: repeat(auto-fill, minmax(140px, 1fr));
+    }
+
+    .pet-card-select {
+        height: 200px;
+    }
+
+    .pet-thumbnail {
+        height: 140px;
+    }
+
+    .actions-container {
+        flex-direction: column;
+        gap: var(--space-2);
+    }
+
+    .actions-container a,
+    .actions-container button {
+        width: 100%;
+    }
+
+    fieldset.form-group .date-group {
+        flex-direction: column;
+    }
+
+    fieldset.form-group .date-group .form-group {
+        width: 100%;
+    }
+}
