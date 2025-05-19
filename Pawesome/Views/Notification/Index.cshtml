@@ -1,0 +1,118 @@
+@model IEnumerable<Pawesome.Models.Dtos.Notification.NotificationDto>
+@{
+    ViewData["Title"] = "Notifications";
+}
+
+<div class="notifications-page">
+    <div class="notifications-header">
+        <h1>Mes notifications</h1>
+        <div class="notifications-actions">
+            <button id="mark-all-read" class="btn btn-secondary">Tout marquer comme lu</button>
+        </div>
+    </div>
+
+    <div class="notifications-container">
+        @if (!Model.Any())
+        {
+            <div class="empty-notifications">
+                <p>Vous n'avez aucune notification pour le moment.</p>
+            </div>
+        }
+        else
+        {
+            <div class="notifications-list">
+                @foreach (var notification in Model)
+                {
+                    <div class="notification-item @(notification.IsRead ? "read" : "unread")" data-id="@notification.Id">
+                        <div class="notification-icon">
+                            @if (!string.IsNullOrEmpty(notification.ImageUrl))
+                            {
+                                <img src="@notification.ImageUrl" alt="" />
+                            }
+                            else
+                            {
+                                <div class="icon-placeholder @notification.Type.ToLower()"></div>
+                            }
+                        </div>
+                        <div class="notification-content">
+                            <div class="notification-header">
+                                <h3>@notification.Title</h3>
+                                <span class="notification-date">@notification.CreatedAt.ToString("dd/MM/yyyy HH:mm")</span>
+                            </div>
+                            <p class="notification-message">@notification.Message</p>
+                            @if (!string.IsNullOrEmpty(notification.LinkUrl))
+                            {
+                                <a href="@notification.LinkUrl" class="notification-link">Voir détails</a>
+                            }
+                        </div>
+                        <div class="notification-actions">
+                            <button class="mark-read-btn" data-id="@notification.Id" title="Marquer comme lu">
+                                <i class="fas fa-check"></i>
+                            </button>
+                            <button class="delete-btn" data-id="@notification.Id" title="Supprimer">
+                                <i class="fas fa-trash"></i>
+                            </button>
+                        </div>
+                    </div>
+                }
+            </div>
+        }
+    </div>
+</div>
+
+@section Scripts {
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            // Marquer une notification comme lue
+            document.querySelectorAll('.mark-read-btn').forEach(btn => {
+                btn.addEventListener('click', function() {
+                    const id = this.getAttribute('data-id');
+                    fetch(`/Notifications/MarkAsRead/${id}`, {
+                        method: 'POST'
+                    }).then(() => {
+                        const item = document.querySelector(`.notification-item[data-id="${id}"]`);
+                        item.classList.remove('unread');
+                        item.classList.add('read');
+                    });
+                });
+            });
+
+            // Supprimer une notification
+            document.querySelectorAll('.delete-btn').forEach(btn => {
+                btn.addEventListener('click', function() {
+                    const id = this.getAttribute('data-id');
+                    if (confirm('Voulez-vous vraiment supprimer cette notification ?')) {
+                        fetch(`/Notifications/Delete/${id}`, {
+                            method: 'POST'
+                        }).then(() => {
+                            const item = document.querySelector(`.notification-item[data-id="${id}"]`);
+                            item.remove();
+                            
+                            // Vérifier s'il reste des notifications
+                            if (document.querySelectorAll('.notification-item').length === 0) {
+                                const container = document.querySelector('.notifications-container');
+                                container.innerHTML = `
+                                    <div class="empty-notifications">
+                                        <p>Vous n'avez aucune notification pour le moment.</p>
+                                    </div>
+                                `;
+                            }
+                        });
+                    }
+                });
+            });
+
+            // Marquer toutes les notifications comme lues
+            document.getElementById('mark-all-read').addEventListener('click', function() {
+                fetch('/Notifications/MarkAllAsRead', {
+                    method: 'POST'
+                }).then(() => {
+                    document.querySelectorAll('.notification-item.unread').forEach(item => {
+                        item.classList.remove('unread');
+                        item.classList.add('read');
+                    });
+                });
+            });
+        });
+    </script>
+}

@@ -6,7 +6,6 @@ using Microsoft.Extensions.Options;
 using Pawesome.Data;
 using Pawesome.Infrastructure.Filters;
 using Pawesome.Interfaces;
-using Pawesome.Models;
 using Pawesome.Models.Configuration;
 using Pawesome.Models.Entities;
 using Pawesome.Repositories;
@@ -106,6 +105,7 @@ public static class ServiceCollectionExtensions
         services.AddScoped<ICityRepository, CityRepository>();
         services.AddScoped<ICountryRepository, CountryRepository>();
         services.AddScoped<IAddressRepository, AddressRepository>();
+        services.AddScoped<INotificationRepository, NotificationRepository>();
         
         // Register services
         services.AddScoped<IAuthService, AuthService>();
@@ -116,6 +116,7 @@ public static class ServiceCollectionExtensions
         services.AddScoped<IAnimalTypeService, AnimalTypeService>();
         services.AddScoped<IMessageService, MessageService>();
         services.AddScoped<IPaymentService, PaymentService>();
+        services.AddScoped<INotificationService, NotificationService>();
         
         // Register AutoMapper
         services.AddAutoMapper(typeof(Program).Assembly);

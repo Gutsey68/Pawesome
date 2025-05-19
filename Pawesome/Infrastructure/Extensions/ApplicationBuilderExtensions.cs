@@ -1,3 +1,5 @@
+using Pawesome.Hubs;
+
 namespace Pawesome.Infrastructure.Extensions;
 
 /// <summary>
@@ -41,7 +43,8 @@ public static class ApplicationBuilderExtensions
             pattern: "User/{id:int}",
             defaults: new { controller = "User", action = "Profile" });
         
-        app.MapHub<Hubs.MessageHub>("/messageHub");
+        app.MapHub<MessageHub>("/messageHub");
+        app.MapHub<NotificationHub>("/notificationHub");
         
         return app;
     }

@@ -4,8 +4,19 @@ using System.Text;
 
 namespace Pawesome.Helpers
 {
+    /// <summary>
+    /// Helper class for rendering star ratings in views
+    /// Provides extension methods for IHtmlHelper to display visual star ratings
+    /// </summary>
     public static class RatingHelper
     {
+        /// <summary>
+        /// Renders a star rating display based on a numeric rating value
+        /// </summary>
+        /// <param name="helper">The IHtmlHelper instance this method extends</param>
+        /// <param name="rating">The numeric rating value to display as stars</param>
+        /// <param name="maxRating">The maximum possible rating (default: 5)</param>
+        /// <returns>HTML content representing the star rating</returns>
         public static IHtmlContent DisplayStars(this IHtmlHelper helper, float? rating, int maxRating = 5)
         {
             if (rating == null)

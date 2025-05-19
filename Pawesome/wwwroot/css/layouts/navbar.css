@@ -201,3 +201,44 @@ nav ul {
 .theme-switch-input:not(:checked) + .theme-switch-slider .theme-switch-icon.moon {
     opacity: 0;
 }
+
+.notification-bell {
+    display: flex;
+    align-items: center;
+    margin-right: var(--space-2);
+}
+
+.notification-icon-wrapper {
+    position: relative;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    padding: var(--space-2);
+    color: var(--color-primary-11);
+    transition: color 0.2s ease;
+}
+
+.notification-icon-wrapper:hover {
+    color: var(--color-primary-12);
+}
+
+.notification-badge {
+    position: absolute;
+    top: 0;
+    right: 0;
+    background-color: var(--color-error-solid);
+    color: white;
+    border-radius: 50%;
+    width: 18px;
+    height: 18px;
+    font-size: 11px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-weight: bold;
+}
+
+.notification-badge.hidden {
+    display: none;
+}

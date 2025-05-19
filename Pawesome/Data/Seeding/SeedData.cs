@@ -688,7 +688,12 @@ namespace Pawesome.Data.Seeding
             context.Notifications.AddRange(
                 new Notification
                 {
-                    Comment = "Quelqu'un a répondu à votre annonce",
+                    Title = "Nouvelle réponse",
+                    Message = "Quelqu'un a répondu à votre annonce de garde pour Rex",
+                    Type = NotificationType.AdvertUpdate,
+                    IsRead = false,
+                    LinkUrl = "/Adverts/Details/1",
+                    ImageUrl = "/images/notifications/advert-response.png",
                     UserId = users[0].Id,
                     User = users[0],
                     CreatedAt = DateTime.UtcNow,
@@ -696,7 +701,11 @@ namespace Pawesome.Data.Seeding
                 },
                 new Notification
                 {
-                    Comment = "Votre annonce a été approuvée",
+                    Title = "Annonce approuvée",
+                    Message = "Votre annonce pour la garde de Félix a été approuvée",
+                    Type = NotificationType.AdvertUpdate,
+                    IsRead = true,
+                    LinkUrl = "/Adverts/Details/2",
                     UserId = users[1].Id,
                     User = users[1],
                     CreatedAt = DateTime.UtcNow,
@@ -704,7 +713,11 @@ namespace Pawesome.Data.Seeding
                 },
                 new Notification
                 {
-                    Comment = "Vous avez reçu un nouveau message",
+                    Title = "Nouveau message",
+                    Message = "Sophie vous a envoyé un message concernant votre annonce",
+                    Type = NotificationType.Message,
+                    IsRead = false,
+                    LinkUrl = "/Messages/Conversation/2",
                     UserId = users[2].Id,
                     User = users[2],
                     CreatedAt = DateTime.UtcNow,
@@ -712,7 +725,12 @@ namespace Pawesome.Data.Seeding
                 },
                 new Notification
                 {
-                    Comment = "Votre réservation a été confirmée",
+                    Title = "Réservation confirmée",
+                    Message = "Votre réservation pour la garde de Piou a été confirmée",
+                    Type = NotificationType.BookingStatusChange,
+                    IsRead = false,
+                    LinkUrl = "/Bookings/Details/1",
+                    ImageUrl = "/images/notifications/booking-confirmed.png",
                     UserId = users[1].Id,
                     User = users[1],
                     CreatedAt = DateTime.UtcNow,
@@ -720,7 +738,11 @@ namespace Pawesome.Data.Seeding
                 },
                 new Notification
                 {
-                    Comment = "Un utilisateur a laissé un avis sur votre service",
+                    Title = "Nouvel avis",
+                    Message = "Jean a laissé un avis 5 étoiles sur votre service de garde",
+                    Type = NotificationType.SystemAlert,
+                    IsRead = false,
+                    LinkUrl = "/Reviews/MyReviews",
                     UserId = users[3].Id,
                     User = users[3],
                     CreatedAt = DateTime.UtcNow,

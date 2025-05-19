@@ -37,6 +37,7 @@
 
     --color-error: #FEEBEC;
     --color-error-border: #FFCDCE;
+    --color-error-solid: #E5484D;
     --color-error-foreground: #CE2C31;
 
     --color-warning: #FFF7C2;
@@ -157,6 +158,7 @@
 
     --color-error: #3B1219;
     --color-error-border: #611623;
+    --color-error-solid: #E5484D;
     --color-error-foreground: #FF9592;
 
     --color-warning: #302008;
