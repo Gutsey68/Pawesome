@@ -67,3 +67,5 @@
 ### 18. En tant qu’utilisateur, je souhaite que l’argent reste en suspens jusqu’à validation
 - L’argent payé par le propriétaire est bloqué tant que la prestation n’est pas validée.
 - À implémenter pour le sprint 3 (via Stripe connect, escrow-like system).
+
+--changer le mcd et mld -> notification

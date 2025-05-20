@@ -16,6 +16,7 @@ public class MessageService : IMessageService
 {
     private readonly IMessageRepository _messageRepository;
     private readonly IUserRepository _userRepository;
+    private readonly INotificationRepository _notificationRepository;
     private readonly IMapper _mapper;
 
     /// <summary>
@@ -23,11 +24,16 @@ public class MessageService : IMessageService
     /// </summary>
     /// <param name="messageRepository">Repository for message data operations</param>
     /// <param name="userRepository">Repository for user data operations</param>
+    /// <param name="notificationRepository">Repository for notification data operations</param>
     /// <param name="mapper">AutoMapper instance for object mapping</param>
-    public MessageService(IMessageRepository messageRepository, IUserRepository userRepository, IMapper mapper)
+    public MessageService(IMessageRepository messageRepository, 
+        IUserRepository userRepository, 
+        INotificationRepository notificationRepository,
+        IMapper mapper)
     {
         _messageRepository = messageRepository;
         _userRepository = userRepository;
+        _notificationRepository = notificationRepository;
         _mapper = mapper;
     }
 
@@ -100,7 +106,9 @@ public class MessageService : IMessageService
         var receiver = await _userRepository.GetByIdAsync(messageDto.ReceiverId);
 
         if (sender == null || receiver == null)
+        {
             throw new ArgumentException("Sender or receiver does not exist");
+        }
 
         var message = new Message
         {
@@ -114,6 +122,20 @@ public class MessageService : IMessageService
         };
 
         await _messageRepository.AddAsync(message);
+        
+        var notification = new Notification
+        {
+            Title = "Nouveau message",
+            Message = $"{sender.FirstName} {sender.LastName} vous a envoyé un message",
+            Type = NotificationType.Message,
+            IsRead = false,
+            LinkUrl = $"/Message/{currentUserId}",
+            ImageUrl = sender.Photo,
+            UserId = messageDto.ReceiverId,
+            User = receiver,
+        };
+        
+        await _notificationRepository.CreateAsync(notification);
         await _messageRepository.SaveChangesAsync();
 
         return _mapper.Map<MessageDto>(message);

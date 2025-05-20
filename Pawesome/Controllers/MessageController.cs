@@ -18,6 +18,7 @@ public class MessageController : Controller
     private readonly IUserService _userService;
     private readonly IMapper _mapper;
     private readonly IHubContext<MessageHub> _hubContext;
+    private readonly IHubContext<NotificationHub> _notificationHubContext;
 
     /// <summary>
     /// Constructor for MessageController
@@ -26,12 +27,14 @@ public class MessageController : Controller
         IMessageService messageService,
         IUserService userService,
         IMapper mapper,
-        IHubContext<MessageHub> hubContext)
+        IHubContext<MessageHub> hubContext,
+        IHubContext<NotificationHub> notificationHubContext)
     {
         _messageService = messageService;
         _userService = userService;
         _mapper = mapper;
         _hubContext = hubContext;
+        _notificationHubContext = notificationHubContext;
     }
 
     /// <summary>
@@ -204,6 +207,9 @@ public class MessageController : Controller
 
         await _hubContext.Clients.User(userId.ToString())
             .SendAsync("MessageSent", createdMessage);
+        
+        await _notificationHubContext.Clients.User(viewModel.ReceiverId.ToString())
+            .SendAsync("UpdateNotifications");
 
         return RedirectToAction("Conversation", new { otherUserId = viewModel.ReceiverId });
     }
@@ -241,6 +247,9 @@ public class MessageController : Controller
 
         await _hubContext.Clients.User(userId.ToString())
             .SendAsync("MessageSent", createdMessage);
+        
+        await _notificationHubContext.Clients.User(viewModel.ReceiverId.ToString())
+            .SendAsync("UpdateNotifications");
 
         return Ok(createdMessage);
     }

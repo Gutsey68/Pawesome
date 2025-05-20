@@ -1,45 +1,92 @@
 /**
  * @fileoverview Client-side notification handler using SignalR
  * This module manages real-time notifications, displays them to users,
- * and maintains the notification counter in the UI.
+ * and maintains the notification counter in the interface.
  */
 
-const connection = new signalR.HubConnectionBuilder()
+const notificationConnection = new signalR.HubConnectionBuilder()
     .withUrl("/notificationHub")
     .withAutomaticReconnect()
     .build();
 
+const messageConnection = new signalR.HubConnectionBuilder()
+    .withUrl("/messageHub")
+    .withAutomaticReconnect()
+    .build();
+
 /**
- * Event handler for receiving notifications from the server
- * @param {Object} notification - The notification object from the server
+ * Event for receiving notifications from the server
+ * @param {Object} notification - The notification object sent by the server
  */
-connection.on("ReceiveNotification", (notification) => {
+notificationConnection.on("ReceiveNotification", (notification) => {
     showNotification(notification);
     updateNotificationCount();
 });
 
 /**
- * Starts the SignalR connection and implements reconnection logic
+ * Event for updating the notification counter
+ * Listens on the notification hub connection
+ */
+notificationConnection.on("UpdateNotifications", () => {
+    updateNotificationCount();
+});
+
+/**
+ * Event for updating the notification counter
+ * Listens on the message hub connection
+ */
+messageConnection.on("UpdateNotifications", () => {
+    updateNotificationCount();
+});
+
+/**
+ * Starts the SignalR connection to the notification hub and implements reconnection logic
  * @async
  * @returns {Promise<void>}
  */
-async function startConnection() {
+async function startNotificationConnection() {
     try {
-        await connection.start();
-        console.log("SignalR Connected");
+        await notificationConnection.start();
+        updateNotificationCount();
     } catch (err) {
-        console.log(err);
-        setTimeout(startConnection, 5000);
+        setTimeout(startNotificationConnection, 5000);
     }
 }
 
 /**
- * Creates and displays a notification toast
+ * Starts the SignalR connection to the message hub and implements reconnection logic
+ * @async
+ * @returns {Promise<void>}
+ */
+async function startMessageConnection() {
+    try {
+        await messageConnection.start();
+    } catch (err) {
+        setTimeout(startMessageConnection, 5000);
+    }
+}
+
+/**
+ * Handles reconnection events for the notification hub
+ */
+notificationConnection.onreconnected(() => {
+    updateNotificationCount();
+});
+
+/**
+ * Handles reconnection events for the message hub
+ */
+messageConnection.onreconnected(() => {
+    updateNotificationCount();
+});
+
+/**
+ * Creates and displays a toast notification
  * @param {Object} notification - The notification to display
  * @param {string} notification.title - Notification title
  * @param {string} notification.message - Notification message
  * @param {string} notification.type - Notification type
- * @param {string} [notification.linkUrl] - Optional URL for details
+ * @param {string} [notification.linkUrl] - Optional URL for more details
  */
 function showNotification(notification) {
     const toast = document.createElement('div');
@@ -57,23 +104,34 @@ function showNotification(notification) {
         ${notification.linkUrl ? `<a href="${notification.linkUrl}" class="notification-link">View details</a>` : ''}
     `;
 
-    document.getElementById('notification-container').appendChild(toast);
+    const container = document.getElementById('notification-container');
+    if (container) {
+        container.appendChild(toast);
 
-    setTimeout(() => {
-        toast.classList.add('fade-out');
-        setTimeout(() => toast.remove(), 500);
-    }, 5000);
+        const closeButton = toast.querySelector('.notification-close');
+        if (closeButton) {
+            closeButton.addEventListener('click', () => {
+                toast.classList.add('fade-out');
+                setTimeout(() => toast.remove(), 500);
+            });
+        }
+
+        setTimeout(() => {
+            toast.classList.add('fade-out');
+            setTimeout(() => toast.remove(), 500);
+        }, 5000);
+    }
 }
 
 /**
- * Updates the notification counter badge with the current unread count
+ * Updates the notification badge with the current number of unread notifications
  * @returns {void}
  */
 function updateNotificationCount() {
     fetch('/Notification/GetUnreadCount')
         .then(response => {
             if (!response.ok) {
-                throw new Error(`HTTP Error: ${response.status}`);
+                throw new Error(`HTTP error: ${response.status}`);
             }
             return response.json();
         })
@@ -88,7 +146,9 @@ function updateNotificationCount() {
                 }
             }
         })
-        .catch(err => console.error("Error retrieving notification count:", err));
+        .catch(err => {});
 }
-
-startConnection();
+document.addEventListener('DOMContentLoaded', () => {
+    startNotificationConnection();
+    startMessageConnection();
+});
