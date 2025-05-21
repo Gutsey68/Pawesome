@@ -7,7 +7,9 @@
 <main role="main" class="container">
     <section class="create-offer-section">
         <h1 class="section-title">Proposer mes services de pet sitting</h1>
-
+        <div class="alternate-option">
+            Vous cherchez un pet sitter pour vos animaux ? <a asp-action="CreateRequest" class="underline font-primary-12">Créer une demande de pet sitting</a>
+        </div>
         @if (ViewData.ModelState.ErrorCount > 0)
         {
             <div class="validation-summary" role="alert" aria-labelledby="validation-summary-title">

@@ -40,6 +40,8 @@ app.UseRequestLocalization(new RequestLocalizationOptions
 // Configure the HTTP request pipeline
 app.ConfigurePipeline();
 
+app.UseStatusCodePagesWithReExecute("/Home/HandleError/{0}");
+
 // Initialize the database
 await app.InitializeDatabaseAsync();
 

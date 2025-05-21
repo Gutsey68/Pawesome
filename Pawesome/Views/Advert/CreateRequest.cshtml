@@ -7,7 +7,10 @@
 <main role="main" class="container">
     <section class="create-request-section">
         <h1 class="section-title">Demande de pet sitting</h1>
-
+    
+        <div class="alternate-option">
+            Vous souhaitez plutôt proposer vos services ? <a asp-action="CreateOffer" class="underline font-primary-12">Créer une offre de pet sitting</a>
+        </div>
         @if (ViewData.ModelState.ErrorCount > 0)
         {
             <div class="validation-summary" role="alert" aria-labelledby="validation-summary-title">
@@ -15,7 +18,6 @@
                 <div asp-validation-summary="ModelOnly"></div>
             </div>
         }
-
         <form asp-action="CreateRequest" method="post" class="create-request-form">
             <fieldset class="form-group">
                 <legend>Période souhaitée</legend>
@@ -33,7 +35,6 @@
                     </div>
                 </div>
             </fieldset>
-
             <fieldset class="form-group">
                 <legend>Tarification</legend>
                 <div class="form-group">
@@ -45,7 +46,6 @@
                     <span asp-validation-for="Amount" class="validation-message"></span>
                 </div>
             </fieldset>
-
             <fieldset class="form-group">
                 <legend>Animaux à garder</legend>
                 @if (ViewBag.Pets != null && ViewBag.Pets.Count > 0)
@@ -88,7 +88,6 @@
                     </div>
                 }
             </fieldset>
-
             <fieldset class="form-group">
                 <legend>Informations complémentaires</legend>
                 <div class="form-group">
@@ -100,7 +99,6 @@
                     <span asp-validation-for="AdditionalInformation" class="validation-message"></span>
                 </div>
             </fieldset>
-
             <div class="actions-container">
                 <button type="submit" class="button">Publier la demande</button>
                 <a asp-action="Index" class="button" data-variant="secondary">Annuler</a>

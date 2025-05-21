@@ -63,3 +63,7 @@ a.underline {
 .font-weight-bold {
     font-weight: var(--font-weight-bold);
 }
+
+.font-primary-12 {
+    color: var(--color-primary-12);
+}

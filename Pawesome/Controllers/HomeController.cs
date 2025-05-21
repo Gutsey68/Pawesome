@@ -97,6 +97,17 @@ public class HomeController : Controller
     {
         return View();
     }
+    
+    [Route("Home/HandleError/{statusCode}")]
+    public IActionResult HandleError(int statusCode)
+    {
+        var viewModel = new ErrorViewModel
+        { 
+            RequestId = Activity.Current?.Id ?? HttpContext.TraceIdentifier 
+        };
+
+        return View(statusCode == 404 ? "NotFound" : "Error", viewModel);
+    }
 
     /// <summary>
     /// Handles error display with diagnostic information

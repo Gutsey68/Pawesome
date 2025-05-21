@@ -1,0 +1,31 @@
+.not-found-container {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    text-align: center;
+    padding: var(--space-8) var(--space-4);
+    min-height: 70vh;
+}
+
+.not-found-title {
+    font-size: var(--font-size-9xl);
+    color: var(--color-primary-12);
+    font-weight: var(--font-weight-bold);
+}
+
+.not-found-subtitle {
+    font-size: var(--font-size-2xl);
+    color: var(--color-primary-11);
+}
+
+.not-found-text {
+    font-size: var(--font-size-lg);
+    color: var(--color-primary-10);
+    max-width: 600px;
+    margin: var(--space-3) auto var(--space-5) auto;
+}
+
+.lucide-house-icon {
+    margin-right: var(--space-2);
+}

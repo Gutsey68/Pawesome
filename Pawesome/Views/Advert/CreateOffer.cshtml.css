@@ -7,8 +7,24 @@
 .section-title {
     font-size: var(--font-size-2xl);
     color: var(--color-primary-12);
-    margin: var(--space-6) 0;
+    margin: var(--space-6) 0 var(--space-2) 0;
     font-weight: var(--font-weight-medium);
+}
+
+.alternate-option {
+    margin-bottom: var(--space-6);
+    color: var(--color-primary-11);
+    font-size: var(--font-size-sm);
+}
+
+.alternate-option a {
+    color: var(--color-primary-9);
+    text-decoration: underline;
+    font-weight: var(--font-weight-medium);
+}
+
+.alternate-option a:hover {
+    color: var(--color-primary-10);
 }
 
 .create-offer-form {
