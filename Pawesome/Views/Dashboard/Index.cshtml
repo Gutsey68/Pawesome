@@ -1,119 +1,73 @@
-﻿@{
+﻿@model Pawesome.Models.ViewModels.Dashboard.DashboardViewModel
+
+@{
     ViewData["Title"] = "Tableau de bord";
 }
 
 <main role="main">
-    <div class="home-page">
-        <div>
-            <div class="pat-background"></div>
-            <div class="pat-background2"></div>
-            <div class="header"></div>
-
-            <div class="research-bar">
-
-                <div class="field-group">
-                    <label>Vous êtes ?</label>
-                    <div class="radio-group">
-                        <label class="radio-option">
-                            <input type="radio" name="animalChoice" value="garde" checked/> 
-                            Petsitter
-                        </label><br>
-                        <label class="radio-option">
-                            <input type="radio" name="animalChoice" value="faireGarder"/>
-                            Propriétaire d'animal
-                        </label>
-                    </div>
+    <div class="dashboard-page">
+        <div class="dashboard-header">
+            <h1>Tableau de bord</h1>
+            <p>Trouvez rapidement ce que vous cherchez</p>
+        </div>
+        <div class="dashboard-search-container">
+            <div class="tabs-container">
+                <div class="tabs-list" role="tablist">
+                    <button class="tab active" role="tab" aria-selected="true" data-role="petsitter">Je suis pet-sitter</button>
+                    <button class="tab" role="tab" aria-selected="false" data-role="looking">Je cherche un pet-sitter</button>
                 </div>
-
-
-                <!--#region Input Annonces -->
-                    @* <div class="field-group"> *@
-                    @*     <label>Je recherche</label> *@
-                    @*     <input type="text" id="serviceInput" placeholder="Une annonce ?" readonly/> *@
-                    @* </div> *@
-                    @* *@
-                    @* <div class="popup" id="servicePopup" role="dialog"> *@
-                    @*     <div class="section"> *@
-                    @*         <div class="section-title">Vous souhaiter garder des animaux ?</div> *@
-                    @* *@
-                    @*         <div class="option" data-value="Hébergement"> *@
-                    @*             <div class="icon dogBoarding">🏠</div> *@
-                    @*             <div class="info"> *@
-                    @*                 <b>Hébergement</b> *@
-                    @*                 <span>Garde de plus de 24h, au domicile du gardien</span> *@
-                    @*             </div> *@
-                    @*         </div> *@
-                    @* *@
-                    @*         <div class="option" data-value="Hébergement"> *@
-                    @*             <div class="icon doggyDayCare">🏠</div> *@
-                    @*             <div class="info"> *@
-                    @*                 <b>Hébergement</b> *@
-                    @*                 <span>Garde de plus de 24h, a votre domicile</span> *@
-                    @*             </div> *@
-                    @*         </div> *@
-                    @*     </div> *@
-                    @* *@
-                    @*     <div class="section"> *@
-                    @*         <div class="section-title">Vous souhaiter faire garder animal ?</div> *@
-                    @*         <div class="option" data-value="Hébergement"> *@
-                    @*             <div class="icon dogBoarding">🏠</div> *@
-                    @*             <div class="info"> *@
-                    @*                 <b>Hébergement</b> *@
-                    @*                 <span>Garde de plus de 24h, au domicile du gardien</span> *@
-                    @*             </div> *@
-                    @*         </div> *@
-                    @* *@
-                    @*         <div class="option" data-value="Hébergement"> *@
-                    @*             <div class="icon doggyDayCare">🏠</div> *@
-                    @*             <div class="info"> *@
-                    @*                 <b>Hébergement</b> *@
-                    @*                 <span>Garde de plus de 24h, a votre domicile</span> *@
-                    @*             </div> *@
-                    @*         </div> *@
-                    @* *@
-                    @*     </div> *@
-                    @* </div> *@
-
-                    <!--#endregion-->
-
-                    <span class="tiny-separator"></span>
-
-                    <div class="field-group">
-                        <label>Près de</label>
-                        <input type="text" id="location-search" class="search-input" autocomplete="off" spellcheck="false" aria-autocomplete="list" placeholder="Chez vous ?"/>
-                    </div>
-
-                    <div id="search-results" class="search-results"></div>
-
-                    <span class="tiny-separator"></span>
-                    <div class="field-group">
-                        <label>Le</label>
-                        <div id="date-container" class="date-container"></div>
-                        <input type="text" id="calendar-input" placeholder="Quand ?"/>
-                    </div>
-                    <div class="popup calendar" id="calendarPopup" role="dialog">
-                        <div class="datepicker">
-                            <div class="datepicker-top">
-                                <div class="month-selector">
-                                    <button class="arrow"><</button>
-                                    <span class="month-name">May 2025</span>
-                                    <button class="arrow">></button>
-                                </div>
-                            </div>
-
-                            <div class="datepicker-calender">
-                            </div>
+            </div>
+            <form id="searchForm" method="get" asp-controller="Advert" asp-action="Index">
+                <input type="hidden" id="isPetSitter" name="isPetSitter" value="false">
+                <div class="dashboard-research-bar">
+                    <div class="search-inputs-container">
+                        <div class="date-input-container">
+                            <label for="start-date">Date de début</label>
+                            <input type="date" id="start-date" name="StartDate" class="research-bar-date-start" placeholder="Date de début" value="@Model.StartDate.ToString("yyyy-MM-dd")"/>
                         </div>
+                        <span class="tiny-separator"></span>
+                        <div class="date-input-container">
+                            <label for="end-date">Date de fin</label>
+                            <input type="date" id="end-date" name="EndDate" placeholder="Date de fin" value="@Model.EndDate.ToString("yyyy-MM-dd")"/>
+                        </div>
+                        <span class="tiny-separator"></span>
+                        <div class="location-input-container">
+                            <label for="location">Lieu</label>
+                            <input type="text" id="location" name="Location" placeholder="Pawcity"/>
+                        </div>
+                        <button class="research-button" type="submit">
+                            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-search-icon lucide-search"><path d="m21 21-4.34-4.34"/><circle cx="11" cy="11" r="8"/></svg>
+                        </button>
                     </div>
-
-                    <button class="research-button" type="button">
-                        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="var(--color-primary-1)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-search-icon lucide-search"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.3-4.3"/></svg>
-                    </button>
                 </div>
+            </form>
+        </div>
+        <div class="dashboard-content">
         </div>
     </div>
 </main>
 
-<script src="js/searchBar/ServicePopupUtility.js"></script>
-<script src="js/searchBar/LocationSearchUtility.js"></script>
-<script src="js/searchBar/CalendarPopupUtility.js"></script>
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+        const tabs = document.querySelectorAll('.tab');
+        const isPetSitterInput = document.getElementById('isPetSitter');
+        
+        tabs.forEach(tab => {
+            tab.addEventListener('click', function() {
+                tabs.forEach(t => {
+                    t.classList.remove('active');
+                    t.setAttribute('aria-selected', 'false');
+                });
+                this.classList.add('active');
+                this.setAttribute('aria-selected', 'true');
+                
+                // Mettre à jour la valeur de isPetSitter selon l'onglet sélectionné
+                if (this.dataset.role === 'petsitter') {
+                    isPetSitterInput.value = 'true';
+                } else {
+                    isPetSitterInput.value = 'false';
+                }
+            });
+        });
+    });
+</script>

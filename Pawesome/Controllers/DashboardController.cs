@@ -2,6 +2,7 @@
 using Microsoft.AspNetCore.Mvc;
 using Pawesome.Models;
 using Pawesome.Models.ViewModels;
+using Pawesome.Models.ViewModels.Dashboard;
 
 namespace Pawesome.Controllers;
 
@@ -27,16 +28,8 @@ public class DashboardController : Controller
     /// <returns>The index view</returns>
     public IActionResult Index()
     {
-        return View();
-    }
-
-    /// <summary>
-    /// Handles error display with diagnostic information
-    /// </summary>
-    /// <returns>The error view with request identification details</returns>
-    [ResponseCache(Duration = 0, Location = ResponseCacheLocation.None, NoStore = true)]
-    public IActionResult Error()
-    {
-        return View(new ErrorViewModel { RequestId = Activity.Current?.Id ?? HttpContext.TraceIdentifier });
+        var model = new DashboardViewModel();
+        
+        return View(model);
     }
 }
