@@ -75,8 +75,8 @@ jobs:
           script: |
             cd /var/www/pawesome
             export GITHUB_REPOSITORY="${{ github.repository }}"
-            docker compose pull --quiet
+            docker rmi ghcr.io/gutsey68/pawesome:main -f || true
+            docker compose pull --no-cache
             docker compose down
-            docker image prune -f
-            docker compose up -d --force-recreate --remove-orphans
-            docker compose ps
+            docker compose up -d --force-recreate
+            docker compose images
