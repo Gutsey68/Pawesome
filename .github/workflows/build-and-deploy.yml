@@ -74,5 +74,7 @@ jobs:
           script: |
             cd /var/www/pawesome
             docker pull ghcr.io/gutsey68/pawesome:main
+            docker compose down
             docker compose up -d --remove-orphans
+
 
