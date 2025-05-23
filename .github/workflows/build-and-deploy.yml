@@ -52,7 +52,6 @@ jobs:
           images: ${{ env.IMAGE_NAME }}
           tags: |
             type=ref,event=branch
-            type=sha,format=short
           labels: |
             org.opencontainers.image.source=${{ github.repositoryUrl }}
 
@@ -74,9 +73,6 @@ jobs:
           port: ${{ secrets.VPS_PORT }}
           script: |
             cd /var/www/pawesome
-            export GITHUB_REPOSITORY="${{ github.repository }}"
-            docker rmi ghcr.io/gutsey68/pawesome:main -f || true
-            docker compose pull --no-cache
-            docker compose down
-            docker compose up -d --force-recreate
-            docker compose images
+            docker pull ghcr.io/gutsey68/pawesome:main
+            docker compose up -d --remove-orphans
+
