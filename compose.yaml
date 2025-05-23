@@ -2,7 +2,7 @@
   pawesome:
     env_file:
       - pawesome.env
-    image: ghcr.io/${GITHUB_REPOSITORY}:main
+    image: ghcr.io/gutsey68/pawesome:main
     restart: unless-stopped
     labels:
       - "traefik.enable=true"
