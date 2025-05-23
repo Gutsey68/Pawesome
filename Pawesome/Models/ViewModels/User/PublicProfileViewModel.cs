@@ -1,3 +1,4 @@
+using Pawesome.Models.Dtos.Advert;
 using Pawesome.Models.ViewModels.Pet;
 
 namespace Pawesome.Models.ViewModels.User;
@@ -12,4 +13,5 @@ public class PublicProfileViewModel
     public DateTime CreatedAt { get; set; }
     public IEnumerable<PetViewModel>? Pets { get; set; }
     public bool IsCurrentUser { get; set; }
+    public List<PetSittingAdvertDto> Adverts { get; set; } = new();
 }

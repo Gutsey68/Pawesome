@@ -1,6 +1,7 @@
 using AutoMapper;
 using Pawesome.Models;
 using Pawesome.Models.DTOs;
+using Pawesome.Models.Dtos.Advert;
 using Pawesome.Models.Entities;
 using Pawesome.Models.ViewModels;
 using Pawesome.Models.ViewModels.Auth;
@@ -21,15 +22,35 @@ public class UserMappingProfile : Profile
         CreateMap<User, ProfileViewModel>()
             .ForMember(dest => dest.Photo, opt => opt.MapFrom(src => src.Photo))
             .ForMember(dest => dest.Street,
-                opt => opt.MapFrom(src => src.Address != null ? src.Address.StreetAddress : null))
+                opt => opt.MapFrom(src => src.Address != null ? src.Address.StreetAddress : string.Empty))
             .ForMember(dest => dest.City, 
-                opt => opt.MapFrom(src => src.Address != null ? src.Address.City.Name : null))
+                opt => opt.MapFrom(src => src.Address != null ? src.Address.City.Name : string.Empty))
             .ForMember(dest => dest.PostalCode,
-                opt => opt.MapFrom(src => src.Address != null ? src.Address.City.PostalCode : null))
+                opt => opt.MapFrom(src => src.Address != null ? src.Address.City.PostalCode : string.Empty))
             .ForMember(dest => dest.Country,
                 opt => opt.MapFrom(src => src.Address != null ? 
-                    src.Address.City.Country.Name : null))
-            .ForMember(dest => dest.Pets, opt => opt.MapFrom(src => src.Pets));
+                    src.Address.City.Country.Name : string.Empty))
+            .ForMember(dest => dest.Pets, opt => opt.MapFrom(src => src.Pets))
+            .ForMember(dest => dest.Adverts, opt => opt.MapFrom(src => 
+                src.Adverts.Select(a => new PetSittingAdvertDto
+                {
+                    Id = a.Id,
+                    StartDate = a.StartDate,
+                    EndDate = a.EndDate,
+                    Status = a.Status,
+                    Amount = a.Amount,
+                    AdditionalInformation = a.AdditionalInformation,
+                    CreatedAt = a.CreatedAt,
+                    UpdatedAt = a.UpdatedAt,
+                    IsPetSitter = a.Status.Contains("offer"),
+                    Owner = new UserSimpleDto 
+                    { 
+                        Id = src.Id, 
+                        FullName = $"{src.FirstName} {src.LastName}",
+                        Photo = src.Photo
+                    },
+                    PetCartViewModels = new List<PetCartViewModel>()
+                }).ToList()));
 
         CreateMap<User, UserSimpleDto>()
             .ForMember(dest => dest.FullName, opt => opt.MapFrom(src =>

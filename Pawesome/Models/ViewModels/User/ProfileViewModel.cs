@@ -1,3 +1,5 @@
+using Pawesome.Models.Dtos.Advert;
+using Pawesome.Models.ViewModels.Advert;
 using Pawesome.Models.ViewModels.Pet;
 
 namespace Pawesome.Models.ViewModels.User;
@@ -23,5 +25,7 @@ public class ProfileViewModel
     public required string Country { get; set; }
     
     public List<PetViewModel> Pets { get; set; } = new();
+    
+    public List<PetSittingAdvertDto> Adverts { get; set; } = new();
     
 }

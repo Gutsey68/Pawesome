@@ -1,7 +1,7 @@
 @model Pawesome.Models.ViewModels.User.PublicProfileViewModel
 
 @{
-    ViewData["Title"] = $"Profil de {Model.FullName}";
+    ViewData["Title"] = "Profil de " + Model.FullName;
 }
 
 <main role="main" class="container">
@@ -10,71 +10,328 @@
             @if (!string.IsNullOrEmpty(Model.Photo))
             {
                 <div class="avatar" data-size="xxl">
-                    <img class="avatar-image" data-size="xxl" src="@ImageHelper.GetPhotoUrl(Model.Photo)" alt="Image de profil de @Model.FullName"/>
+                    <img class="avatar-image" data-size="xxl" src="@ImageHelper.GetPhotoUrl(Model.Photo)"
+                         alt="Image de profil de l'utilisateur"/>
                 </div>
             }
             else
             {
                 <div class="avatar avatar-fallback" data-size="xxl">
-                    @Model.FullName?.Split(' ').FirstOrDefault()?.Substring(0, 1).ToUpper() @Model.FullName?.Split(' ').Skip(1).FirstOrDefault()?.Substring(0, 1).ToUpper()
+                    @Model.FullName.Split(' ')[0].Substring(0, 1).ToUpper() @(Model.FullName.Split(' ').Length > 1 ? Model.FullName.Split(' ')[1].Substring(0, 1).ToUpper() : "")
                 </div>
             }
         </div>
         <div class="user-name-bio">
-            <div class="user-name-verified">
-                <h1>@Model.FullName</h1>
-                @if (!string.IsNullOrEmpty(Model.Bio))
-                {
-                    <p>@Model.Bio</p>
-                }
-                @if (Model.Rating.HasValue && Model.Rating >= 4.5)
-                {
-                    <svg xmlns="http://www.w3.org/2000/svg"  viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-badge-check-icon lucide-badge-check"><path d="M3.85 8.62a4 4 0 0 1 4.78-4.77 4 4 0 0 1 6.74 0 4 4 0 0 1 4.78 4.78 4 4 0 0 1 0 6.74 4 4 0 0 1-4.77 4.78 4 4 0 0 1-6.75 0 4 4 0 0 1-4.78-4.77 4 4 0 0 1 0-6.76Z"/><path d="m9 12 2 2 4-4"/></svg>
-                }
-            </div>
-            <p>@Model.Bio</p>
+            <h1>@Model.FullName</h1>
+            @if (!string.IsNullOrEmpty(Model.Bio))
+            {
+                <p>@Model.Bio</p>
+            }
             @if (Model.Rating.HasValue)
             {
                 <p class="info-value star-rating">@Html.DisplayStars(Model.Rating)</p>
             }
             <p class="member-since">Membre depuis le @Model.CreatedAt.ToString("d MMMM yyyy")</p>
         </div>
-        <div class="profile-actions">
-            @if (!Model.IsCurrentUser)
-            {
-                <a href="#" class="button" data-variant="outline" data-size="xxs">
-                    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-flag-icon lucide-flag"><path d="M4 15s1-1 4-1 5 2 8 2 4-1 4-1V3s-1 1-4 1-5-2-8-2-4 1-4 1z"/><line x1="4" x2="4" y1="22" y2="15"/></svg>
-                    Signaler
-                </a>
-            }
-        </div>
     </div>
-    <h2 class="section-title">Animaux</h2>
-    <div class="profile-pets">
-        @if (Model.Pets != null && Model.Pets.Any())
-        {
+
+    @if (Model.Pets != null && Model.Pets.Any())
+    {
+        <h2 class="section-title">Animaux</h2>
+        <div class="profile-pets">
             @foreach (var pet in Model.Pets)
             {
-                <a asp-controller="Pet" asp-action="Details" asp-route-id="@pet.Id" class="pet-card-link">
-                    <div class="pet-card">
-                        <div class="pet-image">
-                            <img src="@ImageHelper.GetPetPhotoUrl(pet.Photo)" alt="@pet.Name" />
-                        </div>
-                        <div class="pet-info">
-                            <div class="pet-header">
-                                <h3 class="pet-name">@pet.Name</h3>
-                            </div>
-                            <p class="badge" data-variant="@pet.Species">@pet.Species</p>
-                        </div>
+                <div class="pet-card">
+                    <div class="pet-image">
+                        <img src="@ImageHelper.GetPetPhotoUrl(pet.Photo)" alt="@pet.Name"/>
                     </div>
-                </a>
+                    <div class="pet-info">
+                        <div class="pet-header">
+                            <h3 class="pet-name">@pet.Name</h3>
+                        </div>
+                        <p class="badge" data-variant="@pet.Species">@pet.Species</p>
+                    </div>
+                </div>
             }
+        </div>
+    }
+
+    <section class="user-adverts-section">
+        <h2 class="section-title">Annonces</h2>
+        <div class="tabs-container">
+            <div class="tabs-list" role="tablist">
+                <button class="tab active" role="tab" aria-selected="true" data-type="all">Toutes</button>
+                <button class="tab" role="tab" aria-selected="false" data-type="offers">Offres</button>
+                <button class="tab" role="tab" aria-selected="false" data-type="requests">Demandes</button>
+            </div>
+        </div>
+
+        @if (!Model.Adverts.Any())
+        {
+            <div class="no-adverts">
+                <svg xmlns="http://www.w3.org/2000/svg" width="48" height="48" viewBox="0 0 24 24" fill="none"
+                     stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"
+                     class="lucide lucide-clipboard-list">
+                    <rect width="8" height="4" x="8" y="2" rx="1" ry="1"/>
+                    <path d="M16 4h2a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2V6a2 2 0 0 1 2-2h2"/>
+                    <path d="M12 11h4"/>
+                    <path d="M12 16h4"/>
+                    <path d="M8 11h.01"/>
+                    <path d="M8 16h.01"/>
+                </svg>
+                <p>Cet utilisateur n'a pas encore d'annonces</p>
+            </div>
         }
         else
         {
-            <div class="no-pets">
-                <p>Cet utilisateur n'a pas encore ajouté d'animal.</p>
+            <div id="all-adverts" class="adverts-content active">
+                <div class="adverts-grid">
+                    @foreach (var advert in Model.Adverts)
+                    {
+                        <div class="advert-card @(advert.IsPetSitter ? "pet-sitter-offer" : "pet-sitter-request")">
+                            <div class="advert-header">
+                                <h2 class="advert-title">
+                                    @(advert.IsPetSitter ? "Offre de pet sitting" : "Recherche d'un pet sitter")
+                                </h2>
+                                <span class="badge"
+                                      data-variant="@(advert.Status == "pending" ? "warning" : (advert.Status == "accepted" ? "success" : (advert.Status == "completed" ? "info" : "error")))">
+                                    @(advert.Status == "pending" ? "En attente" : (advert.Status == "accepted" ? "Acceptée" : (advert.Status == "completed" ? "Terminée" : "Annulée")))
+                                </span>
+                            </div>
+                            <div class="advert-content">
+                                <div class="advert-info">
+                                    <div class="advert-date">
+                                        <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18"
+                                             viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
+                                             stroke-linecap="round" stroke-linejoin="round"
+                                             class="lucide lucide-calendar-days">
+                                            <rect width="18" height="18" x="3" y="4" rx="2" ry="2"/>
+                                            <line x1="16" x2="16" y1="2" y2="6"/>
+                                            <line x1="8" x2="8" y1="2" y2="6"/>
+                                            <line x1="3" x2="21" y1="10" y2="10"/>
+                                            <path d="M8 14h.01"/>
+                                            <path d="M12 14h.01"/>
+                                            <path d="M16 14h.01"/>
+                                            <path d="M8 18h.01"/>
+                                            <path d="M12 18h.01"/>
+                                            <path d="M16 18h.01"/>
+                                        </svg>
+                                        <span>Du @advert.StartDate.ToString("dd/MM/yyyy") au @advert.EndDate.ToString("dd/MM/yyyy")</span>
+                                    </div>
+                                    <div class="advert-price">
+                                        <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18"
+                                             viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
+                                             stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-euro">
+                                            <path d="M4 10h12"/>
+                                            <path d="M4 14h9"/>
+                                            <path
+                                                d="M19 6a7.7 7.7 0 0 0-5.2-2A7.9 7.9 0 0 0 6 12c0 4.4 3.5 8 7.8 8 2 0 3.8-.8 5.2-2"/>
+                                        </svg>
+                                        <span>@advert.Amount.ToString("C")</span>
+                                    </div>
+                                </div>
+                                <a asp-controller="Advert" asp-action="Details" asp-route-id="@advert.Id" class="button"
+                                   data-variant="outline" data-size="sm">Voir détails</a>
+                            </div>
+                            <div class="advert-footer">
+                                <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24"
+                                     fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
+                                     stroke-linejoin="round" class="lucide lucide-clock">
+                                    <circle cx="12" cy="12" r="10"/>
+                                    <polyline points="12 6 12 12 16 14"/>
+                                </svg>
+                                <span>Publiée le @advert.CreatedAt.ToString("dd/MM/yyyy")</span>
+                            </div>
+                        </div>
+                    }
+                </div>
+            </div>
+
+            <div id="offers-adverts" class="adverts-content">
+                <div class="adverts-grid">
+                    @foreach (var advert in Model.Adverts.Where(a => a.IsPetSitter))
+                    {
+                        <div class="advert-card pet-sitter-offer">
+                            <div class="advert-header">
+                                <h2 class="advert-title">Offre de pet sitting</h2>
+                                <span class="badge"
+                                      data-variant="@(advert.Status == "pending" ? "warning" : (advert.Status == "accepted" ? "success" : (advert.Status == "completed" ? "info" : "error")))">
+                                    @(advert.Status == "pending" ? "En attente" : (advert.Status == "accepted" ? "Acceptée" : (advert.Status == "completed" ? "Terminée" : "Annulée")))
+                                </span>
+                            </div>
+                            <div class="advert-content">
+                                <div class="advert-info">
+                                    <div class="advert-date">
+                                        <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18"
+                                             viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
+                                             stroke-linecap="round" stroke-linejoin="round"
+                                             class="lucide lucide-calendar-days">
+                                            <rect width="18" height="18" x="3" y="4" rx="2" ry="2"/>
+                                            <line x1="16" x2="16" y1="2" y2="6"/>
+                                            <line x1="8" x2="8" y1="2" y2="6"/>
+                                            <line x1="3" x2="21" y1="10" y2="10"/>
+                                            <path d="M8 14h.01"/>
+                                            <path d="M12 14h.01"/>
+                                            <path d="M16 14h.01"/>
+                                            <path d="M8 18h.01"/>
+                                            <path d="M12 18h.01"/>
+                                            <path d="M16 18h.01"/>
+                                        </svg>
+                                        <span>Du @advert.StartDate.ToString("dd/MM/yyyy") au @advert.EndDate.ToString("dd/MM/yyyy")</span>
+                                    </div>
+                                    <div class="advert-price">
+                                        <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18"
+                                             viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
+                                             stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-euro">
+                                            <path d="M4 10h12"/>
+                                            <path d="M4 14h9"/>
+                                            <path
+                                                d="M19 6a7.7 7.7 0 0 0-5.2-2A7.9 7.9 0 0 0 6 12c0 4.4 3.5 8 7.8 8 2 0 3.8-.8 5.2-2"/>
+                                        </svg>
+                                        <span>@advert.Amount.ToString("C")</span>
+                                    </div>
+                                </div>
+                                <a asp-controller="Advert" asp-action="Details" asp-route-id="@advert.Id" class="button"
+                                   data-variant="outline" data-size="sm">Voir détails</a>
+                            </div>
+                            <div class="advert-footer">
+                                <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24"
+                                     fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
+                                     stroke-linejoin="round" class="lucide lucide-clock">
+                                    <circle cx="12" cy="12" r="10"/>
+                                    <polyline points="12 6 12 12 16 14"/>
+                                </svg>
+                                <span>Publiée le @advert.CreatedAt.ToString("dd/MM/yyyy")</span>
+                            </div>
+                        </div>
+                    }
+                    @if (!Model.Adverts.Any(a => a.IsPetSitter))
+                    {
+                        <div class="no-adverts" style="grid-column: 1 / -1;">
+                            <svg xmlns="http://www.w3.org/2000/svg" width="48" height="48" viewBox="0 0 24 24"
+                                 fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
+                                 stroke-linejoin="round" class="lucide lucide-clipboard-list">
+                                <rect width="8" height="4" x="8" y="2" rx="1" ry="1"/>
+                                <path d="M16 4h2a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2V6a2 2 0 0 1 2-2h2"/>
+                                <path d="M12 11h4"/>
+                                <path d="M12 16h4"/>
+                                <path d="M8 11h.01"/>
+                                <path d="M8 16h.01"/>
+                            </svg>
+                            <p>Cet utilisateur n'a pas encore d'offres de services</p>
+                        </div>
+                    }
+                </div>
+            </div>
+
+            <div id="requests-adverts" class="adverts-content">
+                <div class="adverts-grid">
+                    @foreach (var advert in Model.Adverts.Where(a => !a.IsPetSitter))
+                    {
+                        <div class="advert-card pet-sitter-request">
+                            <div class="advert-header">
+                                <h2 class="advert-title">Recherche d'un pet sitter</h2>
+                                <span class="badge"
+                                      data-variant="@(advert.Status == "pending" ? "warning" : (advert.Status == "accepted" ? "success" : (advert.Status == "completed" ? "info" : "error")))">
+                                    @(advert.Status == "pending" ? "En attente" : (advert.Status == "accepted" ? "Acceptée" : (advert.Status == "completed" ? "Terminée" : "Annulée")))
+                                </span>
+                            </div>
+                            <div class="advert-content">
+                                <div class="advert-info">
+                                    <div class="advert-date">
+                                        <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18"
+                                             viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
+                                             stroke-linecap="round" stroke-linejoin="round"
+                                             class="lucide lucide-calendar-days">
+                                            <rect width="18" height="18" x="3" y="4" rx="2" ry="2"/>
+                                            <line x1="16" x2="16" y1="2" y2="6"/>
+                                            <line x1="8" x2="8" y1="2" y2="6"/>
+                                            <line x1="3" x2="21" y1="10" y2="10"/>
+                                            <path d="M8 14h.01"/>
+                                            <path d="M12 14h.01"/>
+                                            <path d="M16 14h.01"/>
+                                            <path d="M8 18h.01"/>
+                                            <path d="M12 18h.01"/>
+                                            <path d="M16 18h.01"/>
+                                        </svg>
+                                        <span>Du @advert.StartDate.ToString("dd/MM/yyyy") au @advert.EndDate.ToString("dd/MM/yyyy")</span>
+                                    </div>
+                                    <div class="advert-price">
+                                        <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18"
+                                             viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
+                                             stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-euro">
+                                            <path d="M4 10h12"/>
+                                            <path d="M4 14h9"/>
+                                            <path
+                                                d="M19 6a7.7 7.7 0 0 0-5.2-2A7.9 7.9 0 0 0 6 12c0 4.4 3.5 8 7.8 8 2 0 3.8-.8 5.2-2"/>
+                                        </svg>
+                                        <span>@advert.Amount.ToString("C")</span>
+                                    </div>
+                                </div>
+                                <a asp-controller="Advert" asp-action="Details" asp-route-id="@advert.Id" class="button"
+                                   data-variant="outline" data-size="sm">Voir détails</a>
+                            </div>
+                            <div class="advert-footer">
+                                <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24"
+                                     fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
+                                     stroke-linejoin="round" class="lucide lucide-clock">
+                                    <circle cx="12" cy="12" r="10"/>
+                                    <polyline points="12 6 12 12 16 14"/>
+                                </svg>
+                                <span>Publiée le @advert.CreatedAt.ToString("dd/MM/yyyy")</span>
+                            </div>
+                        </div>
+                    }
+                    @if (!Model.Adverts.Any(a => !a.IsPetSitter))
+                    {
+                        <div class="no-adverts" style="grid-column: 1 / -1;">
+                            <svg xmlns="http://www.w3.org/2000/svg" width="48" height="48" viewBox="0 0 24 24"
+                                 fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
+                                 stroke-linejoin="round" class="lucide lucide-clipboard-list">
+                                <rect width="8" height="4" x="8" y="2" rx="1" ry="1"/>
+                                <path d="M16 4h2a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2V6a2 2 0 0 1 2-2h2"/>
+                                <path d="M12 11h4"/>
+                                <path d="M12 16h4"/>
+                                <path d="M8 11h.01"/>
+                                <path d="M8 16h.01"/>
+                            </svg>
+                            <p>Cet utilisateur n'a pas encore de demandes de pet sitting</p>
+                        </div>
+                    }
+                </div>
             </div>
         }
-    </div>
+    </section>
 </main>
+
+@section Scripts {
+    <script>
+        document.addEventListener('DOMContentLoaded', function () {
+            const tabs = document.querySelectorAll('.tab');
+
+            tabs.forEach(tab => {
+                tab.addEventListener('click', function () {
+                    tabs.forEach(t => {
+                        t.classList.remove('active');
+                        t.setAttribute('aria-selected', 'false');
+                    });
+                    this.classList.add('active');
+                    this.setAttribute('aria-selected', 'true');
+
+                    document.querySelectorAll('.adverts-content').forEach(content => {
+                        content.classList.remove('active');
+                    });
+
+                    const type = this.dataset.type;
+                    if (type === 'all') {
+                        document.getElementById('all-adverts').classList.add('active');
+                    } else if (type === 'offers') {
+                        document.getElementById('offers-adverts').classList.add('active');
+                    } else if (type === 'requests') {
+                        document.getElementById('requests-adverts').classList.add('active');
+                    }
+                });
+            });
+        });
+    </script>
+}

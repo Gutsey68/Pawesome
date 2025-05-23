@@ -2,6 +2,7 @@ using System.Security.Claims;
 using AutoMapper;
 using Microsoft.AspNetCore.Identity;
 using Pawesome.Interfaces;
+using Pawesome.Models.Dtos.Advert;
 using Pawesome.Models.Entities;
 using Pawesome.Models.ViewModels;
 using Pawesome.Models.ViewModels.Pet;
@@ -70,8 +71,13 @@ public class UserService : IUserService
     public async Task<ProfileViewModel?> GetUserProfileAsync(int userId)
     {
         var user = await _userRepository.GetUserByIdWithDetailsAsync(userId);
-
-        return user == null ? null : _mapper.Map<ProfileViewModel>(user);
+    
+        if (user == null)
+            return null;
+    
+        var profileViewModel = _mapper.Map<ProfileViewModel>(user);
+    
+        return profileViewModel;
     }
 
     /// <summary>
@@ -167,6 +173,7 @@ public class UserService : IUserService
             Rating = user.Rating,
             CreatedAt = user.CreatedAt,
             Pets = _mapper.Map<IEnumerable<PetViewModel>>(user.Pets),
+            Adverts = _mapper.Map<List<PetSittingAdvertDto>>(user.Adverts),
             IsCurrentUser = userId == currentUserId
         };
 

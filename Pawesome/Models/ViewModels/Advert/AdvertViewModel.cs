@@ -37,6 +37,7 @@ public class AdvertViewModel
     // Liste des utilisateurs les mieux notés
     public bool BestRatedUsers { get; set; }
     public int BestRatedUsersCount { get; set; }
+    
 
     public required IAdvertSortingOptions SortOptions { get; set; }
 }
