@@ -2,6 +2,8 @@
   pawesome:
     env_file:
       - pawesome.env
+    environment:
+      - ASPNETCORE_ENVIRONMENT=Production
     image: ghcr.io/gutsey68/pawesome:main
     restart: unless-stopped
     labels:
