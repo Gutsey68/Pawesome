@@ -1,6 +1,6 @@
-namespace Pawesome.Models.ViewModels;
+namespace Pawesome.Models.Dtos.AnimalType;
 
-public class AnimalTypeViewModel
+public class AnimalTypeDto
 {
     public int Id { get; set; }
     public required string Name { get; set; }

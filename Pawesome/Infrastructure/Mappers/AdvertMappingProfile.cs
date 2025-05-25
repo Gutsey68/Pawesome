@@ -2,6 +2,7 @@ using AutoMapper;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Pawesome.Models;
 using Pawesome.Models.DTOs;
+using Pawesome.Models.DTOs.Address;
 using Pawesome.Models.Dtos.Advert;
 using Pawesome.Models.Entities;
 using Pawesome.Models.ViewModels;
@@ -13,21 +14,6 @@ public class AdvertMappingProfile : Profile
 {
     public AdvertMappingProfile()
     {
-        CreateMap<Advert, PetSittingAdvertDto>()
-            .ForMember(dest => dest.Owner, opt =>
-                opt.MapFrom((src, _, _, context) => context.Mapper.Map<UserSimpleDto>(src.User)))
-            .ForMember(dest => dest.PetCartViewModels, opt =>
-                opt.MapFrom((src, _, _, context) =>
-                {
-                    return src.PetAdverts
-                        .Where(pa => pa.Pet is { AnimalType: not null })
-                        .Select(pa => context.Mapper.Map<PetSimpleDto>(pa.Pet))
-                        .ToList();
-                }))
-            .ForMember(dest => dest.IsPetSitter, opt =>
-                opt.MapFrom(src => src.Status.Contains("offer")))
-            .ForMember(dest => dest.AdditionalInformation, opt => opt.MapFrom(src => src.AdditionalInformation));
-        
         CreateMap<PetSittingRequestViewModel, Advert>()
             .ForMember(dest => dest.StartDate, opt => opt.MapFrom(src =>
                 src.StartDate == default ? DateTime.UtcNow : DateTime.SpecifyKind(src.StartDate, DateTimeKind.Utc)))
@@ -63,7 +49,36 @@ public class AdvertMappingProfile : Profile
             .ForMember(dest => dest.Name, opt => opt.MapFrom(src => src.Name))
             .ForMember(dest => dest.Species, opt => opt.MapFrom(src => src.AnimalTypeName))
             .ForMember(dest => dest.Photo, opt => opt.MapFrom(src => src.Photo))
-            .ForMember(dest => dest.Info, opt => opt.MapFrom(src => src.Info));
+            .ForMember(dest => dest.Info, opt => opt.MapFrom(src => src.Info))
+            .ForMember(dest => dest.Species, opt => opt.MapFrom(src => src.AnimalTypeName));
+
+        CreateMap<Advert, PetSittingAdvertDto>()
+            .ForMember(dest => dest.Owner, opt =>
+                opt.MapFrom((src, _, _, context) => context.Mapper.Map<UserSimpleDto>(src.User)))
+            .ForMember(dest => dest.Pets, opt =>
+                opt.MapFrom((src, _, _, context) =>
+                {
+                    return src.PetAdverts
+                        .Where(pa => pa.Pet is { AnimalType: not null })
+                        .Select(pa => context.Mapper.Map<PetSimpleDto>(pa.Pet))
+                        .ToList();
+                }))
+            .ForMember(dest => dest.IsPetSitter, opt =>
+                opt.MapFrom(src => src.Status.Contains("offer")))
+            .ForMember(dest => dest.AdditionalInformation, opt =>
+                opt.MapFrom(src => src.AdditionalInformation))
+            .ForMember(dest => dest.City, opt =>
+                opt.MapFrom(src => src.Address != null && src.Address.City != null ? src.Address.City.Name : null))
+            .ForMember(dest => dest.Address, opt =>
+                opt.MapFrom(src => src.Address != null ? new AddressDto
+                {
+                    Id = src.AddressId,
+                    StreetAddress = src.Address.StreetAddress,
+                    CityId = src.Address.CityId,
+                    CityName = src.Address.City != null ? src.Address.City.Name ?? string.Empty : string.Empty,
+                    PostalCode = src.Address.City != null ? src.Address.City.PostalCode ?? string.Empty : string.Empty,
+                    CountryId = src.Address.City != null ? src.Address.City.CountryId : 0,
+                    CountryName = src.Address.City != null && src.Address.City.Country != null ? src.Address.City.Country.Name ?? string.Empty : string.Empty
+                } : null));
     }
-    
 }

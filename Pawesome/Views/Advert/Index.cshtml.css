@@ -76,7 +76,7 @@ hr {
 .filtre-section input[type="radio"] {
     accent-color: var(--color-primary-9);
     width: 18px;
-    height: 18px;  
+    height: 18px;
 }
 
 .filtre-section input[type="radio"] {
@@ -224,4 +224,3 @@ h3 {
 .card-container {
     display: grid;
 }
-

@@ -2,6 +2,7 @@ using AutoMapper;
 using Pawesome.Interfaces;
 using Pawesome.Models;
 using Pawesome.Models.ViewModels;
+using Pawesome.Models.ViewModels.AnimalType;
 
 namespace Pawesome.Services;
 

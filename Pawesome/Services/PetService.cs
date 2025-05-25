@@ -3,6 +3,7 @@ using Pawesome.Interfaces;
 using Pawesome.Models;
 using Pawesome.Models.Entities;
 using Pawesome.Models.ViewModels;
+using Pawesome.Models.ViewModels.AnimalType;
 using Pawesome.Models.ViewModels.Pet;
 
 namespace Pawesome.Services;

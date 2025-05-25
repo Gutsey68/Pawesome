@@ -1,209 +1,241 @@
 @model Pawesome.Models.ViewModels.Advert.AdvertViewModel
-    
-    <main role="main">
-        <div class="container mt-4">
-            <div class="d-flex justify-content-between align-items-center mb-4">
-                <h1>Annonces de Pet Sitting</h1>
-                <div>
-                    <a asp-action="CreateRequest" class="btn btn-primary me-2">Demander un pet sitter</a>
-                    <a asp-action="CreateOffer" class="btn btn-success">Proposer mes services</a>
+
+<main role="main">
+    <div class="container mt-4">
+        <div class="d-flex justify-content-between align-items-center mb-4">
+            <h1>Annonces de Pet Sitting</h1>
+            <div>
+                <a asp-action="CreateRequest" class="btn btn-primary me-2">Demander un pet sitter</a>
+                <a asp-action="CreateOffer" class="btn btn-success">Proposer mes services</a>
+            </div>
+        </div>
+        <div class="container-body">
+            <div class="container-left">
+                <div class="filtres">
+                    <!-- Filtres -->
+                    <form id="filterForm" method="get" asp-controller="Advert" asp-action="Index">
+                        <input type="hidden" name="isPetSitter" value="@ViewContext.RouteData.Values["isPetSitter"]" />
+                        <input type="hidden" asp-for="IsPetSitterOffer" />
+                        
+                        <section class="filtre-section">
+                            <div class="filtre-header">
+                                <h3>Trier par</h3>
+                                <a href="@Url.Action("Index","Advert", new { isPetSitter = ViewContext.RouteData.Values["isPetSitter"] })" class="reset">Tout effacer</a>
+                            </div>
+                            <div class="filtre-options">
+                                <label>
+                                    <input type="radio" name="SortOption" value="newest" 
+                                           @(Model.SortOption == "newest" ? "checked" : "")>
+                                    Plus Récentes
+                                    <span><svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="var(--color-primary-12)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-clock-arrow-up-icon lucide-clock-arrow-up"><path d="M13.228 21.925A10 10 0 1 1 21.994 12.338"/><path d="M12 6v6l1.562.781"/><path d="m14 18 4-4 4 4"/><path d="M18 22v-8"/></svg></span>
+                                </label>
+
+                                <label>
+                                    <input type="radio" name="SortOption" value="oldest" 
+                                           @(Model.SortOption == "oldest" ? "checked" : "")>
+                                    Plus Anciennes
+                                    <span><svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="var(--color-primary-12)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-clock-arrow-down-icon lucide-clock-arrow-down"><path d="M12.338 21.994A10 10 0 1 1 21.925 13.227"/><path d="M12 6v6l2 1"/><path d="m14 18 4 4 4-4"/><path d="M18 14v8"/></svg></span>
+                                </label>
+
+                                <label>
+                                    <input type="radio" name="SortOption" value="date_start_asc" 
+                                           @(Model.SortOption == "date_start_asc" ? "checked" : "")>
+                                    Début proche
+                                    <span><svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="var(--color-primary-12)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-clock-fading-icon lucide-clock-fading"><path d="M12 2a10 10 0 0 1 7.38 16.75"/><path d="M12 6v6l4 2"/><path d="M2.5 8.875a10 10 0 0 0-.5 3"/><path d="M2.83 16a10 10 0 0 0 2.43 3.4"/><path d="M4.636 5.235a10 10 0 0 1 .891-.857"/><path d="M8.644 21.42a10 10 0 0 0 7.631-.38"/></svg></span>
+                                </label>
+                                
+                                <label>
+                                    <input type="radio" name="SortOption" value="price_asc" 
+                                           @(Model.SortOption == "price_asc" ? "checked" : "")>
+                                    Prix croissant
+                                    <span><svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="var(--color-primary-12)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 2v20M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"/></svg></span>
+                                </label>
+                                
+                                <label>
+                                    <input type="radio" name="SortOption" value="price_desc" 
+                                           @(Model.SortOption == "price_desc" ? "checked" : "")>
+                                    Prix décroissant
+                                    <span><svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="var(--color-primary-12)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 22V2M17 6H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"/></svg></span>
+                                </label>
+                            </div>
+                        </section>
+                        <hr>
+
+                        <!-- Par ville -->
+                        <section class="filtre-section">
+                            <h3>Par ville</h3>
+                            <div class="mt-2">
+                                <input type="text" asp-for="City" class="form-control" placeholder="Entrez une ville">
+                            </div>
+                        </section>
+                        
+                        <hr>
+
+                        <!-- Par prix -->
+                        <section class="filtre-section">
+                            <h3>Par prix</h3>
+                            <div class="prix-slider">
+                                <input id="minPrice" type="range" min="0" max="1000" value="@(Model.MinPrice ?? 0)">
+                                <input id="maxPrice" type="range" min="0" max="1000" value="@(Model.MaxPrice ?? 1000)">
+                            </div>
+                            <div class="prix-valeurs">
+                                <input id="minPriceText" type="text" name="MinPrice" value="@(Model.MinPrice ?? 0)">
+                                <input id="maxPriceText" type="text" name="MaxPrice" value="@(Model.MaxPrice ?? 1000)">
+                            </div>
+                        </section>
+
+                        <hr>
+                        
+                        <!-- Par date -->
+                        <section class="filtre-section">
+                            <h3>Par date</h3>
+                            <div class="mb-2">
+                                <label>Début à partir du:</label>
+                                <input type="date" asp-for="StartDateFrom" class="form-control">
+                            </div>
+                            <div>
+                                <label>Fin jusqu'au:</label>
+                                <input type="date" asp-for="EndDateTo" class="form-control">
+                            </div>
+                        </section>
+
+                        <hr>
+
+                        <!-- Par type d'animal -->
+                        <section class="filtre-section">
+                            <h3>Par type d'animal</h3>
+                            @if (Model.AnimalTypes != null && Model.AnimalTypes.Any())
+                            {
+                                <div id="animalCheckboxes">
+                                    @foreach (var option in Model.AnimalTypes)
+                                    {
+                                        <label>
+                                            <input type="checkbox" name="AnimalTypeIds" value="@option.AnimalType" 
+                                                  class="animal-checkbox" 
+                                                  @(option.IsSelected ? "checked" : "")>
+                                            @option.AnimalType.Name
+                                        </label>
+                                    }
+                                </div>
+                            }
+                            else
+                            {
+                                <p>Aucun type d'animal disponible.</p>
+                            }
+                        </section>
+
+                        <hr>
+
+                        <button type="submit" class="button-submission">Rechercher</button>
+                    </form>
                 </div>
             </div>
-            <div class="container-body">
-                <div class="container-left">
-                    <div class="filtres">
-                        <!-- Trier par -->
-                        <form id="sortingForm" method="get" asp-controller="Advert" asp-action="Index">
-                            <input type="hidden" name="isPetSitter" value="@ViewContext.RouteData.Values["isPetSitter"]" />
-                            
-                            <section class="filtre-section">
-                                <div class="filtre-header">
-                                    <h3>Trier par</h3>
-                                    <a href="@Url.Action("Index","Advert", new { isPetSitter = ViewContext.RouteData.Values["isPetSitter"] })" class="reset">Tout effacer</a>
-                                </div>
-                                <div class="filtre-options">
-                                    <label>
-                                        <input type="radio" name="SortOptions.SortBy" value="recent" 
-                                               @(Model.SortOptions?.SortBy == "recent" ? "checked" : "")>
-                                        Plus Récentes
-                                        <span><svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="var(--color-primary-12)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-clock-arrow-up-icon lucide-clock-arrow-up"><path d="M13.228 21.925A10 10 0 1 1 21.994 12.338"/><path d="M12 6v6l1.562.781"/><path d="m14 18 4-4 4 4"/><path d="M18 22v-8"/></svg></span>
-                                    </label>
-    
-                                    <label>
-                                        <input type="radio" name="SortOptions.SortBy" value="oldest" 
-                                               @(Model.SortOptions?.SortBy == "oldest" ? "checked" : "")>
-                                        Plus Anciennes
-                                        <span><svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="var(--color-primary-12)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-clock-arrow-down-icon lucide-clock-arrow-down"><path d="M12.338 21.994A10 10 0 1 1 21.925 13.227"/><path d="M12 6v6l2 1"/><path d="m14 18 4 4 4-4"/><path d="M18 14v8"/></svg></span>
-                                    </label>
-    
-                                    <label>
-                                        <input type="radio" name="SortOptions.SortBy" value="soon" 
-                                               @(Model.SortOptions?.SortBy == "soon" ? "checked" : "")>
-                                        Début proche
-                                        <span><svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="var(--color-primary-12)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-clock-fading-icon lucide-clock-fading"><path d="M12 2a10 10 0 0 1 7.38 16.75"/><path d="M12 6v6l4 2"/><path d="M2.5 8.875a10 10 0 0 0-.5 3"/><path d="M2.83 16a10 10 0 0 0 2.43 3.4"/><path d="M4.636 5.235a10 10 0 0 1 .891-.857"/><path d="M8.644 21.42a10 10 0 0 0 7.631-.38"/></svg></span>
-                                    </label>
-                                    
-                                    <input type="hidden" name="SortOptions.SortDirection" value="desc" />
-                                </div>
-                            </section>
-                            <hr>
-    
-                            <!-- Par prix -->
-                            <section class="filtre-section">
-                                <h3>Par prix</h3>
-                                <div class="prix-slider">
-                                    <input id="minPrice" type="range" min="@Model.MinPriceBeforeReload" max="@Model.MaxPriceBeforeReload">
-                                    <input id="maxPrice" type="range" min="@Model.MinPriceBeforeReload" max="@Model.MaxPriceBeforeReload">
-                                </div>
-                                <div class="prix-valeurs">
-                                    <input id="minPriceText" type="text" name="MinPrice" value="@Model.MinPrice">
-                                    <input id="maxPriceText" type="text" name="MaxPrice" value="@Model.MaxPrice">
-                                </div>
-                            </section>
-    
-                            <hr>
-    
-                            <!-- Par popularité -->
-                            <section class="filtre-section">
-                                <h3>Par popularité</h3>
-                                <label>
-                                    <input type="checkbox" name="MostViewed" value="true" @(Model.MostViewed ? "checked" : "")> 
-                                    Les plus vue <span>@Model.ViewCountTotal</span>
-                                </label>
-                                <label>
-                                    <input type="checkbox" name="MostContracted" value="true" @(Model.MostContracted ? "checked" : "")> 
-                                    Les plus contractées <span>@Model.ContractCountTotal</span>
-                                </label>
-                                <label>
-                                    <input type="checkbox" name="BestRated" value="true" @(Model.BestRated ? "checked" : "")> 
-                                     Les mieux notées <span>@Model.RatingCountTotal</span>
-                                </label>
-                            </section>
-    
-                            <hr>
-    
-                            <!-- Par type d'animal -->
-                            <section class="filtre-section">
-                                <h3>Par type d'animal</h3>
-                                <input type="text" id="selectedAnimals" class="form-control" readonly 
-                                       placeholder="Sélectionnez des animaux" 
-                                       value="@(Model.SelectedAnimalTypes != null ? string.Join(", ", Model.SelectedAnimalTypes) : "")">
-                                
-                                <div id="animalCheckboxes">
-                                    @if (Model.AnimalTypes != null && Model.AnimalTypes.Any())
-                                    {
-                                        @foreach (var animalType in Model.AnimalTypes)
-                                        {
-                                            <label>
-                                                <input type="checkbox" name="SelectedAnimalTypes" value="@animalType.AnimalType.Name" 
-                                                      class="animal-checkbox" 
-                                                      @(Model.SelectedAnimalTypes != null && Model.SelectedAnimalTypes.Contains(animalType.AnimalType.Name) ? "checked" : "")>
-                                                @animalType.AnimalType.Name
-                                            </label>
-                                        }
-                                    }
-                                    else
-                                    {
-                                        <p>Aucun type d'animal disponible.</p>
-                                    }
-                                </div>
-                            </section>
-    
-                            <hr>
-    
-                            <!-- Par utilisateur -->
-                            <section class="filtre-section">
-                                <h3>Par utilisateur</h3>
-                                <label><input type="checkbox" name="VerifiedOnly" value="true" @(Model.VerifiedUsers ? "checked" : "")> 
-                                    Profil Vérifiée
-                                    <span>@Model.VerifiedUsersCount
-                                        <svg width="20" height="20" viewBox="0 0 25 24" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M20.5 13C20.5 18 17 20.5 12.84 21.95C12.6222 22.0238 12.3855 22.0202 12.17 21.94C8 20.5 4.5 18 4.5 13V5.99996C4.5 5.73474 4.60536 5.48039 4.79289 5.29285C4.98043 5.10532 5.23478 4.99996 5.5 4.99996C7.5 4.99996 10 3.79996 11.74 2.27996C11.9519 2.09896 12.2214 1.99951 12.5 1.99951C12.7786 1.99951 13.0481 2.09896 13.26 2.27996C15.01 3.80996 17.5 4.99996 19.5 4.99996C19.7652 4.99996 20.0196 5.10532 20.2071 5.29285C20.3946 5.48039 20.5 5.73474 20.5 5.99996V13Z" stroke="var(--color-primary-12)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
-                                    </span>
-                                </label>
-                                <label><input type="checkbox" name="BestRatedUsers" value="true" @(Model.BestRatedUsers ? "checked" : "")> 
-                                    Meilleur notes utilisateur
-                                    <span>@Model.BestRatedUsersCount
-                                        <svg width="20" height="20" viewBox="0 0 21 20" fill="none" xmlns="http://www.w3.org/2000/svg" style="border-radius: 1px;"><path d="M12.0635 7.04785C12.3044 7.78949 12.9956 8.29199 13.7754 8.29199H18.834L14.7412 11.2656C14.1499 11.6954 13.8815 12.4367 14.0488 13.1387L14.0879 13.2783L15.6514 18.0898L11.5576 15.1162L11.4375 15.0352C10.8626 14.6842 10.1374 14.6842 9.5625 15.0352L9.44238 15.1162L5.34766 18.0898L6.91211 13.2783C7.13805 12.5829 6.92019 11.8251 6.37207 11.3555L6.25879 11.2656L2.16602 8.29199H7.22461C7.95551 8.29199 8.6083 7.85058 8.88574 7.18457L8.93652 7.04785L10.5 2.23633L12.0635 7.04785Z" stroke="var(--color-primary-12)"  stroke-width="2"/></svg>
-                                    </span>
-                                </label>
-                            </section>
-    
-                            <button type="submit" class="button-submission">Rechercher</button>
-                        </form>
-                    </div>
-                </div>
-    
-                <div class="container-right">
-                    <ul class="nav nav-tabs">
-                        <li class="nav-item">
-                            <a class="nav-link @(ViewContext.RouteData.Values["isPetSitter"]?.ToString() == "false" ? "active" : "")"
-                               asp-action="Index" asp-route-isPetSitter="false" style="width: 100%; display: block">Demandes</a>
-                        </li>
-                        <hr/>
-                        <li class="nav-item">
-                            <a class="nav-link @(ViewContext.RouteData.Values["isPetSitter"]?.ToString() == "true" ? "active" : "")"
-                               asp-action="Index" asp-route-isPetSitter="true" style="width: 100%; display: block">Offres</a>
-                        </li>
-                    </ul>
-    
-                    <div class="grid-rows">
-                        @if (!Model.Adverts.Any())
+
+            <div class="container-right">
+                <ul class="nav nav-tabs">
+                    <li class="nav-item">
+                        <a class="nav-link @(ViewContext.RouteData.Values["isPetSitter"]?.ToString() == "false" ? "active" : "")"
+                           asp-action="Index" asp-route-isPetSitter="false" style="width: 100%; display: block">Demandes</a>
+                    </li>
+                    <hr/>
+                    <li class="nav-item">
+                        <a class="nav-link @(ViewContext.RouteData.Values["isPetSitter"]?.ToString() == "true" ? "active" : "")"
+                           asp-action="Index" asp-route-isPetSitter="true" style="width: 100%; display: block">Offres</a>
+                    </li>
+                </ul>
+
+                <div class="grid-rows">
+                    @if (!Model.Adverts.Any())
+                    {
+                        <div class="alert alert-info">
+                            Aucune annonce disponible pour le moment
+                        </div>
+                    }
+                    else
+                    {
+                        @foreach (var advert in Model.Adverts)
                         {
-                            <div class="alert alert-info">
-                                Aucune annonce disponible pour le moment
+                            <div class="card mb-3">
+                                <div class="card-header d-flex justify-content-between align-items-center">
+                                    <span class="badge bg-@(advert.IsPetSitter ? "success" : "primary")">
+                                        @(advert.IsPetSitter ? "Offre" : "Demande")
+                                    </span>
+                                    <span class="fw-bold">@advert.Amount.ToString("C")</span>
+                                </div>
+                                <div class="card-body">
+                                    <h5 class="card-title">
+                                        @if (!string.IsNullOrEmpty(advert.City))
+                                        {
+                                            <i class="bi bi-geo-alt"></i> @advert.City
+                                        }
+                                    </h5>
+                                    <p class="card-text">
+                                        <i class="bi bi-calendar-event"></i> Du @advert.StartDate.ToString("dd/MM/yyyy") au @advert.EndDate.ToString("dd/MM/yyyy")
+                                    </p>
+                                    
+                                    @if (advert.Pets.Any())
+                                    {
+                                        <div class="mb-2">
+                                            <p class="mb-1">Animaux :</p>
+                                            <div class="d-flex flex-wrap gap-1">
+                                                @foreach (var pet in advert.Pets)
+                                                {
+                                                    <span class="badge rounded-pill bg-secondary">@pet.AnimalTypeName</span>
+                                                }
+                                            </div>
+                                        </div>
+                                    }
+                                    
+                                    @if (!string.IsNullOrEmpty(advert.AdditionalInformation))
+                                    {
+                                        <p class="card-text text-muted small">
+                                            @(advert.AdditionalInformation.Length > 100 ? advert.AdditionalInformation.Substring(0, 100) + "..." : advert.AdditionalInformation)
+                                        </p>
+                                    }
+                                    
+                                    <div class="mt-3">
+                                        <a asp-action="Details" asp-route-id="@advert.Id" class="btn btn-outline-primary btn-sm">Voir les détails</a>
+                                    </div>
+                                </div>
+                                <div class="card-footer text-muted small">
+                                    <i class="bi bi-clock"></i> Publié le @advert.CreatedAt.ToString("dd/MM/yyyy")
+                                </div>
                             </div>
                         }
-                        else
-                        {
-                            @foreach (var advert in Model.Adverts)
-                            {
-                                @if (advert.PetCartViewModels == null || !advert.PetCartViewModels.Any())
-                                {
-                                    <p>Aucun animal associé à cette annonce.</p>
-                                }
-                                else
-                                {
-                                    @foreach (var petCart in advert.PetCartViewModels)
-                                    {
-                                        petCart.Photo = string.IsNullOrEmpty(petCart.Photo) ? "/images/default-pet.jpg" : "/images/pets/" + petCart.Photo;
-                                        <a class="card-container" href="@Url.Action("Details", "Advert", new { id = advert.Id, isPetSitter = ViewContext.RouteData.Values["isPetSitter"] })">
-                                            <partial name="_PetCardPartial" model="petCart" />
-                                        </a>
-                                    }
-                                }
-                            }
-                        }
-                    </div>
+                    }
                 </div>
             </div>
         </div>
-    </main>
+    </div>
+</main>
+
+<script>
+    const minPriceSlider = document.getElementById('minPrice');
+    const maxPriceSlider = document.getElementById('maxPrice');
+    const minPriceText = document.getElementById('minPriceText');
+    const maxPriceText = document.getElementById('maxPriceText');
+
+    minPriceSlider.addEventListener('input', () => {
+        minPriceText.value = minPriceSlider.value;
+        if (parseInt(minPriceSlider.value) > parseInt(maxPriceSlider.value)) {
+            maxPriceSlider.value = minPriceSlider.value;
+            maxPriceText.value = minPriceSlider.value;
+        }
+    });
+
+    maxPriceSlider.addEventListener('input', () => {
+        maxPriceText.value = maxPriceSlider.value;
+        if (parseInt(maxPriceSlider.value) < parseInt(minPriceSlider.value)) {
+            minPriceSlider.value = maxPriceSlider.value;
+            minPriceText.value = maxPriceSlider.value;
+        }
+    });
     
-    <script>
-        const minPriceSlider = document.getElementById('minPrice');
-        const maxPriceSlider = document.getElementById('maxPrice');
-        const minPriceText = document.getElementById('minPriceText');
-        const maxPriceText = document.getElementById('maxPriceText');
+    minPriceText.addEventListener('change', () => {
+        minPriceSlider.value = minPriceText.value;
+    });
     
-        minPriceSlider.addEventListener('input', () => {
-            minPriceText.value = minPriceSlider.value;
-            maxPriceSlider.min = minPriceSlider.value;
-        });
-    
-        maxPriceSlider.addEventListener('input', () => {
-            maxPriceText.value = maxPriceSlider.value;
-            minPriceSlider.max = maxPriceSlider.value;
-        });
-    
-        const checkboxes = document.querySelectorAll('.animal-checkbox');
-        const input = document.getElementById('selectedAnimals');
-    
-        checkboxes.forEach(checkbox => {
-            checkbox.addEventListener('change', () => {
-                const selected = Array.from(checkboxes)
-                    .filter(cb => cb.checked)
-                    .map(cb => cb.value);
-                input.value = selected.join(', ');
-            });
-        });
-    </script>
+    maxPriceText.addEventListener('change', () => {
+        maxPriceSlider.value = maxPriceText.value;
+    });
+</script>

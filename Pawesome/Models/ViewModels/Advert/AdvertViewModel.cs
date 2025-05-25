@@ -1,43 +1,46 @@
-using Pawesome.Interfaces;
+using System;
+using System.Collections.Generic;
+using Microsoft.AspNetCore.Mvc.Rendering;
 using Pawesome.Models.Dtos.Advert;
+using Pawesome.Models.ViewModels.AnimalType;
 
-namespace Pawesome.Models.ViewModels.Advert;
-
-public class AdvertViewModel
+namespace Pawesome.Models.ViewModels.Advert
 {
-    // Liste des annonces affichées sur la page
-    public required IEnumerable<PetSittingAdvertDto> Adverts { get; set; }
-
-    public bool IsPetSitter { get; set; }
-    // Options pour appliquer le tri
-    
-    // Liste des annonces par prix
-    public decimal MinPrice { get; set; }
-    public decimal MinPriceBeforeReload { get; set; }
-    
-    public decimal MaxPrice { get; set; }
-    public decimal MaxPriceBeforeReload { get; set; }
-    
-    // Liste des animaux de compagnie
-    public required List<AnimalTypeAdvert> AnimalTypes { get; set; }
-    public string[]? SelectedAnimalTypes { get; set; }
-    
-    // Liste des annonces les plus vues
-    public bool MostViewed { get; set; }
-    public int ViewCountTotal { get; set; }
-    public bool MostContracted { get; set; }
-    public int ContractCountTotal { get; set; }
-    public bool BestRated { get; set; }
-    public int RatingCountTotal { get; set; }
-    
-    // Liste des utilisateurs vérifiés
-    public bool VerifiedUsers { get; set; }
-    public int VerifiedUsersCount { get; set; }
-    
-    // Liste des utilisateurs les mieux notés
-    public bool BestRatedUsers { get; set; }
-    public int BestRatedUsersCount { get; set; }
-    
-
-    public required IAdvertSortingOptions SortOptions { get; set; }
+    public class AdvertViewModel
+    {
+        public List<PetSittingAdvertDto> Adverts { get; set; } = new();
+        public bool? IsPetSitterOffer { get; set; }
+        public decimal? MinPrice { get; set; }
+        public decimal? MaxPrice { get; set; }
+        public decimal MinPriceBeforeReload { get; set; } = 0;
+        public decimal MaxPriceBeforeReload { get; set; } = 1000;
+        
+        public DateTime? StartDateFrom { get; set; }
+        public DateTime? EndDateTo { get; set; }
+        public List<int>? AnimalTypeIds { get; set; } = new();
+        public string? City { get; set; }
+        public int? CityId { get; set; }
+        public int? CountryId { get; set; }
+        public string? PostalCode { get; set; }
+        public DateTime? CreatedAtFrom { get; set; }
+        public DateTime? CreatedAtTo { get; set; }
+        
+        public List<AnimalTypeViewModel>? AnimalTypes { get; set; } = new();
+        public List<string>? SelectedAnimalTypes { get; set; } = new();
+        
+        public List<SelectListItem> AnimalTypeOptions { get; set; } = new();
+        public List<SelectListItem> CityOptions { get; set; } = new();
+        public List<SelectListItem> CountryOptions { get; set; } = new();
+        
+        public string SortOption { get; set; } = "newest";
+        public List<SelectListItem> SortOptions { get; set; } = new List<SelectListItem>
+        {
+            new SelectListItem { Value = "newest", Text = "Plus récent", Selected = true },
+            new SelectListItem { Value = "oldest", Text = "Plus ancien" },
+            new SelectListItem { Value = "price_asc", Text = "Prix croissant" },
+            new SelectListItem { Value = "price_desc", Text = "Prix décroissant" },
+            new SelectListItem { Value = "date_start_asc", Text = "Date de début (croissant)" },
+            new SelectListItem { Value = "date_end_asc", Text = "Date de fin (croissant)" }
+        };
+    }
 }

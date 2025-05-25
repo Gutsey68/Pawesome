@@ -1,308 +1,253 @@
-.advert-container {
-    max-width: 1100px;
-    margin: var(--space-6) auto;
-    padding: 0;
-    display: flex;
-    flex-direction: column;
-    gap: 1.5rem;
+.advert-details {
+    margin-top: var(--space-6);
+    margin-bottom: var(--space-10);
 }
 
 .advert-header {
-    background-color: var(--color-primary-12);
-    color: white;
-    padding: 2rem;
-    border-radius: var(--radius-lg);
-    text-align: center;
-    position: relative;
-    overflow: hidden;
-    box-shadow: var(--shadow-md);
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-5);
+    margin-bottom: var(--space-6);
+    padding-bottom: var(--space-5);
+    border-bottom: 1px solid var(--color-primary-5);
 }
 
-.advert-header::before {
-    content: "";
-    position: absolute;
-    top: 0;
-    right: 0;
-    bottom: 0;
-    left: 0;
-    background: linear-gradient(135deg, rgba(255,255,255,0.1) 0%, rgba(255,255,255,0) 100%);
-    z-index: 1;
+.advert-title-status {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: var(--space-3);
 }
 
-.advert-title {
-    position: relative;
-    z-index: 2;
-    font-size: 2.25rem;
-    font-weight: 700;
+.advert-title-status h1 {
+    font-size: var(--font-size-3xl);
+    font-weight: var(--font-weight-bold);
+    color: var(--color-primary-12);
     margin: 0;
-    text-shadow: 0 2px 4px rgba(0,0,0,0.1);
 }
 
-.advert-main-card {
-    background-color: var(--color-primary-3);
-    border-radius: var(--radius-xl);
-    box-shadow: var(--shadow-md);
-    overflow: hidden;
-    transition: var(--transition);
+.advert-dates-price {
+    display: flex;
+    align-items: center;
+    justify-content: flex-start;
+    gap: var(--space-8);
+    margin-top: var(--space-3);
 }
 
-.advert-main-card:hover {
-    transform: translateY(-4px);
-    box-shadow: var(--shadow-lg);
+.advert-date, .advert-price {
+    display: flex;
+    align-items: center;
+    gap: var(--space-2);
+    color: var(--color-primary-11);
+    font-size: var(--font-size-md);
+}
+
+.advert-date svg, .advert-price svg {
+    color: var(--color-primary-9);
+}
+
+.advert-sections {
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-8);
 }
 
 .advert-section {
-    padding: 1.5rem;
+    background-color: var(--color-primary-2);
+    border-radius: var(--radius-xl);
+    padding: var(--space-6);
+    box-shadow: var(--shadow-sm);
 }
 
 .section-title {
-    display: flex;
-    align-items: center;
-    font-size: 1.25rem;
-    font-weight: 600;
+    font-size: var(--font-size-xl);
     color: var(--color-primary-12);
     margin-top: 0;
-    margin-bottom: 1.25rem;
-    padding-bottom: 0.75rem;
-    border-bottom: 2px solid var(--color-primary-12);
+    margin-bottom: var(--space-4);
+    padding-bottom: var(--space-3);
+    border-bottom: 2px solid var(--color-primary-6);
+    font-weight: var(--font-weight-medium);
 }
 
-.section-title::before {
-    content: "";
-    display: block;
-    width: 0.30rem;
-    height: 1.25rem;
-    background-color: var(--color-primary-12);
-    margin-right: 0.75rem;
-    border-radius: 4px;
-}
-
-.details-list {
-    list-style: none;
-    padding: 0;
-    margin: 0;
-    display: grid;
-    grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
-    gap: 1rem;
-}
-
-.details-list li {
-    background-color: var(--color-primary-12);
-    color: var(--color-primary-2);
-    padding: 1rem;
-    border-radius: var(--radius-xl);
-    border-color: transparent;
-    box-shadow: var(--shadow-sm);
+/* Section propriétaire */
+.owner-card {
     display: flex;
     align-items: center;
-    gap: 0.5rem;
+    gap: var(--space-5);
 }
 
-.details-list li strong {
-    color: var(--color-primary-4);
-    font-weight: 600;
+.owner-avatar {
+    width: 80px;
+    height: 80px;
+    border-radius: var(--radius-full);
+    overflow: hidden;
 }
 
-.pet-grid {
-    display: grid;
-    grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
-    gap: 1.5rem;
+.owner-avatar img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+}
+
+.avatar-fallback {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 100%;
+    height: 100%;
+    background-color: var(--color-primary-8);
+    color: var(--color-primary-1);
+    font-weight: var(--font-weight-bold);
+    font-size: var(--font-size-lg);
 }
 
 .owner-info {
     display: flex;
+    flex-direction: column;
+    gap: var(--space-2);
+}
+
+.owner-info h3 {
+    font-size: var(--font-size-xl);
+    color: var(--color-primary-12);
+    margin: 0;
+}
+
+.star-rating {
+    margin-top: var(--space-1);
+    color: var(--color-primary-9);
+}
+
+.owner-location {
+    display: flex;
     align-items: center;
-    gap: 1.25rem;
-    padding: 1rem;
-    border-radius: var(--radius-md);
+    gap: var(--space-2);
+    color: var(--color-primary-11);
+    font-size: var(--font-size-sm);
+    margin-top: var(--space-1);
 }
 
-.owner-photo {
-    width: 135px;
-    height: 135px;
-    border: 1px solid var(--color-primary-4);
-    box-shadow: var(--shadow-sm);
-}
-
-.owner-details {
+.pets-grid {
     display: grid;
-    grid-template-columns: 1fr 1fr;
-    grid-gap: 0.75rem;
-    width: 100%;
-    padding: 0.5rem;
-    background-color: var(--color-primary-4);
-    box-shadow: 1px 2px 8px rgba(0,0,0,0.1);
+    grid-template-columns: repeat(auto-fill, minmax(240px, 1fr));
+    gap: var(--space-6);
+}
+
+.pet-card {
     border-radius: var(--radius-xl);
-}
-
-.owner-details .owner-name {
-    grid-column: 1 / -1;
-    border-bottom: 1px solid var(--color-primary-5);
-    padding-bottom: 0.5rem;
-}
-
-.owner-details .owner-rating {
-    grid-column: 1 / -1;
+    overflow: hidden;
+    box-shadow: var(--shadow-sm);
+    transition: var(--transition);
+    background-color: var(--color-primary-1);
+    height: 100%;
     display: flex;
-    flex-direction: row;
-    align-items: center;
-    gap: 0.5rem;
-    font-size: 1.125rem;
+    flex-direction: column;
 }
 
-.owner-details p {
-    margin: 0.25rem 0;
+.pet-card:hover {
+    box-shadow: var(--shadow-md);
+    transform: translateY(-2px);
 }
 
-.owner-details .info-item {
+.pet-image {
+    width: 100%;
+    height: 180px;
+    overflow: hidden;
+}
+
+.pet-image img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+}
+
+.pet-info {
+    padding: var(--space-4);
+    flex-grow: 1;
+    display: flex;
+    flex-direction: column;
+}
+
+.pet-header {
     display: flex;
     align-items: center;
-    gap: 0.5rem;
+    justify-content: space-between;
+    margin-bottom: var(--space-2);
 }
 
-.owner-details .info-item svg {
+.pet-name {
+    font-size: var(--font-size-lg);
+    font-weight: var(--font-weight-bold);
+    color: var(--color-primary-12);
+    margin: 0;
+}
+
+/* Section description */
+.advert-description {
+    font-size: var(--font-size-md);
+    color: var(--color-primary-11);
+    line-height: 1.6;
+    white-space: pre-line;
+}
+
+.advert-actions {
+    margin-top: var(--space-8);
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding-top: var(--space-5);
+    border-top: 1px solid var(--color-primary-5);
+}
+
+.advert-created-at {
+    display: flex;
+    align-items: center;
+    gap: var(--space-2);
     color: var(--color-primary-10);
-}
-
-.stars {
-    display: flex;
-    color: yellow;
-    font-size: 1.125rem;
+    font-size: var(--font-size-sm);
 }
 
 .action-buttons {
     display: flex;
-    flex-wrap: wrap;
-    gap: 0.75rem;
-    margin-top: 1rem;
+    gap: var(--space-3);
 }
 
-.view-profile {
-    display: flex;
-    flex-direction: row;
-}
-
-.btn-primary,
-.btn-secondary,
-.btn-danger {
-    display: inline-flex;
-    align-items: center;
-    justify-content: center;
-    padding: 0.75rem 1.5rem;
-    border-radius: var(--radius-sm);
-    font-weight: 500;
-    text-decoration: none;
-    cursor: pointer;
-    transition: var(--transition);
-    border: none;
-    font-size: 0.95rem;
-}
-
-.btn-primary {
-    background-color: var(--color-primary-12);
-    color: white;
-}
-
-.btn-primary:hover {
-    background-color: var(--color-primary-12);
-}
-
-.button {
-    display: flex;
-    flex-direction: row;
-    background-color: var(--color-primary-12);
-    color: var(--color-primary-1);
-    border: 1px solid #e5e7eb;
-}
-
-.btn-secondary:hover {
-    background-color: #e5e7eb;
-}
-
-.btn-danger {
-    background-color: var(--color-primary-5);
-    color: white;
-}
-
-.btn-danger:hover {
-    background-color: #dc2626;
-}
-
-.price-container {
-    background-color: var(--color-primary-12);
-    padding: 1rem;
-    border-radius: var(--radius-sm);
-    margin-bottom: 1rem;
-}
-
-.price {
-    font-size: 1.5rem;
-    font-weight: 700;
-    color: var(--color-primary-12);
-    margin: 0;
-    display: flex;
-    align-items: center;
-    gap: 0.5rem;
-}
-
-.price::before {
-    content: "€";
-    font-size: 1.25rem;
-}
-
-.booking-section {
-    background-color: var(--color-primary-12-bg);
-}
-
-.status-badge {
-    display: inline-block;
-    padding: 0.35rem 0.75rem;
-    border-radius: 2rem;
-    font-size: 0.875rem;
-    font-weight: 500;
-    background-color: #f3f4f6;
-}
-
-.status-pending {
-    background-color: #fef9c3;
-    color: #854d0e;
-}
-
-.status-accepted {
-    background-color: #dcfce7;
-    color: #166534;
-}
-
-.status-completed {
-    background-color: #dbeafe;
-    color: #1e40af;
-}
-
-.status-canceled {
-    background-color: #fee2e2;
-    color: #991b1b;
-}
-
-/* Responsive adjustments */
 @media (max-width: 768px) {
-    .advert-title {
-        font-size: 1.75rem;
-    }
-
-    .details-list {
-        grid-template-columns: 1fr;
-    }
-
-    .pet-grid {
-        grid-template-columns: repeat(auto-fill, minmax(160px, 1fr));
-    }
-
-    .owner-info {
+    .advert-title-status {
         flex-direction: column;
+        align-items: flex-start;
+        gap: var(--space-2);
+    }
+
+    .advert-dates-price {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: var(--space-3);
+    }
+
+    .owner-card {
+        flex-direction: column;
+        align-items: center;
         text-align: center;
+        gap: var(--space-4);
+    }
+
+    .owner-location {
+        justify-content: center;
+    }
+
+    .advert-actions {
+        flex-direction: column;
+        gap: var(--space-4);
     }
 
     .action-buttons {
-        justify-content: center;
+        width: 100%;
+        flex-direction: column;
+    }
+
+    .action-buttons .button {
+        width: 100%;
+        text-align: center;
     }
 }

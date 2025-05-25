@@ -5,6 +5,7 @@ using Pawesome.Models.Dtos.Advert;
 using Pawesome.Models.Entities;
 using Pawesome.Models.ViewModels;
 using Pawesome.Models.ViewModels.Auth;
+using Pawesome.Models.ViewModels.Pet;
 using Pawesome.Models.ViewModels.User;
 
 namespace Pawesome.Infrastructure.Mappers;
@@ -49,7 +50,7 @@ public class UserMappingProfile : Profile
                         FullName = $"{src.FirstName} {src.LastName}",
                         Photo = src.Photo
                     },
-                    PetCartViewModels = new List<PetCartViewModel>()
+                    Pets = new List<PetSimpleDto>()
                 }).ToList()));
 
         CreateMap<User, UserSimpleDto>()

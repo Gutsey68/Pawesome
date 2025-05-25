@@ -298,50 +298,92 @@ public class AdvertRepository : IAdvertRepository
             throw;
         }
     }
-    
-    public async Task<IEnumerable<Advert>> GetAdvertsWithSortingAsync(SortingOptions sortingOptions)
+
+    /// <summary>
+    /// Retrieves adverts based on multiple filter criteria
+    /// </summary>
+    /// <param name="filter">Filter criteria for adverts</param>
+    /// <returns>A filtered list of adverts with their related entities</returns>
+    public async Task<List<Advert>> GetFilteredAdvertsAsync(AdvertFilterDto filter)
     {
-        var query = _context.Adverts
+        IQueryable<Advert> query = _context.Adverts
             .Include(a => a.User)
-            .AsQueryable();
+            .Include(a => a.Address)
+                .ThenInclude(address => address.City)
+                    .ThenInclude(city => city.Country)
+            .Include(a => a.PetAdverts)
+                .ThenInclude(pa => pa.Pet)
+                    .ThenInclude(p => p!.AnimalType);
 
-        // Appliquer les filtres et le tri
-        switch (sortingOptions.SortBy.ToLower())
+        if (filter.IsPetSitterOffer.HasValue)
         {
-            case "recent":
-                query = sortingOptions.SortDirection == "desc" 
-                    ? query.OrderByDescending(a => a.CreatedAt)
-                    : query.OrderBy(a => a.CreatedAt);
-                break;
-
-            case "price":
-                if (sortingOptions.StartPrice.HasValue)
-                    query = query.Where(a => a.Amount >= (decimal)sortingOptions.StartPrice.Value);
-                if (sortingOptions.EndPrice.HasValue)
-                    query = query.Where(a => a.Amount <= (decimal)sortingOptions.EndPrice.Value);
-                break;
-
-            case "near":
-                // Géolocalisation, à inclure si nécessaire
-                //TODO: Check si on peut utiliser la localisation de l'utilisateur pour trier par proximité
-                break;
+            query = filter.IsPetSitterOffer.Value
+                ? query.Where(a => a.Status == "pending_offer")
+                : query.Where(a => a.Status == "pending");
         }
 
-        if (sortingOptions.MostViewed == true)
-            query = query.OrderByDescending(a => a.Reviews);
+        if (filter.MinPrice.HasValue)
+        {
+            query = query.Where(a => a.Amount >= filter.MinPrice.Value);
+        }
+
+        if (filter.MaxPrice.HasValue)
+        {
+            query = query.Where(a => a.Amount <= filter.MaxPrice.Value);
+        }
+
+        if (filter.StartDateFrom.HasValue)
+        {
+            var startDateUtc = DateTime.SpecifyKind(filter.StartDateFrom.Value, DateTimeKind.Utc);
+            query = query.Where(a => a.StartDate >= startDateUtc);
+        }
+
+        if (filter.EndDateTo.HasValue)
+        {
+            var endDateUtc = DateTime.SpecifyKind(filter.EndDateTo.Value, DateTimeKind.Utc);
+            query = query.Where(a => a.EndDate <= endDateUtc);
+        }
+
+        if (filter.CreatedAtFrom.HasValue)
+        {
+            var createdAtFromUtc = DateTime.SpecifyKind(filter.CreatedAtFrom.Value, DateTimeKind.Utc);
+            query = query.Where(a => a.CreatedAt >= createdAtFromUtc);
+        }
+
+        if (filter.CreatedAtTo.HasValue)
+        {
+            var createdAtToUtc = DateTime.SpecifyKind(filter.CreatedAtTo.Value, DateTimeKind.Utc);
+            query = query.Where(a => a.CreatedAt <= createdAtToUtc);
+        }
+
+        if (filter.CityId.HasValue)
+        {
+            query = query.Where(a => a.Address.CityId == filter.CityId.Value);
+        }
+
+        if (filter.CountryId.HasValue)
+        {
+            query = query.Where(a => a.Address.City.CountryId == filter.CountryId.Value);
+        }
+
+        if (!string.IsNullOrEmpty(filter.PostalCode))
+        {
+            query = query.Where(a => a.Address.City.PostalCode == filter.PostalCode);
+        }
+
+        if (filter.AnimalTypeIds != null && filter.AnimalTypeIds.Any())
+        {
+            query = query.Where(a => a.PetAdverts.Any(pa => 
+                filter.AnimalTypeIds.Contains(pa.Pet!.AnimalTypeId)));
+        }
         
-            //TODO:Ajouter MostContracted
-        if (sortingOptions.MostContracted == true)
-            //query = query.OrderByDescending(a => a.ContractCount);
+        if (!string.IsNullOrEmpty(filter.City))
+        {
+            query = query.Where(a => a.Address.City.Name.Contains(filter.City));
+        }
 
-            //TODO:Ajouter BestRating
-        if (sortingOptions.BestRated == true)
-            //query = query.OrderByDescending(a => a.Rating);
-
-        if (sortingOptions.VerifiedProfile == true)
-            query = query.Where(a => a.User.IsVerified);
+        query = query.OrderByDescending(a => a.CreatedAt);
 
         return await query.ToListAsync();
     }
-
 }

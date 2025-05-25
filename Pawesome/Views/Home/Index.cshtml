@@ -20,62 +20,62 @@
                 </h1>
                 <p>
                     Réserver facilement des services de garde <br/>
-                    d’animaux fiable et sécurisés
+                    d'animaux fiable et sécurisés
                 </p>
             </div>
 
-            <div class="research-bar">
-                <input type="text" class="research-bar-date-start" placeholder="Date de début"/>
-                <span class="tiny-separator"></span>
-                <input type="text" placeholder="Date de fin"/>
-                <span class="tiny-separator"></span>
-                <input type="text" placeholder="Lieu"/>
-                <span class="tiny-separator"></span>
-                <input type="text" placeholder="Type d'animal"/>
-
-                <button class="research-button" type="button">
-                    <img alt="Rechercher" class="icon" src="svg/lucide/search.svg"/>
-                </button>
+            <div class="dashboard-search-container">
+                <div class="tabs-container">
+                    <div class="tabs-list" role="tablist">
+                        <button class="tab active" role="tab" aria-selected="true" data-role="petsitter">Je cherche un pet-sitter</button>
+                        <button class="tab" role="tab" aria-selected="false" data-role="looking">Je suis pet-sitter</button>
+                    </div>
+                </div>
+                <form id="searchForm" method="get" asp-controller="Advert" asp-action="Index">
+                    <input type="hidden" id="isPetSitter" name="isPetSitter" value="false">
+                    <input type="hidden" id="IsPetSitterOffer" name="IsPetSitterOffer" value="false">
+                    <div class="dashboard-research-bar">
+                        <div class="search-inputs-container">
+                            <div class="date-input-container">
+                                <label for="start-date">Date de début</label>
+                                <input type="date" id="start-date" name="StartDateFrom" class="research-bar-date-start" placeholder="Date de début"/>
+                            </div>
+                            <span class="tiny-separator"></span>
+                            <div class="date-input-container">
+                                <label for="end-date">Date de fin</label>
+                                <input type="date" id="end-date" name="EndDateTo" placeholder="Date de fin"/>
+                            </div>
+                            <span class="tiny-separator"></span>
+                            <div class="location-input-container">
+                                <label for="location">Ville</label>
+                                <input type="text" id="location" name="City" placeholder="Paris, Lyon..."/>
+                            </div>
+                            <button class="research-button" type="submit">
+                                <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-search-icon lucide-search"><path d="m21 21-4.34-4.34"/><circle cx="11" cy="11" r="8"/></svg>
+                            </button>
+                        </div>
+                    </div>
+                </form>
             </div>
 
             <div class="home-page-img">
                 <img alt="woman-sitting" src="images/casual-life-3d-young-woman-sitting-on-ground-and-petting-dog.png"/>
             </div>
         </div>
-        @* Container 1 / Recherche de petsitting *@
-        <div class="home-page-container">
-            <div class="container-paragraph container-l-10">
-                <h1>
-                    Leur bien-être, votre <br/>
-                    tranquillité.
-                </h1>
-                <p>
-                    Nous prenons soin de vos animaux avec attention, douceur et fiabilité. Confiance et sérénité garanties, même en votre absence.
-                </p>
-                <p>
-                    Parce qu’ils méritent le meilleur, à chaque instant
-                </p>
-                <button type="button" class="home-page-submission">Rechercher un pet sitting <img alt="Rechercher" class="icon icon-button-search-l" src="svg/lucide/arrow-right.svg"/></button>
-            </div>
-            <div class="container-img container-r-4">
-                <img alt="dog" src="images/3d-casual-life-young-man-sitting-in-armchair-with-cat-next-to-him.png"/>
-            </div>
-        </div>
 
-        @* Container 2 / Défilement des fausses annonces *@
         @model List<PetCartViewModel>
         <div class="home-page-cards-container">
             <h1>Les Bestioles Qui Cartonnent</h1>
             <div class="containers pet-cards-flex-container">
                 @foreach (var pet in Model)
                 {
-                    <partial name="_PetCardPartial" model="pet"/>
+                <partial name="_PetCardPartial" model="pet"/>
                 }
             </div>
             <button type="button" class="home-page-submission">Voir toute les annonce <img alt="Rechercher" class="icon icon-button-search-l" src="svg/lucide/arrow-right.svg"/></button>
 
         </div>
-        
+
         @* Container 3 / Recherche de pet sitter *@
         <div class="home-page-container">
             <div class="container-img container-l-10">
@@ -95,10 +95,10 @@
                 <button type="button" class="home-page-submission"> <img alt="Rechercher" class="icon icon-button-search-r" src="svg/lucide/arrow-right.svg"/> Recherche d’un pet sitter </button>
             </div>
         </div>
-        
+
         @* Container 4 / Recherche de pet sitter *@
         @*@model CommentCardLandingViewModel*@
-        
+
         <section class="testimonial-section">
             <h1>Ils ont trouvé leur bonheur</h1>
             <div class="testimonials">
@@ -112,10 +112,10 @@
                     </div>
                     <div class="stars-container">
                         @{
-                            for (int i = 0; i < 5; i++)
-                            {
-                                <img alt="star" class="star" src="svg/lucide/star.svg"/>
-                            }
+                        for (int i = 0; i < 5; i++)
+                        {
+                        <img alt="star" class="star" src="svg/lucide/star.svg"/>
+                        }
                         }
                     </div>
                     <p>Service exceptionnel ! Mon chien Rex était aux anges. Personnel très attentionné, je recommande à 100%.</p>
@@ -130,10 +130,10 @@
                     </div>
                     <div class="stars-container">
                         @{
-                            for (int i = 0; i < 4; i++)
-                            {
-                                <img alt="star" class="star" src="svg/lucide/star.svg"/>
-                            }
+                        for (int i = 0; i < 4; i++)
+                        {
+                        <img alt="star" class="star" src="svg/lucide/star.svg"/>
+                        }
                         }
                     </div>
                     <p>Très bonne expérience ! Juste un petit délai à l'arrivée, sinon tout était parfait pour mon lapinou.</p>
@@ -148,10 +148,10 @@
                     </div>
                     <div class="stars-container">
                         @{
-                            for (int i = 0; i < 3; i++)
-                            {
-                                <img alt="star" class="star" src="svg/lucide/star.svg"/>
-                            }
+                        for (int i = 0; i < 3; i++)
+                        {
+                        <img alt="star" class="star" src="svg/lucide/star.svg"/>
+                        }
                         }
                     </div>
                     <p>Bon accueil mais l'endroit était un peu bruyant pour mon chien sensible. Expérience mitigée.</p>
@@ -166,10 +166,10 @@
                     </div>
                     <div class="stars-container">
                         @{
-                            for (int i = 0; i < 2; i++)
-                            {
-                                <img alt="star" class="star" src="svg/lucide/star.svg"/>
-                            }
+                        for (int i = 0; i < 2; i++)
+                        {
+                        <img alt="star" class="star" src="svg/lucide/star.svg"/>
+                        }
                         }
                     </div>
                     <p>Le service était correct, mais mon chat semblait stressé après son séjour. Peut mieux faire.</p>
@@ -184,10 +184,10 @@
                     </div>
                     <div class="stars-container">
                         @{
-                            for (int i = 0; i < 1; i++)
-                            {
-                                <img alt="star" class="star" src="svg/lucide/star.svg"/>
-                            }
+                        for (int i = 0; i < 1; i++)
+                        {
+                        <img alt="star" class="star" src="svg/lucide/star.svg"/>
+                        }
                         }
                     </div>
                     <p>Très déçu. Mon chien n'a pas reçu les soins promis. Je ne reviendrai pas.</p>
@@ -200,7 +200,7 @@
         <div class="home-page-container-map">
             <div class="container-left">
                 <div class="map-container">
-                    
+
                 </div>
             </div>
             <div class="container-right">
@@ -221,3 +221,30 @@
         </div>
     </div>
 </main>
+
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+        const tabs = document.querySelectorAll('.tab');
+        const isPetSitterInput = document.getElementById('isPetSitter');
+        const isPetSitterOfferInput = document.getElementById('IsPetSitterOffer');
+        
+        tabs.forEach(tab => {
+            tab.addEventListener('click', function() {
+                tabs.forEach(t => {
+                    t.classList.remove('active');
+                    t.setAttribute('aria-selected', 'false');
+                });
+                this.classList.add('active');
+                this.setAttribute('aria-selected', 'true');
+
+                if (this.dataset.role === 'looking') {
+                    isPetSitterInput.value = 'true';
+                    isPetSitterOfferInput.value = 'true';
+                } else {
+                    isPetSitterInput.value = 'false';
+                    isPetSitterOfferInput.value = 'false';
+                }
+            });
+        });
+    });
+</script>

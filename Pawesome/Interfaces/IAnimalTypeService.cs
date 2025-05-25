@@ -1,4 +1,5 @@
 using Pawesome.Models.ViewModels;
+using Pawesome.Models.ViewModels.AnimalType;
 
 namespace Pawesome.Interfaces;
 

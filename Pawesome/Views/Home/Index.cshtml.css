@@ -138,6 +138,178 @@
     margin: 0 var(--space-2);
 }
 
+.dashboard-search-container {
+    width: 100%;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    margin-bottom: var(--space-8);
+    gap: var(--space-4);
+}
+
+.dashboard-research-bar {
+    display: flex;
+    padding: 0 var(--space-1);
+    height: auto;
+    min-height: 64px;
+    align-items: center;
+    justify-content: center;
+    border-radius: var(--radius-full);
+    background-color: var(--color-primary-1);
+    filter: drop-shadow(0px 4px 6px #00000030);
+}
+
+.search-inputs-container {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    width: 100%;
+    margin-left: 1rem;
+}
+
+.tabs-container {
+    width: 850px;
+    margin-bottom: var(--space-2);
+    display: flex;
+    justify-content: center;
+}
+
+.tabs-list {
+    display: inline-flex;
+    padding: var(--space-1);
+    border-radius: var(--radius-2xl);
+    background-color: var(--color-primary-4);
+    position: relative;
+    overflow: hidden;
+}
+
+.tab {
+    position: relative;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: var(--space-2) var(--space-4);
+    font-size: var(--font-size-sm);
+    font-weight: var(--font-weight-medium);
+    line-height: 1;
+    border: none;
+    background: transparent;
+    color: var(--color-primary-11);
+    z-index: 1;
+    cursor: pointer;
+    transition: color 0.2s ease;
+    border-radius: var(--radius-full);
+}
+
+.tab.active {
+    color: var(--color-primary-12);
+    font-weight: var(--font-weight-medium);
+}
+
+.tab.active::before {
+    content: "";
+    position: absolute;
+    inset: 0;
+    background-color: var(--color-primary-1);
+    border-radius: var(--radius-full);
+    z-index: -1;
+}
+
+.date-input-container, .location-input-container {
+    display: flex;
+    flex-direction: column;
+}
+
+.date-input-container label, .location-input-container label {
+    font-size: var(--font-size-xs);
+    font-weight: var(--font-weight-medium);
+    color: var(--color-primary-11);
+    margin-top: var(--space-2);
+    padding-left: var(--space-2);
+}
+
+.dashboard-research-bar input[type=text],
+.dashboard-research-bar input[type=date] {
+    border: none;
+    color: var(--color-primary-12);
+    background-color: transparent;
+    width: 100%;
+}
+
+.dashboard-research-bar input[type=date] {
+    font-family: var(--font-primary), serif;
+}
+
+.dashboard-research-bar input[type=date]::-webkit-calendar-picker-indicator {
+    filter: invert(0.5);
+    cursor: pointer;
+}
+
+.dashboard-research-bar input[type=text]::placeholder,
+.dashboard-research-bar input[type=date]::placeholder {
+    color: var(--color-primary-11);
+}
+
+.dashboard-research-bar input[type=text]:focus-visible,
+.dashboard-research-bar input[type=date]:focus-visible {
+    border-color: var(--color-primary-9) !important;
+    box-shadow: 0 0 0 2px transparent !important;
+    border-radius: 0px;
+    outline: none;
+}
+
+.lucide-search-icon {
+    color: var(--color-primary-1);
+}
+
+@media (max-width: 900px) {
+    .dashboard-research-bar {
+        width: 90%;
+        padding: var(--space-2);
+        border-radius: var(--radius-2xl);
+        height: auto;
+    }
+    
+    .tabs-container {
+        width: 90%;
+        display: flex;
+        justify-content: center;
+    }
+    
+    .tabs-list {
+        width: auto;
+        max-width: 100%;
+    }
+    
+    .tab {
+        flex: 1;
+        padding: var(--space-2) var(--space-2);
+        text-align: center;
+    }
+    
+    .search-inputs-container {
+        flex-direction: column;
+        padding: var(--space-2) 0;
+    }
+    
+    .tiny-separator {
+        display: none;
+    }
+    
+    .date-input-container, .location-input-container {
+        width: 100%;
+        margin: var(--space-1) 0;
+    }
+    
+    .dashboard-research-bar input[type=text],
+    .dashboard-research-bar input[type=date] {
+        width: 100%;
+        padding: var(--space-2);
+        border-bottom: 1px solid var(--color-primary-5);
+    }
+}
+
 /* ====== Section : Image landing ====== */
 .home-page-img {
     display: flex;
@@ -484,6 +656,3 @@
     border-radius: var(--radius-2xl);
     z-index: 10;
 }
-
-
-

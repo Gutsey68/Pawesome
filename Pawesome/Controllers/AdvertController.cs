@@ -1,14 +1,12 @@
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.VisualStudio.Web.CodeGenerators.Mvc.Templates.Blazor;
-using Newtonsoft.Json;
+using Microsoft.AspNetCore.Mvc.Rendering;
 using Pawesome.Interfaces;
-using Pawesome.Models;
-using Pawesome.Models.DTOs;
 using Pawesome.Models.Dtos.Advert;
 using Pawesome.Models.Entities;
 using Pawesome.Models.ViewModels.Advert;
+using Pawesome.Models.ViewModels.AnimalType;
 
 namespace Pawesome.Controllers;
 
@@ -20,104 +18,115 @@ public class AdvertController : Controller
     private readonly IAdvertService _advertService;
     private readonly IPetService _petService;
     private readonly IAnimalTypeService _animalTypeService;
+    private readonly ILocationService _locationService;
     private readonly UserManager<User> _userManager;
 
-    /// <summary>
-    /// Initializes a new instance of the AdvertController
-    /// </summary>
-    /// <param name="advertService">Service for pet sitting operations</param>
-    /// <param name="petService">Service for pet operations</param>
-    /// <param name="animalTypeService">Service for animal type operations</param>
-    /// <param name="userManager">Identity user manager</param>
     public AdvertController(
         IAdvertService advertService,
         IPetService petService,
         IAnimalTypeService animalTypeService,
+        ILocationService locationService,
         UserManager<User> userManager)
     {
         _advertService = advertService;
         _petService = petService;
         _animalTypeService = animalTypeService;
+        _locationService = locationService;
         _userManager = userManager;
     }
 
-    /// <summary>
-    /// Displays a list of all pet-sitting adverts
-    /// </summary>
-    /// <param name="isPetSitter">If true, shows pet sitting offers; if false, shows pet sitting requests</param>
-    /// <returns>View containing a list of adverts</returns>
     [HttpGet]
-    // public async Task<IActionResult> Index(
-    //     bool isPetSitter = false,
-    //     [FromQuery] SortingOptions? sortOptions = null)
-    // {
-    //     // Récupération de la liste des adverts en totalitée.
-    //     var adverts = await _advertService.GetAllAdvertsAsync(isPetSitter);
-    //
-    //     // Ajout de la valeur de isPetSitter dans le RouteData
-    //     RouteData.Values["isPetSitter"] = isPetSitter.ToString().ToLower();
-    //     
-    //     //=========== Gestion Prix ==============
-    //     #region Gestion Prix
-    //     
-    //     //Récupération data GET
-    //     var viewMinPrice = (object?)Request.Query["minPrice"].FirstOrDefault();
-    //     var viewMaxPrice = (object?)Request.Query["maxPrice"].FirstOrDefault();
-    //     // Avoir sur l'ensemble des annonce la valeur la plus petite et la plus grande niveau prix
-    //     var minPrice = adverts.Min(a => a.Amount);
-    //     var maxPrice = adverts.Max(a => a.Amount);
-    //     
-    //     ViewData["MinPrice"] = viewMinPrice ?? (int)Math.Round(minPrice);
-    //     ViewData["MaxPrice"] = viewMaxPrice ?? (int)Math.Round(maxPrice);
-    //     
-    //     ViewData["MaxPriceBeforeReload"] = (int)Math.Round(maxPrice);
-    //     ViewData["MinPriceBeforeReload"] = (int)Math.Round(minPrice);
-    //     #endregion
-    //     
-    //     //=========== Gestion Type Animal ==============
-    //     #region Gestion Popularité
-    //     
-    //     //Récupération de la liste des race en fonction des annonces
-    //     var animalType = adverts.SelectMany(a => a.PetCartViewModels)
-    //         .Select(p => p.Species)
-    //         .Distinct()
-    //         .ToList();
-    //     ViewData["AnimalTypes"] = animalType.Select(name => new AnimalTypeDto { Name = name }).ToList();
-    //     
-    //     var selectedAnimalTypes = Request.Query["animalType"].ToString().Split(',', StringSplitOptions.RemoveEmptyEntries);
-    //     ViewData["AnimalTypeInput"] = string.Join(",", selectedAnimalTypes);
-    //     
-    //     foreach (var type in selectedAnimalTypes)
-    //     {
-    //         ViewData[$"AnimalType-{type.Replace(" ", "")}"] = selectedAnimalTypes.Contains(type, StringComparer.OrdinalIgnoreCase) ? "checked" : "";
-    //     }
-    //     #endregion
-    //     
-    //     //=========== Gestion Popularité ==============
-    //     #region Gestion Popularité
-    //     
-    //     //Récupération data GET
-    //     var viewMostViewed = Convert.ToBoolean(Request.Query["mostViewed"].FirstOrDefault());
-    //     var viewMostContracted = Convert.ToBoolean(Request.Query["mostContracted"].FirstOrDefault());
-    //     var viewBestRated = Convert.ToBoolean(Request.Query["bestRated"].FirstOrDefault());
-    //     
-    //     ViewData["MostViewed"] = viewMostViewed ? "checked" : "";
-    //     ViewData["MostContracted"] = viewMostContracted ? "checked" : "";
-    //     ViewData["BestRated"] = viewBestRated ? "checked" : "";
-    //     #endregion
-    //     
-    //     // ========== Gestion Type Animal ==============
-    //     
-    //     
-    //     return View(adverts);
-    // }
-    public async Task<IActionResult> Index(bool isPetSitter, [FromQuery] AdvertViewModel model)
+    public async Task<IActionResult> Index(bool isPetSitter = false, [FromQuery] AdvertViewModel? model = null)
     {
-        var adverts = await _advertService.GetFilteredAdvertsAsync(model.IsPetSitter, model);
-        
-        RouteData.Values["isPetSitter"] = isPetSitter.ToString().ToLower();
-        
-        return View(adverts);
+        if (model == null)
+        {
+            model = new AdvertViewModel();
+        }
+
+        if (!model.IsPetSitterOffer.HasValue)
+        {
+            model.IsPetSitterOffer = isPetSitter;
+        }
+
+        try
+        {
+            var animalTypes = await _animalTypeService.GetAllAnimalTypesAsync();
+
+            model.AnimalTypeOptions = animalTypes
+                .Where(at => at?.AnimalType != null)
+                .Select(at => new SelectListItem
+                {
+                    Value = at.AnimalType.Id.ToString(),
+                    Text = at.AnimalType.Name ?? "Type inconnu",
+                    Selected = model.AnimalTypeIds != null && model.AnimalTypeIds.Contains(at.AnimalType.Id)
+                })
+                .ToList();
+                    
+            model.AnimalTypes = animalTypes;
+                
+            if (model.AnimalTypeIds != null && model.AnimalTypeIds.Count != 0)
+            {
+                model.SelectedAnimalTypes = animalTypes
+                    .Where(at => at?.AnimalType != null && model.AnimalTypeIds.Contains(at.AnimalType.Id))
+                    .Select(at => at.AnimalType.Name)
+                    .ToList();
+            }
+        }
+        catch (Exception ex)
+        {
+            Console.WriteLine($"Erreur lors de la récupération des types d'animaux: {ex.Message}");
+            model.AnimalTypeOptions = new List<SelectListItem>();
+            model.AnimalTypes = new List<AnimalTypeViewModel>();
+        }
+
+        var countries = await _locationService.GetAllCountriesAsync();
+        model.CountryOptions = countries.Select(c => new SelectListItem
+        {
+            Value = c.Id.ToString(),
+            Text = c.Name,
+            Selected = model.CountryId.HasValue && c.Id == model.CountryId.Value
+        }).ToList();
+
+        var filterDto = new AdvertFilterDto
+        {
+            IsPetSitterOffer = model.IsPetSitterOffer,
+            MinPrice = model.MinPrice,
+            MaxPrice = model.MaxPrice,
+            StartDateFrom = model.StartDateFrom,
+            EndDateTo = model.EndDateTo,
+            AnimalTypeIds = model.AnimalTypeIds,
+            CountryId = model.CountryId,
+            City = model.City, 
+            CreatedAtFrom = model.CreatedAtFrom,
+            CreatedAtTo = model.CreatedAtTo
+        };
+
+        var adverts = await _advertService.GetFilteredAdvertsAsync(filterDto);
+
+        adverts = model.SortOption switch
+        {
+            "oldest" => adverts.OrderBy(a => a.CreatedAt).ToList(),
+            "price_asc" => adverts.OrderBy(a => a.Amount).ToList(),
+            "price_desc" => adverts.OrderByDescending(a => a.Amount).ToList(),
+            "date_start_asc" => adverts.OrderBy(a => a.StartDate).ToList(),
+            "date_end_asc" => adverts.OrderBy(a => a.EndDate).ToList(),
+            _ => adverts.OrderByDescending(a => a.CreatedAt).ToList()
+        };
+
+        model.Adverts = adverts;
+
+        foreach (var option in model.SortOptions)
+        {
+            option.Selected = option.Value == model.SortOption;
+        }
+
+        if (adverts.Count == 0) return View(model);
+        {
+            model.MinPriceBeforeReload = adverts.Min(a => a.Amount);
+            model.MaxPriceBeforeReload = adverts.Max(a => a.Amount);
+        }
+
+        return View(model);
     }
 
     /// <summary>
@@ -129,12 +138,12 @@ public class AdvertController : Controller
     public async Task<IActionResult> Details(int id)
     {
         var advert = await _advertService.GetAdvertByIdAsync(id);
-        
+
         if (advert == null)
         {
             return NotFound();
         }
-        
+
         return View(advert);
     }
 
@@ -147,23 +156,18 @@ public class AdvertController : Controller
     public async Task<IActionResult> CreateRequest()
     {
         var user = await _userManager.GetUserAsync(User);
-    
+
         if (user == null)
         {
             return Challenge();
         }
-    
+
         var pets = await _petService.GetUserPets(user.Id);
         ViewBag.Pets = pets;
-    
+
         return View(new PetSittingRequestViewModel());
     }
 
-    /// <summary>
-    /// Processes the submission of a pet sitting request
-    /// </summary>
-    /// <param name="dto">Data for the pet sitting request</param>
-    /// <returns>Redirects to Details if successful, or returns the form with validation errors</returns>
     [Authorize]
     [HttpPost]
     public async Task<IActionResult> CreateRequest(PetSittingRequestViewModel viewModel)
@@ -176,10 +180,10 @@ public class AdvertController : Controller
             {
                 return Challenge();
             }
-        
+
             var pets = await _petService.GetUserPets(user.Id);
             ViewBag.Pets = pets;
-        
+
             return View(viewModel);
         }
 
@@ -189,7 +193,7 @@ public class AdvertController : Controller
         {
             return Challenge();
         }
-    
+
         var result = await _advertService.CreatePetSittingRequestAsync(viewModel, existingUser.Id);
         return RedirectToAction(nameof(Details), new { id = result.Id });
     }
@@ -208,11 +212,6 @@ public class AdvertController : Controller
         return View(new PetSittingOfferViewModel());
     }
 
-    /// <summary>
-    /// Processes the submission of a pet sitting offer
-    /// </summary>
-    /// <param name="dto">Data for the pet sitting offer</param>
-    /// <returns>Redirects to Details if successful, or returns the form with validation errors</returns>
     [Authorize]
     [HttpPost]
     public async Task<IActionResult> CreateOffer(PetSittingOfferViewModel viewModel)
@@ -221,7 +220,7 @@ public class AdvertController : Controller
         {
             var animalTypes = await _animalTypeService.GetAllAnimalTypesAsync();
             ViewBag.AnimalTypes = animalTypes;
-        
+
             return View(viewModel);
         }
 
@@ -230,7 +229,7 @@ public class AdvertController : Controller
         {
             return Challenge();
         }
-    
+
         var result = await _advertService.CreatePetSittingOfferAsync(viewModel, user.Id);
 
         return RedirectToAction(nameof(Details), new { id = result.Id });
@@ -265,17 +264,17 @@ public class AdvertController : Controller
     public async Task<IActionResult> MyAdverts()
     {
         var user = await _userManager.GetUserAsync(User);
-        
+
         if (user == null)
         {
             return Challenge();
         }
-        
+
         var adverts = await _advertService.GetUserAdvertsAsync(user.Id);
-        
+
         return View(adverts);
     }
-    
+
     /// <summary>
     /// Displays the form for editing a pet sitting request
     /// </summary>
@@ -286,37 +285,37 @@ public class AdvertController : Controller
     public async Task<IActionResult> EditRequest(int id)
     {
         var user = await _userManager.GetUserAsync(User);
-        
+
         if (user == null)
         {
             return Challenge();
         }
-        
+
         var advert = await _advertService.GetAdvertByIdAsync(id);
-        
+
         if (advert == null)
         {
             return NotFound();
         }
-        
-        if (advert.Owner == null || advert.Owner.Id != user.Id)
+
+        if (advert.Owner.Id != user.Id)
         {
             return Forbid();
         }
-        
+
         var updateModel = new UpdatePetSittingRequestViewModel
         {
             Id = advert.Id,
             StartDate = advert.StartDate,
             EndDate = advert.EndDate,
             Amount = advert.Amount,
-            PetIds = advert.PetCartViewModels.Select(p => p.Id).ToList(),
+            PetIds = advert.Pets.Select(p => p.Id).ToList(),
             AdditionalInformation = advert.AdditionalInformation
         };
-        
+
         var pets = await _petService.GetUserPets(user.Id);
         ViewBag.Pets = pets;
-        
+
         return View(updateModel);
     }
 
@@ -332,20 +331,20 @@ public class AdvertController : Controller
         if (!ModelState.IsValid)
         {
             var user = await _userManager.GetUserAsync(User);
-            
+
             if (user == null)
             {
                 return Challenge();
             }
-            
+
             var pets = await _petService.GetUserPets(user.Id);
             ViewBag.Pets = pets;
-            
+
             return View(viewModel);
         }
-        
+
         var result = await _advertService.UpdatePetSittingRequestAsync(viewModel);
-        
+
         return RedirectToAction(nameof(Details), new { id = result.Id });
     }
 
@@ -359,24 +358,24 @@ public class AdvertController : Controller
     public async Task<IActionResult> EditOffer(int id)
     {
         var user = await _userManager.GetUserAsync(User);
-        
+
         if (user == null)
         {
             return Challenge();
         }
-        
+
         var advert = await _advertService.GetAdvertByIdAsync(id);
-        
+
         if (advert == null)
         {
             return NotFound();
         }
-        
-        if (advert.Owner == null || advert.Owner.Id != user.Id)
+
+        if (advert.Owner.Id != user.Id)
         {
             return Forbid();
         }
-        
+
         var updateModel = new UpdatePetSittingOfferViewModel
         {
             Id = advert.Id,
@@ -386,15 +385,15 @@ public class AdvertController : Controller
             AcceptedAnimalTypeIds = new List<int>(),
             AdditionalInformation = advert.AdditionalInformation
         };
-        
+
         var animalTypes = await _animalTypeService.GetAllAnimalTypesAsync();
         ViewBag.AnimalTypes = animalTypes;
 
         foreach (var animalType in animalTypes)
         {
-            if (advert.PetCartViewModels.Any(p => p.Name == animalType.Name))
+            if (advert.Pets.Any(p => p.Name == animalType.AnimalType.Name))
             {
-                updateModel.AcceptedAnimalTypeIds.Add(animalType.Id);
+                updateModel.AcceptedAnimalTypeIds.Add(animalType.AnimalType.Id);
             }
         }
 
@@ -414,15 +413,15 @@ public class AdvertController : Controller
         {
             var animalTypes = await _animalTypeService.GetAllAnimalTypesAsync();
             ViewBag.AnimalTypes = animalTypes;
-            
+
             return View(viewModel);
         }
-        
+
         var result = await _advertService.UpdatePetSittingOfferAsync(viewModel);
-        
+
         return RedirectToAction(nameof(Details), new { id = result.Id });
     }
-    
+
     /// <summary>
     /// Displays the confirmation page for deleting an advert
     /// </summary>
@@ -433,24 +432,24 @@ public class AdvertController : Controller
     public async Task<IActionResult> Delete(int id)
     {
         var user = await _userManager.GetUserAsync(User);
-    
+
         if (user == null)
         {
             return Challenge();
         }
-    
+
         var advert = await _advertService.GetAdvertByIdAsync(id);
-    
+
         if (advert == null)
         {
             return NotFound();
         }
-    
-        if (advert.Owner == null || advert.Owner.Id != user.Id)
+
+        if (advert.Owner.Id != user.Id)
         {
             return Forbid();
         }
-    
+
         var viewModel = new DeleteAdvertViewModel
         {
             Id = advert.Id,
@@ -459,7 +458,7 @@ public class AdvertController : Controller
             StartDate = advert.StartDate,
             EndDate = advert.EndDate
         };
-    
+
         return View(viewModel);
     }
 
@@ -474,31 +473,31 @@ public class AdvertController : Controller
     public async Task<IActionResult> DeleteConfirmed(int id)
     {
         var user = await _userManager.GetUserAsync(User);
-    
+
         if (user == null)
         {
             return Challenge();
         }
-    
+
         var advert = await _advertService.GetAdvertByIdAsync(id);
-    
+
         if (advert == null)
         {
             return NotFound();
         }
-    
-        if (advert.Owner == null || advert.Owner.Id != user.Id)
+
+        if (advert.Owner.Id != user.Id)
         {
             return Forbid();
         }
-    
+
         var result = await _advertService.DeleteAdvertAsync(id);
-    
+
         if (!result)
         {
             return NotFound();
         }
-    
+
         return RedirectToAction(nameof(MyAdverts));
     }
 }

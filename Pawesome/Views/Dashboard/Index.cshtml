@@ -13,27 +13,28 @@
         <div class="dashboard-search-container">
             <div class="tabs-container">
                 <div class="tabs-list" role="tablist">
-                    <button class="tab active" role="tab" aria-selected="true" data-role="petsitter">Je suis pet-sitter</button>
-                    <button class="tab" role="tab" aria-selected="false" data-role="looking">Je cherche un pet-sitter</button>
+                    <button class="tab active" role="tab" aria-selected="true" data-role="petsitter">Je cherche un pet-sitter</button>
+                    <button class="tab" role="tab" aria-selected="false" data-role="looking">Je suis pet-sitter</button>
                 </div>
             </div>
             <form id="searchForm" method="get" asp-controller="Advert" asp-action="Index">
                 <input type="hidden" id="isPetSitter" name="isPetSitter" value="false">
+                <input type="hidden" id="IsPetSitterOffer" name="IsPetSitterOffer" value="false">
                 <div class="dashboard-research-bar">
                     <div class="search-inputs-container">
                         <div class="date-input-container">
                             <label for="start-date">Date de début</label>
-                            <input type="date" id="start-date" name="StartDate" class="research-bar-date-start" placeholder="Date de début" value="@Model.StartDate.ToString("yyyy-MM-dd")"/>
+                            <input type="date" id="start-date" name="StartDateFrom" class="research-bar-date-start" placeholder="Date de début" value="@Model.StartDate.ToString("yyyy-MM-dd")"/>
                         </div>
                         <span class="tiny-separator"></span>
                         <div class="date-input-container">
                             <label for="end-date">Date de fin</label>
-                            <input type="date" id="end-date" name="EndDate" placeholder="Date de fin" value="@Model.EndDate.ToString("yyyy-MM-dd")"/>
+                            <input type="date" id="end-date" name="EndDateTo" placeholder="Date de fin" value="@Model.EndDate.ToString("yyyy-MM-dd")"/>
                         </div>
                         <span class="tiny-separator"></span>
                         <div class="location-input-container">
-                            <label for="location">Lieu</label>
-                            <input type="text" id="location" name="Location" placeholder="Pawcity"/>
+                            <label for="location">Ville</label>
+                            <input type="text" id="location" name="City" placeholder="Paris, Lyon..."/>
                         </div>
                         <button class="research-button" type="submit">
                             <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-search-icon lucide-search"><path d="m21 21-4.34-4.34"/><circle cx="11" cy="11" r="8"/></svg>
@@ -51,6 +52,7 @@
     document.addEventListener('DOMContentLoaded', function() {
         const tabs = document.querySelectorAll('.tab');
         const isPetSitterInput = document.getElementById('isPetSitter');
+        const isPetSitterOfferInput = document.getElementById('IsPetSitterOffer');
         
         tabs.forEach(tab => {
             tab.addEventListener('click', function() {
@@ -61,10 +63,12 @@
                 this.classList.add('active');
                 this.setAttribute('aria-selected', 'true');
 
-                if (this.dataset.role === 'petsitter') {
+                if (this.dataset.role === 'looking') {
                     isPetSitterInput.value = 'true';
+                    isPetSitterOfferInput.value = 'true';
                 } else {
                     isPetSitterInput.value = 'false';
+                    isPetSitterOfferInput.value = 'false';
                 }
             });
         });

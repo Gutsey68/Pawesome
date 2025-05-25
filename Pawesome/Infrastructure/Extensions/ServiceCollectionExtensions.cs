@@ -117,6 +117,7 @@ public static class ServiceCollectionExtensions
         services.AddScoped<IMessageService, MessageService>();
         services.AddScoped<IPaymentService, PaymentService>();
         services.AddScoped<INotificationService, NotificationService>();
+        services.AddScoped<ILocationService, LocationService>();
         
         // Register AutoMapper
         services.AddAutoMapper(typeof(Program).Assembly);
