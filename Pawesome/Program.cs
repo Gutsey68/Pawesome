@@ -6,6 +6,13 @@ using Pawesome.Infrastructure.Filters;
 
 var builder = WebApplication.CreateBuilder(args);
 
+// Configure services and settings from appsettings.json and environment variables
+builder.Configuration
+    .AddJsonFile("appsettings.json", optional: false, reloadOnChange: true)
+    .AddJsonFile($"appsettings.{builder.Environment.EnvironmentName}.json", optional: true)
+    .AddEnvironmentVariables();
+
+// Configure forwarded headers for reverse proxy scenarios
 builder.Services.Configure<ForwardedHeadersOptions>(options =>
 {
     options.ForwardedHeaders = ForwardedHeaders.XForwardedFor | ForwardedHeaders.XForwardedProto;

@@ -28,9 +28,13 @@ public static class ServiceCollectionExtensions
     public static IServiceCollection AddPawesomeDatabase(this IServiceCollection services, 
         ConfigurationManager configuration)
     {
+        var connectionString = configuration.GetConnectionString("DefaultConnection");
+    
+        connectionString = Environment.ExpandEnvironmentVariables(connectionString!);
+    
         services.AddDbContext<AppDbContext>(options =>
-            options.UseNpgsql(configuration.GetConnectionString("DefaultConnection")));
-        
+            options.UseNpgsql(connectionString));
+    
         return services;
     }
     
