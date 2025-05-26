@@ -1,0 +1,245 @@
+.notifications-container {
+    max-width: 900px;
+    margin: 0 auto;
+    padding: var(--space-4);
+}
+
+.notifications-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: var(--space-6);
+}
+
+.notifications-header .section-title {
+    margin: 0;
+    font-size: var(--font-size-xl);
+    color: var(--color-primary-12);
+    font-weight: var(--font-weight-medium);
+    padding-bottom: var(--space-2);
+    border-bottom: 2px solid var(--color-primary-6);
+}
+
+.notifications-actions {
+    display: flex;
+    gap: var(--space-3);
+}
+
+.notifications-actions .button {
+    display: flex;
+    align-items: center;
+    gap: var(--space-2);
+    font-size: var(--font-size-sm);
+    padding: 0.688rem 1.125rem;
+}
+
+.notifications-list {
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-4);
+}
+
+.notification-item {
+    display: flex;
+    align-items: flex-start;
+    gap: var(--space-3);
+    padding: var(--space-4);
+    border-radius: var(--radius-xl);
+    background-color: var(--color-primary-2);
+    border-left: 4px solid transparent;
+    transition: all 0.2s ease;
+    box-shadow: var(--shadow-sm);
+}
+
+.notification-item:hover {
+    transform: translateY(-2px);
+    box-shadow: var(--shadow-md);
+}
+
+.notification-item.unread {
+    background-color: var(--color-primary-3);
+    border-left-color: var(--color-primary-9);
+}
+
+.notification-icon {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: var(--space-10);
+    height: var(--space-10);
+    border-radius: 50%;
+    background-color: var(--color-primary-4);
+    flex-shrink: 0;
+}
+
+.notification-icon svg {
+    color: var(--color-primary-11);
+}
+
+.notification-item.unread .notification-icon {
+    background-color: var(--color-primary-5);
+}
+
+.notification-item.unread .notification-icon svg {
+    color: var(--color-primary-12);
+}
+
+.notification-content {
+    flex: 1;
+    min-width: 0;
+}
+
+.notification-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    margin-bottom: var(--space-2);
+    flex-wrap: wrap;
+    gap: var(--space-2);
+}
+
+.notification-title {
+    font-size: var(--font-size-md);
+    font-weight: var(--font-weight-medium);
+    margin: 0;
+    color: var(--color-primary-12);
+}
+
+.notification-time {
+    font-size: var(--font-size-xs);
+    color: var(--color-primary-10);
+    white-space: nowrap;
+}
+
+.notification-message {
+    font-size: var(--font-size-sm);
+    color: var(--color-primary-11);
+    margin: 0 0 var(--space-2) 0;
+    line-height: 1.5;
+}
+
+.notification-link {
+    display: inline-flex;
+    align-items: center;
+    color: var(--color-primary-9);
+    font-size: var(--font-size-sm);
+    font-weight: var(--font-weight-medium);
+    text-decoration: none;
+    transition: color 0.2s ease;
+    margin-top: var(--space-2);
+}
+
+.notification-link:hover {
+    color: var(--color-primary-11);
+    text-decoration: underline;
+}
+
+.notification-link svg {
+    margin-right: var(--space-1);
+}
+
+.notification-actions {
+    display: flex;
+    gap: var(--space-2);
+    flex-shrink: 0;
+    margin-left: var(--space-2);
+}
+
+.notification-actions .button {
+    background-color: transparent;
+    border: none;
+    padding: var(--space-2);
+    height: var(--space-9);
+    width: var(--space-9);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: var(--radius-full);
+    transition: background-color 0.2s ease;
+}
+
+.notification-actions .button:hover {
+    background-color: var(--color-primary-4);
+}
+
+.notification-actions .button svg {
+    color: var(--color-primary-10);
+}
+
+.notification-actions .button:hover svg {
+    color: var(--color-primary-12);
+}
+
+.notification-actions .button.mark-read:hover {
+    background-color: var(--color-primary-5);
+}
+
+.notification-actions .button.delete-notification:hover {
+    background-color: var(--color-error);
+}
+
+.notification-actions .button.delete-notification:hover svg {
+    color: white;
+}
+
+.empty-notifications {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    text-align: center;
+    padding: var(--space-10);
+    background-color: var(--color-primary-2);
+    border-radius: var(--radius-2xl);
+    box-shadow: var(--shadow-sm);
+}
+
+.empty-notifications svg {
+    color: var(--color-primary-8);
+    margin-bottom: var(--space-4);
+}
+
+.empty-notifications p {
+    color: var(--color-primary-11);
+    font-size: var(--font-size-lg);
+    margin: 0;
+}
+
+@media (max-width: 768px) {
+    .notifications-header {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: var(--space-3);
+    }
+
+    .notifications-actions {
+        width: 100%;
+    }
+
+    .notifications-actions .button {
+        width: 100%;
+    }
+
+    .notification-item {
+        flex-direction: column;
+    }
+
+    .notification-icon {
+        width: var(--space-8);
+        height: var(--space-8);
+        margin-bottom: var(--space-2);
+    }
+
+    .notification-header {
+        flex-direction: column;
+        align-items: flex-start;
+    }
+
+    .notification-actions {
+        display: flex;
+        justify-content: flex-end;
+        margin-left: auto;
+        margin-top: var(--space-2);
+        width: 100%;
+    }
+}
