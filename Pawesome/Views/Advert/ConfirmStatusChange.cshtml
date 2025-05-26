@@ -1,0 +1,35 @@
+@model Pawesome.Models.Dtos.Advert.PetSittingAdvertDto
+
+<main role="main" class="container confirm-status-change">
+    <div class="confirmation-card">
+        <h1>Confirmation</h1>
+        
+        <p>Êtes-vous sûr de vouloir @(Model.Status == "pending" ? "annuler" : "changer le statut de") cette annonce ?</p>
+        
+        <div class="advert-summary">
+            <h2>@(Model.IsPetSitter ? "Offre de pet sitting" : "Recherche d'un pet sitter")</h2>
+            <p><strong>Date:</strong> Du @Model.StartDate.ToString("dd/MM/yyyy") au @Model.EndDate.ToString("dd/MM/yyyy")</p>
+            <p><strong>Montant:</strong> @Model.Amount.ToString("C")</p>
+            <p><strong>Statut actuel:</strong> 
+                <span class="badge"
+                      data-variant="@(Model.Status == "pending" ? "warning" : (Model.Status == "accepted" ? "success" : (Model.Status == "completed" ? "info" : "error")))">
+                    @(Model.Status == "pending" ? "En attente" : (Model.Status == "accepted" ? "Acceptée" : (Model.Status == "completed" ? "Terminée" : "Annulée")))
+                </span>
+            </p>
+            <p><strong>Nouveau statut:</strong> <span class="badge" data-variant="error">Annulée</span></p>
+        </div>
+        
+        <div class="confirmation-actions">
+            <form asp-controller="Advert" asp-action="UpdateStatus" method="post">
+                <input type="hidden" name="advertId" value="@Model.Id" />
+                <input type="hidden" name="status" value="cancelled" />
+                <button type="submit" class="button" data-variant="error">
+                    Confirmer l'annulation
+                </button>
+            </form>
+            <a asp-controller="Advert" asp-action="Details" asp-route-id="@Model.Id" class="button" data-variant="secondary">
+                Annuler
+            </a>
+        </div>
+    </div>
+</main>

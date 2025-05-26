@@ -7,7 +7,7 @@ namespace Pawesome.Interfaces
     {
         Task<Advert?> GetAdvertByIdAsync(int id);
         Task<List<Advert>> GetAllAdvertsAsync(bool isPetSitter = false);
-        Task<List<Advert>> GetUserAdvertsAsync(int userId);
+        Task<List<Advert>> GetUserAdvertsAsync(int userId, bool includeCancelled = true);
         Task<Advert> CreatePetSittingRequestAsync(Advert advert, List<int> petIds, int userId);
         Task<Advert> CreatePetSittingOfferAsync(Advert advert, List<int> animalTypeIds, int userId);
         Task<Advert> UpdatePetSittingRequestAsync(Advert advert, List<int> petIds);

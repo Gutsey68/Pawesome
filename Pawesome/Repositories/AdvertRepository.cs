@@ -1,7 +1,6 @@
 using Microsoft.EntityFrameworkCore;
 using Pawesome.Data;
 using Pawesome.Interfaces;
-using Pawesome.Models;
 using Pawesome.Models.Dtos.Advert;
 using Pawesome.Models.Entities;
 
@@ -24,7 +23,7 @@ public class AdvertRepository : IAdvertRepository
     }
 
     /// <summary>
-    /// Retrieves all pet sitting adverts based on the type (offers or requests)
+    /// Retrieves all pet sitting adverts based on the type (offers or requests) and excludes cancelled ones
     /// </summary>
     /// <param name="isPetSitter">If true, returns pet sitting offers; if false, returns pet sitting requests</param>
     /// <returns>A list of adverts with their related entities</returns>
@@ -32,11 +31,12 @@ public class AdvertRepository : IAdvertRepository
     {
         return await _context.Adverts
             .Include(a => a.User)
-            .Include(a => a.User)
             .Include(a => a.PetAdverts)
             .ThenInclude(pa => pa.Pet)
             .ThenInclude(p => p!.AnimalType)
-            .Where(a => isPetSitter ? a.Status == "pending_offer" : a.Status == "pending")
+            .Where(a => isPetSitter 
+                ? (a.Status == "pending_offer" && a.Status != "cancelled") 
+                : (a.Status == "pending" && a.Status != "cancelled"))
             .OrderByDescending(a => a.CreatedAt)
             .ToListAsync();
     }
@@ -161,16 +161,23 @@ public class AdvertRepository : IAdvertRepository
     /// Retrieves all adverts associated with a specific user
     /// </summary>
     /// <param name="userId">The ID of the user whose adverts to retrieve</param>
+    /// <param name="includeCancelled">Whether to include cancelled adverts</param>
     /// <returns>A list of adverts belonging to the specified user</returns>
-    public async Task<List<Advert>> GetUserAdvertsAsync(int userId)
+    public async Task<List<Advert>> GetUserAdvertsAsync(int userId, bool includeCancelled = true)
     {
-        return await _context.Adverts
+        var query = _context.Adverts
             .Include(a => a.User)
             .Include(a => a.PetAdverts)
             .ThenInclude(pa => pa.Pet)
             .ThenInclude(p => p!.AnimalType)
-            .Where(a => a.UserId == userId)
-            .ToListAsync();
+            .Where(a => a.UserId == userId);
+
+        if (!includeCancelled)
+        {
+            query = query.Where(a => a.Status != "cancelled");
+        }
+
+        return await query.ToListAsync();
     }
 
     /// <summary>
@@ -313,7 +320,8 @@ public class AdvertRepository : IAdvertRepository
                     .ThenInclude(city => city.Country)
             .Include(a => a.PetAdverts)
                 .ThenInclude(pa => pa.Pet)
-                    .ThenInclude(p => p!.AnimalType);
+                    .ThenInclude(p => p!.AnimalType)
+            .Where(a => a.Status != "cancelled"); 
 
         if (filter.IsPetSitterOffer.HasValue)
         {

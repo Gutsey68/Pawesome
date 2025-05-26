@@ -1,6 +1,5 @@
 using AutoMapper;
 using Pawesome.Interfaces;
-using Pawesome.Models;
 using Pawesome.Models.Dtos.Advert;
 using Pawesome.Models.Entities;
 using Pawesome.Models.ViewModels.Advert;
@@ -145,11 +144,12 @@ public class AdvertService : IAdvertService
     /// Retrieves all adverts associated with a specific user
     /// </summary>
     /// <param name="userId">The ID of the user whose adverts to retrieve</param>
+    /// <param name="includeCancelled">Whether to include cancelled adverts</param>
     /// <returns>A list of pet sitting advertisement DTOs belonging to the specified user</returns>
-    public async Task<List<PetSittingAdvertDto>> GetUserAdvertsAsync(int userId)
+    public async Task<List<PetSittingAdvertDto>> GetUserAdvertsAsync(int userId, bool includeCancelled = true)
     {
-        var adverts = await _repository.GetUserAdvertsAsync(userId);
-        
+        var adverts = await _repository.GetUserAdvertsAsync(userId, includeCancelled);
+    
         return _mapper.Map<List<PetSittingAdvertDto>>(adverts);
     }
     

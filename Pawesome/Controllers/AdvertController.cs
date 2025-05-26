@@ -251,8 +251,8 @@ public class AdvertController : Controller
         {
             return NotFound();
         }
-
-        return RedirectToAction(nameof(Details), new { id = advertId });
+        
+        return status == "cancelled" ? RedirectToAction("Index", "Advert") : RedirectToAction(nameof(Details), new { id = advertId });
     }
 
     /// <summary>
@@ -421,83 +421,25 @@ public class AdvertController : Controller
 
         return RedirectToAction(nameof(Details), new { id = result.Id });
     }
-
-    /// <summary>
-    /// Displays the confirmation page for deleting an advert
-    /// </summary>
-    /// <param name="id">The ID of the advert to delete</param>
-    /// <returns>View containing the delete confirmation form</returns>
+    
     [Authorize]
     [HttpGet]
-    public async Task<IActionResult> Delete(int id)
+    public async Task<IActionResult> ConfirmStatusChange(int id, string status)
     {
-        var user = await _userManager.GetUserAsync(User);
-
-        if (user == null)
-        {
-            return Challenge();
-        }
-
         var advert = await _advertService.GetAdvertByIdAsync(id);
-
+    
         if (advert == null)
         {
             return NotFound();
         }
 
-        if (advert.Owner.Id != user.Id)
-        {
-            return Forbid();
-        }
-
-        var viewModel = new DeleteAdvertViewModel
-        {
-            Id = advert.Id,
-            Title = advert.IsPetSitter ? "Offre de pet sitting" : "Demande de pet sitting",
-            IsPetSitter = advert.IsPetSitter,
-            StartDate = advert.StartDate,
-            EndDate = advert.EndDate
-        };
-
-        return View(viewModel);
-    }
-
-    /// <summary>
-    /// Processes the deletion of an advert
-    /// </summary>
-    /// <param name="id">The ID of the advert to delete</param>
-    /// <returns>Redirects to MyAdverts if successful, or returns NotFound/Forbid as appropriate</returns>
-    [Authorize]
-    [HttpPost, ActionName("Delete")]
-    [ValidateAntiForgeryToken]
-    public async Task<IActionResult> DeleteConfirmed(int id)
-    {
         var user = await _userManager.GetUserAsync(User);
-
-        if (user == null)
-        {
-            return Challenge();
-        }
-
-        var advert = await _advertService.GetAdvertByIdAsync(id);
-
-        if (advert == null)
-        {
-            return NotFound();
-        }
-
-        if (advert.Owner.Id != user.Id)
+        if (user == null || advert.Owner.Id != user.Id)
         {
             return Forbid();
         }
 
-        var result = await _advertService.DeleteAdvertAsync(id);
-
-        if (!result)
-        {
-            return NotFound();
-        }
-
-        return RedirectToAction(nameof(MyAdverts));
+        ViewBag.NewStatus = status;
+        return View(advert);
     }
 }

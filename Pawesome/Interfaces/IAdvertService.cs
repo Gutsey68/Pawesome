@@ -10,7 +10,7 @@ public interface IAdvertService
     Task<PetSittingAdvertDto> CreatePetSittingRequestAsync(PetSittingRequestViewModel model, int userId);
     Task<PetSittingAdvertDto> CreatePetSittingOfferAsync(PetSittingOfferViewModel model, int userId);
     Task<bool> UpdateAdvertStatusAsync(int advertId, string status);
-    Task<List<PetSittingAdvertDto>> GetUserAdvertsAsync(int userId);
+    Task<List<PetSittingAdvertDto>> GetUserAdvertsAsync(int userId, bool includeCancelled = true);
     Task<PetSittingAdvertDto> UpdatePetSittingRequestAsync(UpdatePetSittingRequestViewModel model);
     Task<PetSittingAdvertDto> UpdatePetSittingOfferAsync(UpdatePetSittingOfferViewModel model);
     Task<bool> DeleteAdvertAsync(int advertId);

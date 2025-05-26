@@ -131,11 +131,48 @@
             </svg>
             <span>Publiée le @Model.CreatedAt.ToString("dd/MM/yyyy")</span>
         </div>
-        
         <div class="action-buttons">
-            <a asp-controller="Message" asp-action="StartConversation" asp-route-otherUserId="@if (Model.Owner != null) { @Model.Owner.Id }" class="button" data-variant="primary">
-                Contacter
-            </a>
+            @{
+                bool isOwner = false;
+                if (Model.Owner != null && User.Identity != null && User.Identity.IsAuthenticated)
+                {
+                    var userIdClaim = User.FindFirst(System.Security.Claims.ClaimTypes.NameIdentifier);
+                    var currentUserId = userIdClaim != null && int.TryParse(userIdClaim.Value, out int uid) ? uid : 0;
+                    isOwner = currentUserId == Model.Owner.Id;
+                }
+            }
+
+            @if (isOwner)
+            {
+                <div class="owner-actions">
+                    @if (Model.IsPetSitter)
+                    {
+                        <a asp-controller="Advert" asp-action="EditOffer" asp-route-id="@Model.Id" class="button" data-variant="secondary">
+                            Modifier l'annonce
+                        </a>
+                    }
+                    else
+                    {
+                        <a asp-controller="Advert" asp-action="EditRequest" asp-route-id="@Model.Id" class="button" data-variant="secondary">
+                            Modifier l'annonce
+                        </a>
+                    }
+
+                    @if (Model.Status != "cancelled")
+                    {
+                        <a asp-controller="Advert" asp-action="ConfirmStatusChange" asp-route-id="@Model.Id" asp-route-status="cancelled" class="button" data-variant="error">
+                            Annuler l'annonce
+                        </a>
+                    }
+                </div>
+            }
+            else if (Model.Owner != null)
+            {
+                <a asp-controller="Message" asp-action="StartConversation" asp-route-otherUserId="@Model.Owner.Id" class="button" data-variant="primary">
+                    Contacter
+                </a>
+            }
+
             <a asp-controller="Advert" asp-action="Index" class="button" data-variant="secondary" data-size="sm">
                 Retour aux annonces
             </a>
