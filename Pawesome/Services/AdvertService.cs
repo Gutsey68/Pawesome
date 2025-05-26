@@ -181,11 +181,15 @@ public class AdvertService : IAdvertService
         return _mapper.Map<PetSittingAdvertDto>(updatedAdvert);
     }
     
-    public async Task<List<PetSittingAdvertDto>> GetFilteredAdvertsAsync(AdvertFilterDto filter)
+    /// <summary>
+    /// Retrieves filtered adverts based on the provided filter criteria
+    /// </summary>
+    /// <param name="filterDto">Filter criteria for retrieving adverts</param>
+    /// <returns>A list of filtered pet sitting advertisement DTOs</returns>
+    public async Task<List<PetSittingAdvertDto>> GetFilteredAdvertsAsync(AdvertFilterDto filterDto)
     {
-        var filteredAdverts = await _repository.GetFilteredAdvertsAsync(filter);
-        
-        return _mapper.Map<List<PetSittingAdvertDto>>(filteredAdverts);
+        var adverts = await _repository.GetFilteredAdvertsAsync(filterDto);
+        return _mapper.Map<List<PetSittingAdvertDto>>(adverts);
     }
     
     /// <summary>

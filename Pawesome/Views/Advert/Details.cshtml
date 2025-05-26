@@ -133,10 +133,10 @@
         </div>
         
         <div class="action-buttons">
-            <a asp-controller="Advert" asp-action="Contact" asp-route-id="@Model.Id" class="button" data-variant="@(Model.IsPetSitter ? "primary" : "purple")">
+            <a asp-controller="Message" asp-action="StartConversation" asp-route-otherUserId="@if (Model.Owner != null) { @Model.Owner.Id }" class="button" data-variant="primary">
                 Contacter
             </a>
-            <a asp-controller="Advert" asp-action="Index" class="button" data-variant="outline" data-size="sm">
+            <a asp-controller="Advert" asp-action="Index" class="button" data-variant="secondary" data-size="sm">
                 Retour aux annonces
             </a>
         </div>

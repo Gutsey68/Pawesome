@@ -107,13 +107,13 @@
                             @if (Model.AnimalTypes != null && Model.AnimalTypes.Any())
                             {
                                 <div id="animalCheckboxes">
-                                    @foreach (var option in Model.AnimalTypes)
+                                    @foreach (var animalType in Model.AnimalTypes)
                                     {
                                         <label>
-                                            <input type="checkbox" name="AnimalTypeIds" value="@option.AnimalType" 
+                                            <input type="checkbox" name="AnimalTypeIds" value="@animalType.Id" 
                                                   class="animal-checkbox" 
-                                                  @(option.IsSelected ? "checked" : "")>
-                                            @option.AnimalType.Name
+                                                  @(Model.AnimalTypeIds != null && Model.AnimalTypeIds.Contains(animalType.Id) ? "checked" : "")>
+                                            @animalType.Name
                                         </label>
                                     }
                                 </div>
