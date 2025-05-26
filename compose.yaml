@@ -2,7 +2,9 @@
   pawesome:
     env_file:
       - pawesome.env
-    image: ghcr.io/${GITHUB_REPOSITORY}:main
+    environment:
+      - ASPNETCORE_ENVIRONMENT=Production
+    image: ghcr.io/gutsey68/pawesome:main
     restart: unless-stopped
     labels:
       - "traefik.enable=true"
@@ -30,7 +32,7 @@
     networks:
       - pawesome-network
     healthcheck:
-      test: ["CMD-SHELL", "pg_isready -U pawesome"]
+      test: ["CMD-SHELL", "pg_isready -U ${POSTGRES_USER}"]
       interval: 5s
       timeout: 5s
       retries: 5
