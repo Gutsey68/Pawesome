@@ -139,15 +139,14 @@ public static class ServiceCollectionExtensions
         IConfiguration configuration)
     {
         services.Configure<StripeSettings>(configuration.GetSection("Stripe"));
-
+    
         services.AddSingleton<StripeClient>(serviceProvider => {
             var stripeSettings = serviceProvider.GetRequiredService<IOptions<StripeSettings>>().Value;
             return new StripeClient(stripeSettings.SecretKey);
         });
-
-        var stripeSettings = configuration.GetSection("Stripe").Get<StripeSettings>();
-        StripeConfiguration.ApiKey = stripeSettings?.SecretKey;
-
+        
+        StripeConfiguration.ApiKey = configuration.GetSection("Stripe:SecretKey").Value;
+    
         return services;
     }
 }

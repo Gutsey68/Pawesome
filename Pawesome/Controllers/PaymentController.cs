@@ -7,6 +7,7 @@ using Pawesome.Interfaces;
 using Pawesome.Models.Configuration;
 using Pawesome.Models.Entities;
 using Pawesome.Models.ViewModels.Payment;
+using Stripe;
 using Stripe.Checkout;
 
 namespace Pawesome.Controllers
@@ -76,6 +77,8 @@ namespace Pawesome.Controllers
         [HttpPost]
         public async Task<IActionResult> CreateCheckoutSession(int advertId)
         {
+            StripeConfiguration.ApiKey = _stripeSettings.Value.SecretKey;
+            
             var user = await _userManager.GetUserAsync(User);
             if (user == null)
             {

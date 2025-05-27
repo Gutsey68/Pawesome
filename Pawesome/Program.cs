@@ -10,6 +10,7 @@ var builder = WebApplication.CreateBuilder(args);
 builder.Configuration
     .AddJsonFile("appsettings.json", optional: false, reloadOnChange: true)
     .AddJsonFile($"appsettings.{builder.Environment.EnvironmentName}.json", optional: true)
+    .AddUserSecrets<Program>()
     .AddEnvironmentVariables();
 
 // Configure forwarded headers for reverse proxy scenarios
@@ -29,9 +30,9 @@ builder.Services.AddPawesomeDatabase(builder.Configuration)
     .AddPawesomeIdentity()
     .AddPawesomeValidation()
     .AddPawesomeServices()
-    .AddStripeServices(builder.Configuration);
+    .AddStripeServices(builder.Configuration)
+    .AddSignalR();
 
-builder.Services.AddSignalR();
 
 var app = builder.Build();
 
