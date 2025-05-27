@@ -4,50 +4,66 @@
     ViewData["Title"] = "Finaliser votre paiement";
 }
 
-<div class="container checkout-container">
-    <div class="card">
-        <div class="card-header">
-            <h2>Finaliser votre paiement</h2>
-        </div>
+<main class="container checkout-container" role="main">
+    <article class="checkout-card">
+        <header class="card-header">
+            <h1>Finaliser votre paiement</h1>
+        </header>
         <div class="card-body">
-            <div class="order-summary">
-                <h3>Résumé de votre réservation</h3>
-
+            <section aria-labelledby="reservation-summary" class="reservation-summary-section">
+                <h2 id="reservation-summary">Résumé de votre réservation</h2>
                 <div class="summary-details">
                     <div class="summary-item">
                         <span class="label">Service :</span>
                         <span class="value">@Model.ServiceType</span>
                     </div>
-
                     <div class="summary-item">
                         <span class="label">Période :</span>
                         <span class="value">Du @Model.StartDate.ToString("dd/MM/yyyy") au @Model.EndDate.ToString("dd/MM/yyyy")</span>
                     </div>
-
                     <div class="summary-item total">
                         <span class="label">Montant total :</span>
                         <span class="value">@Model.Amount €</span>
                     </div>
                 </div>
-
-                <div class="payment-section">
-                    <h4>Paiement sécurisé</h4>
-                    <p class="secure-info">
-                        <i class="fa fa-lock"></i> Toutes les transactions sont sécurisées et chiffrées.
-                    </p>
-
-                    <form asp-controller="Payment" asp-action="CreateCheckoutSession" method="post">
-                        <input type="hidden" name="advertId" value="@Model.AdvertId" />
-                        <button type="submit" class="payment-button">
-                            Payer avec Stripe
-                        </button>
-                    </form>
+            </section>
+            <section class="payment-section" aria-labelledby="payment-title">
+                <h2 id="payment-title">Paiement</h2>
+                <div class="alert" data-variant="info">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                        <circle cx="12" cy="12" r="10"></circle>
+                        <path d="M12 16v-4"></path>
+                        <path d="M12 8h.01"></path>
+                    </svg>
+                    <div>
+                        <h4>Paiement sécurisé</h4>
+                        <p>Toutes les transactions sont sécurisées et chiffrées.</p>
+                    </div>
                 </div>
-
-                <div class="terms">
-                    <p>En procédant au paiement, vous acceptez nos <a href="#">conditions générales</a> et notre <a href="#">politique de confidentialité</a>.</p>
-                </div>
-            </div>
+                <form asp-controller="Payment" asp-action="CreateCheckoutSession" method="post" class="payment-form">
+                    <input type="hidden" name="advertId" value="@Model.AdvertId" />
+                    <button type="submit" class="button" aria-label="Payer avec Stripe">
+                        Payer @Model.Amount €
+                    </button>
+                </form>
+            </section>
+            <footer class="terms">
+                <p>En procédant au paiement, vous acceptez nos <a href="#" aria-label="Voir les conditions générales">conditions générales</a> et notre <a href="#" aria-label="Voir la politique de confidentialité">politique de confidentialité</a>.</p>
+            </footer>
         </div>
-    </div>
-</div>
+    </article>
+</main>
+
+@section Scripts {
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            const paymentForm = document.querySelector('.payment-form');
+            const submitButton = paymentForm.querySelector('button[type="submit"]');
+
+            paymentForm.addEventListener('submit', function() {
+                submitButton.disabled = true;
+                submitButton.textContent = "Traitement en cours...";
+            });
+        });
+    </script>
+}

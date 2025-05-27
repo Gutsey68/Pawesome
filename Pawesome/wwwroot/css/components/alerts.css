@@ -63,6 +63,12 @@
     color: var(--color-sky-foreground);
 }
 
+.alert[data-variant="info"] {
+    background-color: var(--color-info);
+    border-color: var(--color-info-border);
+    color: var(--color-info-foreground);
+}
+
 .alert-close {
     position: absolute;
     top: var(--space-2);

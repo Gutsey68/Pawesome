@@ -4,60 +4,110 @@
     ViewData["Title"] = "Historique de vos paiements";
 }
 
-<div class="container">
-    <div class="card">
-        <div class="card-header">
-            <h2>Historique de vos paiements</h2>
-        </div>
+<main class="container history-container" role="main">
+    <div class="history-card">
+        <header class="card-header">
+            <h1>Historique de vos paiements</h1>
+            <p class="history-subtitle">Tous vos paiements et réservations</p>
+        </header>
+        
         <div class="card-body">
             @if (Model.Any())
             {
                 <div class="payments-list">
                     @foreach (var payment in Model)
                     {
-                        <div class="payment-item">
+                        <article class="payment-item">
                             <div class="payment-header">
-                                <h4>Paiement #@payment.Id</h4>
-                                <span class="payment-status @payment.Status">@GetStatusLabel(payment.Status)</span>
-                            </div>
-                            <div class="payment-details">
-                                <div class="payment-info">
-                                    <p><strong>Date :</strong> @payment.CreatedAt.ToString("dd/MM/yyyy HH:mm")</p>
-                                    <p><strong>Montant :</strong> @payment.Amount €</p>
-                                    <p><strong>Référence :</strong> @payment.SessionId</p>
+                                <div class="payment-title">
+                                    <h3>Réservation du @payment.StartDate.ToString("dd/MM/yyyy")</h3>
+                                    <span class="payment-date">Payé le @payment.CreatedAt.ToString("dd/MM/yyyy à HH:mm")</span>
                                 </div>
-                                <div class="advert-info">
-                                    <p><strong>Annonce liée :</strong> 
-                                        <a asp-controller="Advert" asp-action="Details" asp-route-id="@payment.AdvertId">
-                                            @(payment.IsPetSitter ? "Offre de pet sitting" : "Demande de pet sitting")
-                                        </a>
-                                    </p>
-                                    <p><strong>Période :</strong> Du @payment.StartDate.ToString("dd/MM/yyyy") au @payment.EndDate.ToString("dd/MM/yyyy")</p>
+                                <div class="payment-badge @payment.Status.ToLower()">@GetStatusLabel(payment.Status)</div>
+                            </div>
+                            
+                            <div class="payment-content">
+                                <div class="payment-details">
+                                    <div class="detail-group">
+                                        <span class="label">Service</span>
+                                        <span class="value">@(payment.IsPetSitter ? "Offre de pet sitting" : "Demande de pet sitting")</span>
+                                    </div>
+                                    <div class="detail-group">
+                                        <span class="label">Période</span>
+                                        <span class="value">Du @payment.StartDate.ToString("dd/MM/yyyy") au @payment.EndDate.ToString("dd/MM/yyyy")</span>
+                                    </div>
+                                    <div class="detail-group">
+                                        <span class="label">Montant</span>
+                                        <span class="value price">@payment.Amount €</span>
+                                    </div>
+                                </div>
+                                
+                                <div class="payment-reference">
+                                    <div class="detail-group">
+                                        <span class="label">
+                                            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                                <polyline points="16 18 22 12 16 6"></polyline>
+                                                <polyline points="8 6 2 12 8 18"></polyline>
+                                            </svg>
+                                            Référence
+                                        </span>
+                                        <span class="value reference">@payment.SessionId</span>
+                                    </div>
+                                </div>
+                                
+                                <div class="payment-actions">
+                                    <a asp-controller="Advert" asp-action="Details" asp-route-id="@payment.AdvertId" class="button" data-variant="outline" data-size="xs">
+                                        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                            <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"></path>
+                                            <circle cx="12" cy="12" r="3"></circle>
+                                        </svg>
+                                        Voir l'annonce
+                                    </a>
                                 </div>
                             </div>
-                        </div>
+                        </article>
                     }
                 </div>
             }
             else
             {
                 <div class="empty-state">
-                    <p>Vous n'avez effectué aucun paiement pour le moment.</p>
+                    <div class="empty-icon">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                            <rect x="2" y="4" width="20" height="16" rx="2"></rect>
+                            <path d="M7 15h0M2 9.5h20"></path>
+                        </svg>
+                    </div>
+                    <h2>Aucun paiement effectué</h2>
+                    <p>Vous n'avez pas encore effectué de paiement sur notre plateforme.</p>
+                    <a asp-controller="Advert" asp-action="Index" class="button">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                            <circle cx="12" cy="12" r="10"></circle>
+                            <line x1="12" y1="8" x2="12" y2="16"></line>
+                            <line x1="8" y1="12" x2="16" y2="12"></line>
+                        </svg>
+                        Explorer les annonces
+                    </a>
                 </div>
             }
-            
-            <div class="actions">
-                <a asp-controller="Home" asp-action="Index" class="button">Retour à l'accueil</a>
-                <a asp-controller="Advert" asp-action="Index" class="button secondary">Voir les annonces</a>
-            </div>
         </div>
+        
+        <footer class="card-footer">
+            <a asp-controller="Home" asp-action="Index" class="button" data-variant="outline">
+                <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                    <path d="m3 9 9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"></path>
+                    <polyline points="9 22 9 12 15 12 15 22"></polyline>
+                </svg>
+                Retour à l'accueil
+            </a>
+        </footer>
     </div>
-</div>
+</main>
 
 @functions {
     string GetStatusLabel(string status)
     {
-        return status switch
+        return status.ToLower() switch
         {
             "pending" => "En attente",
             "completed" => "Confirmé",

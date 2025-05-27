@@ -69,7 +69,7 @@ nav ul {
     right: 0;
     transition: all 0.1s ease-in-out;
     margin-top: var(--space-2);
-    min-width: 12rem;
+    min-width: 16rem;
     z-index: 100;
 }
 

@@ -2,32 +2,83 @@
   ViewData["Title"] = "Confirmation de paiement";
 }
 
-<div class="container">
-  <div class="card">
-    <div class="card-header">
-      <h2>Paiement réussi !</h2>
+<main class="container success-container" role="main">
+  <div class="success-card">
+    <div class="success-header">
+      <div class="success-icon">
+        <svg xmlns="http://www.w3.org/2000/svg" width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+          <path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path>
+          <polyline points="22 4 12 14.01 9 11.01"></polyline>
+        </svg>
+      </div>
+      <h1>Paiement réussi !</h1>
+      <p class="success-message">Votre réservation a été confirmée. Merci pour votre confiance !</p>
     </div>
-    <div class="card-body">
-      <div class="">
-        <span>Votre paiement a bien été enregistré. Merci pour votre réservation !</span>
+    
+    <div class="success-body">
+      <div class="transaction-info">
+        <div class="transaction-detail">
+          <span class="label">Numéro de transaction</span>
+          <span class="value">@ViewBag.SessionId</span>
+        </div>
       </div>
-            
-      <p>Votre numéro de transaction : <strong>@ViewBag.SessionId</strong></p>
-      <p>Un e-mail de confirmation vous a été envoyé.</p>
-            
-      <hr>
-            
-      <h4>Et maintenant ?</h4>
-      <ul>
-        <li>Vous pouvez contacter le propriétaire de l'annonce pour finaliser les détails</li>
-        <li>Vous recevrez des notifications concernant votre réservation</li>
-        <li>Vous pouvez consulter l'historique de vos paiements dans votre profil</li>
-      </ul>
-            
-      <div class="">
-        <a asp-controller="Home" asp-action="Index" class="button">Retour à l'accueil</a>
-        <a asp-controller="Payment" asp-action="History" class="button">Historique des paiements</a>
+      
+      <div class="alert" data-variant="info">
+        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+          <circle cx="12" cy="12" r="10"></circle>
+          <path d="M12 16v-4"></path>
+          <path d="M12 8h.01"></path>
+        </svg>
+        <div>
+          <h4>Confirmation envoyée</h4>
+          <p>Un e-mail de confirmation contenant les détails a été envoyé à votre adresse.</p>
+        </div>
       </div>
+      
+      <section class="next-steps">
+        <h3>Et maintenant ?</h3>
+        <ul class="steps-list">
+          <li class="step-item">
+            <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"></path>
+            </svg>
+            <span>Contactez le propriétaire pour finaliser les détails de votre réservation</span>
+          </li>
+          <li class="step-item">
+            <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <path d="M22 17H2a3 3 0 0 0 3-3V9a7 7 0 0 1 14 0v5a3 3 0 0 0 3 3z"></path>
+              <path d="M9 17v1a3 3 0 0 0 6 0v-1"></path>
+            </svg>
+            <span>Recevez des notifications concernant votre réservation</span>
+          </li>
+          <li class="step-item">
+            <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <rect x="2" y="3" width="20" height="14" rx="2" ry="2"></rect>
+              <line x1="8" y1="21" x2="16" y2="21"></line>
+              <line x1="12" y1="17" x2="12" y2="21"></line>
+            </svg>
+            <span>Consultez l'historique de vos paiements dans votre profil</span>
+          </li>
+        </ul>
+      </section>
+    </div>
+    
+    <div class="success-actions">
+      <a asp-controller="Home" asp-action="Index" class="button" data-variant="outline" data-size="md">
+        <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+          <path d="m3 9 9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"></path>
+          <polyline points="9 22 9 12 15 12 15 22"></polyline>
+        </svg>
+        Retour à l'accueil
+      </a>
+      <a asp-controller="Payment" asp-action="History" class="button" data-size="md">
+        <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+          <rect x="2" y="4" width="20" height="16" rx="2"></rect>
+          <path d="m8 10 4 4 4-4"></path>
+          <path d="M12 6v8"></path>
+        </svg>
+        Historique des paiements
+      </a>
     </div>
   </div>
-</div>
+</main>

@@ -20,6 +20,7 @@ namespace Pawesome.Controllers
         private readonly IOptions<StripeSettings> _stripeSettings;
         private readonly IPaymentService _paymentService;
         private readonly IAdvertService _advertService;
+        private readonly IPaymentRepository _paymentRepository;
         private readonly UserManager<User> _userManager;
         private readonly IMapper _mapper;
 
@@ -29,18 +30,21 @@ namespace Pawesome.Controllers
         /// <param name="stripeSettings">Stripe configuration settings</param>
         /// <param name="paymentService">Service for managing payments</param>
         /// <param name="advertService">Service for managing advertisements</param>
+        /// <param name="paymentRepository">Repository for payment operations</param>
         /// <param name="userManager">User management service</param>
         /// <param name="mapper">AutoMapper instance for object mapping</param>
         public PaymentController(
             IOptions<StripeSettings> stripeSettings,
             IPaymentService paymentService,
             IAdvertService advertService,
+            IPaymentRepository paymentRepository,
             UserManager<User> userManager,
             IMapper mapper)
         {
             _stripeSettings = stripeSettings;
             _paymentService = paymentService;
             _advertService = advertService;
+            _paymentRepository = paymentRepository;
             _userManager = userManager;
             _mapper = mapper;
         }
@@ -60,7 +64,7 @@ namespace Pawesome.Controllers
             {
                 return NotFound();
             }
-    
+
             var viewModel = _mapper.Map<CheckoutViewModel>(advert);
 
             viewModel.StripePublishableKey = _stripeSettings.Value.PublishableKey;
@@ -78,7 +82,7 @@ namespace Pawesome.Controllers
         public async Task<IActionResult> CreateCheckoutSession(int advertId)
         {
             StripeConfiguration.ApiKey = _stripeSettings.Value.SecretKey;
-            
+
             var user = await _userManager.GetUserAsync(User);
             if (user == null)
             {
@@ -89,6 +93,28 @@ namespace Pawesome.Controllers
             if (advert == null)
             {
                 return NotFound();
+            }
+            
+            var existingPayments = await _paymentRepository.GetPaymentsByUserAndAdvertAsync(user.Id, advertId);
+            var existingValidPayment = existingPayments.FirstOrDefault(p => p.Status != "failed");
+            
+            if (existingValidPayment != null)
+            {
+                return RedirectToAction("Success", new { sessionId = existingValidPayment.SessionId });
+            }
+
+            if (TempData["LastSessionId"] != null &&
+                !string.IsNullOrEmpty(TempData["LastSessionId"]?.ToString()) &&
+                TempData["LastAdvertId"] != null &&
+                (int)(TempData["LastAdvertId"] ?? throw new InvalidOperationException()) == advertId)
+            {
+                string lastSessionId = TempData["LastSessionId"]?.ToString() ?? throw new InvalidOperationException();
+                var sessionService = new SessionService();
+                var existingSession = await sessionService.GetAsync(lastSessionId);
+                if (existingSession != null && !string.IsNullOrEmpty(existingSession.Url))
+                {
+                    return Redirect(existingSession.Url);
+                }
             }
 
             var options = new SessionCreateOptions
@@ -122,8 +148,18 @@ namespace Pawesome.Controllers
 
             var service = new SessionService();
             var session = await service.CreateAsync(options);
+            
+            TempData["LastSessionId"] = session.Id;
+            TempData["LastAdvertId"] = advertId;
 
-            await _paymentService.CreatePaymentAsync(user.Id, advertId, session.Id);
+            try
+            {
+                await _paymentService.CreatePaymentAsync(user.Id, advertId, session.Id);
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine($"Erreur lors de la création du paiement : {ex.Message}");
+            }
 
             return Redirect(session.Url);
         }
@@ -177,8 +213,29 @@ namespace Pawesome.Controllers
             }
 
             var viewModels = await _paymentService.GetUserPaymentsForHistoryAsync(user.Id);
-            
+
             return View(viewModels);
+        }
+
+        /// <summary>
+        /// Checks if a payment already exists for the current user and a specific advertisement
+        /// </summary>
+        /// <param name="advertId">The ID of the advertisement to check payments for</param>
+        /// <returns>JSON result indicating whether a valid payment exists</returns>
+        [Authorize]
+        [HttpGet]
+        public async Task<IActionResult> CheckPaymentExists(int advertId)
+        {
+            var user = await _userManager.GetUserAsync(User);
+            if (user == null)
+            {
+                return Challenge();
+            }
+
+            var payments = await _paymentRepository.GetPaymentsByUserAndAdvertAsync(user.Id, advertId);
+            bool exists = payments.Any(p => p.Status != "failed");
+
+            return Json(new { exists });
         }
     }
 }

@@ -1,4 +1,5 @@
 using Microsoft.EntityFrameworkCore;
+using Npgsql;
 using Pawesome.Data;
 using Pawesome.Interfaces;
 using Pawesome.Models.Entities;
@@ -28,8 +29,33 @@ public class PaymentRepository : IPaymentRepository
     /// <returns>The created payment entity</returns>
     public async Task<Payment> CreatePaymentAsync(Payment payment)
     {
-        await _context.Payments.AddAsync(payment);
-        await _context.SaveChangesAsync();
+        var existingPayment = await _context.Payments
+            .FirstOrDefaultAsync(p => p.SessionId == payment.SessionId);
+        
+        if (existingPayment != null)
+        {
+            return existingPayment;
+        }
+    
+        _context.Payments.Add(payment);
+    
+        try
+        {
+            await _context.SaveChangesAsync();
+        }
+        catch (DbUpdateException ex) when (ex.InnerException is PostgresException { SqlState: "23505" })
+        {
+            var conflictingPayment = await _context.Payments
+                .FirstOrDefaultAsync(p => p.SessionId == payment.SessionId);
+            
+            if (conflictingPayment != null)
+            {
+                return conflictingPayment;
+            }
+        
+            throw;
+        }
+    
         return payment;
     }
 
@@ -40,10 +66,7 @@ public class PaymentRepository : IPaymentRepository
     /// <returns>The payment entity if found, null otherwise</returns>
     public async Task<Payment?> GetPaymentBySessionIdAsync(string sessionId)
     {
-        return await _context.Payments
-            .Include(p => p.User)
-            .Include(p => p.Advert)
-            .FirstOrDefaultAsync(p => p.SessionId == sessionId);
+        return await _context.Payments.FirstOrDefaultAsync(p => p.SessionId == sessionId);
     }
 
     /// <summary>
@@ -82,5 +105,12 @@ public class PaymentRepository : IPaymentRepository
 
         await _context.SaveChangesAsync();
         return payment;
+    }
+    
+    public async Task<List<Payment>> GetPaymentsByUserAndAdvertAsync(int userId, int advertId)
+    {
+        return await _context.Payments
+            .Where(p => p.UserId == userId && p.AdvertId == advertId)
+            .ToListAsync();
     }
 }

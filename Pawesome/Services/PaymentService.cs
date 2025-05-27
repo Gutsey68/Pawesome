@@ -55,8 +55,13 @@ public class PaymentService : IPaymentService
     /// <exception cref="ArgumentException">Thrown when the user cannot be found</exception>
     public async Task<PaymentDto> CreatePaymentAsync(int userId, int advertId, string sessionId)
     {
+        var existingPayment = await _repository.GetPaymentBySessionIdAsync(sessionId);
+        if (existingPayment != null)
+        {
+            return _mapper.Map<PaymentDto>(existingPayment);
+        }
+        
         var advert = await _advertRepository.GetAdvertByIdAsync(advertId);
-
         if (advert == null)
         {
             throw new InvalidOperationException($"L'annonce avec l'ID {advertId} est introuvable");
