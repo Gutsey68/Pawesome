@@ -6,9 +6,11 @@ Pets (<u>id</u>, name, breed, age, photo, info, createdAt, updatedAt, #userId, #
 
 AnimalTypes (<u>id</u>, name, createdAt, updatedAt)
 
-Adverts (<u>id</u>, startDate, endDate, status, amount, additionalInformation, createdAt, updatedAt, #userId, #addressId)
+Adverts (<u>id</u>, startDate, endDate, status, amount, additionalInformation, createdAt, updatedAt, #userId)
 
-Notifications (<u>id</u>, comment, createdAt, updatedAt, #userId)
+Bookings (<u>id</u>, status, totalAmount, startDate, endDate, isValidated, validatedAt, isDisputed, disputeReason, createdAt, updatedAt, #userId, #advertId)
+
+Notifications (<u>id</u>, title, message, isRead updatedAt, #userId)
 
 Reports (<u>id</u>, comment, isResolved, targetId, reportType, status, createdAt, updatedAt, #userId)
 
@@ -28,7 +30,7 @@ PetAdverts (<u>#petId, #advertId</u>, createdAt, updatedAt)
 
 Reviews (<u>#userId, #advertId</u>, rate, comment, createdAt, updatedAt)
 
-Payments (<u>id</u>, amount, status, sessionId, paymentIntentId, createdAt, updatedAt, #userId, #advertId)
+Payments (<u>id</u>, amount, status, sessionId, paymentIntentId, createdAt, updatedAt, #bookingId)
 
 AnimalTypeAdverts (<u>#animalTypeId, #advertId</u>, createdAt, updatedAt)
 
@@ -95,17 +97,37 @@ AnimalTypeAdverts (<u>#animalTypeId, #advertId</u>, createdAt, updatedAt)
 | createdAt    | Timestamp |        | Default CURRENT_TIMESTAMP | Creation date              |
 | updatedAt    | Timestamp |        | Default CURRENT_TIMESTAMP | Update date                |
 | userId       | Int       |        | FK -> Users(id) | Reference to the user        |
-| addressId    | Int       |        | FK -> Addresses(id) | Reference to the address    |
+
+### **Bookings**
+
+| Field name    | Data type     | Length | Constraint                    | Description                            |
+| ------------- | ------------- | ------ | ----------------------------- | -------------------------------------- |
+| id            | Int           |        | PK Auto increment             | Unique identifier                      |
+| status        | Varchar       | 50     | Default 'PendingConfirmation' | Booking status                         |
+| totalAmount   | Int           |        | Not null                      | Total calculated amount (optional)     |
+| startDate     | DateTime      |        | Not null                      | Start date of the booking              |
+| endDate       | DateTime      |        | Not null                      | End date of the booking                |
+| amount        | Decimal(10,2) |        | Not null                      | Final price for the booking            |
+| isValidated   | Boolean       |        | Default false                 | Indicates if the booking was validated |
+| validatedAt   | Timestamp     |        | Nullable                      | Date and time of validation            |
+| isDisputed    | Boolean       |        | Default false                 | True if the booking is under dispute   |
+| disputeReason | Text          |        | Nullable                      | Reason provided for dispute            |
+| createdAt     | Timestamp     |        | Default CURRENT\_TIMESTAMP    | Booking creation date                  |
+| updatedAt     | Timestamp     |        | Default CURRENT\_TIMESTAMP    | Last update date                       |
+| advertId      | Int           |        | FK → Adverts(id)              | Related advert                         |
+| bookerUserId  | Int           |        | FK → Users(id)                | User who initiated the booking         |
 
 ### **Notifications**
 
-| Field name | Data type | Length | Constraint | Description |
-|---|---|---|---|---|
-| id | Int | | PK Auto increment | Unique identifier |
-| comment | Text | | | Comment |
-| createdAt | Timestamp | | Default CURRENT_TIMESTAMP | Creation date |
-| updatedAt | Timestamp | | Default CURRENT_TIMESTAMP | Update date |
-| userId | Int | | FK -> Users(id) | Reference to the user |
+| Field name | Data type | Length | Constraint                 | Description                       |
+| ---------- | --------- | ------ | -------------------------- | --------------------------------- |
+| id         | Int       |        | PK Auto increment          | Unique identifier                 |
+| title      | Varchar   | 255    | Not null                   | Notification title                |
+| message    | Text      |        | Not null                   | Full notification message         |
+| isRead     | Boolean   |        | Default false              | Indicates if the message was read |
+| createdAt  | Timestamp |        | Default CURRENT\_TIMESTAMP | Creation date                     |
+| updatedAt  | Timestamp |        | Default CURRENT\_TIMESTAMP | Update date                       |
+| userId     | Int       |        | FK → Users(id)             | Reference to the user             |
 
 ### **Reports**
 
@@ -207,17 +229,16 @@ AnimalTypeAdverts (<u>#animalTypeId, #advertId</u>, createdAt, updatedAt)
 
 ### **Payments**
 
-| Field name | Data type | Length | Constraint | Description |
-|---|---|---|---|---|
-| id | Int | | PK Auto increment | Unique identifier |
-| amount | Decimal(10,2) | | Not null | Paid amount |
-| status | Varchar | 255 | Default 'pending' | Payment status |
-| sessionId | Varchar | 255 | | Payment session ID |
-| paymentIntentId | Varchar | 255 | | Payment intent ID |
-| createdAt | Timestamp | | Default CURRENT_TIMESTAMP | Creation date |
-| updatedAt | Timestamp | | Default CURRENT_TIMESTAMP | Update date |
-| userId | Int | | FK -> Users(id) | Reference to the user |
-| advertId | Int | | FK -> Adverts(id) | Reference to the advert |
+| Field name      | Data type | Length | Constraint                | Description              |
+|-----------------|---|---|---------------------------|--------------------------|
+| id              | Int | | PK Auto increment         | Unique identifier        |
+| amount          | Decimal(10,2) | | Not null                  | Paid amount              |
+| status          | Varchar | 255 | Default 'pending'         | Payment status           |
+| sessionId       | Varchar | 255 |                           | Payment session ID       |
+| paymentIntentId | Varchar | 255 |                           | Payment intent ID        |
+| createdAt       | Timestamp | | Default CURRENT_TIMESTAMP | Creation date            |
+| updatedAt       | Timestamp | | Default CURRENT_TIMESTAMP | Update date              |
+| bookingId       | Int | | FK -> Bookings(id)        | Reference to the booking |
 
 ### **AnimalTypeAdverts**
 

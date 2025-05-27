@@ -1,5 +1,6 @@
 using System.ComponentModel.DataAnnotations;
 using Microsoft.AspNetCore.Identity;
+using Pawesome.Models.Enums;
 
 namespace Pawesome.Models.Entities;
 
@@ -20,7 +21,7 @@ public class User : IdentityUser<int>
     public float? Rating { get; set; }
     
     [MaxLength(255)]
-    public string? Status { get; set; }
+    public UserStatus Status { get; set; } = UserStatus.Active;
     
     public bool IsVerified { get; set; } = false;
     
@@ -47,6 +48,5 @@ public class User : IdentityUser<int>
     public required ICollection<Message> SentMessages { get; set; }
     public required ICollection<Message> ReceivedMessages { get; set; }
     public required ICollection<Review> Reviews { get; set; }
-    public required ICollection<Payment> Payments { get; set; }
     public ICollection<Advert> Adverts { get; set; } = new List<Advert>();
 }

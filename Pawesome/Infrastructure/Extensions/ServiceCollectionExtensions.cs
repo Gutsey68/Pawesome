@@ -110,6 +110,7 @@ public static class ServiceCollectionExtensions
         services.AddScoped<ICountryRepository, CountryRepository>();
         services.AddScoped<IAddressRepository, AddressRepository>();
         services.AddScoped<INotificationRepository, NotificationRepository>();
+        services.AddScoped<IBookingRepository, BookingRepository>();
         
         // Register services
         services.AddScoped<IAuthService, AuthService>();
@@ -122,6 +123,7 @@ public static class ServiceCollectionExtensions
         services.AddScoped<IPaymentService, PaymentService>();
         services.AddScoped<INotificationService, NotificationService>();
         services.AddScoped<ILocationService, LocationService>();
+        services.AddScoped<IBookingService, BookingService>();
         
         // Register AutoMapper
         services.AddAutoMapper(typeof(Program).Assembly);

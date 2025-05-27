@@ -1,5 +1,6 @@
 using Pawesome.Models.DTOs;
 using Pawesome.Models.DTOs.Address;
+using Pawesome.Models.Enums;
 using Pawesome.Models.ViewModels;
 
 namespace Pawesome.Models.Dtos.Advert;
@@ -9,7 +10,7 @@ public class PetSittingAdvertDto
     public int Id { get; set; }
     public DateTime StartDate { get; set; }
     public DateTime EndDate { get; set; }
-    public string Status { get; set; } = string.Empty;
+    public AdvertStatus Status { get; set; }
     public decimal Amount { get; set; }
     public string? AdditionalInformation { get; set; }
     public DateTime CreatedAt { get; set; }

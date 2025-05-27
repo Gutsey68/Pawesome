@@ -3,6 +3,7 @@ using Pawesome.Models;
 using Pawesome.Models.DTOs;
 using Pawesome.Models.Dtos.Advert;
 using Pawesome.Models.Entities;
+using Pawesome.Models.Enums;
 using Pawesome.Models.ViewModels;
 using Pawesome.Models.ViewModels.Auth;
 using Pawesome.Models.ViewModels.Pet;
@@ -43,7 +44,7 @@ public class UserMappingProfile : Profile
                     AdditionalInformation = a.AdditionalInformation,
                     CreatedAt = a.CreatedAt,
                     UpdatedAt = a.UpdatedAt,
-                    IsPetSitter = a.Status.Contains("offer"),
+                    IsPetSitter = a.Status == AdvertStatus.PendingOffer,
                     Owner = new UserSimpleDto 
                     { 
                         Id = src.Id, 
@@ -67,8 +68,7 @@ public class UserMappingProfile : Profile
             .ForMember(dest => dest.PasswordResets, opt => opt.Ignore())
             .ForMember(dest => dest.SentMessages, opt => opt.Ignore())
             .ForMember(dest => dest.ReceivedMessages, opt => opt.Ignore())
-            .ForMember(dest => dest.Reviews, opt => opt.Ignore())
-            .ForMember(dest => dest.Payments, opt => opt.Ignore());
+            .ForMember(dest => dest.Reviews, opt => opt.Ignore());
 
         CreateMap<User, UpdateUserViewModel>()
             .ForMember(dest => dest.ExistingPhoto, opt => opt.MapFrom(src => src.Photo))

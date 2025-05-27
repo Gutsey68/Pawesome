@@ -6,6 +6,7 @@ using Microsoft.Extensions.Options;
 using Pawesome.Interfaces;
 using Pawesome.Models.Configuration;
 using Pawesome.Models.Entities;
+using Pawesome.Models.Enums;
 using Pawesome.Models.ViewModels.Payment;
 using Stripe;
 using Stripe.Checkout;
@@ -96,7 +97,7 @@ namespace Pawesome.Controllers
             }
             
             var existingPayments = await _paymentRepository.GetPaymentsByUserAndAdvertAsync(user.Id, advertId);
-            var existingValidPayment = existingPayments.FirstOrDefault(p => p.Status != "failed");
+            var existingValidPayment = existingPayments.FirstOrDefault(p => p.Status != PaymentStatus.Failed);
             
             if (existingValidPayment != null)
             {
@@ -233,7 +234,7 @@ namespace Pawesome.Controllers
             }
 
             var payments = await _paymentRepository.GetPaymentsByUserAndAdvertAsync(user.Id, advertId);
-            bool exists = payments.Any(p => p.Status != "failed");
+            var exists = payments.Any(p => p.Status != PaymentStatus.Failed);
 
             return Json(new { exists });
         }

@@ -13,12 +13,15 @@ public class PaymentMappingProfile : Profile
         CreateMap<Payment, PaymentDto>();
 
         CreateMap<Payment, PaymentHistoryViewModel>()
-            .ForMember(dest => dest.IsPetSitter, opt => opt.MapFrom(src => 
-                src.Advert.Status == "pending_offer"))
-            .ForMember(dest => dest.StartDate, opt => opt.MapFrom(src => 
-                src.Advert.StartDate))
-            .ForMember(dest => dest.EndDate, opt => opt.MapFrom(src => 
-                src.Advert.EndDate));
+            .ForMember(dest => dest.Id, opt => opt.MapFrom(src => src.Id))
+            .ForMember(dest => dest.Amount, opt => opt.MapFrom(src => src.Amount))
+            .ForMember(dest => dest.Status, opt => opt.MapFrom(src => src.Status.ToString()))
+            .ForMember(dest => dest.SessionId, opt => opt.MapFrom(src => src.SessionId))
+            .ForMember(dest => dest.CreatedAt, opt => opt.MapFrom(src => src.CreatedAt))
+            .ForMember(dest => dest.AdvertId, opt => opt.MapFrom(src => src.Booking.AdvertId))
+            .ForMember(dest => dest.IsPetSitter, opt => opt.MapFrom(src => src.Booking.Advert.Status == Models.Enums.AdvertStatus.PendingOffer))
+            .ForMember(dest => dest.StartDate, opt => opt.MapFrom(src => src.Booking.StartDate))
+            .ForMember(dest => dest.EndDate, opt => opt.MapFrom(src => src.Booking.EndDate));
         
         CreateMap<PetSittingAdvertDto, CheckoutViewModel>()
             .ForMember(dest => dest.AdvertId, opt => opt.MapFrom(src => src.Id))

@@ -3,6 +3,7 @@ using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Pawesome.Interfaces;
 using Pawesome.Models.Entities;
+using Pawesome.Models.Enums;
 using Pawesome.Models.ViewModels.Auth;
 
 namespace Pawesome.Controllers;
@@ -365,8 +366,7 @@ public class AuthController : Controller
                     SentMessages = new List<Message>(),
                     ReceivedMessages = new List<Message>(),
                     Reviews = new List<Review>(),
-                    Payments = new List<Payment>(),
-                    Status = "Active",
+                    Status = UserStatus.Active,
                     IsVerified = true 
                 };
 

@@ -1,7 +1,7 @@
 using Microsoft.AspNetCore.Identity;
-using Microsoft.EntityFrameworkCore;
 using Pawesome.Models;
 using Pawesome.Models.Entities;
+using Pawesome.Models.Enums;
 
 namespace Pawesome.Data.Seeding
 {
@@ -20,11 +20,8 @@ namespace Pawesome.Data.Seeding
             SeedPets(context);
             SeedAdverts(context);
             SeedMessages(context);
-            SeedReviews(context);
-            SeedNotifications(context);
             SeedReports(context);
             SeedPasswordResets(context);
-            SeedPayments(context); 
 
             await context.SaveChangesAsync();
         }
@@ -161,7 +158,7 @@ namespace Pawesome.Data.Seeding
                 Bio = "Administrateur de la plateforme Pawesome",
                 Photo = "brice.jpg",
                 Rating = 5.0f,
-                Status = "Active",
+                Status = UserStatus.Active,
                 IsVerified = true,
                 BalanceAccount = 0m,
                 OnboardingStep = 5,
@@ -176,7 +173,6 @@ namespace Pawesome.Data.Seeding
                 SentMessages = new List<Message>(),
                 ReceivedMessages = new List<Message>(),
                 Reviews = new List<Review>(),
-                Payments = new List<Payment>(),
                 CreatedAt = DateTime.UtcNow,
                 UpdatedAt = DateTime.UtcNow
             };
@@ -192,7 +188,7 @@ namespace Pawesome.Data.Seeding
                 Bio = "Amoureux des animaux depuis toujours",
                 Photo = "images/persona/guys_2.jpg",
                 Rating = 4.5f,
-                Status = "Active",
+                Status = UserStatus.Active,
                 IsVerified = true,
                 BalanceAccount = 100m,
                 OnboardingStep = 5,
@@ -207,7 +203,6 @@ namespace Pawesome.Data.Seeding
                 SentMessages = new List<Message>(),
                 ReceivedMessages = new List<Message>(),
                 Reviews = new List<Review>(),
-                Payments = new List<Payment>(),
                 CreatedAt = DateTime.UtcNow,
                 UpdatedAt = DateTime.UtcNow
             };
@@ -223,7 +218,7 @@ namespace Pawesome.Data.Seeding
                 Bio = "Passionnée par les chiens et chats",
                 Photo = "images/persona/girl_1.jpg",
                 Rating = 4.8f,
-                Status = "Active",
+                Status = UserStatus.Active,
                 IsVerified = true,
                 BalanceAccount = 150m,
                 OnboardingStep = 5,
@@ -238,7 +233,6 @@ namespace Pawesome.Data.Seeding
                 SentMessages = new List<Message>(),
                 ReceivedMessages = new List<Message>(),
                 Reviews = new List<Review>(),
-                Payments = new List<Payment>(),
                 CreatedAt = DateTime.UtcNow,
                 UpdatedAt = DateTime.UtcNow
             };
@@ -254,7 +248,7 @@ namespace Pawesome.Data.Seeding
                 Bio = "Modérateur expérimenté",
                 Photo = "michel.jpg",
                 Rating = 4.9f,
-                Status = "Active",
+                Status = UserStatus.Active,
                 IsVerified = true,
                 BalanceAccount = 50m,
                 OnboardingStep = 5,
@@ -269,7 +263,6 @@ namespace Pawesome.Data.Seeding
                 SentMessages = new List<Message>(),
                 ReceivedMessages = new List<Message>(),
                 Reviews = new List<Review>(),
-                Payments = new List<Payment>(),
                 CreatedAt = DateTime.UtcNow,
                 UpdatedAt = DateTime.UtcNow
             };
@@ -391,124 +384,53 @@ namespace Pawesome.Data.Seeding
             {
                 StartDate = DateTime.UtcNow.AddDays(1),
                 EndDate = DateTime.UtcNow.AddDays(3),
-                Status = "pending",
+                Status = AdvertStatus.Pending,
                 Amount = 50.0m,
                 UserId = users[0].Id,
                 PetAdverts = new List<PetAdvert>(),
-                Reviews = new List<Review>(),
-                Payments = new List<Payment>(),
                 CreatedAt = DateTime.UtcNow,
                 UpdatedAt = DateTime.UtcNow,
-                Address = new Address
-                {
-                    StreetAddress = "123 Rue de Paris",
-                    City = new City
-                    {
-                        Name = "Paris",
-                        PostalCode = "75000",
-                        Country = new Country
-                        {
-                            Name = "France",
-                            Cities = new List<City>(),
-                            CreatedAt = DateTime.UtcNow,
-                            UpdatedAt = DateTime.UtcNow
-                        },
-                        Addresses = new List<Address>(),
-                    }
-                }
+                AnimalTypeAdverts = new List<AnimalTypeAdvert>(),
+
             };
             
             var advert2 = new Advert
             {
                 StartDate = DateTime.UtcNow.AddDays(5),
                 EndDate = DateTime.UtcNow.AddDays(6),
-                Status = "pending",
+                Status = AdvertStatus.Pending,
                 Amount = 15.0m,
                 UserId = users[0].Id,
                 PetAdverts = new List<PetAdvert>(),
-                Reviews = new List<Review>(),
-                Payments = new List<Payment>(),
                 CreatedAt = DateTime.UtcNow,
                 UpdatedAt = DateTime.UtcNow,
-                Address = new Address
-                {
-                    StreetAddress = "456 Avenue Victor Hugo",
-                    City = new City
-                    {
-                        Name = "Lyon",
-                        PostalCode = "69000",
-                        Country = new Country
-                        {
-                            Name = "France",
-                            Cities = new List<City>(),
-                            CreatedAt = DateTime.UtcNow,
-                            UpdatedAt = DateTime.UtcNow
-                        },
-                        Addresses = new List<Address>(),
-                    }
-                }
+                AnimalTypeAdverts = new List<AnimalTypeAdvert>(),
             };
 
             var advert3 = new Advert
             {
                 StartDate = DateTime.UtcNow.AddDays(2),
                 EndDate = DateTime.UtcNow.AddDays(4),
-                Status = "approved",
+                Status =  AdvertStatus.Active,
                 Amount = 30.0m,
                 UserId = users[1].Id,
                 PetAdverts = new List<PetAdvert>(),
-                Reviews = new List<Review>(),
-                Payments = new List<Payment>(),
                 CreatedAt = DateTime.UtcNow,
                 UpdatedAt = DateTime.UtcNow,
-                Address = new Address
-                {
-                    StreetAddress = "789 Boulevard Saint-Germain",
-                    City = new City
-                    {
-                        Name = "Bordeaux",
-                        PostalCode = "33000",
-                        Country = new Country
-                        {
-                            Name = "France",
-                            Cities = new List<City>(),
-                            CreatedAt = DateTime.UtcNow,
-                            UpdatedAt = DateTime.UtcNow
-                        },
-                        Addresses = new List<Address>(),
-                    }
-                }
+                AnimalTypeAdverts = new List<AnimalTypeAdvert>(),
             };
 
             var advert4 = new Advert
             {
                 StartDate = DateTime.UtcNow.AddDays(7),
                 EndDate = DateTime.UtcNow.AddDays(10),
-                Status = "approved",
+                Status = AdvertStatus.Active,
                 Amount = 75.0m,
                 UserId = users[0].Id,
                 PetAdverts = new List<PetAdvert>(),
-                Reviews = new List<Review>(),
-                Payments = new List<Payment>(),
                 CreatedAt = DateTime.UtcNow,
                 UpdatedAt = DateTime.UtcNow,
-                Address = new Address
-                {
-                    StreetAddress = "101 Rue de la Paix",
-                    City = new City
-                    {
-                        Name = "Nice",
-                        PostalCode = "06000",
-                        Country = new Country
-                        {
-                            Name = "France",
-                            Cities = new List<City>(),
-                            CreatedAt = DateTime.UtcNow,
-                            UpdatedAt = DateTime.UtcNow
-                        },
-                        Addresses = new List<Address>(),
-                    }
-                }
+                AnimalTypeAdverts = new List<AnimalTypeAdvert>(),
             };
             
             context.Adverts.AddRange(advert1, advert2, advert3, advert4);
@@ -629,129 +551,7 @@ namespace Pawesome.Data.Seeding
             
             context.SaveChanges();
         }
-
-        private static void SeedReviews(AppDbContext context)
-        {
-            if (context.Reviews.Any()) return;
-
-            var users = context.Users.ToList();
-            var adverts = context.Adverts.ToList();
-            
-            if (users.Count < 1 || adverts.Count < 1) return;
-
-            context.Reviews.AddRange(
-                new Review
-                {
-                    Rate = 5,
-                    Comment = "Excellent service, je recommande !",
-                    UserId = users[1].Id,
-                    User = users[1],
-                    AdvertId = adverts[0].Id,
-                    Advert = adverts[0],
-                    CreatedAt = DateTime.UtcNow,
-                    UpdatedAt = DateTime.UtcNow
-                },
-                new Review
-                {
-                    Rate = 4,
-                    Comment = "Très bonne expérience, animal adorable",
-                    UserId = users[2].Id,
-                    User = users[2],
-                    AdvertId = adverts[1].Id,
-                    Advert = adverts[1],
-                    CreatedAt = DateTime.UtcNow,
-                    UpdatedAt = DateTime.UtcNow
-                },
-                new Review
-                {
-                    Rate = 5,
-                    Comment = "Tout s'est parfaitement déroulé, merci !",
-                    UserId = users[0].Id,
-                    User = users[0],
-                    AdvertId = adverts[2].Id,
-                    Advert = adverts[2],
-                    CreatedAt = DateTime.UtcNow,
-                    UpdatedAt = DateTime.UtcNow
-                }
-            );
-            
-            context.SaveChanges();
-        }
         
-        private static void SeedNotifications(AppDbContext context)
-        {
-            if (context.Notifications.Any()) return;
-
-            var users = context.Users.ToList();
-            if (users.Count < 2) return;
-
-            context.Notifications.AddRange(
-                new Notification
-                {
-                    Title = "Nouvelle réponse",
-                    Message = "Quelqu'un a répondu à votre annonce de garde pour Rex",
-                    Type = NotificationType.AdvertUpdate,
-                    IsRead = false,
-                    LinkUrl = "/Adverts/Details/1",
-                    ImageUrl = "/images/notifications/advert-response.png",
-                    UserId = users[0].Id,
-                    User = users[0],
-                    CreatedAt = DateTime.UtcNow,
-                    UpdatedAt = DateTime.UtcNow
-                },
-                new Notification
-                {
-                    Title = "Annonce approuvée",
-                    Message = "Votre annonce pour la garde de Félix a été approuvée",
-                    Type = NotificationType.AdvertUpdate,
-                    IsRead = true,
-                    LinkUrl = "/Adverts/Details/2",
-                    UserId = users[1].Id,
-                    User = users[1],
-                    CreatedAt = DateTime.UtcNow,
-                    UpdatedAt = DateTime.UtcNow
-                },
-                new Notification
-                {
-                    Title = "Nouveau message",
-                    Message = "Sophie vous a envoyé un message concernant votre annonce",
-                    Type = NotificationType.Message,
-                    IsRead = false,
-                    LinkUrl = "/Messages/Conversation/2",
-                    UserId = users[2].Id,
-                    User = users[2],
-                    CreatedAt = DateTime.UtcNow,
-                    UpdatedAt = DateTime.UtcNow
-                },
-                new Notification
-                {
-                    Title = "Réservation confirmée",
-                    Message = "Votre réservation pour la garde de Piou a été confirmée",
-                    Type = NotificationType.BookingStatusChange,
-                    IsRead = false,
-                    LinkUrl = "/Bookings/Details/1",
-                    ImageUrl = "/images/notifications/booking-confirmed.png",
-                    UserId = users[1].Id,
-                    User = users[1],
-                    CreatedAt = DateTime.UtcNow,
-                    UpdatedAt = DateTime.UtcNow
-                },
-                new Notification
-                {
-                    Title = "Nouvel avis",
-                    Message = "Jean a laissé un avis 5 étoiles sur votre service de garde",
-                    Type = NotificationType.SystemAlert,
-                    IsRead = false,
-                    LinkUrl = "/Reviews/MyReviews",
-                    UserId = users[3].Id,
-                    User = users[3],
-                    CreatedAt = DateTime.UtcNow,
-                    UpdatedAt = DateTime.UtcNow
-                }
-            );
-
-            context.SaveChanges();
-        }
 
         private static void SeedReports(AppDbContext context)
         {
@@ -817,64 +617,6 @@ namespace Pawesome.Data.Seeding
                     User = users[1],
                     CreatedAt = DateTime.UtcNow.AddDays(-2),
                     UpdatedAt = DateTime.UtcNow.AddDays(-1)
-                }
-            );
-
-            context.SaveChanges();
-        }
-
-        private static void SeedPayments(AppDbContext context)
-        {
-            if (context.Payments.Any()) return;
-
-            var users = context.Users.ToList();
-            var adverts = context.Adverts.ToList();
-            if (users.Count < 1 || adverts.Count < 1) return;
-
-            context.Payments.AddRange(
-                new Payment
-                {
-                    Amount = 50.0m,
-                    Status = "completed",
-                    UserId = users[0].Id,
-                    User = users[0],
-                    AdvertId = adverts[0].Id,
-                    Advert = adverts[0],
-                    CreatedAt = DateTime.UtcNow,
-                    UpdatedAt = DateTime.UtcNow
-                },
-                new Payment
-                {
-                    Amount = 15.0m,
-                    Status = "pending",
-                    UserId = users[1].Id,
-                    User = users[1],
-                    AdvertId = adverts[1].Id,
-                    Advert = adverts[1],
-                    CreatedAt = DateTime.UtcNow,
-                    UpdatedAt = DateTime.UtcNow
-                },
-                new Payment
-                {
-                    Amount = 30.0m,
-                    Status = "completed",
-                    UserId = users[2].Id,
-                    User = users[2],
-                    AdvertId = adverts[2].Id,
-                    Advert = adverts[2],
-                    CreatedAt = DateTime.UtcNow,
-                    UpdatedAt = DateTime.UtcNow
-                },
-                new Payment
-                {
-                    Amount = 75.0m,
-                    Status = "cancelled",
-                    UserId = users[3].Id,
-                    User = users[3],
-                    AdvertId = adverts[3].Id,
-                    Advert = adverts[3],
-                    CreatedAt = DateTime.UtcNow,
-                    UpdatedAt = DateTime.UtcNow
                 }
             );
 

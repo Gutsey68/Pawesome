@@ -53,13 +53,6 @@
                                 <h2 class="advert-title">
                                     @(advert.IsPetSitter ? "Offre de pet sitting" : "Recherche d'un pet sitter")
                                 </h2>
-                                <span class="badge" data-variant="@(advert.Status == "pending" ? "warning" :
-                                    (advert.Status == "accepted" ? "success" :
-                                    (advert.Status == "completed" ? "info" : "error")))">
-                                    @(advert.Status == "pending" ? "En attente" :
-                                      (advert.Status == "accepted" ? "Acceptée" :
-                                      (advert.Status == "completed" ? "Terminée" : "Annulée")))
-                                </span>
                             </div>
                             <div class="advert-content">
                                 <div class="advert-info">
@@ -108,13 +101,6 @@
                         <div class="advert-card pet-sitter-offer">
                             <div class="advert-header">
                                 <h2 class="advert-title">Offre de pet sitting</h2>
-                                <span class="badge" data-variant="@(advert.Status == "pending" ? "warning" :
-                                    (advert.Status == "accepted" ? "success" :
-                                    (advert.Status == "completed" ? "info" : "error")))">
-                                    @(advert.Status == "pending" ? "En attente" :
-                                      (advert.Status == "accepted" ? "Acceptée" :
-                                      (advert.Status == "completed" ? "Terminée" : "Annulée")))
-                                </span>
                             </div>
                             <div class="advert-content">
                                 <div class="advert-info">
@@ -180,13 +166,6 @@
                         <div class="advert-card pet-sitter-request">
                             <div class="advert-header">
                                 <h2 class="advert-title">Recherche d'un pet sitter</h2>
-                                <span class="badge" data-variant="@(advert.Status == "pending" ? "warning" :
-                                    (advert.Status == "accepted" ? "success" :
-                                    (advert.Status == "completed" ? "info" : "error")))">
-                                    @(advert.Status == "pending" ? "En attente" :
-                                      (advert.Status == "accepted" ? "Acceptée" :
-                                      (advert.Status == "completed" ? "Terminée" : "Annulée")))
-                                </span>
                             </div>
                             <div class="advert-content">
                                 <div class="advert-info">

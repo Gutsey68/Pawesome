@@ -5,6 +5,7 @@ using Pawesome.Models.DTOs;
 using Pawesome.Models.DTOs.Address;
 using Pawesome.Models.Dtos.Advert;
 using Pawesome.Models.Entities;
+using Pawesome.Models.Enums;
 using Pawesome.Models.ViewModels;
 using Pawesome.Models.ViewModels.Advert;
 
@@ -53,32 +54,18 @@ public class AdvertMappingProfile : Profile
             .ForMember(dest => dest.Species, opt => opt.MapFrom(src => src.AnimalTypeName));
 
         CreateMap<Advert, PetSittingAdvertDto>()
-            .ForMember(dest => dest.Owner, opt =>
-                opt.MapFrom((src, _, _, context) => context.Mapper.Map<UserSimpleDto>(src.User)))
-            .ForMember(dest => dest.Pets, opt =>
-                opt.MapFrom((src, _, _, context) =>
-                {
-                    return src.PetAdverts
-                        .Where(pa => pa.Pet is { AnimalType: not null })
-                        .Select(pa => context.Mapper.Map<PetSimpleDto>(pa.Pet))
-                        .ToList();
-                }))
-            .ForMember(dest => dest.IsPetSitter, opt =>
-                opt.MapFrom(src => src.Status.Contains("offer")))
-            .ForMember(dest => dest.AdditionalInformation, opt =>
-                opt.MapFrom(src => src.AdditionalInformation))
-            .ForMember(dest => dest.City, opt =>
-                opt.MapFrom(src => src.Address != null && src.Address.City != null ? src.Address.City.Name : null))
-            .ForMember(dest => dest.Address, opt =>
-                opt.MapFrom(src => src.Address != null ? new AddressDto
-                {
-                    Id = src.AddressId,
-                    StreetAddress = src.Address.StreetAddress,
-                    CityId = src.Address.CityId,
-                    CityName = src.Address.City != null ? src.Address.City.Name ?? string.Empty : string.Empty,
-                    PostalCode = src.Address.City != null ? src.Address.City.PostalCode ?? string.Empty : string.Empty,
-                    CountryId = src.Address.City != null ? src.Address.City.CountryId : 0,
-                    CountryName = src.Address.City != null && src.Address.City.Country != null ? src.Address.City.Country.Name ?? string.Empty : string.Empty
-                } : null));
+            .ForMember(dest => dest.Id, opt => opt.MapFrom(src => src.Id))
+            .ForMember(dest => dest.StartDate, opt => opt.MapFrom(src => src.StartDate))
+            .ForMember(dest => dest.EndDate, opt => opt.MapFrom(src => src.EndDate))
+            .ForMember(dest => dest.Status, opt => opt.MapFrom(src => src.Status.ToString()))
+            .ForMember(dest => dest.Amount, opt => opt.MapFrom(src => src.Amount))
+            .ForMember(dest => dest.AdditionalInformation, opt => opt.MapFrom(src => src.AdditionalInformation))
+            .ForMember(dest => dest.CreatedAt, opt => opt.MapFrom(src => src.CreatedAt))
+            .ForMember(dest => dest.UpdatedAt, opt => opt.MapFrom(src => src.UpdatedAt))
+            .ForMember(dest => dest.IsPetSitter, opt => opt.MapFrom(src => src.Status == AdvertStatus.PendingOffer))
+            .ForMember(dest => dest.Owner, opt => opt.MapFrom(src => src.User))
+            .ForMember(dest => dest.Pets, opt => opt.MapFrom(src => src.PetAdverts.Select(pa => pa.Pet).ToList()))
+            .ForMember(dest => dest.Address, opt => opt.MapFrom(src => src.User.Address))
+            .ForMember(dest => dest.City, opt => opt.MapFrom(src => src.User.Address != null ? src.User.Address.City.Name : null));
     }
 }

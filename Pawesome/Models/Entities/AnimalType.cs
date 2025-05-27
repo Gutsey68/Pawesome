@@ -13,4 +13,5 @@ public class AnimalType
     public DateTime UpdatedAt { get; set; } = DateTime.UtcNow;
 
     public ICollection<Pet>? Pets { get; set; }
+    public ICollection<AnimalTypeAdvert> AnimalTypeAdverts { get; set; } = new List<AnimalTypeAdvert>();
 }

@@ -1,15 +1,7 @@
 using System.ComponentModel.DataAnnotations;
+using Pawesome.Models.Enums;
 
 namespace Pawesome.Models.Entities;
-
-public enum NotificationType
-{
-    Message,
-    AdvertUpdate,
-    BookingRequest,
-    BookingStatusChange,
-    SystemAlert
-}
 
 public class Notification
 {
@@ -21,12 +13,6 @@ public class Notification
     
     public NotificationType Type { get; set; }
     public bool IsRead { get; set; } = false;
-    
-    [MaxLength(250)]
-    public string? LinkUrl { get; set; }
-    
-    [MaxLength(250)]
-    public string? ImageUrl { get; set; }
     
     public DateTime CreatedAt { get; set; } = DateTime.UtcNow;
     public DateTime UpdatedAt { get; set; } = DateTime.UtcNow;

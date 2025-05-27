@@ -58,7 +58,6 @@ public class UserServiceTests
         SentMessages = new List<Message>(),
         ReceivedMessages = new List<Message>(),
         Reviews = new List<Review>(),
-        Payments = new List<Payment>(),
         Adverts = new List<Advert>()
     };
 

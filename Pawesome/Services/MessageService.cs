@@ -2,6 +2,7 @@ using AutoMapper;
 using Pawesome.Interfaces;
 using Pawesome.Models.DTOs.Message;
 using Pawesome.Models.Entities;
+using Pawesome.Models.Enums;
 
 namespace Pawesome.Services;
 
@@ -129,8 +130,6 @@ public class MessageService : IMessageService
             Message = $"{sender.FirstName} {sender.LastName} vous a envoyé un message",
             Type = NotificationType.Message,
             IsRead = false,
-            LinkUrl = $"/Message/{currentUserId}",
-            ImageUrl = sender.Photo,
             UserId = messageDto.ReceiverId,
             User = receiver,
         };

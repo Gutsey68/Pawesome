@@ -3,54 +3,90 @@ using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
 using Pawesome.Models;
 using Pawesome.Models.Entities;
+using Pawesome.Models.enums;
+using Pawesome.Models.Enums;
 
 namespace Pawesome.Data;
 
 public class AppDbContext : IdentityDbContext<User, IdentityRole<int>, int>
 {
-    public AppDbContext(DbContextOptions<AppDbContext> options)
-        : base(options) { }
+    public AppDbContext(DbContextOptions<AppDbContext> options) : base(options)
+    {
+    }
 
-    public DbSet<Pet> Pets { get; set; }
-    public DbSet<AnimalType> AnimalTypes { get; set; }
-    public DbSet<Advert> Adverts { get; set; }
-    public DbSet<Notification> Notifications { get; set; }
-    public DbSet<Report> Reports { get; set; }
-    public DbSet<PasswordReset> PasswordResets { get; set; }
-    public DbSet<Message> Messages { get; set; }
-    public DbSet<Address> Addresses { get; set; }
-    public DbSet<City> Cities { get; set; }
-    public DbSet<Country> Countries { get; set; }
-    public DbSet<Review> Reviews { get; set; }
-    public DbSet<Payment> Payments { get; set; }
-    public DbSet<PetAdvert> PetAdverts { get; set; }
-    public DbSet<AnimalTypeAdvert> AnimalTypeAdverts { get; set; }
+    public DbSet<AnimalType> AnimalTypes { get; set; } = null!;
+    public DbSet<Pet> Pets { get; set; } = null!;
+    public DbSet<Address> Addresses { get; set; } = null!;
+    public DbSet<City> Cities { get; set; } = null!;
+    public DbSet<Country> Countries { get; set; } = null!;
+    public DbSet<Message> Messages { get; set; } = null!;
+    public DbSet<Notification> Notifications { get; set; } = null!;
+    public DbSet<PasswordReset> PasswordResets { get; set; } = null!;
+    public DbSet<Report> Reports { get; set; } = null!;
+    public DbSet<Advert> Adverts { get; set; } = null!;
+    public DbSet<PetAdvert> PetAdverts { get; set; } = null!;
+    public DbSet<AnimalTypeAdvert> AnimalTypeAdverts { get; set; } = null!;
+    public DbSet<Payment> Payments { get; set; } = null!;
+    public DbSet<Booking> Bookings { get; set; } = null!;
+    public DbSet<Review> Reviews { get; set; } = null!;
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
         base.OnModelCreating(modelBuilder);
 
+        modelBuilder.Entity<User>()
+            .HasOne(u => u.Address)
+            .WithMany()
+            .HasForeignKey(u => u.AddressId)
+            .OnDelete(DeleteBehavior.SetNull);
+
+        modelBuilder.Entity<User>()
+            .HasMany(u => u.Pets)
+            .WithOne(p => p.User)
+            .HasForeignKey(p => p.UserId)
+            .OnDelete(DeleteBehavior.Cascade);
+
+        modelBuilder.Entity<User>()
+            .HasMany(u => u.Adverts)
+            .WithOne(a => a.User)
+            .HasForeignKey(a => a.UserId)
+            .OnDelete(DeleteBehavior.Cascade);
+
+        modelBuilder.Entity<Pet>()
+            .HasOne(p => p.AnimalType)
+            .WithMany()
+            .HasForeignKey(p => p.AnimalTypeId)
+            .OnDelete(DeleteBehavior.Cascade);
+
         modelBuilder.Entity<PetAdvert>()
             .HasKey(pa => new { pa.PetId, pa.AdvertId });
+        
+        modelBuilder.Entity<PetAdvert>()
+            .HasOne(pa => pa.Pet)
+            .WithMany(p => p.PetAdverts)
+            .HasForeignKey(pa => pa.PetId)
+            .OnDelete(DeleteBehavior.Cascade);
+        
+        modelBuilder.Entity<PetAdvert>()
+            .HasOne(pa => pa.Advert)
+            .WithMany(a => a.PetAdverts)
+            .HasForeignKey(pa => pa.AdvertId)
+            .OnDelete(DeleteBehavior.Cascade);
 
         modelBuilder.Entity<AnimalTypeAdvert>()
             .HasKey(ata => new { ata.AnimalTypeId, ata.AdvertId });
-
+        
         modelBuilder.Entity<AnimalTypeAdvert>()
             .HasOne(ata => ata.AnimalType)
-            .WithMany()
-            .HasForeignKey(ata => ata.AnimalTypeId);
-
+            .WithMany(at => at.AnimalTypeAdverts)
+            .HasForeignKey(ata => ata.AnimalTypeId)
+            .OnDelete(DeleteBehavior.Cascade);
+        
         modelBuilder.Entity<AnimalTypeAdvert>()
             .HasOne(ata => ata.Advert)
-            .WithMany()
-            .HasForeignKey(ata => ata.AdvertId);
-
-        modelBuilder.Entity<Review>()
-            .HasKey(r => new { r.UserId, r.AdvertId });
-
-        modelBuilder.Entity<Payment>()
-            .HasKey(p => new { p.UserId, p.AdvertId });
+            .WithMany(a => a.AnimalTypeAdverts)
+            .HasForeignKey(ata => ata.AdvertId)
+            .OnDelete(DeleteBehavior.Cascade);
 
         modelBuilder.Entity<Message>()
             .HasOne(m => m.Sender)
@@ -64,64 +100,49 @@ public class AppDbContext : IdentityDbContext<User, IdentityRole<int>, int>
             .HasForeignKey(m => m.ReceiverId)
             .OnDelete(DeleteBehavior.Restrict);
 
-        modelBuilder.Entity<Report>()
+        modelBuilder.Entity<Payment>()
+            .HasOne(p => p.Booking)
+            .WithMany(b => b.Payments)
+            .HasForeignKey(p => p.BookingId)
+            .OnDelete(DeleteBehavior.Cascade);
+
+        modelBuilder.Entity<Review>()
+            .HasKey(r => new { r.UserId, r.BookingId });
+
+        modelBuilder.Entity<Review>()
             .HasOne(r => r.User)
-            .WithMany(u => u.Reports)
+            .WithMany(u => u.Reviews)
             .HasForeignKey(r => r.UserId)
             .OnDelete(DeleteBehavior.Restrict);
 
+        modelBuilder.Entity<Review>()
+            .HasOne(r => r.Booking)
+            .WithMany()
+            .HasForeignKey(r => r.BookingId)
+            .OnDelete(DeleteBehavior.Cascade);
+
+        modelBuilder.Entity<Booking>()
+            .HasOne(b => b.Advert)
+            .WithMany(a => a.Bookings)
+            .HasForeignKey(b => b.AdvertId)
+            .OnDelete(DeleteBehavior.Restrict);
+
+        modelBuilder.Entity<Booking>()
+            .HasOne(b => b.BookerUser)
+            .WithMany()
+            .HasForeignKey(b => b.BookerUserId)
+            .OnDelete(DeleteBehavior.Restrict);
+
+        modelBuilder.Entity<Booking>()
+            .Property(b => b.Status)
+            .HasDefaultValue(BookingStatus.PendingConfirmation);
+
+        modelBuilder.Entity<Payment>()
+            .Property(p => p.Status)
+            .HasDefaultValue(PaymentStatus.Pending);
+
         modelBuilder.Entity<Advert>()
-            .HasOne(a => a.User)
-            .WithMany(u => u.Adverts)
-            .HasForeignKey(a => a.UserId)
-            .OnDelete(DeleteBehavior.Restrict);
-
-        modelBuilder.Entity<Advert>()
-            .HasOne(a => a.Address)
-            .WithMany(ad => ad.Adverts)
-            .HasForeignKey(a => a.AddressId)
-            .OnDelete(DeleteBehavior.Restrict);
-
-        modelBuilder.Entity<User>()
-            .HasOne(u => u.Address)
-            .WithMany(a => a.Users)
-            .HasForeignKey(u => u.AddressId)
-            .OnDelete(DeleteBehavior.Restrict);
-
-        modelBuilder.Entity<Pet>()
-            .HasOne(p => p.User)
-            .WithMany(u => u.Pets)
-            .HasForeignKey(p => p.UserId)
-            .OnDelete(DeleteBehavior.Cascade);
-
-        modelBuilder.Entity<Pet>()
-            .HasOne(p => p.AnimalType)
-            .WithMany()
-            .HasForeignKey(p => p.AnimalTypeId)
-            .OnDelete(DeleteBehavior.Cascade);
-
-        modelBuilder.Entity<Notification>()
-            .HasOne(n => n.User)
-            .WithMany(u => u.Notifications)
-            .HasForeignKey(n => n.UserId)
-            .OnDelete(DeleteBehavior.Cascade);
-
-        modelBuilder.Entity<PasswordReset>()
-            .HasOne(pr => pr.User)
-            .WithMany(u => u.PasswordResets)
-            .HasForeignKey(pr => pr.UserId)
-            .OnDelete(DeleteBehavior.Cascade);
-
-        modelBuilder.Entity<City>()
-            .HasOne(c => c.Country)
-            .WithMany()
-            .HasForeignKey(c => c.CountryId)
-            .OnDelete(DeleteBehavior.Cascade);
-
-        modelBuilder.Entity<Address>()
-            .HasOne(a => a.City)
-            .WithMany()
-            .HasForeignKey(a => a.CityId)
-            .OnDelete(DeleteBehavior.Cascade);
+            .Property(a => a.Status)
+            .HasDefaultValue(AdvertStatus.Pending);
     }
 }

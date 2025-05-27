@@ -14,6 +14,6 @@ namespace Pawesome.Interfaces
         Task<Advert> UpdatePetSittingOfferAsync(Advert advert, List<int> animalTypeIds);
         Task<bool> UpdateAdvertStatusAsync(int advertId, string status);
         Task<bool> DeleteAdvertAsync(int advertId);
-        Task<List<Advert>> GetFilteredAdvertsAsync(AdvertFilterDto filter);
+        Task<IEnumerable<Advert>> GetFilteredAdvertsAsync(AdvertFilterDto filter);
     }
 }

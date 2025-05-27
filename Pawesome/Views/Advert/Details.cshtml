@@ -1,13 +1,10 @@
+@using Pawesome.Models.Enums
 @model Pawesome.Models.Dtos.Advert.PetSittingAdvertDto
 
 <main role="main" class="container advert-details">
     <div class="advert-header">
         <div class="advert-title-status">
             <h1>@(Model.IsPetSitter ? "Offre de pet sitting" : "Recherche d'un pet sitter")</h1>
-            <span class="badge" 
-                  data-variant="@(Model.Status == "pending" ? "warning" : (Model.Status == "accepted" ? "success" : (Model.Status == "completed" ? "info" : "error")))">
-                @(Model.Status == "pending" ? "En attente" : (Model.Status == "accepted" ? "Acceptée" : (Model.Status == "completed" ? "Terminée" : "Annulée")))
-            </span>
         </div>
         <div class="advert-dates-price">
             <div class="advert-date">
@@ -141,7 +138,7 @@
                     isOwner = currentUserId == Model.Owner.Id;
                 }
             }
-            @if (User.Identity?.IsAuthenticated == true && Model.Status != "cancelled" && Model.Status != "completed")
+            @if (User.Identity?.IsAuthenticated == true && Model.Status != AdvertStatus.Cancelled && Model.Status != AdvertStatus.Archived)
             {
                 @if (Model.Owner != null && Model.Owner.Id != int.Parse(User.FindFirst(System.Security.Claims.ClaimTypes.NameIdentifier)?.Value ?? "0"))
                 {
@@ -169,7 +166,7 @@
                         </a>
                     }
 
-                    @if (Model.Status != "cancelled")
+                    @if (Model.Status != AdvertStatus.Cancelled)
                     {
                         <a asp-controller="Advert" asp-action="ConfirmStatusChange" asp-route-id="@Model.Id" asp-route-status="cancelled" class="button" data-variant="error">
                             Annuler l'annonce

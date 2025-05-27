@@ -3,6 +3,8 @@ using Npgsql;
 using Pawesome.Data;
 using Pawesome.Interfaces;
 using Pawesome.Models.Entities;
+using Pawesome.Models.enums;
+using Pawesome.Models.Enums;
 
 namespace Pawesome.Repositories;
 
@@ -77,8 +79,13 @@ public class PaymentRepository : IPaymentRepository
     public async Task<List<Payment>> GetUserPaymentsAsync(int userId)
     {
         return await _context.Payments
-            .Include(p => p.Advert)
-            .Where(p => p.UserId == userId)
+            .Include(p => p.Booking)
+            .ThenInclude(b => b.Advert)
+            .ThenInclude(a => a.User)
+            .Include(p => p.Booking)
+            .ThenInclude(b => b.BookerUser)
+            .Where(p => p.Booking.BookerUserId == userId)
+            .OrderByDescending(p => p.CreatedAt)
             .ToListAsync();
     }
 
@@ -89,9 +96,10 @@ public class PaymentRepository : IPaymentRepository
     /// <param name="status">The new payment status</param>
     /// <param name="paymentIntentId">Optional payment intent ID</param>
     /// <returns>The updated payment entity if found, null otherwise</returns>
-    public async Task<Payment?> UpdatePaymentStatusAsync(string sessionId, string status, string? paymentIntentId = null)
+    public async Task<Payment?> UpdatePaymentStatusAsync(string sessionId, PaymentStatus status, string? paymentIntentId = null)
     {
         var payment = await _context.Payments
+            .Include(p => p.Booking)
             .FirstOrDefaultAsync(p => p.SessionId == sessionId);
 
         if (payment == null)
@@ -99,18 +107,39 @@ public class PaymentRepository : IPaymentRepository
 
         payment.Status = status;
         payment.UpdatedAt = DateTime.UtcNow;
-
+    
         if (paymentIntentId != null)
+        {
             payment.PaymentIntentId = paymentIntentId;
+        }
+
+        if (status == PaymentStatus.Captured)
+        {
+            payment.Booking.Status = BookingStatus.Accepted;
+            payment.Booking.UpdatedAt = DateTime.UtcNow;
+        }
+        else if (status == PaymentStatus.Failed)
+        {
+            payment.Booking.Status = BookingStatus.Declined;
+            payment.Booking.UpdatedAt = DateTime.UtcNow;
+        }
 
         await _context.SaveChangesAsync();
         return payment;
     }
     
+    /// <summary>
+    /// Retrieves all payments made by a specific user for a specific advert.
+    /// </summary>
+    /// <param name="userId">The ID of the user who made the payments.</param>
+    /// <param name="advertId">The ID of the advert associated with the payments.</param>
+    /// <returns>A list of payment entities matching the user and advert.</returns>
     public async Task<List<Payment>> GetPaymentsByUserAndAdvertAsync(int userId, int advertId)
     {
         return await _context.Payments
-            .Where(p => p.UserId == userId && p.AdvertId == advertId)
+            .Include(p => p.Booking)
+            .ThenInclude(b => b.Advert)
+            .Where(p => p.Booking.BookerUserId == userId && p.Booking.AdvertId == advertId)
             .ToListAsync();
     }
 }

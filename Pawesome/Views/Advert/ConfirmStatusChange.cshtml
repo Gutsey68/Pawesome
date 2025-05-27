@@ -1,10 +1,11 @@
+@using Pawesome.Models.Enums
 @model Pawesome.Models.Dtos.Advert.PetSittingAdvertDto
 
 <main role="main" class="container confirm-status-change">
     <div class="confirmation-card">
         <h1>Confirmation</h1>
         
-        <p>Êtes-vous sûr de vouloir @(Model.Status == "pending" ? "annuler" : "changer le statut de") cette annonce ?</p>
+        <p>Êtes-vous sûr de vouloir @(Model.Status == AdvertStatus.Pending ? "annuler" : "changer le statut de") cette annonce ?</p>
         
         <div class="advert-summary">
             <h2>@(Model.IsPetSitter ? "Offre de pet sitting" : "Recherche d'un pet sitter")</h2>
@@ -12,8 +13,8 @@
             <p><strong>Montant:</strong> @Model.Amount.ToString("C")</p>
             <p><strong>Statut actuel:</strong> 
                 <span class="badge"
-                      data-variant="@(Model.Status == "pending" ? "warning" : (Model.Status == "accepted" ? "success" : (Model.Status == "completed" ? "info" : "error")))">
-                    @(Model.Status == "pending" ? "En attente" : (Model.Status == "accepted" ? "Acceptée" : (Model.Status == "completed" ? "Terminée" : "Annulée")))
+                      data-variant="@(Model.Status == AdvertStatus.Pending ? "warning" : (Model.Status == AdvertStatus.FullyBooked ? "success" : (Model.Status == AdvertStatus.Archived ? "info" : "error")))">
+                    @(Model.Status == AdvertStatus.Pending ? "En attente" : (Model.Status == AdvertStatus.FullyBooked ? "Acceptée" : (Model.Status == AdvertStatus.Archived ? "Terminée" : "Annulée")))
                 </span>
             </p>
             <p><strong>Nouveau statut:</strong> <span class="badge" data-variant="error">Annulée</span></p>
