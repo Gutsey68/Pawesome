@@ -1,72 +1,82 @@
 @{
-  ViewData["Title"] = "Annulation du paiement";
+    ViewData["Title"] = "Paiement annulé";
 }
 
-<main class="container cancel-container" role="main">
-  <div class="cancel-card">
-    <div class="cancel-header">
-      <div class="cancel-icon">
-        <svg xmlns="http://www.w3.org/2000/svg" width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-          <circle cx="12" cy="12" r="10"></circle>
-          <line x1="15" y1="9" x2="9" y2="15"></line>
-          <line x1="9" y1="9" x2="15" y2="15"></line>
-        </svg>
-      </div>
-      <h1>Paiement annulé</h1>
-      <p class="cancel-message">Votre paiement a été annulé. Aucun montant n'a été prélevé sur votre compte.</p>
-    </div>
+<main role="main" class="cancel-container">
+    <h1 class="section-title">Paiement annulé</h1>
     
-    <div class="cancel-body">
-      <div class="alert" data-variant="warning">
-        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-          <path d="m21.73 18-8-14a2 2 0 0 0-3.48 0l-8 14A2 2 0 0 0 4 21h16a2 2 0 0 0 1.73-3Z"></path>
-          <path d="M12 9v4"></path>
-          <path d="M12 17h.01"></path>
-        </svg>
-        <div>
-          <h4>Transaction non finalisée</h4>
-          <p>Votre réservation n'a pas été confirmée. Vous pouvez réessayer ultérieurement.</p>
+    <div class="cancel-card">
+        <div class="cancel-header">
+            <div class="cancel-icon">
+                <svg xmlns="http://www.w3.org/2000/svg" width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-x-circle">
+                    <circle cx="12" cy="12" r="10"></circle>
+                    <line x1="15" y1="9" x2="9" y2="15"></line>
+                    <line x1="9" y1="9" x2="15" y2="15"></line>
+                </svg>
+            </div>
+            <h1>Paiement non effectué</h1>
+            <p class="cancel-message">Votre paiement a été annulé. Aucun montant n'a été prélevé sur votre compte.</p>
         </div>
-      </div>
-      
-      <section class="options-section">
-        <h3>Que souhaitez-vous faire maintenant ?</h3>
-        <ul class="options-list">
-          <li class="option-item">
-            <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-              <path d="M21 7.5V6a2 2 0 0 0-2-2H5a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-1.5"></path>
-              <path d="M16 2v4"></path>
-              <path d="M8 2v4"></path>
-              <path d="M3 10h18"></path>
-            </svg>
-            <span>Revenir à l'annonce pour reprogrammer votre réservation</span>
-          </li>
-          <li class="option-item">
-            <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-              <path d="m3 9 9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"></path>
-              <polyline points="9 22 9 12 15 12 15 22"></polyline>
-            </svg>
-            <span>Explorer d'autres annonces qui correspondent à vos besoins</span>
-          </li>
-        </ul>
-      </section>
+        
+        <div class="cancel-body">
+            <div class="alert" data-variant="warning">
+                <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-alert-triangle">
+                    <path d="m21.73 18-8-14a2 2 0 0 0-3.48 0l-8 14A2 2 0 0 0 4 21h16a2 2 0 0 0 1.73-3Z"></path>
+                    <path d="M12 9v4"></path>
+                    <path d="M12 17h.01"></path>
+                </svg>
+                <div>
+                    <h4>Transaction non finalisée</h4>
+                    <p>Votre réservation n'a pas été confirmée. Vous pouvez réessayer ultérieurement.</p>
+                </div>
+            </div>
+            
+            <section class="options-section">
+                <h3>Que souhaitez-vous faire maintenant ?</h3>
+                <ul class="options-list">
+                    <li class="option-item">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-calendar-clock">
+                            <path d="M21 7.5V6a2 2 0 0 0-2-2H5a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-1.5"></path>
+                            <path d="M16 2v4"></path>
+                            <path d="M8 2v4"></path>
+                            <path d="M3 10h18"></path>
+                            <circle cx="17" cy="16" r="3"></circle>
+                            <path d="M17 14.5v1.5h1.5"></path>
+                        </svg>
+                        <span>Revenir à l'annonce pour reprogrammer votre réservation</span>
+                    </li>
+                    <li class="option-item">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-search">
+                            <circle cx="11" cy="11" r="8"></circle>
+                            <path d="m21 21-4.3-4.3"></path>
+                        </svg>
+                        <span>Explorer d'autres annonces qui correspondent à vos besoins</span>
+                    </li>
+                    <li class="option-item">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-message-circle">
+                            <path d="M21 11.5a8.38 8.38 0 0 1-.9 3.8 8.5 8.5 0 0 1-7.6 4.7 8.38 8.38 0 0 1-3.8-.9L3 21l1.9-5.7a8.38 8.38 0 0 1-.9-3.8 8.5 8.5 0 0 1 4.7-7.6 8.38 8.38 0 0 1 3.8-.9h.5a8.48 8.48 0 0 1 8 8v.5z"></path>
+                        </svg>
+                        <span>Contacter le propriétaire pour discuter directement des options</span>
+                    </li>
+                </ul>
+            </section>
+        </div>
+        
+        <div class="cancel-actions">
+            <a asp-controller="Advert" asp-action="Index" class="button" data-variant="secondary" data-size="md">
+                <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-search mr-2">
+                    <circle cx="11" cy="11" r="8"></circle>
+                    <path d="m21 21-4.3-4.3"></path>
+                </svg>
+                Explorer les annonces
+            </a>
+            <a asp-controller="Home" asp-action="Index" class="button" data-variant="primary" data-size="md">
+                <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-home mr-2">
+                    <path d="m3 9 9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"></path>
+                    <polyline points="9 22 9 12 15 12 15 22"></polyline>
+                </svg>
+                Retour à l'accueil
+            </a>
+        </div>
     </div>
-    
-    <div class="cancel-actions">
-      <a asp-controller="Advert" asp-action="Index" class="button" data-variant="outline" data-size="md">
-        <svg class="svg" xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-          <path d="M21 12a9 9 0 1 1-9-9 9.75 9.75 0 0 1 6.74 2.74L21 8"></path>
-          <path d="M21 3v5h-5"></path>
-        </svg>
-        Voir les annonces
-      </a>
-      <a asp-controller="Home" asp-action="Index" class="button" data-size="md">
-        <svg class="svg" xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-          <path d="m3 9 9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"></path>
-          <polyline points="9 22 9 12 15 12 15 22"></polyline>
-        </svg>
-        Retour à l'accueil
-      </a>
-    </div>
-  </div>
 </main>

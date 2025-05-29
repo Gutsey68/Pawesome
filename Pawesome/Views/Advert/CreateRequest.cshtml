@@ -35,7 +35,7 @@
                 </svg>
                 <div>
                     <h4>Action requise</h4>
-                    <p>Vous n'avez pas encore défini votre adresse. <a asp-controller="User" asp-action="Edit" class="underline">Renseigner votre adresse maintenant</a></p>
+                    <p>Vous n'avez pas encore défini votre adresse. <a asp-controller="User" asp-action="Edit" asp-route-id="@User.FindFirst("Id")?.Value" class="underline">Renseigner votre adresse maintenant</a></p>
                 </div>
             </div>
         }
@@ -62,8 +62,8 @@
                     <label asp-for="Amount" class="form-label">Prix proposé (par jour)</label>
                     <input asp-for="Amount" class="form-control" type="number" step="0.01"
                            data-val="true"
-                           data-val-range="Le montant ne peut pas être négatif"
-                           data-val-range-min="0"/>
+                           data-val-range="Le montant doit être supérieur à 0"
+                           data-val-range-min="1"/>
                     <span asp-validation-for="Amount" class="validation-message"></span>
                 </div>
             </fieldset>
@@ -104,7 +104,7 @@
                         </svg>
                         <div>
                             <h4>Attention</h4>
-                            <p>Vous n'avez pas encore ajouté d'animaux. <a asp-controller="Pet" asp-action="Create">Ajouter
+                            <p>Vous n'avez pas encore ajouté d'animaux. <a asp-controller="Pet" asp-action="Create" class="underline">Ajouter
                                     un animal</a></p>
                         </div>
                     </div>

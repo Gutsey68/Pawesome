@@ -1,21 +1,30 @@
 .success-container {
-    max-width: 600px;
-    margin: var(--space-8) auto;
+    max-width: 50rem;
+    margin: 0 auto var(--space-10) auto;
+    padding: var(--space-4) 0;
+}
+
+.section-title {
+    font-size: var(--font-size-2xl);
+    color: var(--color-primary-12);
+    margin: var(--space-6) 0 var(--space-2) 0;
+    font-weight: var(--font-weight-medium);
 }
 
 .success-card {
     background-color: var(--color-primary-2);
     border-radius: var(--radius-xl);
     box-shadow: var(--shadow-sm);
+    border: 1px solid var(--color-primary-4);
     overflow: hidden;
+    margin-top: var(--space-4);
 }
 
 .success-header {
-    background-color: var(--color-success);
-    color: var(--color-success-foreground);
-    padding: var(--space-6) var(--space-5) var(--space-5);
+    background-color: var(--color-primary-3);
+    padding: var(--space-6);
     text-align: center;
-    border-bottom: 1px solid var(--color-success-border);
+    border-bottom: 1px solid var(--color-primary-4);
 }
 
 .success-icon {
@@ -25,8 +34,8 @@
     margin: 0 auto var(--space-4);
     width: 80px;
     height: 80px;
-    background-color: var(--color-success-foreground);
-    color: var(--color-success);
+    background-color: var(--color-success);
+    color: var(--color-success-foreground);
     border-radius: 50%;
 }
 
@@ -38,17 +47,17 @@
 .success-header h1 {
     font-size: var(--font-size-2xl);
     margin: 0 0 var(--space-2);
-    color: var(--color-success-foreground);
+    color: var(--color-primary-12);
 }
 
 .success-message {
     font-size: var(--font-size-md);
     margin: 0;
-    opacity: 0.9;
+    color: var(--color-primary-11);
 }
 
 .success-body {
-    padding: var(--space-5);
+    padding: var(--space-6);
     display: flex;
     flex-direction: column;
     gap: var(--space-5);
@@ -76,7 +85,7 @@
 .transaction-detail .value {
     font-size: var(--font-size-md);
     color: var(--color-primary-12);
-    font-weight: var(--font-weight-bold);
+    font-weight: var(--font-weight-medium);
     font-family: monospace;
     letter-spacing: 0.5px;
     word-break: break-all;
@@ -88,8 +97,9 @@
 
 .next-steps h3 {
     font-size: var(--font-size-lg);
-    color: var(--color-primary-11);
+    color: var(--color-primary-12);
     margin: 0 0 var(--space-3);
+    font-weight: var(--font-weight-medium);
 }
 
 .steps-list {
@@ -99,6 +109,10 @@
     display: flex;
     flex-direction: column;
     gap: var(--space-3);
+    background-color: var(--color-primary-1);
+    border-radius: var(--radius-lg);
+    padding: var(--space-4);
+    border: 1px solid var(--color-primary-4);
 }
 
 .step-item {
@@ -117,8 +131,10 @@
 
 .success-actions {
     display: flex;
+    align-items: center;
+    justify-content: center;
     gap: var(--space-4);
-    padding: var(--space-5);
+    padding: var(--space-6);
     border-top: 1px solid var(--color-primary-4);
     background-color: var(--color-primary-3);
 }
@@ -137,10 +153,27 @@
 
 @media (max-width: 768px) {
     .success-container {
-        padding: 0 var(--space-3);
+        padding: var(--space-3) var(--space-4);
+    }
+    
+    .success-card {
+        margin-top: var(--space-3);
+    }
+    
+    .success-header {
+        padding: var(--space-4);
+    }
+    
+    .success-body {
+        padding: var(--space-4);
     }
     
     .success-actions {
+        padding: var(--space-4);
         flex-direction: column;
+    }
+    
+    .success-actions .button {
+        width: 100%;
     }
 }

@@ -1,42 +1,36 @@
 .history-container {
-    max-width: 800px;
-    margin: var(--space-6) auto var(--space-8);
+    max-width: 50rem;
+    margin: 0 auto var(--space-10) auto;
+    padding: var(--space-4) 0;
+}
+
+.section-title {
+    font-size: var(--font-size-2xl);
+    color: var(--color-primary-12);
+    margin: var(--space-6) 0 var(--space-2) 0;
+    font-weight: var(--font-weight-medium);
+}
+
+.history-subtitle {
+    color: var(--color-primary-11);
+    margin-bottom: var(--space-6);
+    font-size: var(--font-size-md);
 }
 
 .history-card {
     background-color: var(--color-primary-2);
     border-radius: var(--radius-xl);
     box-shadow: var(--shadow-sm);
+    border: 1px solid var(--color-primary-4);
     overflow: hidden;
-}
-
-.card-header {
-    background-color: var(--color-primary-3);
-    padding: var(--space-5);
-    border-bottom: 1px solid var(--color-primary-4);
-    text-align: center;
-}
-
-.card-header h1 {
-    font-size: var(--font-size-2xl);
-    color: var(--color-primary-12);
-    margin: 0 0 var(--space-1);
-}
-
-.history-subtitle {
-    color: var(--color-primary-10);
-    margin: 0;
-    font-size: var(--font-size-md);
-}
-
-.card-body {
-    padding: var(--space-5);
+    margin-bottom: var(--space-6);
 }
 
 .payments-list {
     display: flex;
     flex-direction: column;
     gap: var(--space-4);
+    padding: var(--space-6);
 }
 
 .payment-item {
@@ -44,6 +38,12 @@
     border: 1px solid var(--color-primary-4);
     border-radius: var(--radius-lg);
     overflow: hidden;
+    transition: var(--transition);
+}
+
+.payment-item:hover {
+    border-color: var(--color-primary-6);
+    box-shadow: var(--shadow-sm);
 }
 
 .payment-header {
@@ -51,7 +51,7 @@
     justify-content: space-between;
     align-items: center;
     padding: var(--space-3) var(--space-4);
-    background-color: var(--color-primary-3);
+    background-color: var(--color-primary-2);
     border-bottom: 1px solid var(--color-primary-4);
 }
 
@@ -59,6 +59,7 @@
     margin: 0;
     font-size: var(--font-size-md);
     color: var(--color-primary-12);
+    font-weight: var(--font-weight-medium);
 }
 
 .payment-date {
@@ -70,10 +71,11 @@
 
 .payment-badge {
     font-size: var(--font-size-xs);
-    font-weight: var(--font-weight-bold);
+    font-weight: var(--font-weight-medium);
     padding: var(--space-1) var(--space-2);
     border-radius: var(--radius-full);
     text-transform: uppercase;
+    letter-spacing: var(--letter-spacing-1);
 }
 
 .payment-badge.completed {
@@ -82,8 +84,8 @@
 }
 
 .payment-badge.pending {
-    background-color: var(--color-orange);
-    color: var(--color-orange-foreground);
+    background-color: var(--color-warning);
+    color: var(--color-warning-foreground);
 }
 
 .payment-badge.failed {
@@ -162,6 +164,13 @@
     display: flex;
     justify-content: flex-end;
     margin-top: var(--space-2);
+    gap: var(--space-2);
+}
+
+.payment-actions .button {
+    display: flex;
+    align-items: center;
+    gap: var(--space-2);
 }
 
 .empty-state {
@@ -177,7 +186,7 @@
     background-color: var(--color-primary-3);
     width: 80px;
     height: 80px;
-    border-radius: 50%;
+    border-radius: var(--radius-full);
     display: flex;
     align-items: center;
     justify-content: center;
@@ -187,29 +196,30 @@
 
 .empty-state h2 {
     font-size: var(--font-size-xl);
-    color: var(--color-primary-11);
+    color: var(--color-primary-12);
     margin: 0;
 }
 
 .empty-state p {
-    color: var(--color-primary-10);
+    color: var(--color-primary-11);
     margin: 0 0 var(--space-4);
     max-width: 400px;
 }
 
-.card-footer {
-    background-color: var(--color-primary-3);
-    padding: var(--space-4);
-    border-top: 1px solid var(--color-primary-4);
+.actions-container {
     display: flex;
     justify-content: center;
+    gap: var(--space-3);
+    padding: var(--space-4) var(--space-6);
+    border-top: 1px solid var(--color-primary-4);
+    background-color: var(--color-primary-2);
 }
 
-.svg {
-    margin-right: var(--space-2);
-}
-
-@media (max-width: 640px) {
+@media (max-width: 768px) {
+    .history-container {
+        padding: var(--space-3) var(--space-4);
+    }
+    
     .payment-header {
         flex-direction: column;
         align-items: flex-start;
@@ -229,6 +239,15 @@
     }
     
     .payment-actions .button {
+        width: 100%;
+    }
+    
+    .actions-container {
+        flex-direction: column;
+        gap: var(--space-2);
+    }
+    
+    .actions-container .button {
         width: 100%;
     }
 }

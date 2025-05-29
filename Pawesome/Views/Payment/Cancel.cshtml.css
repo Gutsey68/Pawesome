@@ -1,6 +1,14 @@
 .cancel-container {
-    max-width: 600px;
-    margin: var(--space-8) auto;
+    max-width: 50rem;
+    margin: 0 auto var(--space-10) auto;
+    padding: var(--space-4) 0;
+}
+
+.section-title {
+    font-size: var(--font-size-2xl);
+    color: var(--color-primary-12);
+    margin: var(--space-6) 0 var(--space-2) 0;
+    font-weight: var(--font-weight-medium);
 }
 
 .cancel-card {
@@ -8,14 +16,15 @@
     border-radius: var(--radius-xl);
     box-shadow: var(--shadow-sm);
     overflow: hidden;
+    border: 1px solid var(--color-primary-4);
+    margin-top: var(--space-4);
 }
 
 .cancel-header {
-    background-color: var(--color-orange);
-    color: var(--color-orange-foreground);
-    padding: var(--space-6) var(--space-5) var(--space-5);
+    padding: var(--space-6);
     text-align: center;
-    border-bottom: 1px solid var(--color-orange-border);
+    border-bottom: 1px solid var(--color-primary-4);
+    background-color: var(--color-primary-3);
 }
 
 .cancel-icon {
@@ -25,8 +34,8 @@
     margin: 0 auto var(--space-4);
     width: 80px;
     height: 80px;
-    background-color: var(--color-orange-foreground);
-    color: var(--color-orange);
+    background-color: var(--color-orange);
+    color: var(--color-orange-foreground);
     border-radius: 50%;
 }
 
@@ -38,17 +47,17 @@
 .cancel-header h1 {
     font-size: var(--font-size-2xl);
     margin: 0 0 var(--space-2);
-    color: var(--color-orange-foreground);
+    color: var(--color-primary-12);
 }
 
 .cancel-message {
     font-size: var(--font-size-md);
     margin: 0;
-    opacity: 0.9;
+    color: var(--color-primary-11);
 }
 
 .cancel-body {
-    padding: var(--space-5);
+    padding: var(--space-6);
     display: flex;
     flex-direction: column;
     gap: var(--space-5);
@@ -62,6 +71,7 @@
     font-size: var(--font-size-lg);
     color: var(--color-primary-11);
     margin: 0 0 var(--space-3);
+    font-weight: var(--font-weight-medium);
 }
 
 .options-list {
@@ -96,7 +106,7 @@
     align-items: center;
     justify-content: center;
     gap: var(--space-4);
-    padding: var(--space-5);
+    padding: var(--space-6);
     border-top: 1px solid var(--color-primary-4);
     background-color: var(--color-primary-3);
 }
@@ -109,20 +119,29 @@
     flex: 1;
 }
 
-.cancel-actions .button svg {
-    flex-shrink: 0;
-}
-
-.svg {
-    margin-right: var(--space-2);
-}
-
 @media (max-width: 768px) {
     .cancel-container {
-        padding: 0 var(--space-3);
+        padding: var(--space-3) var(--space-4);
+    }
+    
+    .cancel-card {
+        margin-top: var(--space-3);
+    }
+    
+    .cancel-header {
+        padding: var(--space-4);
+    }
+    
+    .cancel-body {
+        padding: var(--space-4);
     }
     
     .cancel-actions {
+        padding: var(--space-4);
         flex-direction: column;
+    }
+    
+    .cancel-actions .button {
+        width: 100%;
     }
 }

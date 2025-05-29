@@ -106,9 +106,7 @@
 
 ---
 TODO: 
-- bug de prix sur Booking/create
 - sur advert/details il faut dire que l'autre doit accepter.
 - les notifications ne marchent pas sur les annonces 
 - celui qui a fait une annonce doit voir les demandes. -> faire un lien sur Booking/Index
-- La page Booking/index est buggé.
 - il faut ajouter la searchbar sur modale quand pas sur home ou dashboard

@@ -1,4 +1,5 @@
 @using Pawesome.Models.enums
+@using Pawesome.Helpers
 @{
     ViewData["Title"] = "Détails de la réservation";
     var isBooker = Model.BookerUserId == ViewBag.CurrentUserId;
@@ -8,7 +9,7 @@
     var canDispute = isBooker && (Model.Status == BookingStatus.InProgress || Model.Status == BookingStatus.Completed);
 }
 
-<div class="container booking-details-container">
+<main role="main" class="booking-details-container">
     <div class="booking-details-header">
         <h1>Détails de la réservation</h1>
         <div class="booking-status-badge @Model.Status.ToString().ToLower()">
@@ -17,7 +18,7 @@
     </div>
 
     <div class="booking-details-card">
-        <div class="booking-section">
+        <section class="booking-section">
             <h2>Informations générales</h2>
             <div class="booking-info-grid">
                 <div class="booking-info-item">
@@ -37,9 +38,9 @@
                     <span class="info-value">@Model.UpdatedAt.ToString("dd/MM/yyyy HH:mm")</span>
                 </div>
             </div>
-        </div>
+        </section>
 
-        <div class="booking-section participants-section">
+        <section class="booking-section participants-section">
             <h2>Participants</h2>
             <div class="participants-grid">
                 <div class="participant-card">
@@ -47,13 +48,12 @@
                         <h3>Propriétaire des animaux</h3>
                     </div>
                     <div class="participant-content">
-                        <img src="@(string.IsNullOrEmpty(Model.BookerPhoto) ? "/images/default-avatar.png" : Model.BookerPhoto)" alt="Photo de @Model.BookerUserName" class="participant-photo">
+                        <div class="avatar" data-size="md">
+                            <img src="@ImageHelper.GetPhotoUrl(Model.BookerPhoto)" alt="Photo de @Model.BookerUserName" class="avatar-image">
+                        </div>
                         <div class="participant-info">
                             <span class="participant-name">@Model.BookerUserName</span>
-                            <a asp-controller="Message" asp-action="StartConversation" asp-route-otherUserId="@Model.BookerUserId" class="message-link">
-                                <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                                    <path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"></path>
-                                </svg>
+                            <a asp-controller="Message" asp-action="StartConversation" asp-route-otherUserId="@Model.BookerUserId" class="underline">
                                 Envoyer un message
                             </a>
                         </div>
@@ -65,31 +65,31 @@
                         <h3>Pet sitter</h3>
                     </div>
                     <div class="participant-content">
-                        <img src="@(string.IsNullOrEmpty(Model.PetSitterPhoto) ? "/images/default-avatar.png" : Model.PetSitterPhoto)" alt="Photo de @Model.PetSitterUserName" class="participant-photo">
+                        <div class="avatar" data-size="md">
+                            <img src="@ImageHelper.GetPhotoUrl(Model.PetSitterPhoto)" alt="Photo de @Model.PetSitterUserName" class="avatar-image">
+                        </div>
                         <div class="participant-info">
                             <span class="participant-name">@Model.PetSitterUserName</span>
-                            <a asp-controller="Message" asp-action="StartConversation" asp-route-otherUserId="@Model.PetSitterUserId" class="message-link">
-                                <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                                    <path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"></path>
-                                </svg>
+                            <a asp-controller="Message" asp-action="StartConversation" asp-route-otherUserId="@Model.PetSitterUserId" class="underline">
                                 Envoyer un message
                             </a>
                         </div>
                     </div>
                 </div>
             </div>
-        </div>
+        </section>
 
-        <div class="booking-section">
+        <section class="booking-section">
             <h2>Détails de la prestation</h2>
             <div class="advert-details">
                 <div class="advert-header">
                     <h3>@Model.AdvertTitle</h3>
                     <a asp-controller="Advert" asp-action="Details" asp-route-id="@Model.AdvertId" class="advert-link">
                         Voir l'annonce
-                        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                            <line x1="7" y1="17" x2="17" y2="7"></line>
-                            <polyline points="7 7 17 7 17 17"></polyline>
+                        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-external-link">
+                            <path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"/>
+                            <polyline points="15 3 21 3 21 9"/>
+                            <line x1="10" y1="14" x2="21" y2="3"/>
                         </svg>
                     </a>
                 </div>
@@ -101,14 +101,13 @@
                         {
                             <li class="pet-item">
                                 <span class="pet-type">
-                                    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                                        <path d="M10 5.172C10 3.12 12.506.5 15 3.5c2.5 3 0 7.5-5 9.5"></path>
-                                        <path d="M14.5 5.172c0-2.052 2.506-4.672 5-1.672 2.5 3 0 7.5-5 9.5"></path>
-                                        <path d="M8.5 10c0 2 1.5 3 3 3s3-1 3-3-1.5-3-3-3-3 1-3 3z"></path>
-                                        <path d="M17 17c.667 1.333 1 2.167 1 2.5 0 .828-.672 1.5-1.5 1.5S15 20.328 15 19.5c0-.333.333-1.167 1-2.5"></path>
-                                        <path d="M11 17c.667 1.333 1 2.167 1 2.5 0 .828-.672 1.5-1.5 1.5S9 20.328 9 19.5c0-.333.333-1.167 1-2.5"></path>
-                                        <path d="M7 14.5c-1.5 1.167-2.333 1.917-2.5 2.25-.5 1 .215 2.12 1 2.25 1.5.25 2-3 1.5-4.5z"></path>
-                                        <path d="M19.5 14.5c1.5 1.167 2.333 1.917 2.5 2.25.5 1-.215 2.12-1 2.25-1.5.25-2-3-1.5-4.5z"></path>
+                                    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-dog">
+                                        <path d="M10 5.172C10 3.782 8.423 2.679 6.5 3c-2.823.47-4.113 6.006-4 7 .08.703 1.725 1.722 3.656 1 1.261-.472 1.96-1.45 2.344-2.5"/>
+                                        <path d="M14.267 5.172c0-1.39 1.577-2.493 3.5-2.172 2.823.47 4.113 6.006 4 7-.08.703-1.725 1.722-3.656 1-1.261-.472-1.855-1.45-2.239-2.5"/>
+                                        <path d="M8 14v.5"/>
+                                        <path d="M16 14v.5"/>
+                                        <path d="M11.25 16.25h1.5L12 17l-.75-.75Z"/>
+                                        <path d="M4.42 11.247A13.152 13.152 0 0 0 4 14.556C4 18.728 7.582 21 12 21s8-2.272 8-6.444c0-1.061-.162-2.2-.493-3.309m-9.243-6.082A8.801 8.801 0 0 1 12 5c.78 0 1.5.108 2.161.306"/>
                                     </svg>
                                     @pet.Type
                                 </span>
@@ -126,90 +125,97 @@
                     </div>
                 }
             </div>
-        </div>
+        </section>
 
         @if (!string.IsNullOrEmpty(Model.DisputeReason))
         {
-            <div class="booking-section dispute-section">
-                <div class="alert" data-variant="danger">
-                    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                        <polygon points="22 3 2 3 10 12.46 10 19 14 21 14 12.46 22 3"></polygon>
+            <section class="booking-section dispute-section">
+                <div class="alert" data-variant="error">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-alert-triangle">
+                        <path d="m21.73 18-8-14a2 2 0 0 0-3.48 0l-8 14A2 2 0 0 0 4 21h16a2 2 0 0 0 1.73-3Z"/>
+                        <path d="M12 9v4"/>
+                        <path d="M12 17h.01"/>
                     </svg>
                     <div>
-                        <h3>Litige en cours</h3>
+                        <h4>Litige en cours</h4>
                         <p>@Model.DisputeReason</p>
                         <p class="dispute-date">Signalé le @Model.DisputeDate?.ToString("dd/MM/yyyy HH:mm")</p>
                     </div>
                 </div>
-            </div>
+            </section>
         }
 
-        <div class="booking-actions">
-            @if (canUpdateStatus)
-            {
-                <div class="actions-group">
-                    <h3>Actions disponibles (Pet sitter)</h3>
-                    <div class="action-buttons">
-                        <form asp-action="UpdateStatus" method="post">
-                            <input type="hidden" name="bookingId" value="@Model.Id" />
-                            <input type="hidden" name="status" value="Accepted" />
-                            <button type="submit" class="button" data-variant="success">
-                                <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                                    <polyline points="20 6 9 17 4 12"></polyline>
-                                </svg>
-                                Accepter la réservation
-                            </button>
-                        </form>
-                        <form asp-action="UpdateStatus" method="post">
-                            <input type="hidden" name="bookingId" value="@Model.Id" />
-                            <input type="hidden" name="status" value="Declined" />
-                            <button type="submit" class="button" data-variant="danger">
-                                <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                                    <line x1="18" y1="6" x2="6" y2="18"></line>
-                                    <line x1="6" y1="6" x2="18" y2="18"></line>
-                                </svg>
-                                Refuser la réservation
-                            </button>
-                        </form>
+        <section class="booking-section">
+            <div class="booking-actions">
+                @if (canUpdateStatus)
+                {
+                    <div class="actions-group">
+                        <h3>Actions disponibles (Pet sitter)</h3>
+                        <div class="action-buttons">
+                            <form asp-action="UpdateStatus" method="post">
+                                <input type="hidden" name="bookingId" value="@Model.Id" />
+                                <input type="hidden" name="status" value="Accepted" />
+                                <button type="submit" class="button" data-variant="success" data-size="md">
+                                    <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-check">
+                                        <path d="M20 6 9 17l-5-5"/>
+                                    </svg>
+                                    Accepter la réservation
+                                </button>
+                            </form>
+                            <form asp-action="UpdateStatus" method="post">
+                                <input type="hidden" name="bookingId" value="@Model.Id" />
+                                <input type="hidden" name="status" value="Declined" />
+                                <button type="submit" class="button" data-variant="destructive" data-size="md">
+                                    <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-x">
+                                        <path d="M18 6 6 18"/>
+                                        <path d="m6 6 12 12"/>
+                                    </svg>
+                                    Refuser la réservation
+                                </button>
+                            </form>
+                        </div>
                     </div>
-                </div>
-            }
-            
-            @if (canValidate)
-            {
-                <div class="actions-group">
-                    <h3>Actions disponibles</h3>
-                    <div class="action-buttons">
-                        <form asp-action="Validate" method="post">
-                            <input type="hidden" name="bookingId" value="@Model.Id" />
-                            <button type="submit" class="button" data-variant="primary">
-                                <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                                    <path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path>
-                                    <polyline points="22 4 12 14.01 9 11.01"></polyline>
-                                </svg>
-                                Valider la prestation
-                            </button>
-                        </form>
-                        
-                        @if (canDispute)
-                        {
-                            <a asp-action="Dispute" asp-route-bookingId="@Model.Id" class="button" data-variant="warning">
-                                <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                                    <polygon points="22 3 2 3 10 12.46 10 19 14 21 14 12.46 22 3"></polygon>
-                                </svg>
-                                Signaler un problème
-                            </a>
-                        }
+                }
+                
+                @if (canValidate)
+                {
+                    <div class="actions-group">
+                        <h3>Actions disponibles</h3>
+                        <div class="action-buttons">
+                            <form asp-action="Validate" method="post">
+                                <input type="hidden" name="bookingId" value="@Model.Id" />
+                                <button type="submit" class="button" data-variant="primary" data-size="md">
+                                    <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-check-circle">
+                                        <path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"/>
+                                        <path d="m9 11 3 3L22 4"/>
+                                    </svg>
+                                    Valider la prestation
+                                </button>
+                            </form>
+                            
+                            @if (canDispute)
+                            {
+                                <a asp-action="Dispute" asp-route-bookingId="@Model.Id" class="button" data-variant="destructive" data-size="md">
+                                    <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-alert-triangle">
+                                        <path d="m21.73 18-8-14a2 2 0 0 0-3.48 0l-8 14A2 2 0 0 0 4 21h16a2 2 0 0 0 1.73-3Z"/>
+                                        <path d="M12 9v4"/>
+                                        <path d="M12 17h.01"/>
+                                    </svg>
+                                    Signaler un problème
+                                </a>
+                            }
+                        </div>
                     </div>
-                </div>
-            }
-            
-            <a asp-action="Index" class="button" data-variant="outline">
-                <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                    <path d="m15 18-6-6 6-6"></path>
-                </svg>
-                Retour aux réservations
-            </a>
-        </div>
+                }
+                
+                <a asp-action="Index" class="button" data-variant="outline" data-size="md">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-arrow-left mr-2">
+                        <path d="m12 19-7-7 7-7"/>
+                        <path d="M19 12H5"/>
+                    </svg>
+                    Retour aux réservations
+                </a>
+            </div>
+        </section>
     </div>
-</div>
+</main>

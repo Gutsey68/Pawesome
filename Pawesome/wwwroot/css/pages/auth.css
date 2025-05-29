@@ -8,6 +8,17 @@
     position: absolute;
     top: var(--space-4);
     left: var(--space-11);
+    color: var(--color-primary-12);
+    border: 1px solid transparent;
+    border-radius: var(--radius-full);
+    background-color: var(--color-primary-5);
+    padding: 0;
+    height: 2.5rem;
+    width: 2.5rem;
+}
+
+.logo:hover {
+    background-color: var(--color-primary-6);
 }
 
 .auth-theme-toggle {

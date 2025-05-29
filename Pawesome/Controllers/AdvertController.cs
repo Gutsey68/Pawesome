@@ -87,6 +87,29 @@ public class AdvertController : Controller
             Selected = model.CountryId.HasValue && c.Id == model.CountryId.Value
         }).ToList();
 
+        var allAdvertsFilter = new AdvertFilterDto
+        {
+            IsPetSitterOffer = model.IsPetSitterOffer
+        };
+        var allAdverts = await _advertService.GetFilteredAdvertsAsync(allAdvertsFilter);
+        var allPrices = allAdverts.Select(a => a.Amount).ToList();
+
+        if (allPrices.Any())
+        {
+            model.MinPriceBeforeReload = Math.Floor(allPrices.Min());
+            model.MaxPriceBeforeReload = Math.Ceiling(allPrices.Max());
+            
+            if (!model.MinPrice.HasValue)
+                model.MinPrice = model.MinPriceBeforeReload;
+            else
+                model.MinPrice = Math.Round(model.MinPrice.Value);
+                
+            if (!model.MaxPrice.HasValue)
+                model.MaxPrice = model.MaxPriceBeforeReload;
+            else
+                model.MaxPrice = Math.Round(model.MaxPrice.Value);
+        }
+        
         var filterDto = new AdvertFilterDto
         {
             IsPetSitterOffer = model.IsPetSitterOffer,
@@ -118,12 +141,6 @@ public class AdvertController : Controller
         foreach (var option in model.SortOptions)
         {
             option.Selected = option.Value == model.SortOption;
-        }
-
-        if (adverts.Count == 0) return View(model);
-        {
-            model.MinPriceBeforeReload = adverts.Min(a => a.Amount);
-            model.MaxPriceBeforeReload = adverts.Max(a => a.Amount);
         }
 
         return View(model);

@@ -16,7 +16,7 @@ public class PetSittingRequestViewModelValidator : AbstractValidator<PetSittingR
             .GreaterThan(x => x.StartDate).WithMessage("La date de fin doit être postérieure à la date de début");
             
         RuleFor(x => x.Amount)
-            .GreaterThanOrEqualTo(0).WithMessage("Le montant ne peut pas être négatif");
+            .GreaterThanOrEqualTo(1).WithMessage("Le montant doit être supérieur à 0");
             
         RuleFor(x => x.PetIds)
             .NotEmpty().WithMessage("Vous devez sélectionner au moins un animal");

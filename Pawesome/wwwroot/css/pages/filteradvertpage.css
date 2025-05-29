@@ -1,18 +1,6 @@
-.mt-2 {
-    margin-top: var(--space-2);
-}
-
-.mt-3 {
-    margin-top: var(--space-3);
-}
-
-.mb-2 {
-    margin-bottom: var(--space-2);
-}
-
 .index-container {
     width: 100%;
-    margin: var(--space-10) auto;
+    margin: var(--space-10 auto);
     padding: var(--space-4) 0;
 }
 
@@ -34,6 +22,136 @@
 .create-buttons {
     display: flex;
     gap: var(--space-3);
+}
+
+.content-container {
+    display: grid;
+    grid-template-columns: 300px 1fr;
+    gap: var(--space-6);
+}
+
+.filters-panel {
+    position: sticky;
+    top: var(--space-6);
+    height: fit-content;
+}
+
+.filter-section {
+    margin-bottom: var(--space-5);
+}
+
+.filter-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: var(--space-3);
+}
+
+.filter-header h3 {
+    font-size: var(--font-size-md);
+    font-weight: var(--font-weight-bold);
+    color: var(--color-primary-12);
+    margin: 0;
+}
+
+.reset-link {
+    font-size: var(--font-size-sm);
+    color: var(--color-primary-9);
+    text-decoration: none;
+    font-weight: var(--font-weight-medium);
+}
+
+.reset-link:hover {
+    color: var(--color-primary-10);
+    text-decoration: underline;
+}
+
+.divider {
+    height: 1px;
+    background-color: var(--color-primary-5);
+    margin: var(--space-4) 0;
+    border: none;
+}
+
+.filter-option {
+    display: flex;
+    align-items: center;
+    margin: var(--space-2) 0;
+}
+
+.filter-option label {
+    display: flex;
+    align-items: center;
+    gap: var(--space-2);
+    cursor: pointer;
+    width: 100%;
+    font-size: var(--font-size-sm);
+    color: var(--color-primary-11);
+}
+
+.filter-option input[type="radio"],
+.filter-option input[type="checkbox"] {
+    accent-color: var(--color-primary-9);
+    width: 18px;
+    height: 18px;
+}
+
+.filter-option .icon {
+    margin-left: auto;
+    color: var(--color-primary-9);
+}
+
+.form-control {
+    width: 100%;
+    padding: var(--space-2) var(--space-3);
+    border-radius: var(--radius-lg);
+    border: 1px solid var(--color-primary-6);
+    background-color: var(--color-primary-1);
+    font-size: var(--font-size-md);
+    transition: var(--transition);
+}
+
+.form-control:focus {
+    outline: none;
+    border-color: var(--color-primary-9);
+    box-shadow: 0 0 0 2px var(--color-primary-7);
+}
+
+.form-label {
+    display: block;
+    margin-bottom: var(--space-1);
+    font-size: var(--font-size-sm);
+    color: var(--color-primary-11);
+}
+
+.price-slider {
+    margin-bottom: var(--space-3);
+}
+
+.range-inputs {
+    display: flex;
+    gap: var(--space-2);
+    margin-bottom: var(--space-2);
+}
+
+.range-inputs input[type="range"] {
+    width: 100%;
+    accent-color: var(--color-primary-9);
+}
+
+.price-inputs {
+    display: flex;
+    justify-content: space-between;
+    gap: var(--space-2);
+}
+
+.price-inputs input {
+    width: 100%;
+    text-align: center;
+    padding: var(--space-1) var(--space-2);
+    font-size: var(--font-size-sm);
+    border-radius: var(--radius-lg);
+    border: 1px solid var(--color-primary-6);
 }
 
 .tabs-container {
@@ -85,6 +203,14 @@
     background-color: var(--color-primary-1);
     border-radius: var(--radius-full);
     z-index: -1;
+}
+
+.tab-item {
+    display: none;
+}
+
+.tab-link {
+    display: none;
 }
 
 .adverts-grid {
@@ -225,26 +351,11 @@
     margin-bottom: var(--space-4);
 }
 
-.form-label {
-    display: block;
-    margin-bottom: var(--space-1);
-    font-size: var(--font-size-sm);
-    color: var(--color-primary-11);
-}
-
-.advert-actions-center {
-    display: flex;
-    gap: var(--space-3);
-    justify-content: center;
-    margin-top: var(--space-5);
-}
-
-.adverts-content {
-    display: none;
-}
-
-.adverts-content.active {
-    display: block;
+@media (max-width: 1024px) {
+    .content-container {
+        grid-template-columns: 250px 1fr;
+        gap: var(--space-4);
+    }
 }
 
 @media (max-width: 768px) {
@@ -267,6 +378,15 @@
         width: 100%;
     }
 
+    .content-container {
+        grid-template-columns: 1fr;
+    }
+
+    .filters-panel {
+        position: static;
+        margin-bottom: var(--space-4);
+    }
+
     .tabs-list {
         width: 100%;
     }
@@ -275,10 +395,5 @@
         flex: 1;
         padding: var(--space-2) var(--space-2);
         text-align: center;
-    }
-    
-    .advert-actions-center {
-        flex-direction: column;
-        width: 100%;
     }
 }

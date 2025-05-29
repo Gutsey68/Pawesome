@@ -1,11 +1,14 @@
 @using Pawesome.Models.Enums
 @model Pawesome.Models.Dtos.Advert.PetSittingAdvertDto
 
-<main role="main" class="container advert-details">
+@{
+    ViewData["Title"] = Model.IsPetSitter ? "Offre de pet sitting" : "Recherche de pet sitting";
+}
+
+<main role="main" class="advert-details">
+    <h1 class="section-title">@(Model.IsPetSitter ? "Offre de pet sitting" : "Recherche d'un pet sitter")</h1>
+    
     <div class="advert-header">
-        <div class="advert-title-status">
-            <h1>@(Model.IsPetSitter ? "Offre de pet sitting" : "Recherche d'un pet sitter")</h1>
-        </div>
         <div class="advert-dates-price">
             <div class="advert-date">
                 <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-calendar-days">
@@ -30,35 +33,38 @@
                 </svg>
                 <span>@Model.Amount.ToString("C")</span>
             </div>
+            <div class="advert-location">
+                <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-map-pin">
+                    <path d="M20 10c0 6-8 12-8 12s-8-6-8-12a8 8 0 0 1 16 0Z"/>
+                    <circle cx="12" cy="10" r="3"/>
+                </svg>
+                <span>@Model.City</span>
+            </div>
         </div>
     </div>
-
+    <div class="advert-created-at mb-4">
+        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-clock">
+            <circle cx="12" cy="12" r="10"/>
+            <polyline points="12 6 12 12 16 14"/>
+        </svg>
+        <span>Publiée le @Model.CreatedAt.ToString("dd/MM/yyyy")</span>
+    </div>
     <div class="advert-sections">
         <section class="advert-section owner-section">
-            <h2 class="section-title">
+            <h2 class="section-heading">
                 @(Model.IsPetSitter ? "Pet sitter" : "Propriétaire des animaux")
             </h2>
             @if (Model.Owner != null)
             {
                 <div class="owner-card">
-                    <div class="owner-avatar">
-                        @if (!string.IsNullOrEmpty(Model.Owner.Photo))
-                        {
-                            <img src="/images/users/@Model.Owner.Photo" alt="Photo de @Model.Owner.FullName" />
-                        }
-                        else
-                        {
-                            <div class="avatar avatar-fallback" data-size="lg">
-                                @Model.Owner.FullName.Split(' ')[0].Substring(0, 1).ToUpper()
-                                @(Model.Owner.FullName.Split(' ').Length > 1 ? Model.Owner.FullName.Split(' ')[1].Substring(0, 1).ToUpper() : "")
-                            </div>
-                        }
-                    </div>
+                    <divd data-size="xl"  class="avatar">
+                        <img class="avatar-image" src="@ImageHelper.GetPhotoUrl(Model.Owner.Photo)" alt="Photo de @Model.Owner.FullName" />
+                    </divd>
                     <div class="owner-info">
                         <h3>@Model.Owner.FullName</h3>
                         @if (Model.Owner.Rating.HasValue)
                         {
-                            <p class="star-rating">@Html.DisplayStars(Model.Owner.Rating)</p>
+                            <div class="star-rating">@Html.DisplayStars(Model.Owner.Rating)</div>
                         }
                         @if (!string.IsNullOrEmpty(Model.Owner.City) || !string.IsNullOrEmpty(Model.Owner.Country))
                         {
@@ -80,28 +86,50 @@
             }
             else
             {
-                <p>Information sur le propriétaire non disponible</p>
+                <div class="alert" data-variant="warning">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24"
+                         fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
+                         stroke-linejoin="round" class="lucide lucide-alert-triangle">
+                        <path d="m21.73 18-8-14a2 2 0 0 0-3.48 0l-8 14A2 2 0 0 0 4 21h16a2 2 0 0 0 1.73-3Z"/>
+                        <path d="M12 9v4"/>
+                        <path d="M12 17h.01"/>
+                    </svg>
+                    <div>
+                        <h4>Attention</h4>
+                        <p>Information sur le propriétaire non disponible</p>
+                    </div>
+                </div>
             }
         </section>
 
-        @if (Model.Pets != null && Model.Pets.Any())
+        @if (Model.IsPetSitter)
+        {
+            <section class="advert-section animal-types-section">
+                <h2 class="section-heading">Types d'animaux acceptés</h2>
+                <div class="animal-types-list">
+                    @foreach (var animalType in Model.Pets.Select(p => p.AnimalTypeName).Distinct())
+                    {
+                        <span class="badge" data-variant="@animalType">@animalType</span>
+                    }
+                </div>
+            </section>
+        }
+        else if (Model.Pets != null && Model.Pets.Any())
         {
             <section class="advert-section pets-section">
-                <h2 class="section-title">
-                    @(Model.IsPetSitter ? "Peut s'occuper de" : "Animaux concernés")
-                </h2>
+                <h2 class="section-heading">Animaux concernés</h2>
                 <div class="pets-grid">
                     @foreach (var pet in Model.Pets)
                     {
                         <div class="pet-card">
                             <div class="pet-image">
-                                <img src="@(string.IsNullOrEmpty(pet.Photo) ? "/images/default-pet.jpg" : "/images/pets/" + pet.Photo)" alt="@pet.Name" />
+                                <img src="@ImageHelper.GetPetPhotoUrl(pet.Photo)" alt="@pet.Name" />
                             </div>
                             <div class="pet-info">
                                 <div class="pet-header">
                                     <h3 class="pet-name">@pet.Name</h3>
                                 </div>
-                                <p class="badge" data-variant="@pet.Species">@pet.Species</p>
+                                <span class="badge" data-variant="@pet.AnimalTypeName">@pet.AnimalTypeName</span>
                             </div>
                         </div>
                     }
@@ -112,22 +140,14 @@
         @if (!string.IsNullOrEmpty(Model.AdditionalInformation))
         {
             <section class="advert-section description-section">
-                <h2 class="section-title">Informations supplémentaires</h2>
+                <h2 class="section-heading">Informations supplémentaires</h2>
                 <div class="advert-description">
                     @Model.AdditionalInformation
                 </div>
             </section>
         }
     </div>
-
     <div class="advert-actions">
-        <div class="advert-created-at">
-            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-clock">
-                <circle cx="12" cy="12" r="10"/>
-                <polyline points="12 6 12 12 16 14"/>
-            </svg>
-            <span>Publiée le @Model.CreatedAt.ToString("dd/MM/yyyy")</span>
-        </div>
         <div class="action-buttons">
             @{
                 bool isOwner = false;
@@ -138,58 +158,84 @@
                     isOwner = currentUserId == Model.Owner.Id;
                 }
             }
-            @if (User.Identity?.IsAuthenticated == true && Model.Status != AdvertStatus.Cancelled && Model.Status != AdvertStatus.Archived)
-            {
-                @if (User.Identity?.IsAuthenticated == true && Model.Status != AdvertStatus.Cancelled && Model.Status != AdvertStatus.Archived)
-                {
-                    @if (Model.Owner != null && Model.Owner.Id != int.Parse(User.FindFirst(System.Security.Claims.ClaimTypes.NameIdentifier)?.Value ?? "0"))
-                    {
-                        <div class="mt-4">
-                            <a asp-controller="Booking" asp-action="Create" asp-route-advertId="@Model.Id" 
-                               class="btn btn-primary btn-lg w-100">
-                                <i class="bi bi-credit-card me-2"></i> Réserver maintenant
-                            </a>
-                        </div>
-                    }
-                }
-            }
+            
             @if (isOwner)
             {
                 <div class="owner-actions">
-                    @if (Model.IsPetSitter)
+                    @if (Model.Status == AdvertStatus.Pending || Model.Status == AdvertStatus.PendingOffer)
                     {
-                        <a asp-controller="Advert" asp-action="EditOffer" asp-route-id="@Model.Id" class="button" data-variant="secondary">
-                            Modifier l'annonce
-                        </a>
-                    }
-                    else
-                    {
-                        <a asp-controller="Advert" asp-action="EditRequest" asp-route-id="@Model.Id" class="button" data-variant="secondary">
-                            Modifier l'annonce
-                        </a>
-                    }
+                        @if (Model.IsPetSitter)
+                        {
+                            <a asp-controller="Advert" asp-action="EditOffer" asp-route-id="@Model.Id" class="button" data-variant="secondary" data-size="sm">
+                                <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-pencil" style="margin-right: var(--space-2);">
+                                    <path d="M17 3a2.85 2.83 0 1 1 4 4L7.5 20.5 2 22l1.5-5.5Z"/>
+                                    <path d="m15 5 4 4"/>
+                                </svg>
+                                Modifier
+                            </a>
+                        }
+                        else
+                        {
+                            <a asp-controller="Advert" asp-action="EditRequest" asp-route-id="@Model.Id" class="button" data-variant="secondary" data-size="sm">
+                                <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-pencil" style="margin-right: var(--space-2);">
+                                    <path d="M17 3a2.85 2.83 0 1 1 4 4L7.5 20.5 2 22l1.5-5.5Z"/>
+                                    <path d="m15 5 4 4"/>
+                                </svg>
+                                Modifier
+                            </a>
+                        }
 
-                    @if (Model.Status != AdvertStatus.Cancelled)
-                    {
-                        <a asp-controller="Advert" asp-action="ConfirmStatusChange" asp-route-id="@Model.Id" asp-route-status="cancelled" class="button" data-variant="error">
-                            Annuler l'annonce
+                        <a asp-controller="Advert" asp-action="ConfirmStatusChange" asp-route-id="@Model.Id" asp-route-status="cancelled" 
+                           class="button" data-variant="destructive" data-size="sm">
+                            <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-x" style="margin-right: var(--space-2);">
+                                <path d="M18 6 6 18"/>
+                                <path d="m6 6 12 12"/>
+                            </svg>
+                            Annuler
                         </a>
                     }
                 </div>
             }
-            else if (Model.Owner != null && User.Identity?.IsAuthenticated == true)
+            else
             {
-                <a asp-controller="Message" asp-action="StartConversation" asp-route-otherUserId="@Model.Owner.Id" class="button" data-variant="primary">
-                    Contacter
-                </a>
+                @if (User.Identity?.IsAuthenticated == true && (Model.Status == AdvertStatus.Pending || Model.Status == AdvertStatus.PendingOffer))
+                {
+                    @if (Model.Owner != null && Model.Owner.Id != int.Parse(User.FindFirst(System.Security.Claims.ClaimTypes.NameIdentifier)?.Value ?? "0"))
+                    {
+                        <a asp-controller="Booking" asp-action="Create" asp-route-advertId="@Model.Id" 
+                           class="button" data-variant="primary" data-size="sm">
+                            <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-credit-card" style="margin-right: var(--space-2);">
+                                <rect width="20" height="14" x="2" y="5" rx="2"/>
+                                <line x1="2" x2="22" y1="10" y2="10"/>
+                            </svg> 
+                            Réserver maintenant
+                        </a>
+                        <a asp-controller="Message" asp-action="StartConversation" asp-route-otherUserId="@Model.Owner.Id" 
+                           class="button" data-variant="secondary" data-size="sm">
+                            <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="mr-1 lucide lucide-message-circle-icon lucide-message-circle"><path d="M7.9 20A9 9 0 1 0 4 16.1L2 22Z"/></svg>
+                            Contacter
+                        </a>
+                    }
+                }
+                else if (Model.Owner != null && User.Identity?.IsAuthenticated == false)
+                {
+                    <a asp-controller="Auth" asp-action="Login" asp-route-returnUrl="@Context.Request.Path" 
+                       class="button" data-variant="primary" data-size="sm">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-log-in" style="margin-right: var(--space-2);">
+                            <path d="M15 3h4a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2h-4"/>
+                            <polyline points="10 17 15 12 10 7"/>
+                            <line x1="15" x2="3" y1="12" y2="12"/>
+                        </svg>
+                        Connectez-vous pour interagir
+                    </a>
+                }
             }
-            else if (Model.Owner != null && User.Identity?.IsAuthenticated == false)
-            {
-                <a asp-controller="Auth" asp-action="Register" asp-route-otherUserId="@Model.Owner.Id" class="button" data-variant="primary">
-                    Connectez vous pour envoyer un message
-                </a>
-            }
-            <a asp-controller="Advert" asp-action="Index" class="button" data-variant="secondary" data-size="sm">
+            
+            <a asp-controller="Advert" asp-action="Index" class="button" data-variant="outline" data-size="sm">
+                <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-arrow-left" style="margin-right: var(--space-1);">
+                    <path d="m12 19-7-7 7-7"/>
+                    <path d="M19 12H5"/>
+                </svg>
                 Retour aux annonces
             </a>
         </div>

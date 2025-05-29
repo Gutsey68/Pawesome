@@ -39,6 +39,7 @@
     font-weight: var(--font-weight-medium);
 }
 
+/* Style des cartes d'animaux - Conserver tel quel */
 .profile-pets {
     margin-top: var(--space-4);
     margin-bottom: var(--space-5);
@@ -130,6 +131,7 @@
     margin-bottom: var(--space-4);
 }
 
+/* Styles pour la section d'informations utilisateur */
 .user-info-section {
     margin-top: var(--space-10);
     margin-bottom: var(--space-10);
@@ -187,14 +189,26 @@
     color: var(--color-primary-9);
 }
 
+/* Nouvelle section de styles pour les annonces */
 .user-adverts-section {
     margin-top: var(--space-10);
     margin-bottom: var(--space-10);
 }
 
+.mt-2 {
+    margin-top: var(--space-2);
+}
+
+.mt-3 {
+    margin-top: var(--space-3);
+}
+
+.mb-2 {
+    margin-bottom: var(--space-2);
+}
+
 .tabs-container {
-    width: 100%;
-    margin-bottom: var(--space-5);
+    margin-bottom: var(--space-6);
     display: flex;
     justify-content: center;
 }
@@ -206,6 +220,7 @@
     background-color: var(--color-primary-4);
     position: relative;
     overflow: hidden;
+    width: auto;
 }
 
 .tab {
@@ -224,11 +239,14 @@
     cursor: pointer;
     transition: color 0.2s ease;
     border-radius: var(--radius-full);
+    text-decoration: none;
 }
 
 .tab.active {
     color: var(--color-primary-12);
     font-weight: var(--font-weight-medium);
+    background-color: var(--color-primary-1);
+    box-shadow: 0 1px 2px rgba(0, 0, 0, 0.06);
 }
 
 .tab.active::before {
@@ -243,65 +261,78 @@
 .adverts-grid {
     display: grid;
     grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
-    gap: var(--space-5);
+    gap: var(--space-4);
 }
 
 .advert-card {
-    background-color: var(--color-primary-2);
+    background-color: var(--color-primary-1);
     border-radius: var(--radius-xl);
+    border: 1px solid var(--color-primary-4);
     overflow: hidden;
-    box-shadow: var(--shadow-sm);
     transition: var(--transition);
     height: 100%;
     display: flex;
     flex-direction: column;
-    border-top: 4px solid;
-}
-
-.pet-sitter-offer {
-    border-top-color: var(--color-primary-9);
-}
-
-.pet-sitter-request {
-    border-top-color: var(--color-purple-foreground);
 }
 
 .advert-card:hover {
     box-shadow: var(--shadow-md);
     transform: translateY(-2px);
+    border-color: var(--color-primary-6);
 }
 
-.advert-header {
-    padding: var(--space-4) var(--space-4) var(--space-2) var(--space-4);
+.card-header {
     display: flex;
     justify-content: space-between;
-    align-items: flex-start;
-    gap: var(--space-2);
+    align-items: center;
+    padding: var(--space-3) var(--space-4);
+    background-color: var(--color-primary-2);
+    border-bottom: 1px solid var(--color-primary-4);
 }
 
-.advert-title {
-    font-size: var(--font-size-lg);
+.advert-badge {
+    display: inline-flex;
+    padding: var(--space-1) var(--space-3);
+    border-radius: var(--radius-full);
+    font-size: var(--font-size-xs);
+    font-weight: var(--font-weight-medium);
+    text-transform: uppercase;
+    letter-spacing: var(--letter-spacing-1);
+}
+
+.advert-badge.offer {
+    background-color: var(--color-success);
+    color: var(--color-success-foreground);
+}
+
+.advert-badge.request {
+    background-color: var(--color-info);
+    color: var(--color-info-foreground);
+}
+
+.advert-price {
     font-weight: var(--font-weight-bold);
     color: var(--color-primary-12);
-    margin: 0;
 }
 
-.advert-content {
-    padding: 0 var(--space-4) var(--space-4) var(--space-4);
+.card-body {
+    padding: var(--space-4);
     flex-grow: 1;
-    display: flex;
-    flex-direction: column;
-    justify-content: space-between;
-    gap: var(--space-5);
-}
-
-.advert-info {
     display: flex;
     flex-direction: column;
     gap: var(--space-3);
 }
 
-.advert-date, .advert-price {
+.advert-title {
+    display: flex;
+    align-items: center;
+    gap: var(--space-2);
+    margin: 0;
+    font-size: var(--font-size-lg);
+    color: var(--color-primary-12);
+}
+
+.advert-info {
     display: flex;
     align-items: center;
     gap: var(--space-2);
@@ -309,18 +340,104 @@
     font-size: var(--font-size-sm);
 }
 
-.advert-date svg, .advert-price svg {
+.advert-info svg {
+    flex-shrink: 0;
     color: var(--color-primary-9);
 }
 
-.advert-footer {
+.pets-tags {
+    display: flex;
+    flex-wrap: wrap;
+    gap: var(--space-1);
+}
+
+.description-text {
+    font-size: var(--font-size-sm);
+    color: var(--color-primary-11);
+    margin-bottom: auto;
+}
+
+.card-footer {
     padding: var(--space-3) var(--space-4);
-    background-color: var(--color-primary-3);
-    color: var(--color-primary-10);
-    font-size: var(--font-size-xs);
+    background-color: var(--color-primary-2);
+    border-top: 1px solid var(--color-primary-4);
     display: flex;
     align-items: center;
-    gap: var(--space-2);
+    font-size: var(--font-size-sm);
+    color: var(--color-primary-10);
+}
+
+.form-label {
+    display: block;
+    margin-bottom: var(--space-1);
+    font-size: var(--font-size-sm);
+    color: var(--color-primary-11);
+}
+
+.badge {
+    padding: var(--space-1) var(--space-2);
+    border-radius: var(--radius-full);
+    font-size: var(--font-size-xs);
+    font-weight: var(--font-weight-medium);
+    display: inline-flex;
+    align-items: center;
+    white-space: nowrap;
+}
+
+.badge[data-variant="warning"] {
+    color: var(--color-warning-foreground);
+    background-color: var(--color-warning);
+}
+
+.badge[data-variant="success"] {
+    color: var(--color-success-foreground);
+    background-color: var(--color-success);
+}
+
+.badge[data-variant="info"] {
+    color: var(--color-info-foreground);
+    background-color: var(--color-info);
+}
+
+.badge[data-variant="error"] {
+    color: var(--color-error-foreground);
+    background-color: var(--color-error);
+}
+
+.empty-state {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    padding: var(--space-8);
+    text-align: center;
+    background-color: var(--color-primary-2);
+    border-radius: var(--radius-xl);
+    border: 1px dashed var(--color-primary-5);
+}
+
+.empty-state svg {
+    color: var(--color-primary-8);
+    margin-bottom: var(--space-4);
+}
+
+.empty-state h3 {
+    font-size: var(--font-size-xl);
+    color: var(--color-primary-12);
+    margin-bottom: var(--space-2);
+}
+
+.empty-state p {
+    font-size: var(--font-size-md);
+    color: var(--color-primary-11);
+    margin-bottom: var(--space-4);
+}
+
+.advert-actions-center {
+    display: flex;
+    gap: var(--space-3);
+    justify-content: center;
+    margin-top: var(--space-5);
 }
 
 .adverts-content {
@@ -329,35 +446,6 @@
 
 .adverts-content.active {
     display: block;
-}
-
-.no-adverts {
-    background-color: var(--color-primary-2);
-    border-radius: var(--radius-lg);
-    padding: var(--space-6);
-    text-align: center;
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    gap: var(--space-4);
-    margin-top: var(--space-5);
-}
-
-.no-adverts svg {
-    color: var(--color-primary-8);
-}
-
-.no-adverts p {
-    color: var(--color-primary-11);
-    font-size: var(--font-size-md);
-    margin-bottom: var(--space-2);
-}
-
-.advert-actions-center {
-    display: flex;
-    gap: var(--space-3);
-    justify-content: center;
-    margin-top: var(--space-3);
 }
 
 @media (max-width: 768px) {
@@ -395,13 +483,14 @@
 
     .tab {
         flex: 1;
+        padding: var(--space-2) var(--space-2);
         text-align: center;
     }
 
     .adverts-grid {
         grid-template-columns: 1fr;
     }
-
+    
     .advert-actions-center {
         flex-direction: column;
         width: 100%;
@@ -409,6 +498,5 @@
 
     .advert-actions-center a {
         width: 100%;
-        text-align: center;
     }
 }

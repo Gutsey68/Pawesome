@@ -1,6 +1,159 @@
-# Pawesome Project Startup Guide
+# 🐾 Pawesome — Pet Sitting Application
 
-This guide will help you set up the Pawesome MVC project for development, using Docker only for the database and mail service.
+## 📌 Context
+
+**Pawesome** is a web application developed in **.NET MVC (C#)** that allows users to:
+
+- **offer** their services as **pet sitters**,
+- **request** a pet sitter to take care of their animals.
+
+The goal is to provide a secure, smooth, and intuitive platform, similar to services like Airbnb or Vinted, but for pet
+sitting.
+
+---
+
+## 🎯 Main Features
+
+- 🔐 Secure authentication (via Identity & OAuth Google)
+- 📬 **Real-time messaging** system (SignalR)
+- 📍 **Address** management (countries, cities) and location
+- 🐕 Creation of **pets** with individual profiles
+- 📢 Creation and browsing of sitting **advertisements** (offers / requests)
+- 📆 **Booking** advertisements with **secure Stripe payment** (with escrow)
+- 🧾 Booking tracking: post-service validation, rating, disputes
+- 🔔 Real-time **notifications**
+- 📧 Automated email sending (confirmation, reminder, alert...)
+
+---
+
+## 🏗️ Technical Architecture
+
+The application follows a clean separation based on the **MVC + Services + Repositories** architecture, with a clear
+abstraction layer between business logic, data access, and presentation.
+
+### Technical Structure
+
+- **MVC**: Controllers, Razor Views (`.cshtml`), ViewModels
+- **Services**: Isolated business logic
+- **Repositories**: Data access
+- **Infrastructure**: Helpers, Extensions, Mappers, Validations
+- **Real-time communication**: SignalR Hubs
+- **Validation**: FluentValidation (backend) + jQuery (frontend)
+- **Database**: PostgreSQL (via Entity Framework Code First)
+- **Object mapping**: AutoMapper
+
+### Frontend
+
+- Pages in **Razor (.cshtml)** with **modular CSS**
+- CSS structure:
+
+```
+wwwroot/
+css/
+base/
+components/
+layouts/
+pages/
+js/
+lib/
+jquery/
+```
+
+- No CSS framework (like Bootstrap), only structured **native CSS** + **jQuery** for client validation
+
+---
+
+## 🔌 Services & Repositories
+
+### 🔄 Repositories
+
+- `UserRepository`
+- `PetRepository`
+- `AnimalTypeRepository`
+- `AdvertRepository`
+- `MessageRepository`
+- `PaymentRepository`
+- `CityRepository`
+- `CountryRepository`
+- `AddressRepository`
+- `NotificationRepository`
+- `BookingRepository`
+
+### ⚙️ Services
+
+- `AuthService`
+- `UserService`
+- `PetService`
+- `EmailService`
+- `AdvertService`
+- `AnimalTypeService`
+- `MessageService`
+- `PaymentService`
+- `NotificationService`
+- `LocationService`
+- `BookingService`
+
+---
+
+## ⚙️ Key Technologies
+
+| Category       | Tools / Technologies                |
+|----------------|-------------------------------------|
+| Backend        | ASP.NET Core MVC, C#                |
+| Frontend       | Razor Pages (.cshtml), CSS, jQuery  |
+| Real-time      | SignalR                             |
+| ORM            | Entity Framework Core + PostgreSQL  |
+| Validation     | FluentValidation, jQuery Validation |
+| Payment        | Stripe                              |
+| Object mapping | AutoMapper                          |
+| Authentication | ASP.NET Identity + OAuth (Google)   |
+| Architecture   | MVC, Services, Repositories         |
+
+---
+
+## 🗂️ Project Structure (excerpts)
+
+```plaintext
+Pawesome/
+├── Controllers/
+├── Data/
+├── Docs/
+├── Helpers/
+├── Hubs/
+├── Infrastructure/
+│   ├── Extensions/
+│   ├── Mappers/
+├── Migrations/
+├── Models/
+│   ├── Configuration/
+│   ├── Dtos/
+│   ├── Entities/
+│   ├── Enums/
+│   ├── ViewModels/
+├── Repositories/
+├── Services/
+├── Validators/
+├── Views/
+├── wwwroot/
+│   ├── css/
+│   ├── js/
+│   ├── lib/
+│   ├── images/
+```
+
+---
+
+## 📝 Notes
+
+* The project contains **no heavy frontend dependencies** (like React/Vue).
+* The emphasis is on **architectural clarity**, **security**, and **maintainability**.
+
+---
+
+# Project Startup Guide
+
+This guide will help you set up the Pawesome MVC project for development, using Docker only for the database and mail
+service.
 
 ## Prerequisites
 
@@ -60,23 +213,6 @@ A MailHog service is included to intercept and visualize emails sent by the appl
 - SMTP Server: localhost:1025
 
 All emails sent by the application will be captured by MailHog and visible in the web interface.
-
-## Project Architecture
-
-The Pawesome project is structured according to MVC (Model-View-Controller) principles with a modular organization:
-
-- **Extensions** - Extension classes to simplify configuration:
-  - `ServiceCollectionExtensions.cs`: Configures services (database, identity, validations, etc.)
-  - `ApplicationBuilderExtensions.cs`: Configures the HTTP pipeline
-  - `WebApplicationExtensions.cs`: Manages database initialization
-
-- **Layered Architecture**:
-  - **Controllers**: Handle HTTP requests
-  - **Models**: Define entities and DTOs
-  - **Views**: User interface
-  - **Services**: Business logic
-  - **Repositories**: Data access
-  - **Validators**: Data validation with FluentValidation
 
 ## Stopping the Application
 

@@ -1,6 +1,14 @@
 .advert-details {
-    margin-top: var(--space-6);
-    margin-bottom: var(--space-10);
+    max-width: 50rem;
+    margin: 0 auto var(--space-10) auto;
+    padding: var(--space-4) 0;
+}
+
+.section-title {
+    font-size: var(--font-size-2xl);
+    color: var(--color-primary-12);
+    margin: var(--space-6) 0 var(--space-2) 0;
+    font-weight: var(--font-weight-medium);
 }
 
 .advert-header {
@@ -12,20 +20,6 @@
     border-bottom: 1px solid var(--color-primary-5);
 }
 
-.advert-title-status {
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    gap: var(--space-3);
-}
-
-.advert-title-status h1 {
-    font-size: var(--font-size-3xl);
-    font-weight: var(--font-weight-bold);
-    color: var(--color-primary-12);
-    margin: 0;
-}
-
 .advert-dates-price {
     display: flex;
     align-items: center;
@@ -34,7 +28,7 @@
     margin-top: var(--space-3);
 }
 
-.advert-date, .advert-price {
+.advert-date, .advert-price, .advert-location {
     display: flex;
     align-items: center;
     gap: var(--space-2);
@@ -42,14 +36,15 @@
     font-size: var(--font-size-md);
 }
 
-.advert-date svg, .advert-price svg {
+.advert-date svg, .advert-price svg, .advert-location svg {
     color: var(--color-primary-9);
+    flex-shrink: 0;
 }
 
 .advert-sections {
     display: flex;
     flex-direction: column;
-    gap: var(--space-8);
+    gap: var(--space-6);
 }
 
 .advert-section {
@@ -57,9 +52,10 @@
     border-radius: var(--radius-xl);
     padding: var(--space-6);
     box-shadow: var(--shadow-sm);
+    border: 1px solid var(--color-primary-4);
 }
 
-.section-title {
+.section-heading {
     font-size: var(--font-size-xl);
     color: var(--color-primary-12);
     margin-top: 0;
@@ -69,37 +65,12 @@
     font-weight: var(--font-weight-medium);
 }
 
-/* Section propriétaire */
 .owner-card {
     display: flex;
     align-items: center;
     gap: var(--space-5);
 }
 
-.owner-avatar {
-    width: 80px;
-    height: 80px;
-    border-radius: var(--radius-full);
-    overflow: hidden;
-}
-
-.owner-avatar img {
-    width: 100%;
-    height: 100%;
-    object-fit: cover;
-}
-
-.avatar-fallback {
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    width: 100%;
-    height: 100%;
-    background-color: var(--color-primary-8);
-    color: var(--color-primary-1);
-    font-weight: var(--font-weight-bold);
-    font-size: var(--font-size-lg);
-}
 
 .owner-info {
     display: flex;
@@ -113,11 +84,6 @@
     margin: 0;
 }
 
-.star-rating {
-    margin-top: var(--space-1);
-    color: var(--color-primary-9);
-}
-
 .owner-location {
     display: flex;
     align-items: center;
@@ -127,14 +93,26 @@
     margin-top: var(--space-1);
 }
 
+.animal-types-list {
+    display: flex;
+    flex-wrap: wrap;
+    gap: var(--space-2);
+    margin-top: var(--space-2);
+}
+
+.animal-types-list .badge {
+    font-size: var(--font-size-sm);
+    padding: var(--space-2) var(--space-3);
+}
+
 .pets-grid {
     display: grid;
-    grid-template-columns: repeat(auto-fill, minmax(240px, 1fr));
-    gap: var(--space-6);
+    grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
+    gap: var(--space-4);
 }
 
 .pet-card {
-    border-radius: var(--radius-xl);
+    border-radius: var(--radius-lg);
     overflow: hidden;
     box-shadow: var(--shadow-sm);
     transition: var(--transition);
@@ -142,11 +120,13 @@
     height: 100%;
     display: flex;
     flex-direction: column;
+    border: 1px solid var(--color-primary-4);
 }
 
 .pet-card:hover {
     box-shadow: var(--shadow-md);
     transform: translateY(-2px);
+    border-color: var(--color-primary-6);
 }
 
 .pet-image {
@@ -182,7 +162,6 @@
     margin: 0;
 }
 
-/* Section description */
 .advert-description {
     font-size: var(--font-size-md);
     color: var(--color-primary-11);
@@ -194,7 +173,7 @@
     margin-top: var(--space-8);
     display: flex;
     justify-content: space-between;
-    align-items: center;
+    align-items: flex-start;
     padding-top: var(--space-5);
     border-top: 1px solid var(--color-primary-5);
 }
@@ -205,24 +184,34 @@
     gap: var(--space-2);
     color: var(--color-primary-10);
     font-size: var(--font-size-sm);
+    padding-top: var(--space-2);
 }
 
 .action-buttons {
+    display: flex;
+    flex-wrap: wrap;
+    gap: var(--space-3);
+    justify-content: flex-end;
+}
+
+.owner-actions {
     display: flex;
     gap: var(--space-3);
 }
 
 @media (max-width: 768px) {
-    .advert-title-status {
-        flex-direction: column;
-        align-items: flex-start;
-        gap: var(--space-2);
+    .advert-details {
+        padding: var(--space-3) var(--space-4);
     }
 
     .advert-dates-price {
         flex-direction: column;
         align-items: flex-start;
         gap: var(--space-3);
+    }
+
+    .advert-section {
+        padding: var(--space-4);
     }
 
     .owner-card {
@@ -236,9 +225,13 @@
         justify-content: center;
     }
 
+    .pets-grid {
+        grid-template-columns: repeat(auto-fill, minmax(140px, 1fr));
+    }
+
     .advert-actions {
         flex-direction: column;
-        gap: var(--space-4);
+        gap: var(--space-6);
     }
 
     .action-buttons {
@@ -246,7 +239,14 @@
         flex-direction: column;
     }
 
-    .action-buttons .button {
+    .owner-actions {
+        flex-direction: column;
+        width: 100%;
+        gap: var(--space-3);
+    }
+
+    .action-buttons .button,
+    .owner-actions .button {
         width: 100%;
         text-align: center;
     }

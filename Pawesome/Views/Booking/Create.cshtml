@@ -1,135 +1,177 @@
+@using Pawesome.Helpers
 @model Pawesome.Models.DTOs.Booking.CreateBookingDto
 @{
     ViewData["Title"] = "Nouvelle réservation";
     var advert = ViewBag.Advert;
 }
 
-<div class="container booking-create-container">
-    <div class="booking-create-header">
-        <h1>Réserver cette prestation</h1>
-    </div>
-
-    <div class="booking-create-content">
-        <div class="booking-form-container">
-            <form asp-action="Create" method="post">
-                <input type="hidden" asp-for="AdvertId" />
-                
-                <div class="booking-advert-summary">
-                    <h2>Résumé de l'annonce</h2>
-                    <div class="advert-summary-content">
-                        <div class="advert-owner">
-                            <img src="@(string.IsNullOrEmpty(advert.Owner.Photo) ? "/images/default-avatar.png" : advert.Owner.Photo)" alt="Photo de @advert.Owner.FullName" class="owner-photo">
-                            <div class="owner-info">
-                                <span class="owner-name">@advert.Owner.FullName</span>
-                                <span class="advert-type">@(advert.IsPetSitter ? "Offre de pet sitting" : "Recherche d'un pet sitter")</span>
-                            </div>
-                        </div>
-                        
-                        <div class="advert-details">
-                            <div class="detail-item">
-                                <span class="detail-label">Période</span>
-                                <span class="detail-value">Du @advert.StartDate.ToString("dd/MM/yyyy") au @advert.EndDate.ToString("dd/MM/yyyy")</span>
-                            </div>
-                            <div class="detail-item">
-                                <span class="detail-label">Prix</span>
-                                <span class="detail-value price">@advert.Amount.ToString("C")</span>
-                            </div>
-                            <div class="detail-item">
-                                <span class="detail-label">Animaux</span>
-                                <span class="detail-value">
-                                    @{
-                                        var petNames = new List<string>();
-                                        foreach (var pet in advert.Pets)
-                                        {
-                                            petNames.Add(pet.Name);
-                                        }
-                                    }
-                                    @string.Join(", ", petNames)
-                                </span>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-                
-                <div class="booking-form-section">
-                    <h2>Détails de la réservation</h2>
-                    
-                    <div class="form-group">
-                        <label asp-for="StartDate">Date de début</label>
-                        <input asp-for="StartDate" type="date" class="form-control" min="@DateTime.Now.ToString("yyyy-MM-dd")" value="@Model.StartDate.ToString("yyyy-MM-dd")" required />
-                        <span asp-validation-for="StartDate" class="validation-message"></span>
-                    </div>
-                    
-                    <div class="form-group">
-                        <label asp-for="EndDate">Date de fin</label>
-                        <input asp-for="EndDate" type="date" class="form-control" min="@DateTime.Now.ToString("yyyy-MM-dd")" value="@Model.EndDate.ToString("yyyy-MM-dd")" required />
-                        <span asp-validation-for="EndDate" class="validation-message"></span>
-                    </div>
-                    
-                    <div class="form-group">
-                        <label asp-for="Message">Informations supplémentaires</label>
-                        <textarea asp-for="Message" class="form-control" rows="4" placeholder="Indiquez ici toute information supplémentaire pour le pet sitter..."></textarea>
-                        <span asp-validation-for="Message" class="validation-message"></span>
-                    </div>
-                </div>
-                
-                <div class="booking-payment-notice">
-                    <div class="alert" data-variant="info">
-                        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                            <circle cx="12" cy="12" r="10"></circle>
-                            <path d="M12 16v-4"></path>
-                            <path d="M12 8h.01"></path>
-                        </svg>
-                        <div>
-                            <h4>À propos du paiement</h4>
-                            <p>Votre carte bancaire sera autorisée pour le montant de @advert.Amount.ToString("C"), mais le paiement ne sera débité qu'après la validation de la prestation.</p>
-                        </div>
-                    </div>
-                </div>
-                
-                <div class="form-actions">
-                    <a asp-controller="Advert" asp-action="Details" asp-route-id="@advert.Id" class="button" data-variant="outline">Annuler</a>
-                    <a asp-controller="Payment" asp-action="Checkout" asp-route-advertId="@Model.AdvertId" type="submit" class="button" data-variant="primary">
-                        Continuer vers le paiement
-                        <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                            <path d="m9 18 6-6-6-6"></path>
-                        </svg>
-                    </a>
-                </div>
-            </form>
-        </div>
+<main role="main" class="container">
+    <section class="booking-create-section">
+        <h1 class="section-title">Réserver cette prestation</h1>
         
-        <div class="booking-sidebar">
-            <div class="booking-summary-card">
-                <h3>Résumé du prix</h3>
-                <div class="price-details">
-                    <div class="price-item">
-                        <span class="price-label">Prix par jour</span>
-                        <span class="price-value">@(advert.Amount / (advert.EndDate - advert.StartDate).Days)</span>
-                    </div>
-                    <div class="price-item">
-                        <span class="price-label">Nombre de jours</span>
-                        <span class="price-value">@((advert.EndDate - advert.StartDate).Days)</span>
-                    </div>
-                    <div class="price-divider"></div>
-                    <div class="price-item total">
-                        <span class="price-label">Total</span>
-                        <span class="price-value">@advert.Amount</span>
-                    </div>
+        @if (ViewData.ModelState.ErrorCount > 0)
+        {
+            <div class="alert mb-4" data-variant="error" role="alert">
+                <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-ban"><circle cx="12" cy="12" r="10"/><path d="m4.9 4.9 14.2 14.2"/></svg>
+                <div>
+                    <h4>Des erreurs sont survenues</h4>
+                    <div asp-validation-summary="ModelOnly"></div>
                 </div>
-                
-                <div class="payment-policy">
-                    <h4>Conditions de paiement</h4>
-                    <ul>
-                        <li>La carte est autorisée mais non débitée immédiatement</li>
-                        <li>Le paiement est capturé après validation de la prestation</li>
-                        <li>Vous pouvez annuler avant la confirmation par le pet sitter</li>
-                    </ul>
+            </div>
+        }
+        
+        <div class="booking-create-content">
+            <div class="booking-form-container">
+                <form asp-action="Create" method="post" class="booking-create-form">
+                    <input type="hidden" asp-for="AdvertId" />
+                    
+                    <fieldset class="form-group">
+                        <legend>Résumé de l'annonce</legend>
+                        <div class="advert-summary-content">
+                            <div class="advert-owner">
+                                <div class="avatar" data-size="md">
+                                    <img src="@ImageHelper.GetPhotoUrl(advert.Owner.Photo)" alt="Photo de @advert.Owner.FullName" class="avatar-image">
+                                </div>
+                                <div class="owner-info">
+                                    <h3 class="owner-name">@advert.Owner.FullName</h3>
+                                    <span class="advert-type">@(advert.IsPetSitter ? "Offre de pet sitting" : "Recherche d'un pet sitter")</span>
+                                </div>
+                            </div>
+                            
+                            <div class="advert-details">
+                                <div class="detail-item">
+                                    <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-calendar">
+                                        <rect width="18" height="18" x="3" y="4" rx="2" ry="2"/>
+                                        <line x1="16" x2="16" y1="2" y2="6"/>
+                                        <line x1="8" x2="8" y1="2" y2="6"/>
+                                        <line x1="3" x2="21" y1="10" y2="10"/>
+                                    </svg>
+                                    <span>Du @advert.StartDate.ToString("dd/MM/yyyy") au @advert.EndDate.ToString("dd/MM/yyyy")</span>
+                                </div>
+                                <div class="detail-item">
+                                    <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-euro">
+                                        <path d="M4 10h12"/>
+                                        <path d="M4 14h9"/>
+                                        <path d="M19 6a7.7 7.7 0 0 0-5.2-2A7.9 7.9 0 0 0 6 12c0 4.4 3.5 8 7.8 8 2 0 3.8-.8 5.2-2"/>
+                                    </svg>
+                                    <span class="price">@advert.Amount.ToString("C")</span>
+                                </div>
+                                <div class="detail-item">
+                                    <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-dog">
+                                        <path d="M10 5.172C10 3.782 8.423 2.679 6.5 3c-2.823.47-4.113 6.006-4 7 .08.703 1.725 1.722 3.656 1 1.261-.472 1.96-1.45 2.344-2.5"/>
+                                        <path d="M14.267 5.172c0-1.39 1.577-2.493 3.5-2.172 2.823.47 4.113 6.006 4 7-.08.703-1.725 1.722-3.656 1-1.261-.472-1.855-1.45-2.239-2.5"/>
+                                        <path d="M8 14v.5"/>
+                                        <path d="M16 14v.5"/>
+                                        <path d="M11.25 16.25h1.5L12 17l-.75-.75Z"/>
+                                        <path d="M4.42 11.247A13.152 13.152 0 0 0 4 14.556C4 18.728 7.582 21 12 21s8-2.272 8-6.444c0-1.061-.162-2.2-.493-3.309m-9.243-6.082A8.801 8.801 0 0 1 12 5c.78 0 1.5.108 2.161.306"/>
+                                    </svg>
+                                    <span>
+                                        @{
+                                            var petNames = new List<string>();
+                                            foreach (var pet in advert.Pets)
+                                            {
+                                                petNames.Add(pet.Name);
+                                            }
+                                        }
+                                        @string.Join(", ", petNames)
+                                    </span>
+                                </div>
+                            </div>
+                        </div>
+                    </fieldset>
+                    
+                    <fieldset class="form-group">
+                        <legend>Période de réservation</legend>
+                        <div class="date-group">
+                            <div class="form-group">
+                                <label asp-for="StartDate" class="form-label">Date de début</label>
+                                <input asp-for="StartDate" type="date" class="form-control" 
+                                       min="@DateTime.Now.ToString("yyyy-MM-dd")" 
+                                       value="@Model.StartDate.ToString("yyyy-MM-dd")" required />
+                                <span asp-validation-for="StartDate" class="validation-message"></span>
+                            </div>
+                            
+                            <div class="form-group">
+                                <label asp-for="EndDate" class="form-label">Date de fin</label>
+                                <input asp-for="EndDate" type="date" class="form-control" 
+                                       min="@DateTime.Now.ToString("yyyy-MM-dd")" 
+                                       value="@Model.EndDate.ToString("yyyy-MM-dd")" required />
+                                <span asp-validation-for="EndDate" class="validation-message"></span>
+                            </div>
+                        </div>
+                    </fieldset>
+                    
+                    <fieldset class="form-group">
+                        <legend>Informations complémentaires</legend>
+                        <div class="form-group">
+                            <label asp-for="Message" class="form-label">Détails supplémentaires</label>
+                            <textarea asp-for="Message" class="form-control" rows="4" 
+                                      aria-describedby="message-hint"
+                                      placeholder="Indiquez ici toute information supplémentaire pour le pet sitter..."></textarea>
+                            <p id="message-hint" class="info-hint">Précisez les détails importants pour le pet sitter (accès, besoins spécifiques, etc.)</p>
+                            <span asp-validation-for="Message" class="validation-message"></span>
+                        </div>
+                    </fieldset>
+                    
+                    <div class="booking-payment-notice">
+                        <div class="alert" data-variant="info">
+                            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-info">
+                                <circle cx="12" cy="12" r="10"></circle>
+                                <path d="M12 16v-4"></path>
+                                <path d="M12 8h.01"></path>
+                            </svg>
+                            <div>
+                                <h4>À propos du paiement</h4>
+                                <p>Votre carte bancaire sera autorisée pour le montant de @advert.Amount.ToString("C"), mais le paiement ne sera débité qu'après la validation de la prestation.</p>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="actions-container">
+                        <a asp-controller="Advert" asp-action="Details" asp-route-id="@advert.Id" class="button" data-variant="secondary" data-size="md">Annuler</a>
+                        <a asp-controller="Payment" asp-action="Checkout" asp-route-advertId="@Model.AdvertId" class="button" data-variant="primary" data-size="md">
+                            Continuer vers le paiement
+                            <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-arrow-right" style="margin-left: var(--space-2);">
+                                <path d="M5 12h14"></path>
+                                <path d="m12 5 7 7-7 7"></path>
+                            </svg>
+                        </a>
+                    </div>
+                </form>
+            </div>
+            
+            <div class="booking-sidebar">
+                <div class="booking-summary-card">
+                    <h3>Résumé du prix</h3>
+                    <div class="price-details">
+                        <div class="price-item">
+                            <span class="price-label">Prix par jour</span>
+                            <span class="price-value">@((advert.Amount / (advert.EndDate - advert.StartDate).Days).ToString("C"))</span>
+                        </div>
+                        <div class="price-item">
+                            <span class="price-label">Nombre de jours</span>
+                            <span class="price-value">@((advert.EndDate - advert.StartDate).Days)</span>
+                        </div>
+                        <div class="price-divider"></div>
+                        <div class="price-item total">
+                            <span class="price-label">Total</span>
+                            <span class="price-value">@advert.Amount.ToString("C")</span>
+                        </div>
+                    </div>
+                    
+                    <div class="payment-policy">
+                        <h4>Conditions de paiement</h4>
+                        <ul>
+                            <li>La carte est autorisée mais non débitée immédiatement</li>
+                            <li>Le paiement est capturé après validation de la prestation</li>
+                            <li>Vous pouvez annuler avant la confirmation par le pet sitter</li>
+                        </ul>
+                    </div>
                 </div>
             </div>
         </div>
-    </div>
-</div>
+    </section>
+</main>
 
 @section Scripts {
     <script>

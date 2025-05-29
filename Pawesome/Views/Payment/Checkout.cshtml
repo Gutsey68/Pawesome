@@ -1,68 +1,110 @@
+@using Pawesome.Helpers
 @model Pawesome.Models.ViewModels.Payment.CheckoutViewModel
 
 @{
     ViewData["Title"] = "Finaliser votre paiement";
 }
 
-<main class="container checkout-container" role="main">
-    <article class="checkout-card">
-        <header class="card-header">
-            <h1>Finaliser votre paiement</h1>
-        </header>
-        <div class="card-body">
-            <section aria-labelledby="reservation-summary" class="reservation-summary-section">
-                <h2 id="reservation-summary">Résumé de votre réservation</h2>
-                <div class="summary-details">
-                    <div class="summary-item">
-                        <span class="label">Service :</span>
-                        <span class="value">@Model.ServiceType</span>
-                    </div>
-                    <div class="summary-item">
-                        <span class="label">Période :</span>
-                        <span class="value">Du @Model.StartDate.ToString("dd/MM/yyyy") au @Model.EndDate.ToString("dd/MM/yyyy")</span>
-                    </div>
-                    <div class="summary-item total">
-                        <span class="label">Montant total :</span>
-                        <span class="value">@Model.Amount €</span>
+<main role="main" class="checkout-container">
+    <h1 class="section-title">Finaliser votre paiement</h1>
+
+    <div class="checkout-card">
+        <section class="checkout-section">
+            <h2 class="section-heading">Résumé de votre réservation</h2>
+
+            <div class="advert-details">
+                <div class="advert-item">
+                    <div class="advert-details-content">
+                        <h3 class="advert-title">@Model.ServiceType</h3>
+                        <div class="advert-info">
+                            <div class="advert-info-item">
+                                <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24"
+                                     fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
+                                     stroke-linejoin="round" class="lucide lucide-calendar">
+                                    <rect width="18" height="18" x="3" y="4" rx="2" ry="2"/>
+                                    <line x1="16" x2="16" y1="2" y2="6"/>
+                                    <line x1="8" x2="8" y1="2" y2="6"/>
+                                    <line x1="3" x2="21" y1="10" y2="10"/>
+                                </svg>
+                                <span>Du @Model.StartDate.ToString("dd/MM/yyyy") au @Model.EndDate.ToString("dd/MM/yyyy")</span>
+                            </div>
+                        </div>
                     </div>
                 </div>
-            </section>
-            <section class="payment-section" aria-labelledby="payment-title">
-                <h2 id="payment-title">Paiement</h2>
-                <div class="alert" data-variant="info">
-                    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                        <circle cx="12" cy="12" r="10"></circle>
-                        <path d="M12 16v-4"></path>
-                        <path d="M12 8h.01"></path>
+            </div>
+
+            <div class="summary-details">
+                <div class="summary-item total">
+                    <span class="label">Montant total :</span>
+                    <span class="value">@Model.Amount.ToString("C")</span>
+                </div>
+            </div>
+
+            <div class="alert" data-variant="info">
+                <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none"
+                     stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"
+                     class="lucide lucide-info">
+                    <circle cx="12" cy="12" r="10"></circle>
+                    <path d="M12 16v-4"></path>
+                    <path d="M12 8h.01"></path>
+                </svg>
+                <div>
+                    <h4>Comment fonctionne le paiement ?</h4>
+                    <p>Votre carte bancaire sera autorisée pour le montant total, mais le paiement ne sera débité
+                        qu'après validation de la prestation par le propriétaire.</p>
+                </div>
+            </div>
+        </section>
+
+        <section class="checkout-section">
+            <h2 class="section-heading">Paiement sécurisé</h2>
+
+            <div class="payment-secure-note">
+                <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none"
+                     stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"
+                     class="lucide lucide-shield-check">
+                    <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/>
+                    <path d="m9 12 2 2 4-4"/>
+                </svg>
+                <span>Toutes les transactions sont sécurisées et chiffrées via notre partenaire Stripe.</span>
+            </div>
+
+            <form asp-controller="Payment" asp-action="CreateCheckoutSession" method="post" class="payment-form">
+                <input type="hidden" name="advertId" value="@Model.AdvertId"/>
+                <button type="submit" class="button" data-variant="primary" data-size="md">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none"
+                         stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"
+                         class="lucide lucide-credit-card" style="margin-right: var(--space-2);">
+                        <rect width="20" height="14" x="2" y="5" rx="2"/>
+                        <line x1="2" x2="22" y1="10" y2="10"/>
                     </svg>
-                    <div>
-                        <h4>Paiement sécurisé</h4>
-                        <p>Toutes les transactions sont sécurisées et chiffrées.</p>
-                    </div>
-                </div>
-                <form asp-controller="Payment" asp-action="CreateCheckoutSession" method="post" class="payment-form">
-                    <input type="hidden" name="advertId" value="@Model.AdvertId" />
-                    <button type="submit" class="button" aria-label="Payer avec Stripe">
-                        Payer @Model.Amount €
-                    </button>
-                </form>
-            </section>
-            <footer class="terms">
-                <p>En procédant au paiement, vous acceptez nos <a href="#" aria-label="Voir les conditions générales">conditions générales</a> et notre <a href="#" aria-label="Voir la politique de confidentialité">politique de confidentialité</a>.</p>
-            </footer>
-        </div>
-    </article>
+                    Payer @Model.Amount.ToString("C")
+                </button>
+            </form>
+
+            <div class="terms">
+                <p>En procédant au paiement, vous acceptez nos <a class="underline" asp-controller="Home" asp-action="Privacy">conditions
+                        générales</a> et notre <a class="underline" asp-controller="Home" asp-action="Privacy">politique de
+                        confidentialité</a>.</p>
+            </div>
+        </section>
+    </div>
 </main>
 
 @section Scripts {
     <script>
-        document.addEventListener('DOMContentLoaded', function() {
+        document.addEventListener('DOMContentLoaded', function () {
             const paymentForm = document.querySelector('.payment-form');
             const submitButton = paymentForm.querySelector('button[type="submit"]');
 
-            paymentForm.addEventListener('submit', function() {
+            paymentForm.addEventListener('submit', function () {
                 submitButton.disabled = true;
-                submitButton.textContent = "Traitement en cours...";
+                submitButton.innerHTML = `
+                    <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-loader-2" style="margin-right: var(--space-2);">
+                        <path d="M21 12a9 9 0 1 1-6.219-8.56"/>
+                    </svg>
+                    Traitement en cours...
+                `;
             });
         });
     </script>
