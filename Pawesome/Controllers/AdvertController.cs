@@ -61,9 +61,9 @@ public class AdvertController : Controller
                     Selected = model.AnimalTypeIds != null && model.AnimalTypeIds.Contains(at.AnimalType.Id)
                 })
                 .ToList();
-                    
+
             model.AnimalTypes = animalTypes;
-                
+
             if (model.AnimalTypeIds != null && model.AnimalTypeIds.Count != 0)
             {
                 model.SelectedAnimalTypes = animalTypes
@@ -96,7 +96,7 @@ public class AdvertController : Controller
             EndDateTo = model.EndDateTo,
             AnimalTypeIds = model.AnimalTypeIds,
             CountryId = model.CountryId,
-            City = model.City, 
+            City = model.City,
             CreatedAtFrom = model.CreatedAtFrom,
             CreatedAtTo = model.CreatedAtTo
         };
@@ -163,8 +163,8 @@ public class AdvertController : Controller
         }
 
         var pets = await _petService.GetUserPets(user.Id);
-        ViewBag.Pets = pets;
 
+        ViewBag.Pets = pets;
         return View(new PetSittingRequestViewModel());
     }
 
@@ -180,8 +180,21 @@ public class AdvertController : Controller
             {
                 return Challenge();
             }
+            
+            if (user.Address == null)
+            {
+                ModelState.AddModelError(string.Empty,
+                    "Vous devez définir votre localisation dans votre profil avant de pouvoir créer une annonce.");
+            }
 
             var pets = await _petService.GetUserPets(user.Id);
+            
+            if (pets.Count == 0)
+            {
+                ModelState.AddModelError(string.Empty,
+                    "Vous devez avoir au moins un animal enregistré pour créer une demande de pet sitting.");
+            }
+            
             ViewBag.Pets = pets;
 
             return View(viewModel);
@@ -206,6 +219,13 @@ public class AdvertController : Controller
     [HttpGet]
     public async Task<IActionResult> CreateOffer()
     {
+        var user = await _userManager.GetUserAsync(User);
+    
+        if (user == null)
+        {
+            return Challenge();
+        }
+    
         var animalTypes = await _animalTypeService.GetAllAnimalTypesAsync();
         ViewBag.AnimalTypes = animalTypes;
 
@@ -216,18 +236,24 @@ public class AdvertController : Controller
     [HttpPost]
     public async Task<IActionResult> CreateOffer(PetSittingOfferViewModel viewModel)
     {
-        if (!ModelState.IsValid)
-        {
-            var animalTypes = await _animalTypeService.GetAllAnimalTypesAsync();
-            ViewBag.AnimalTypes = animalTypes;
-
-            return View(viewModel);
-        }
-
         var user = await _userManager.GetUserAsync(User);
         if (user == null)
         {
             return Challenge();
+        }
+        
+        if (!ModelState.IsValid)
+        {
+            if (user.Address == null)
+            {
+                ModelState.AddModelError(string.Empty,
+                    "Vous devez définir votre localisation dans votre profil avant de pouvoir créer une annonce.");
+            }
+            
+            var animalTypes = await _animalTypeService.GetAllAnimalTypesAsync();
+            ViewBag.AnimalTypes = animalTypes;
+
+            return View(viewModel);
         }
 
         var result = await _advertService.CreatePetSittingOfferAsync(viewModel, user.Id);
@@ -251,8 +277,10 @@ public class AdvertController : Controller
         {
             return NotFound();
         }
-        
-        return status == "cancelled" ? RedirectToAction("Index", "Advert") : RedirectToAction(nameof(Details), new { id = advertId });
+
+        return status == "cancelled"
+            ? RedirectToAction("Index", "Advert")
+            : RedirectToAction(nameof(Details), new { id = advertId });
     }
 
     /// <summary>
@@ -421,13 +449,13 @@ public class AdvertController : Controller
 
         return RedirectToAction(nameof(Details), new { id = result.Id });
     }
-    
+
     [Authorize]
     [HttpGet]
     public async Task<IActionResult> ConfirmStatusChange(int id, string status)
     {
         var advert = await _advertService.GetAdvertByIdAsync(id);
-    
+
         if (advert == null)
         {
             return NotFound();

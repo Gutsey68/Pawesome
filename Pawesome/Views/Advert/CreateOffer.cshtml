@@ -12,9 +12,28 @@
         </div>
         @if (ViewData.ModelState.ErrorCount > 0)
         {
-            <div class="validation-summary" role="alert" aria-labelledby="validation-summary-title">
-                <h2 id="validation-summary-title">Des erreurs sont survenues</h2>
-                <div asp-validation-summary="ModelOnly"></div>
+            <div class="alert mb-4" data-variant="error" role="alert">
+                <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-ban-icon lucide-ban"><circle cx="12" cy="12" r="10"/><path d="m4.9 4.9 14.2 14.2"/></svg>
+                <div>
+                    <h4>Des erreurs sont survenues</h4>
+                    <div asp-validation-summary="ModelOnly"></div>
+                </div>
+            </div>
+        }
+        @if (string.IsNullOrEmpty(User.FindFirst("Address")?.Value))
+        {
+            <div class="alert mb-4" data-variant="warning">
+                <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24"
+                     fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
+                     stroke-linejoin="round" class="lucide lucide-alert-triangle">
+                    <path d="m21.73 18-8-14a2 2 0 0 0-3.48 0l-8 14A2 2 0 0 0 4 21h16a2 2 0 0 0 1.73-3Z"/>
+                    <path d="M12 9v4"/>
+                    <path d="M12 17h.01"/>
+                </svg>
+                <div>
+                    <h4>Action requise</h4>
+                    <p>Vous n'avez pas encore défini votre adresse. <a asp-controller="User" asp-action="Edit" class="underline">Renseigner votre adresse maintenant</a></p>
+                </div>
             </div>
         }
         <div>

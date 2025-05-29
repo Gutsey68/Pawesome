@@ -73,7 +73,7 @@
         <input type="hidden" asp-for="Id" />
         <div class="form-actions">
             <a asp-action="Details" asp-route-id="@Model.Id" class="button" data-variant="outline" data-size="md">Annuler</a>
-            <button type="submit" class="button" data-variant="destructive" data-size="md">Confirmer la suppression</button>
+            <button asp-action="DeleteConfirmed" asp-controller="Pet" type="submit" class="button" data-variant="destructive" data-size="md">Confirmer la suppression</button>
         </div>
     </form>
 </main>

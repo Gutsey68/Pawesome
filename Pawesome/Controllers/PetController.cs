@@ -180,7 +180,7 @@ public class PetController : Controller
 
         await _petService.DeletePetAsync(id);
         
-        return RedirectToAction(nameof(Index));
+        return RedirectToAction(nameof(Index), "User");
     }
 
     /// <summary>

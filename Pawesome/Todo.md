@@ -1,9 +1,3 @@
-- change the mcd and mld -> notification
-
-Perfect, you want to implement a **booking workflow with secure payment and manual validation**, inspired by platforms like **Airbnb**, **Vinted** or **Blablacar**, in your pet sitting app. Here's a **clear, complete and structured functional workflow** to manage both **requests** and **offers** for pet sitting:
-
----
-
 ## ⚙️ BOOKING WORKFLOW FOR AN ADVERTISEMENT (REQUEST or OFFER)
 
 ### 1. 📬 Initial Contact (already existing via messaging)
@@ -111,3 +105,10 @@ Perfect, you want to implement a **booking workflow with secure payment and manu
 * The system protects both parties (like Airbnb).
 
 ---
+TODO: 
+- bug de prix sur Booking/create
+- sur advert/details il faut dire que l'autre doit accepter.
+- les notifications ne marchent pas sur les annonces 
+- celui qui a fait une annonce doit voir les demandes. -> faire un lien sur Booking/Index
+- La page Booking/index est buggé.
+- il faut ajouter la searchbar sur modale quand pas sur home ou dashboard

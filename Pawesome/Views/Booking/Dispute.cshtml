@@ -28,9 +28,15 @@
                 <label for="reason">Motif du litige</label>
                 <textarea id="reason" name="reason" class="form-control" rows="6" required placeholder="Décrivez en détail les raisons pour lesquelles vous souhaitez contester cette prestation..."></textarea>
                 <div class="form-hint">Minimum 20 caractères, soyez aussi précis et factuel que possible</div>
-                @if (ViewData.ModelState?[""]?.Errors?.Count > 0)
+                @if (ViewData.ModelState.ErrorCount > 0)
                 {
-                    <span class="validation-message">@ViewData.ModelState[""]?.Errors.First().ErrorMessage</span>
+                    <div class="alert mb-4" data-variant="error" role="alert">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-ban-icon lucide-ban"><circle cx="12" cy="12" r="10"/><path d="m4.9 4.9 14.2 14.2"/></svg>
+                        <div>
+                            <h4>Des erreurs sont survenues</h4>
+                            <div asp-validation-summary="ModelOnly"></div>
+                        </div>
+                    </div>
                 }
             </div>
             

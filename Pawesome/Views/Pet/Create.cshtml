@@ -6,12 +6,15 @@
 
 <main role="main" class="container profile-edit-container">
     <h1 class="profile-edit-title">Ajouter un animal</h1>
-    
     @if (ViewData.ModelState.ErrorCount > 0)
     {
-        <div class="validation-summary" role="alert" aria-labelledby="validation-summary-title">
-            <h2 id="validation-summary-title">Des erreurs sont survenues</h2>
-            <div asp-validation-summary="ModelOnly"></div>
+        <div class="alert mb-4" data-variant="error" role="alert">
+            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-ban-icon lucide-ban"><circle cx="12" cy="12" r="10"/><path d="m4.9 4.9 14.2 14.2"/></svg>
+            <div>
+                    
+                <h2>Des erreurs sont survenues</h2>
+                <div asp-validation-summary="ModelOnly"></div>
+            </div>
         </div>
     }
     <form asp-action="Create" enctype="multipart/form-data" id="petForm" class="profile-edit-form">

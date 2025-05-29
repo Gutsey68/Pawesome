@@ -194,8 +194,10 @@ public class UserService : IUserService
         var claims = new List<Claim>
         {
             new Claim("FirstName", user.FirstName),
-            new Claim("LastName", user.LastName)
+            new Claim("LastName", user.LastName),
         };
+
+        claims.Add(new Claim("Address", user.Address?.StreetAddress ?? string.Empty));
 
         if (user.Email != null) 
         {
