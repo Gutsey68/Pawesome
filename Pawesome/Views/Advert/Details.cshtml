@@ -140,14 +140,17 @@
             }
             @if (User.Identity?.IsAuthenticated == true && Model.Status != AdvertStatus.Cancelled && Model.Status != AdvertStatus.Archived)
             {
-                @if (Model.Owner != null && Model.Owner.Id != int.Parse(User.FindFirst(System.Security.Claims.ClaimTypes.NameIdentifier)?.Value ?? "0"))
+                @if (User.Identity?.IsAuthenticated == true && Model.Status != AdvertStatus.Cancelled && Model.Status != AdvertStatus.Archived)
                 {
-                    <div class="mt-4">
-                        <a asp-controller="Payment" asp-action="Checkout" asp-route-advertId="@Model.Id" 
-                           class="btn btn-primary btn-lg w-100">
-                            <i class="bi bi-credit-card me-2"></i> Réserver maintenant
-                        </a>
-                    </div>
+                    @if (Model.Owner != null && Model.Owner.Id != int.Parse(User.FindFirst(System.Security.Claims.ClaimTypes.NameIdentifier)?.Value ?? "0"))
+                    {
+                        <div class="mt-4">
+                            <a asp-controller="Booking" asp-action="Create" asp-route-advertId="@Model.Id" 
+                               class="btn btn-primary btn-lg w-100">
+                                <i class="bi bi-credit-card me-2"></i> Réserver maintenant
+                            </a>
+                        </div>
+                    }
                 }
             }
             @if (isOwner)
@@ -174,13 +177,18 @@
                     }
                 </div>
             }
-            else if (Model.Owner != null)
+            else if (Model.Owner != null && User.Identity?.IsAuthenticated == true)
             {
                 <a asp-controller="Message" asp-action="StartConversation" asp-route-otherUserId="@Model.Owner.Id" class="button" data-variant="primary">
                     Contacter
                 </a>
             }
-
+            else if (Model.Owner != null && User.Identity?.IsAuthenticated == false)
+            {
+                <a asp-controller="Auth" asp-action="Register" asp-route-otherUserId="@Model.Owner.Id" class="button" data-variant="primary">
+                    Connectez vous pour envoyer un message
+                </a>
+            }
             <a asp-controller="Advert" asp-action="Index" class="button" data-variant="secondary" data-size="sm">
                 Retour aux annonces
             </a>

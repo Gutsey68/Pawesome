@@ -1,0 +1,215 @@
+@using Pawesome.Models.enums
+@{
+    ViewData["Title"] = "Détails de la réservation";
+    var isBooker = Model.BookerUserId == ViewBag.CurrentUserId;
+    var isPetSitter = Model.PetSitterUserId == ViewBag.CurrentUserId;
+    var canUpdateStatus = isPetSitter && (Model.Status == BookingStatus.PendingConfirmation);
+    var canValidate = isBooker && (Model.Status == BookingStatus.InProgress || Model.Status == BookingStatus.Completed);
+    var canDispute = isBooker && (Model.Status == BookingStatus.InProgress || Model.Status == BookingStatus.Completed);
+}
+
+<div class="container booking-details-container">
+    <div class="booking-details-header">
+        <h1>Détails de la réservation</h1>
+        <div class="booking-status-badge @Model.Status.ToString().ToLower()">
+            @Model.StatusLabel
+        </div>
+    </div>
+
+    <div class="booking-details-card">
+        <div class="booking-section">
+            <h2>Informations générales</h2>
+            <div class="booking-info-grid">
+                <div class="booking-info-item">
+                    <span class="info-label">Période</span>
+                    <span class="info-value">Du @Model.StartDate.ToString("dd/MM/yyyy") au @Model.EndDate.ToString("dd/MM/yyyy")</span>
+                </div>
+                <div class="booking-info-item">
+                    <span class="info-label">Prix total</span>
+                    <span class="info-value price">@Model.Amount.ToString("C")</span>
+                </div>
+                <div class="booking-info-item">
+                    <span class="info-label">Date de création</span>
+                    <span class="info-value">@Model.CreatedAt.ToString("dd/MM/yyyy HH:mm")</span>
+                </div>
+                <div class="booking-info-item">
+                    <span class="info-label">Dernière mise à jour</span>
+                    <span class="info-value">@Model.UpdatedAt.ToString("dd/MM/yyyy HH:mm")</span>
+                </div>
+            </div>
+        </div>
+
+        <div class="booking-section participants-section">
+            <h2>Participants</h2>
+            <div class="participants-grid">
+                <div class="participant-card">
+                    <div class="participant-header">
+                        <h3>Propriétaire des animaux</h3>
+                    </div>
+                    <div class="participant-content">
+                        <img src="@(string.IsNullOrEmpty(Model.BookerPhoto) ? "/images/default-avatar.png" : Model.BookerPhoto)" alt="Photo de @Model.BookerUserName" class="participant-photo">
+                        <div class="participant-info">
+                            <span class="participant-name">@Model.BookerUserName</span>
+                            <a asp-controller="Message" asp-action="StartConversation" asp-route-otherUserId="@Model.BookerUserId" class="message-link">
+                                <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                    <path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"></path>
+                                </svg>
+                                Envoyer un message
+                            </a>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="participant-card">
+                    <div class="participant-header">
+                        <h3>Pet sitter</h3>
+                    </div>
+                    <div class="participant-content">
+                        <img src="@(string.IsNullOrEmpty(Model.PetSitterPhoto) ? "/images/default-avatar.png" : Model.PetSitterPhoto)" alt="Photo de @Model.PetSitterUserName" class="participant-photo">
+                        <div class="participant-info">
+                            <span class="participant-name">@Model.PetSitterUserName</span>
+                            <a asp-controller="Message" asp-action="StartConversation" asp-route-otherUserId="@Model.PetSitterUserId" class="message-link">
+                                <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                    <path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"></path>
+                                </svg>
+                                Envoyer un message
+                            </a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="booking-section">
+            <h2>Détails de la prestation</h2>
+            <div class="advert-details">
+                <div class="advert-header">
+                    <h3>@Model.AdvertTitle</h3>
+                    <a asp-controller="Advert" asp-action="Details" asp-route-id="@Model.AdvertId" class="advert-link">
+                        Voir l'annonce
+                        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                            <line x1="7" y1="17" x2="17" y2="7"></line>
+                            <polyline points="7 7 17 7 17 17"></polyline>
+                        </svg>
+                    </a>
+                </div>
+                
+                <div class="advert-pets">
+                    <h4>Animaux concernés</h4>
+                    <ul class="pet-list">
+                        @foreach (var pet in Model.Pets)
+                        {
+                            <li class="pet-item">
+                                <span class="pet-type">
+                                    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                        <path d="M10 5.172C10 3.12 12.506.5 15 3.5c2.5 3 0 7.5-5 9.5"></path>
+                                        <path d="M14.5 5.172c0-2.052 2.506-4.672 5-1.672 2.5 3 0 7.5-5 9.5"></path>
+                                        <path d="M8.5 10c0 2 1.5 3 3 3s3-1 3-3-1.5-3-3-3-3 1-3 3z"></path>
+                                        <path d="M17 17c.667 1.333 1 2.167 1 2.5 0 .828-.672 1.5-1.5 1.5S15 20.328 15 19.5c0-.333.333-1.167 1-2.5"></path>
+                                        <path d="M11 17c.667 1.333 1 2.167 1 2.5 0 .828-.672 1.5-1.5 1.5S9 20.328 9 19.5c0-.333.333-1.167 1-2.5"></path>
+                                        <path d="M7 14.5c-1.5 1.167-2.333 1.917-2.5 2.25-.5 1 .215 2.12 1 2.25 1.5.25 2-3 1.5-4.5z"></path>
+                                        <path d="M19.5 14.5c1.5 1.167 2.333 1.917 2.5 2.25.5 1-.215 2.12-1 2.25-1.5.25-2-3-1.5-4.5z"></path>
+                                    </svg>
+                                    @pet.Type
+                                </span>
+                                <span class="pet-name">@pet.Name</span>
+                            </li>
+                        }
+                    </ul>
+                </div>
+                
+                @if (!string.IsNullOrEmpty(Model.AdditionalInformation))
+                {
+                    <div class="additional-info">
+                        <h4>Informations supplémentaires</h4>
+                        <div class="info-content">@Model.AdditionalInformation</div>
+                    </div>
+                }
+            </div>
+        </div>
+
+        @if (!string.IsNullOrEmpty(Model.DisputeReason))
+        {
+            <div class="booking-section dispute-section">
+                <div class="alert" data-variant="danger">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                        <polygon points="22 3 2 3 10 12.46 10 19 14 21 14 12.46 22 3"></polygon>
+                    </svg>
+                    <div>
+                        <h3>Litige en cours</h3>
+                        <p>@Model.DisputeReason</p>
+                        <p class="dispute-date">Signalé le @Model.DisputeDate?.ToString("dd/MM/yyyy HH:mm")</p>
+                    </div>
+                </div>
+            </div>
+        }
+
+        <div class="booking-actions">
+            @if (canUpdateStatus)
+            {
+                <div class="actions-group">
+                    <h3>Actions disponibles (Pet sitter)</h3>
+                    <div class="action-buttons">
+                        <form asp-action="UpdateStatus" method="post">
+                            <input type="hidden" name="bookingId" value="@Model.Id" />
+                            <input type="hidden" name="status" value="Accepted" />
+                            <button type="submit" class="button" data-variant="success">
+                                <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                    <polyline points="20 6 9 17 4 12"></polyline>
+                                </svg>
+                                Accepter la réservation
+                            </button>
+                        </form>
+                        <form asp-action="UpdateStatus" method="post">
+                            <input type="hidden" name="bookingId" value="@Model.Id" />
+                            <input type="hidden" name="status" value="Declined" />
+                            <button type="submit" class="button" data-variant="danger">
+                                <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                    <line x1="18" y1="6" x2="6" y2="18"></line>
+                                    <line x1="6" y1="6" x2="18" y2="18"></line>
+                                </svg>
+                                Refuser la réservation
+                            </button>
+                        </form>
+                    </div>
+                </div>
+            }
+            
+            @if (canValidate)
+            {
+                <div class="actions-group">
+                    <h3>Actions disponibles</h3>
+                    <div class="action-buttons">
+                        <form asp-action="Validate" method="post">
+                            <input type="hidden" name="bookingId" value="@Model.Id" />
+                            <button type="submit" class="button" data-variant="primary">
+                                <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                    <path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path>
+                                    <polyline points="22 4 12 14.01 9 11.01"></polyline>
+                                </svg>
+                                Valider la prestation
+                            </button>
+                        </form>
+                        
+                        @if (canDispute)
+                        {
+                            <a asp-action="Dispute" asp-route-bookingId="@Model.Id" class="button" data-variant="warning">
+                                <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                    <polygon points="22 3 2 3 10 12.46 10 19 14 21 14 12.46 22 3"></polygon>
+                                </svg>
+                                Signaler un problème
+                            </a>
+                        }
+                    </div>
+                </div>
+            }
+            
+            <a asp-action="Index" class="button" data-variant="outline">
+                <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                    <path d="m15 18-6-6 6-6"></path>
+                </svg>
+                Retour aux réservations
+            </a>
+        </div>
+    </div>
+</div>

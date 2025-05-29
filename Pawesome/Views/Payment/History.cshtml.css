@@ -205,6 +205,10 @@
     justify-content: center;
 }
 
+.svg {
+    margin-right: var(--space-2);
+}
+
 @media (max-width: 640px) {
     .payment-header {
         flex-direction: column;

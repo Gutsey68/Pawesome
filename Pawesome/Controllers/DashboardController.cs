@@ -1,7 +1,4 @@
-﻿using System.Diagnostics;
-using Microsoft.AspNetCore.Mvc;
-using Pawesome.Models;
-using Pawesome.Models.ViewModels;
+﻿using Microsoft.AspNetCore.Mvc;
 using Pawesome.Models.ViewModels.Dashboard;
 
 namespace Pawesome.Controllers;

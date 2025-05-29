@@ -12,7 +12,7 @@ using Pawesome.Data;
 namespace Pawesome.Migrations
 {
     [DbContext(typeof(AppDbContext))]
-    [Migration("20250527204642_Init")]
+    [Migration("20250529073228_Init")]
     partial class Init
     {
         /// <inheritdoc />
@@ -212,27 +212,6 @@ namespace Pawesome.Migrations
                     b.ToTable("AspNetUserTokens", (string)null);
                 });
 
-            modelBuilder.Entity("Pawesome.Models.AnimalTypeAdvert", b =>
-                {
-                    b.Property<int>("AnimalTypeId")
-                        .HasColumnType("integer");
-
-                    b.Property<int>("AdvertId")
-                        .HasColumnType("integer");
-
-                    b.Property<DateTime>("CreatedAt")
-                        .HasColumnType("timestamp with time zone");
-
-                    b.Property<DateTime>("UpdatedAt")
-                        .HasColumnType("timestamp with time zone");
-
-                    b.HasKey("AnimalTypeId", "AdvertId");
-
-                    b.HasIndex("AdvertId");
-
-                    b.ToTable("AnimalTypeAdverts");
-                });
-
             modelBuilder.Entity("Pawesome.Models.Entities.Address", b =>
                 {
                     b.Property<int>("Id")
@@ -335,6 +314,27 @@ namespace Pawesome.Migrations
                     b.HasKey("Id");
 
                     b.ToTable("AnimalTypes");
+                });
+
+            modelBuilder.Entity("Pawesome.Models.Entities.AnimalTypeAdvert", b =>
+                {
+                    b.Property<int>("AnimalTypeId")
+                        .HasColumnType("integer");
+
+                    b.Property<int>("AdvertId")
+                        .HasColumnType("integer");
+
+                    b.Property<DateTime>("CreatedAt")
+                        .HasColumnType("timestamp with time zone");
+
+                    b.Property<DateTime>("UpdatedAt")
+                        .HasColumnType("timestamp with time zone");
+
+                    b.HasKey("AnimalTypeId", "AdvertId");
+
+                    b.HasIndex("AdvertId");
+
+                    b.ToTable("AnimalTypeAdverts");
                 });
 
             modelBuilder.Entity("Pawesome.Models.Entities.City", b =>
@@ -884,25 +884,6 @@ namespace Pawesome.Migrations
                         .IsRequired();
                 });
 
-            modelBuilder.Entity("Pawesome.Models.AnimalTypeAdvert", b =>
-                {
-                    b.HasOne("Pawesome.Models.Entities.Advert", "Advert")
-                        .WithMany("AnimalTypeAdverts")
-                        .HasForeignKey("AdvertId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.HasOne("Pawesome.Models.Entities.AnimalType", "AnimalType")
-                        .WithMany("AnimalTypeAdverts")
-                        .HasForeignKey("AnimalTypeId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.Navigation("Advert");
-
-                    b.Navigation("AnimalType");
-                });
-
             modelBuilder.Entity("Pawesome.Models.Entities.Address", b =>
                 {
                     b.HasOne("Pawesome.Models.Entities.City", "City")
@@ -927,6 +908,25 @@ namespace Pawesome.Migrations
                         .IsRequired();
 
                     b.Navigation("User");
+                });
+
+            modelBuilder.Entity("Pawesome.Models.Entities.AnimalTypeAdvert", b =>
+                {
+                    b.HasOne("Pawesome.Models.Entities.Advert", "Advert")
+                        .WithMany("AnimalTypeAdverts")
+                        .HasForeignKey("AdvertId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("Pawesome.Models.Entities.AnimalType", "AnimalType")
+                        .WithMany("AnimalTypeAdverts")
+                        .HasForeignKey("AnimalTypeId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Advert");
+
+                    b.Navigation("AnimalType");
                 });
 
             modelBuilder.Entity("Pawesome.Models.Entities.City", b =>

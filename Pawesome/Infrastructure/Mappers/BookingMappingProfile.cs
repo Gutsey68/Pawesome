@@ -9,16 +9,23 @@ namespace Pawesome.Infrastructure.Mappers
         public BookingMappingProfile()
         {
             CreateMap<Booking, BookingDto>()
-                .ForMember(dest => dest.AdvertTitle, opt => opt.MapFrom(src => 
+                .ForMember(dest => dest.AdvertTitle, opt => opt.MapFrom(src =>
                     src.Advert.AdditionalInformation ?? "Annonce"))
-                .ForMember(dest => dest.BookerUserName, opt => opt.MapFrom(src => 
+                .ForMember(dest => dest.BookerUserName, opt => opt.MapFrom(src =>
                     $"{src.BookerUser.FirstName} {src.BookerUser.LastName}"))
-                .ForMember(dest => dest.BookerUserEmail, opt => opt.MapFrom(src => 
+                .ForMember(dest => dest.BookerUserEmail, opt => opt.MapFrom(src =>
                     src.BookerUser.Email))
-                .ForMember(dest => dest.PetSitterUserId, opt => opt.MapFrom(src => 
+                .ForMember(dest => dest.PetSitterUserId, opt => opt.MapFrom(src =>
                     src.Advert.UserId))
-                .ForMember(dest => dest.PetSitterUserName, opt => opt.MapFrom(src => 
-                    $"{src.Advert.User.FirstName} {src.Advert.User.LastName}"));
+                .ForMember(dest => dest.PetSitterUserName, opt => opt.MapFrom(src =>
+                    $"{src.Advert.User.FirstName} {src.Advert.User.LastName}"))
+                .ForMember(dest => dest.PetSitterPhoto, opt => opt.MapFrom(src =>
+                    src.Advert.User.Photo))
+                .ForMember(dest => dest.AdditionalInformation, opt => opt.MapFrom(src => src.Advert.AdditionalInformation))
+                .ForMember(dest => dest.BookerPhoto, opt => opt.MapFrom(src =>
+                    src.BookerUser.Photo)).ForMember(dest => dest.Pets, opt => opt.MapFrom(src =>
+                    src.Advert.PetAdverts.Select(ap => ap.Pet)));
+
                 
             CreateMap<BookingDto, Booking>();
             

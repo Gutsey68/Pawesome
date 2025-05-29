@@ -35,9 +35,8 @@ public class AdvertRepository : IAdvertRepository
             .Include(a => a.PetAdverts)
             .ThenInclude(pa => pa.Pet)
             .ThenInclude(p => p!.AnimalType)
-            .Where(a => isPetSitter 
-                ? (a.Status == AdvertStatus.PendingOffer && a.Status != AdvertStatus.Cancelled) 
-                : (a.Status == AdvertStatus.Pending && a.Status != AdvertStatus.Cancelled))
+            .Where(a => a.Status != AdvertStatus.Cancelled && 
+                        (isPetSitter ? a.Status == AdvertStatus.PendingOffer : a.Status == AdvertStatus.Pending))
             .OrderByDescending(a => a.CreatedAt)
             .ToListAsync();
     }
@@ -402,7 +401,10 @@ public class AdvertRepository : IAdvertRepository
                                      a.User.Address.City.Name.ToLower().Contains(filter.City.ToLower()));
         }
 
-        query = query.Where(a => a.Status == AdvertStatus.Active);
+        query = query.Where(a => a.Status != AdvertStatus.Cancelled && 
+                                 (filter.IsPetSitterOffer.HasValue ? 
+                                     (filter.IsPetSitterOffer.Value ? a.Status == AdvertStatus.PendingOffer : a.Status == AdvertStatus.Pending) : 
+                                     (a.Status == AdvertStatus.Pending || a.Status == AdvertStatus.PendingOffer)));
 
         return await query.ToListAsync();
     }

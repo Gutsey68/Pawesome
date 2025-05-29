@@ -6,6 +6,7 @@ public enum BookingStatus
     Accepted,
     Declined,
     Cancelled,
+    Validated,
     InProgress,
     Completed,
     Disputed,

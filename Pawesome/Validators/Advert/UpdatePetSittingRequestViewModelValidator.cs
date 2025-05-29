@@ -1,7 +1,7 @@
 using FluentValidation;
 using Pawesome.Models.ViewModels.Advert;
 
-namespace Pawesome.Infrastructure.Validators.Advert
+namespace Pawesome.Validators.Advert
 {
     public class UpdatePetSittingRequestViewModelValidator : AbstractValidator<UpdatePetSittingRequestViewModel>
     {
@@ -12,7 +12,7 @@ namespace Pawesome.Infrastructure.Validators.Advert
                 
             RuleFor(x => x.StartDate)
                 .NotEmpty().WithMessage("La date de début est obligatoire")
-                .Must(date => date.Date >= DateTime.Now.Date).WithMessage("La date de début doit être future");
+                .Must(date => date.Date >= DateTime.UtcNow.Date).WithMessage("La date de début doit être future");
                 
             RuleFor(x => x.EndDate)
                 .NotEmpty().WithMessage("La date de fin est obligatoire")

@@ -67,5 +67,14 @@ public class AdvertMappingProfile : Profile
             .ForMember(dest => dest.Pets, opt => opt.MapFrom(src => src.PetAdverts.Select(pa => pa.Pet).ToList()))
             .ForMember(dest => dest.Address, opt => opt.MapFrom(src => src.User.Address))
             .ForMember(dest => dest.City, opt => opt.MapFrom(src => src.User.Address != null ? src.User.Address.City.Name : null));
+        
+        CreateMap<Address, AddressDto>()
+            .ForMember(dest => dest.Id, opt => opt.MapFrom(src => src.Id))
+            .ForMember(dest => dest.StreetAddress, opt => opt.MapFrom(src => src.StreetAddress))
+            .ForMember(dest => dest.CityId, opt => opt.MapFrom(src => src.CityId))
+            .ForMember(dest => dest.CityName, opt => opt.MapFrom(src => src.City.Name))
+            .ForMember(dest => dest.PostalCode, opt => opt.MapFrom(src => src.City.PostalCode))
+            .ForMember(dest => dest.CountryId, opt => opt.MapFrom(src => src.City.CountryId))
+            .ForMember(dest => dest.CountryName, opt => opt.MapFrom(src => src.City.Country.Name));
     }
 }

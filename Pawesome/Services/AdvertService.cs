@@ -63,7 +63,7 @@ public class AdvertService : IAdvertService
             EndDate = model.EndDate,
             Amount = model.Amount,
             AdditionalInformation = model.AdditionalInformation,
-            Status = AdvertStatus.PendingOffer,
+            Status = AdvertStatus.Pending,
             CreatedAt = DateTime.UtcNow,
             UpdatedAt = DateTime.UtcNow,
             PetAdverts = new List<PetAdvert>(),

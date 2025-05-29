@@ -1,6 +1,4 @@
-using Pawesome.Models.Entities;
-
-namespace Pawesome.Models;
+namespace Pawesome.Models.Entities;
 
 public class AnimalTypeAdvert
 {
@@ -10,6 +8,6 @@ public class AnimalTypeAdvert
     public int AdvertId { get; set; }
     public Advert Advert { get; set; } = null!;
     
-    public DateTime CreatedAt { get; set; } = DateTime.Now;
-    public DateTime UpdatedAt { get; set; } = DateTime.Now;
+    public DateTime CreatedAt { get; set; } = DateTime.UtcNow;
+    public DateTime UpdatedAt { get; set; } = DateTime.UtcNow;
 }
