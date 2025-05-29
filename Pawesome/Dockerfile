@@ -12,6 +12,11 @@ RUN dotnet restore "Pawesome/Pawesome.csproj"
 
 COPY . .
 WORKDIR "/src/Pawesome"
+
+RUN dotnet tool install -g Microsoft.Web.LibraryManager.Cli
+ENV PATH="${PATH}:/root/.dotnet/tools"
+RUN libman restore
+
 RUN dotnet build "Pawesome.csproj" -c $BUILD_CONFIGURATION -o /app/build
 
 FROM build AS publish
