@@ -5,3 +5,7 @@ TODO:
 - Améliorer l'ui de la modale et de la page notification
 - Faire le RGPD
 - Ui page payment/History
+
+
+admin@pawesome.com
+Admin123!

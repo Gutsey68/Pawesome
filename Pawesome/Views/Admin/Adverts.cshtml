@@ -1,0 +1,164 @@
+@{
+    ViewData["Title"] = "Gestion des annonces";
+    Layout = "~/Views/Shared/Admin/_AdminLayout.cshtml";
+}
+
+<div class="admin-content">
+    <h1>Gestion des annonces</h1>
+
+    <div class="data-controls">
+        <button id="refreshBtn" class="btn-action">Rafraîchir</button>
+    </div>
+
+    <div class="datatable-container">
+        <table id="advertsTable" class="display" style="width:100%">
+            <thead>
+                <tr>
+                    <th>ID</th>
+                    <th>Propriétaire</th>
+                    <th>Type</th>
+                    <th>Montant</th>
+                    <th>Ville</th>
+                    <th>Dates</th>
+                    <th>Statut</th>
+                    <th>Créé le</th>
+                    <th>Actions</th>
+                </tr>
+            </thead>
+        </table>
+    </div>
+</div>
+
+@section Scripts {
+    <link rel="stylesheet" type="text/css" href="https://cdn.datatables.net/1.13.6/css/jquery.dataTables.min.css">
+    <script type="text/javascript" src="https://cdn.datatables.net/1.13.6/js/jquery.dataTables.min.js"></script>
+
+    <script>
+        $(document).ready(function() {
+            $('#advertsTable').DataTable({
+                ajax: {
+                    url: '@Url.Action("GetAdverts", "Admin")',
+                    type: 'GET',
+                    dataSrc: 'data',
+                    error: function (xhr, error, thrown) {
+                        console.error('Erreur lors du chargement des données:', error, thrown);
+                        alert('Une erreur est survenue lors du chargement des annonces');
+                    }
+                },
+                columns: [
+                    { data: 'id' },
+                    { data: 'ownerName' },
+                    { data: 'type' },
+                    {
+                        data: 'amount',
+                        render: function(data) {
+                            return parseFloat(data).toFixed(2) + ' €';
+                        }
+                    },
+                    { data: 'city' },
+                    {
+                        data: null,
+                        render: function(data) {
+                            try {
+                                const startDate = new Date(data.startDate).toLocaleDateString('fr-FR');
+                                const endDate = new Date(data.endDate).toLocaleDateString('fr-FR');
+                                return startDate + ' au ' + endDate;
+                            } catch (e) {
+                                return 'Non défini';
+                            }
+                        }
+                    },
+                    {
+                        data: 'status',
+                        render: function(data) {
+                            let badge = '';
+                            switch(data) {
+                                case 'Pending':
+                                    badge = '<span class="badge" data-variant="warning">En attente</span>';
+                                    break;
+                                case 'PendingOffer':
+                                    badge = '<span class="badge" data-variant="info">Offre en attente</span>';
+                                    break;
+                                case 'Approved':
+                                    badge = '<span class="badge" data-variant="success">Approuvée</span>';
+                                    break;
+                                case 'Rejected':
+                                    badge = '<span class="badge" data-variant="danger">Rejetée</span>';
+                                    break;
+                                case 'Cancelled':
+                                    badge = '<span class="badge" data-variant="purple">Annulée</span>';
+                                    break;
+                                default:
+                                    badge = '<span class="badge" data-variant="sky">' + data + '</span>';
+                            }
+                            return badge;
+                        }
+                    },
+                    {
+                        data: 'createdAt',
+                        render: function(data) {
+                            try {
+                                return new Date(data).toLocaleDateString('fr-FR');
+                            } catch (e) {
+                                return 'Non défini';
+                            }
+                        }
+                    },
+                    {
+                        data: 'id',
+                        render: function(data) {
+                            return `
+                                <div class="action-buttons">
+                                    <button class="btn-view" data-id="${data}">Voir</button>
+                                    <button class="btn-edit" data-id="${data}">Modifier</button>
+                                    <button class="btn-delete" data-id="${data}">Supprimer</button>
+                                </div>
+                            `;
+                        },
+                        orderable: false
+                    }
+                ],
+                language: {
+                    url: '//cdn.datatables.net/plug-ins/1.13.6/i18n/fr-FR.json'
+                },
+                responsive: true,
+                processing: true
+            });
+
+            // Gérer les actions
+            $('#advertsTable').on('click', '.btn-view', function() {
+                const advertId = $(this).data('id');
+                window.location.href = '/Advert/Details/' + advertId;
+            });
+
+            $('#advertsTable').on('click', '.btn-edit', function() {
+                const advertId = $(this).data('id');
+                window.location.href = '/Advert/EditAdvert/' + advertId;
+            });
+
+            $('#advertsTable').on('click', '.btn-delete', function() {
+                const advertId = $(this).data('id');
+                if (confirm('Êtes-vous sûr de vouloir supprimer cette annonce?')) {
+                    $.ajax({
+                        url: '/Admin/DeleteAdvert/' + advertId,
+                        type: 'POST',
+                        success: function(result) {
+                            if (result.success) {
+                                $('#advertsTable').DataTable().ajax.reload();
+                            } else {
+                                alert('Erreur lors de la suppression: ' + result.message);
+                            }
+                        },
+                        error: function() {
+                            alert('Une erreur est survenue lors de la communication avec le serveur');
+                        }
+                    });
+                }
+            });
+
+            $('#refreshBtn').click(function() {
+                $('#advertsTable').DataTable().ajax.reload();
+            });
+        });
+    </script>
+}

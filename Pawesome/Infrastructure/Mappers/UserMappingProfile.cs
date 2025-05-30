@@ -56,7 +56,10 @@ public class UserMappingProfile : Profile
 
         CreateMap<User, UserSimpleDto>()
             .ForMember(dest => dest.FullName, opt => opt.MapFrom(src =>
-                $"{src.FirstName} {src.LastName}"));
+                $"{src.FirstName} {src.LastName}"))
+            .ForMember(dest => dest.Email, opt => opt.MapFrom(src => src.Email))
+            .ForMember(dest => dest.Status, opt => opt.MapFrom(src => src.Status.ToString()))
+            .ForMember(dest => dest.CreatedAt, opt => opt.MapFrom(src => src.CreatedAt));
 
         CreateMap<UpdateUserViewModel, User>()
             .ForMember(dest => dest.Photo, opt => opt.Ignore())

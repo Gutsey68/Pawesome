@@ -19,12 +19,14 @@ public class PetMappingProfile : Profile
 
         CreateMap<Pet, PetDetailsViewModel>()
             .ForMember(dest => dest.Species, opt => opt.MapFrom(src => src.AnimalType.Name))
+            .ForMember(dest => dest.UserId, opt => opt.MapFrom(src => src.UserId))
             .ForMember(dest => dest.OwnerName, opt => opt.MapFrom(src => $"{src.User.FirstName} {src.User.LastName}"));
 
         CreateMap<CreatePetViewModel, Pet>();
 
         CreateMap<Pet, UpdatePetViewModel>()
             .ForMember(dest => dest.ExistingPhoto, opt => opt.MapFrom(src => src.Photo))
+            .ForMember(dest => dest.UserId, opt => opt.MapFrom(src => src.UserId))
             .ForMember(dest => dest.Photo, opt => opt.Ignore());
     
         CreateMap<UpdatePetViewModel, Pet>()

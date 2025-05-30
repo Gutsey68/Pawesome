@@ -314,11 +314,7 @@ public class AdvertRepository : IAdvertRepository
             if (advert == null)
                 return false;
 
-            // Suppression des associations
             _context.PetAdverts.RemoveRange(advert.PetAdverts);
-            
-            // Ne pas supprimer directement les bookings/payments car ils sont liés
-            // La suppression doit être gérée par la cascade ou explicitement ailleurs
             
             _context.Adverts.Remove(advert);
             await _context.SaveChangesAsync();
@@ -341,15 +337,16 @@ public class AdvertRepository : IAdvertRepository
     {
         var query = _context.Adverts
             .Include(a => a.User)
-                .ThenInclude(u => u.Address)
-                    .ThenInclude(a => a != null ? a.City : null)
-                        .ThenInclude(c => c != null ? c.Country : null)
+            .ThenInclude(u => u.Address)
+            .ThenInclude(a => a != null ? a.City : null)
+            .ThenInclude(c => c != null ? c.Country : null)
             .Include(a => a.PetAdverts)
-                .ThenInclude(pa => pa.Pet)
+            .ThenInclude(pa => pa.Pet)
             .ThenInclude(p => p != null ? p.AnimalType : null)
             .Include(a => a.AnimalTypeAdverts)
-                .ThenInclude(ata => ata.AnimalType)
-            .AsQueryable();
+            .ThenInclude(ata => ata.AnimalType)
+            .AsQueryable()
+            .Where(a => a.User.Status != Models.Enums.UserStatus.Banned);
 
         if (filter.IsPetSitterOffer.HasValue)
         {
@@ -409,5 +406,18 @@ public class AdvertRepository : IAdvertRepository
                                      (a.Status == AdvertStatus.Pending || a.Status == AdvertStatus.PendingOffer)));
 
         return await query.ToListAsync();
+    }
+    
+    public List<Advert> GetAllAdvertsWithUsers()
+    {
+        return _context.Adverts
+            .Include(a => a.User)
+            .ThenInclude(u => u.Address)
+            .ThenInclude(a => a != null ? a.City : null)
+            .Include(a => a.PetAdverts)
+            .ThenInclude(pa => pa.Pet)
+            .ThenInclude(p => p!.AnimalType)
+            .Where(a => a.User.Status != Models.Enums.UserStatus.Banned)
+            .ToList();
     }
 }

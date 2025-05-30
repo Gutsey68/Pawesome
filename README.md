@@ -1,117 +1,116 @@
-# 🐾 Pawesome — Pet Sitting Application
+# Pawesome — Pet Sitting Web Application
 
-## 📌 Context
+## Project Context
 
-**Pawesome** is a web application developed in **.NET MVC (C#)** that allows users to:
+**Pawesome** is a web application built with **.NET MVC (C#)** that enables users to:
 
-- **offer** their services as **pet sitters**,
-- **request** a pet sitter to take care of their animals.
+* Offer their services as **pet sitters**
+* Request a **pet sitter** to care for their animals
 
-The goal is to provide a secure, smooth, and intuitive platform, similar to services like Airbnb or Vinted, but for pet
-sitting.
-
----
-
-## 🎯 Main Features
-
-- 🔐 Secure authentication (via Identity & OAuth Google)
-- 📬 **Real-time messaging** system (SignalR)
-- 📍 **Address** management (countries, cities) and location
-- 🐕 Creation of **pets** with individual profiles
-- 📢 Creation and browsing of sitting **advertisements** (offers / requests)
-- 📆 **Booking** advertisements with **secure Stripe payment** (with escrow)
-- 🧾 Booking tracking: post-service validation, rating, disputes
-- 🔔 Real-time **notifications**
-- 📧 Automated email sending (confirmation, reminder, alert...)
+Inspired by platforms such as Airbnb or Vinted, the aim is to deliver a secure, smooth, and intuitive experience tailored to pet sitting.
 
 ---
 
-## 🏗️ Technical Architecture
+## Main Features
 
-The application follows a clean separation based on the **MVC + Services + Repositories** architecture, with a clear
-abstraction layer between business logic, data access, and presentation.
+* Secure authentication using ASP.NET Identity and Google OAuth2
+* Real-time messaging system with SignalR
+* Address and location management (countries, cities)
+* Creation of pet profiles
+* Posting and browsing of sitting advertisements (offers and requests)
+* Booking functionality with integrated Stripe payments (including escrow handling)
+* Booking tracking (confirmation, rating, and dispute management)
+* Real-time notifications
+* Automated emails (confirmations, reminders, alerts)
 
-### Technical Structure
+---
 
-- **MVC**: Controllers, Razor Views (`.cshtml`), ViewModels
-- **Services**: Isolated business logic
-- **Repositories**: Data access
-- **Infrastructure**: Helpers, Extensions, Mappers, Validations
-- **Real-time communication**: SignalR Hubs
-- **Validation**: FluentValidation (backend) + jQuery (frontend)
-- **Database**: PostgreSQL (via Entity Framework Code First)
-- **Object mapping**: AutoMapper
+## Technical Architecture
+
+The application is structured around the **MVC + Services + Repositories** design pattern to ensure a clear separation of concerns.
+
+### Structure Overview
+
+* **MVC**: Controllers, Razor Views (`.cshtml`), ViewModels
+* **Services**: Encapsulated business logic
+* **Repositories**: Data access layer
+* **Infrastructure**: Utility classes (helpers, extensions, mappers, validations)
+* **Real-time**: SignalR hubs
+* **Validation**: FluentValidation (server-side) and jQuery (client-side)
+* **Database**: PostgreSQL via Entity Framework Core (Code First)
+* **Mapping**: AutoMapper
 
 ### Frontend
 
-- Pages in **Razor (.cshtml)** with **modular CSS**
-- CSS structure:
+* Server-rendered views using **Razor Pages**
+* Modular CSS without external frameworks (e.g., Bootstrap)
+* Structured use of **native CSS** and **jQuery** for interactivity and form validation
+
+CSS organization:
 
 ```
 wwwroot/
-css/
-base/
-components/
-layouts/
-pages/
-js/
-lib/
-jquery/
+├── css/
+│   ├── base/
+│   ├── components/
+│   ├── layouts/
+│   ├── pages/
+├── js/
+├── lib/
+├── jquery/
 ```
 
-- No CSS framework (like Bootstrap), only structured **native CSS** + **jQuery** for client validation
+---
+
+## Repositories & Services
+
+### Repositories
+
+* `UserRepository`
+* `PetRepository`
+* `AnimalTypeRepository`
+* `AdvertRepository`
+* `MessageRepository`
+* `PaymentRepository`
+* `CityRepository`
+* `CountryRepository`
+* `AddressRepository`
+* `NotificationRepository`
+* `BookingRepository`
+
+### Services
+
+* `AuthService`
+* `UserService`
+* `PetService`
+* `EmailService`
+* `AdvertService`
+* `AnimalTypeService`
+* `MessageService`
+* `PaymentService`
+* `NotificationService`
+* `LocationService`
+* `BookingService`
 
 ---
 
-## 🔌 Services & Repositories
+## Key Technologies
 
-### 🔄 Repositories
-
-- `UserRepository`
-- `PetRepository`
-- `AnimalTypeRepository`
-- `AdvertRepository`
-- `MessageRepository`
-- `PaymentRepository`
-- `CityRepository`
-- `CountryRepository`
-- `AddressRepository`
-- `NotificationRepository`
-- `BookingRepository`
-
-### ⚙️ Services
-
-- `AuthService`
-- `UserService`
-- `PetService`
-- `EmailService`
-- `AdvertService`
-- `AnimalTypeService`
-- `MessageService`
-- `PaymentService`
-- `NotificationService`
-- `LocationService`
-- `BookingService`
-
----
-
-## ⚙️ Key Technologies
-
-| Category       | Tools / Technologies                |
-|----------------|-------------------------------------|
+| Category       | Technologies                        |
+| -------------- | ----------------------------------- |
 | Backend        | ASP.NET Core MVC, C#                |
 | Frontend       | Razor Pages (.cshtml), CSS, jQuery  |
 | Real-time      | SignalR                             |
-| ORM            | Entity Framework Core + PostgreSQL  |
+| ORM            | Entity Framework Core, PostgreSQL   |
 | Validation     | FluentValidation, jQuery Validation |
-| Payment        | Stripe                              |
-| Object mapping | AutoMapper                          |
-| Authentication | ASP.NET Identity + OAuth (Google)   |
+| Payments       | Stripe                              |
+| Object Mapping | AutoMapper                          |
+| Authentication | ASP.NET Identity, Google OAuth2     |
 | Architecture   | MVC, Services, Repositories         |
 
 ---
 
-## 🗂️ Project Structure (excerpts)
+## Project Structure (Overview)
 
 ```plaintext
 Pawesome/
@@ -143,88 +142,92 @@ Pawesome/
 
 ---
 
-## 📝 Notes
+## Notes
 
-* The project contains **no heavy frontend dependencies** (like React/Vue).
-* The emphasis is on **architectural clarity**, **security**, and **maintainability**.
+* The application avoids heavy frontend frameworks such as React or Vue.
+* Emphasis is placed on maintainability, modularity, and secure application design.
 
 ---
 
-# Project Startup Guide
+# Getting Started
 
-This guide will help you set up the Pawesome MVC project for development, using Docker only for the database and mail
-service.
+This guide explains how to set up the Pawesome project for development using Docker (for the database and mail services).
 
 ## Prerequisites
 
-- [Docker](https://www.docker.com/products/docker-desktop/) installed and running
-- [.NET 9 SDK](https://dotnet.microsoft.com/download) locally installed
-- [Git](https://git-scm.com/downloads) to clone the repository
+* [Docker Desktop](https://www.docker.com/products/docker-desktop)
+* [.NET 9 SDK](https://dotnet.microsoft.com/download)
+* [Git](https://git-scm.com)
 
-## Installation Instructions
+## Installation
 
 1. Clone the repository:
+
    ```bash
    git clone https://CCICampus@dev.azure.com/CCICampus/CDA-ALT2425-G3/_git/CDA-ALT2425-G3
    cd Pawesome
    ```
 
-2. Verify that Docker is running on your machine
+2. Ensure Docker is running
 
-3. Make sure the `compose.dev.yaml` file is in the project root directory
+3. Confirm the presence of `compose.dev.yaml` at the project root
 
-4. Restore the project dependencies:
+4. Restore dependencies:
+
    ```bash
    dotnet restore
    ```
 
-## Starting the Project
+## Running the Application
 
-1. First, launch the Docker containers:
+1. Start the Docker containers:
 
-```bash
-docker compose -f compose.dev.yaml up -d
-```
+   ```bash
+   docker compose -f compose.dev.yaml up -d
+   ```
 
-2. Navigate to the project directory and run the application:
+2. Launch the application:
 
-```bash
-cd Pawesome
-dotnet run
-```
+   ```bash
+   dotnet run
+   ```
 
-The application will be available at http://localhost:5159/
+Visit [http://localhost:5159/](http://localhost:5159/) to access the application.
+
+---
 
 ## Docker Services
 
-### PostgreSQL Database
+### PostgreSQL
 
-- Host: localhost
-- Port: 5434 (mapped from 5432 in the container)
-- Username: pawesome
-- Password: pawesome
-- Database name: pawesome
+* Host: `localhost`
+* Port: `5434`
+* Username: `pawesome`
+* Password: `pawesome`
+* Database: `pawesome`
 
-### MailHog (Email Testing Service)
+### MailHog (Email Testing)
 
-A MailHog service is included to intercept and visualize emails sent by the application during development.
+Used to intercept outgoing emails during development.
 
-- Web interface: http://localhost:8025/
-- SMTP Server: localhost:1025
+* Web UI: [http://localhost:8025/](http://localhost:8025/)
+* SMTP: `localhost:1025`
 
-All emails sent by the application will be captured by MailHog and visible in the web interface.
+---
 
 ## Stopping the Application
 
-To stop the application, press `Ctrl+C` in the terminal where it's running.
+To stop the application:
 
-To stop the Docker containers:
+* Use `Ctrl+C` in the terminal running the application
+
+To stop and remove containers:
 
 ```bash
 docker compose -f compose.dev.yaml down
 ```
 
-To also remove volumes (database data):
+To remove volumes as well:
 
 ```bash
 docker compose -f compose.dev.yaml down -v

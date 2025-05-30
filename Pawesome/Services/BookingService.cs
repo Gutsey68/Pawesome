@@ -357,7 +357,6 @@ namespace Pawesome.Services
         {
             try
             {
-                // Get bookings that should be automatically validated
                 var validationDeadline = DateTime.UtcNow.AddDays(-3);
                 var bookingsToValidate = await _bookingRepository.GetBookingsToAutomaticallyValidateAsync(validationDeadline);
 
@@ -487,6 +486,17 @@ namespace Pawesome.Services
         public async Task<List<BookingDto>> GetPendingBookingsForUserAdvertsAsync(int userId)
         {
             var bookings = await _bookingRepository.GetPendingBookingsForUserAdvertsAsync(userId);
+            return _mapper.Map<List<BookingDto>>(bookings);
+        }
+        
+        public int GetBookingsCount() 
+        {
+            return _bookingRepository.GetAllAsync().Result.Count();
+        }
+
+        public List<BookingDto> GetAllBookings()
+        {
+            var bookings = _bookingRepository.GetAllAsync();
             return _mapper.Map<List<BookingDto>>(bookings);
         }
     }

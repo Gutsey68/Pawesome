@@ -2,8 +2,10 @@ using System.Security.Claims;
 using AutoMapper;
 using Microsoft.AspNetCore.Identity;
 using Pawesome.Interfaces;
+using Pawesome.Models.DTOs;
 using Pawesome.Models.Dtos.Advert;
 using Pawesome.Models.Entities;
+using Pawesome.Models.Enums;
 using Pawesome.Models.ViewModels;
 using Pawesome.Models.ViewModels.Pet;
 using Pawesome.Models.ViewModels.User;
@@ -267,4 +269,55 @@ public class UserService : IUserService
         }
     }
     
+    public int GetUsersCount() 
+    {
+        return _userRepository.GetAllAsync().Result.Count();
+    }
+
+    public async Task<List<UserSimpleDto>> GetAllUsers()
+    {
+        var users = await _userRepository.GetAllAsync();
+        var userDtos = _mapper.Map<List<UserSimpleDto>>(users);
+    
+        foreach (var userDto in userDtos)
+        {
+            var user = users.First(u => u.Id == userDto.Id);
+            var roles = await _userManager.GetRolesAsync(user);
+            userDto.Role = roles.FirstOrDefault() ?? "User";
+        }
+    
+        return userDtos;
+    }
+    
+    public async Task<bool> BanUserAsync(int userId)
+    {
+        var user = await _userRepository.GetByIdAsync(userId);
+        
+        if (user == null)
+            return false;
+            
+        user.Status = UserStatus.Banned;
+        user.UpdatedAt = DateTime.UtcNow;
+        
+        await _userRepository.UpdateAsync(user);
+        await _userRepository.SaveChangesAsync();
+        
+        return true;
+    }
+    
+    public async Task<bool> UnbanUserAsync(int userId)
+    {
+        var user = await _userRepository.GetByIdAsync(userId);
+        
+        if (user == null)
+            return false;
+            
+        user.Status = UserStatus.Active;
+        user.UpdatedAt = DateTime.UtcNow;
+        
+        await _userRepository.UpdateAsync(user);
+        await _userRepository.SaveChangesAsync();
+        
+        return true;
+    }
 }

@@ -1,0 +1,34 @@
+@model Pawesome.Models.ViewModels.Admin.AdminDashboardViewModel
+@{
+    ViewData["Title"] = "Administration";
+    Layout = "~/Views/Shared/Admin/_AdminLayout.cshtml";
+}
+
+<div class="admin-dashboard">
+    <h1>Dashboard Administrateur</h1>
+    
+    <div class="stats-cards">
+        <div class="stat-card">
+            <h3>Utilisateurs</h3>
+            <div class="stat-value">@Model.UsersCount</div>
+            <a asp-action="Users" class="btn-view">Voir tous</a>
+        </div>
+        
+        <div class="stat-card">
+            <h3>Annonces</h3>
+            <div class="stat-value">@Model.AdvertsCount</div>
+            <a asp-action="Adverts" class="btn-view">Voir tous</a>
+        </div>
+        
+        <div class="stat-card">
+            <h3>Réservations</h3>
+            <div class="stat-value">@Model.BookingsCount</div>
+            <a asp-action="Bookings" class="btn-view">Voir tous</a>
+        </div>
+        
+        <div class="stat-card">
+            <h3>Animaux</h3>
+            <div class="stat-value">@Model.PetsCount</div>
+        </div>
+    </div>
+</div>

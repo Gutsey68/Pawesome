@@ -76,5 +76,12 @@ public class AdvertMappingProfile : Profile
             .ForMember(dest => dest.PostalCode, opt => opt.MapFrom(src => src.City.PostalCode))
             .ForMember(dest => dest.CountryId, opt => opt.MapFrom(src => src.City.CountryId))
             .ForMember(dest => dest.CountryName, opt => opt.MapFrom(src => src.City.Country.Name));
+        
+        CreateMap<Advert, AdvertDto>()
+            .ForMember(dest => dest.OwnerName, opt => opt.MapFrom(src => $"{src.User.FirstName} {src.User.LastName}"))
+            .ForMember(dest => dest.Status, opt => opt.MapFrom(src => src.Status.ToString()))
+            .ForMember(dest => dest.Type, opt => opt.MapFrom(src => src.Status == AdvertStatus.PendingOffer ? "Offre" : "Demande"))
+            .ForMember(dest => dest.City, opt => opt.MapFrom(src => 
+                src.User.Address != null ? src.User.Address.City.Name : "Non spécifiée"));
     }
 }

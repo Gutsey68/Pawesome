@@ -204,4 +204,10 @@ public class PetService : IPetService
         return _petRepository.GetPetsByUserIdAsync(userId)
             .ContinueWith(task => _mapper.Map<List<PetViewModel>>(task.Result));
     }
+    
+    public async Task<int> GetPetsCountAsync()
+    {
+        var pets = await _petRepository.GetAllAsync();
+        return pets.Count();
+    }
 }

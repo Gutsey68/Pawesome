@@ -1,3 +1,4 @@
+using AutoMapper;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
@@ -17,16 +18,21 @@ public class PetController : Controller
 {
     private readonly IPetService _petService;
     private readonly UserManager<User> _userManager;
+    private readonly IMapper _mapper;
 
     /// <summary>
     /// Initializes a new instance of the PetController
     /// </summary>
     /// <param name="petService">The pet service for handling pet operations</param>
     /// <param name="userManager">The user manager for handling user operations</param>
-    public PetController(IPetService petService, UserManager<User> userManager)
+    /// <param name="mapper">AutoMapper instance for object mapping</param>
+    public PetController(IPetService petService, 
+            UserManager<User> userManager,
+            IMapper mapper)
     {
         _petService = petService;
         _userManager = userManager;
+        _mapper = mapper;
     }
     
     /// <summary>
@@ -37,11 +43,21 @@ public class PetController : Controller
     public async Task<IActionResult> Details(int id)
     {
         var pet = await _petService.GetPetDetailsAsync(id);
+    
         if (pet == null)
         {
             return NotFound();
         }
-
+    
+        var owner = await _userManager.FindByIdAsync(pet.UserId.ToString());
+        var isAdmin = User.IsInRole("Admin");
+    
+        if (owner?.Status == Models.Enums.UserStatus.Banned && !isAdmin)
+        {
+            TempData["ErrorMessage"] = "Cet animal n'est pas accessible.";
+            return RedirectToAction("Index", "Home");
+        }
+    
         return View(pet);
     }
     
@@ -84,25 +100,32 @@ public class PetController : Controller
     /// <returns>The edit view, NotFound if pet doesn't exist, or Forbid if user doesn't own the pet</returns>
     public async Task<IActionResult> Edit(int id)
     {
-        var updatePetViewModel = await _petService.GetPetForEditAsync(id);
-
-        if (updatePetViewModel == null)
+        var pet = await _petService.GetPetForEditAsync(id);
+    
+        if (pet == null)
         {
             return NotFound();
         }
-
-        var userId = int.Parse(_userManager.GetUserId(User)!);
     
-        var pets = await _petService.GetUserPetsAsync(userId);
+        var currentUserId = int.Parse(_userManager.GetUserId(User)!);
+        var isAdmin = User.IsInRole("Admin");
     
-        if (pets.All(p => p.Id != id))
+        if (pet.UserId != currentUserId && !isAdmin)
         {
             return Forbid();
         }
-
-        await PopulateAnimalTypesDropdown(updatePetViewModel.AnimalTypeId);
     
-        return View(updatePetViewModel);
+        var owner = await _userManager.FindByIdAsync(pet.UserId.ToString());
+    
+        if (owner?.Status == Models.Enums.UserStatus.Banned && !isAdmin)
+        {
+            TempData["ErrorMessage"] = "Vous ne pouvez pas modifier cet animal.";
+            return RedirectToAction("Index", "Home");
+        }
+    
+        await PopulateAnimalTypesDropdown(pet.AnimalTypeId);
+    
+        return View(_mapper.Map<UpdatePetViewModel>(pet));
     }
     
     /// <summary>
@@ -119,16 +142,30 @@ public class PetController : Controller
             await PopulateAnimalTypesDropdown(petViewModel.AnimalTypeId);
             return View(petViewModel);
         }
-
-        var userId = int.Parse(_userManager.GetUserId(User)!);
     
-        var pets = await _petService.GetUserPetsAsync(userId);
+        var pet = await _petService.GetPetForEditAsync(petViewModel.Id);
     
-        if (pets.All(p => p.Id != petViewModel.Id))
+        if (pet == null)
+        {
+            return NotFound();
+        }
+    
+        var currentUserId = int.Parse(_userManager.GetUserId(User)!);
+        var isAdmin = User.IsInRole("Admin");
+    
+        if (pet.UserId != currentUserId && !isAdmin)
         {
             return Forbid();
         }
-
+    
+        var owner = await _userManager.FindByIdAsync(pet.UserId.ToString());
+    
+        if (owner?.Status == Models.Enums.UserStatus.Banned && !isAdmin)
+        {
+            TempData["ErrorMessage"] = "Vous ne pouvez pas modifier cet animal.";
+            return RedirectToAction("Index", "Home");
+        }
+    
         await _petService.UpdatePetAsync(petViewModel);
     
         return RedirectToAction(nameof(Details), new { id = petViewModel.Id });
@@ -142,21 +179,28 @@ public class PetController : Controller
     public async Task<IActionResult> Delete(int id)
     {
         var pet = await _petService.GetPetDetailsAsync(id);
-
+    
         if (pet == null)
         {
             return NotFound();
         }
-
-        var userId = int.Parse(_userManager.GetUserId(User)!);
-        
-        var pets = await _petService.GetUserPetsAsync(userId);
-        
-        if (pets.All(p => p.Id != id))
+    
+        var currentUserId = int.Parse(_userManager.GetUserId(User)!);
+        var isAdmin = User.IsInRole("Admin");
+    
+        if (pet.UserId != currentUserId && !isAdmin)
         {
             return Forbid();
         }
-
+    
+        var owner = await _userManager.FindByIdAsync(pet.UserId.ToString());
+    
+        if (owner?.Status == Models.Enums.UserStatus.Banned && !isAdmin)
+        {
+            TempData["ErrorMessage"] = "Vous ne pouvez pas supprimer cet animal.";
+            return RedirectToAction("Index", "Home");
+        }
+    
         return View(pet);
     }
 
@@ -169,17 +213,31 @@ public class PetController : Controller
     [ValidateAntiForgeryToken]
     public async Task<IActionResult> DeleteConfirmed(int id)
     {
-        var userId = int.Parse(_userManager.GetUserId(User)!);
-        
-        var pets = await _petService.GetUserPetsAsync(userId);
-        
-        if (pets.All(p => p.Id != id))
+        var pet = await _petService.GetPetDetailsAsync(id);
+    
+        if (pet == null)
+        {
+            return NotFound();
+        }
+    
+        var currentUserId = int.Parse(_userManager.GetUserId(User)!);
+        var isAdmin = User.IsInRole("Admin");
+    
+        if (pet.UserId != currentUserId && !isAdmin)
         {
             return Forbid();
         }
-
+    
+        var owner = await _userManager.FindByIdAsync(pet.UserId.ToString());
+    
+        if (owner?.Status == Models.Enums.UserStatus.Banned && !isAdmin)
+        {
+            TempData["ErrorMessage"] = "Vous ne pouvez pas supprimer cet animal.";
+            return RedirectToAction("Index", "Home");
+        }
+    
         await _petService.DeletePetAsync(id);
-        
+    
         return RedirectToAction(nameof(Index), "User");
     }
 

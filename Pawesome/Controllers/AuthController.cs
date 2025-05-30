@@ -169,6 +169,14 @@ public class AuthController : Controller
         {
             return View(model);
         }
+        
+        var user = await _userManager.FindByEmailAsync(model.Email);
+    
+        if (user is { Status: UserStatus.Banned })
+        {
+            ModelState.AddModelError(string.Empty, "Votre compte a été suspendu. Veuillez contacter l'administrateur.");
+            return View(model);
+        }
 
         var loginResult = await _authService.LoginUserAsync(model.Email, model.Password, model.RememberMe);
 
@@ -381,6 +389,11 @@ public class AuthController : Controller
                     ModelState.AddModelError(string.Empty, "Erreur lors de la création du compte avec Google.");
                     return View(viewModel);
                 }
+            }
+            else if (user.Status == UserStatus.Banned)
+            {
+                ModelState.AddModelError(string.Empty, "Votre compte a été suspendu. Veuillez contacter l'administrateur.");
+                return View(viewModel);
             }
 
             await _authService.ExternalLoginAsync(user);

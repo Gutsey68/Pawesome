@@ -71,6 +71,13 @@ public class UserController : Controller
     /// <returns>The edit view if a user is found, NotFound result otherwise</returns>
     public async Task<IActionResult> Edit(int id)
     {
+        var currentUserId = int.Parse(_userManager.GetUserId(User)!);
+        var isAdmin = User.IsInRole("Admin");
+    
+        if (id != currentUserId && !isAdmin)
+        {
+            return Forbid();
+        }
         var updateUserDto = await _userService.GetUserForEditAsync(id);
 
         if (updateUserDto == null)
@@ -90,6 +97,14 @@ public class UserController : Controller
     [ValidateAntiForgeryToken]
     public async Task<IActionResult> Edit(UpdateUserViewModel model)
     {
+        var currentUserId = int.Parse(_userManager.GetUserId(User)!);
+        var isAdmin = User.IsInRole("Admin");
+    
+        if (model.Id != currentUserId && !isAdmin)
+        {
+            return Forbid();
+        }
+        
         if (!ModelState.IsValid)
         {
             return View(model);
@@ -111,26 +126,44 @@ public class UserController : Controller
     }
     
     /// <summary>
-    /// Displays the public profile of another user
+    /// Displays the public profile of a user by their ID.
     /// </summary>
-    /// <param name="id">The ID of the user whose profile to display</param>
-    /// <returns>The public profile view if a user is found, NotFound result otherwise</returns>
+    /// <param name="id">The ID of the user whose profile is to be displayed.</param>
+    /// <returns>
+    /// The public profile view if the user exists and is accessible; 
+    /// redirects to the current user's profile or home page if not accessible; 
+    /// returns NotFound if the user does not exist.
+    /// </returns>
     public async Task<IActionResult> Profile(int id)
     {
         var currentUserId = int.Parse(_userManager.GetUserId(User)!);
-    
+        var isAdmin = User.IsInRole("Admin");
+
         if (id == currentUserId)
         {
             return RedirectToAction(nameof(Index));
         }
+
+        var user = await _userManager.FindByIdAsync(id.ToString());
     
-        var profileViewModel = await _userService.GetPublicUserProfileAsync(id, currentUserId);
-    
-        if (profileViewModel == null)
+        if (user == null)
         {
             return NotFound();
         }
     
+        if (user.Status == Models.Enums.UserStatus.Banned && !isAdmin)
+        {
+            TempData["ErrorMessage"] = "Ce profil n'est pas accessible.";
+            return RedirectToAction("Index", "Home");
+        }
+
+        var profileViewModel = await _userService.GetPublicUserProfileAsync(id, currentUserId);
+
+        if (profileViewModel == null)
+        {
+            return NotFound();
+        }
+
         return View(profileViewModel);
     }
 }

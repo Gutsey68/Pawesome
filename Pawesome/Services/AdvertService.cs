@@ -119,10 +119,10 @@ public class AdvertService : IAdvertService
     public async Task<List<PetSittingAdvertDto>> GetUserAdvertsAsync(int userId, bool includeCancelled = true)
     {
         var adverts = await _repository.GetUserAdvertsAsync(userId, includeCancelled);
-    
+
         return _mapper.Map<List<PetSittingAdvertDto>>(adverts);
     }
-    
+
     /// <summary>
     /// Updates an existing pet sitting request
     /// </summary>
@@ -131,9 +131,9 @@ public class AdvertService : IAdvertService
     public async Task<PetSittingAdvertDto> UpdatePetSittingRequestAsync(UpdatePetSittingRequestViewModel model)
     {
         var advert = _mapper.Map<Advert>(model);
-        
+
         var updatedAdvert = await _repository.UpdatePetSittingRequestAsync(advert, model.PetIds);
-        
+
         return _mapper.Map<PetSittingAdvertDto>(updatedAdvert);
     }
 
@@ -145,12 +145,12 @@ public class AdvertService : IAdvertService
     public async Task<PetSittingAdvertDto> UpdatePetSittingOfferAsync(UpdatePetSittingOfferViewModel model)
     {
         var advert = _mapper.Map<Advert>(model);
-        
+
         var updatedAdvert = await _repository.UpdatePetSittingOfferAsync(advert, model.AcceptedAnimalTypeIds);
-        
+
         return _mapper.Map<PetSittingAdvertDto>(updatedAdvert);
     }
-    
+
     /// <summary>
     /// Retrieves filtered adverts based on the provided filter criteria
     /// </summary>
@@ -161,7 +161,7 @@ public class AdvertService : IAdvertService
         var adverts = await _repository.GetFilteredAdvertsAsync(filterDto);
         return _mapper.Map<List<PetSittingAdvertDto>>(adverts);
     }
-    
+
     /// <summary>
     /// Deletes an advert
     /// </summary>
@@ -170,5 +170,16 @@ public class AdvertService : IAdvertService
     public async Task<bool> DeleteAdvertAsync(int advertId)
     {
         return await _repository.DeleteAdvertAsync(advertId);
+    }
+
+    public int GetAdvertsCount()
+    {
+        return _repository.GetAllAdvertsAsync().Result.Count;
+    }
+
+    public List<AdvertDto> GetAllAdverts()
+    {
+        var adverts = _repository.GetAllAdvertsWithUsers();
+        return _mapper.Map<List<AdvertDto>>(adverts);
     }
 }

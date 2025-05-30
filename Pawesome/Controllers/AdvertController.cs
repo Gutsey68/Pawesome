@@ -469,6 +469,12 @@ public class AdvertController : Controller
         return RedirectToAction(nameof(Details), new { id = result.Id });
     }
 
+    /// <summary>
+    /// Displays a confirmation page before changing the status of an advert.
+    /// </summary>
+    /// <param name="id">The ID of the advert whose status will be changed.</param>
+    /// <param name="status">The new status to be set for the advert.</param>
+    /// <returns>View with advert details and confirmation prompt, or NotFound/Forbid if not allowed.</returns>
     [Authorize]
     [HttpGet]
     public async Task<IActionResult> ConfirmStatusChange(int id, string status)

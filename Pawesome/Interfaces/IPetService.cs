@@ -14,5 +14,6 @@ public interface IPetService
     Task<UpdatePetViewModel?> GetPetForEditAsync(int id);
     Task UpdatePetAsync(UpdatePetViewModel model);
     Task<PetDetailsViewModel?> GetPetDetailsAsync(int id);
-    
+    public Task<int> GetPetsCountAsync();
+
 }

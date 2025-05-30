@@ -31,14 +31,6 @@
     color: var(--color-error-foreground);
 }
 
-.badge[data-variant='error']:hover {
-    background-color: #A52700;
-}
-
-.badge[data-variant='error']:focus {
-    background-color: #BD2C00;
-}
-
 .badge[data-variant='outline'] {
     color: var(--color-primary-12);
     background-color: transparent;
@@ -67,4 +59,41 @@
 .badge[data-variant='Rongeur'] {
     background-color: var(--color-lime);
     color: var(--color-lime-foreground);
+}
+
+.badge[data-variant='crimson'] {
+    background-color: var(--color-crimson);
+    color: var(--color-crimson-foreground);
+}
+
+.badge[data-variant='orange'] {
+    background-color: var(--color-orange);
+    color: var(--color-orange-foreground);
+}
+
+.badge[data-variant='lime'] {
+    background-color: var(--color-lime);
+    color: var(--color-lime-foreground);
+}
+
+.badge[data-variant='sky'] {
+    background-color: var(--color-sky);
+    color: var(--color-sky-foreground);
+}
+
+.badge[data-variant='purple'] {
+    background-color: var(--color-purple);
+    color: var(--color-purple-foreground);
+}
+
+.badge[data-variant='info'] {
+    background-color: var(--color-info);
+    color: var(--color-info-foreground);
+}
+.badge[data-variant='success'] {
+    background-color: var(--color-success);
+    color: var(--color-success-foreground);
+}.badge[data-variant='warning'] {
+    background-color: var(--color-warning);
+    color: var(--color-warning-foreground);
 }
