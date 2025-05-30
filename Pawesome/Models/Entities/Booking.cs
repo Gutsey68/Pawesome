@@ -1,5 +1,6 @@
-using Pawesome.Models.Entities;
 using Pawesome.Models.enums;
+
+namespace Pawesome.Models.Entities;
 
 public class Booking
 {

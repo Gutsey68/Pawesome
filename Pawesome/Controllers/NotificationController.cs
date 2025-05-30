@@ -105,4 +105,23 @@ public class NotificationController : Controller
         var count = await _notificationService.GetUnreadCountAsync(userId);
         return Ok(new { count });
     }
+    
+    /// <summary>
+    /// Gets notifications for the current user to display in the navbar popup
+    /// </summary>
+    /// <returns>JSON array of notification objects</returns>
+    [HttpGet("GetNotifications")]
+    public async Task<IActionResult> GetNotifications()
+    {
+        var userIdString = User.FindFirstValue(ClaimTypes.NameIdentifier);
+        if (string.IsNullOrEmpty(userIdString) || !int.TryParse(userIdString, out int userId))
+        {
+            return Unauthorized();
+        }
+
+        var notifications = await _notificationService.GetUserNotificationsAsync(userId);
+        var notificationDtos = _mapper.Map<IEnumerable<NotificationDto>>(notifications);
+    
+        return Ok(notificationDtos.OrderByDescending(n => n.CreatedAt).Take(10));
+    }
 }

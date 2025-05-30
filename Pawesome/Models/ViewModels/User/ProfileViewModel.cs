@@ -1,4 +1,5 @@
 using Pawesome.Models.Dtos.Advert;
+using Pawesome.Models.Dtos.Booking;
 using Pawesome.Models.ViewModels.Advert;
 using Pawesome.Models.ViewModels.Pet;
 
@@ -27,5 +28,6 @@ public class ProfileViewModel
     public List<PetViewModel> Pets { get; set; } = new();
     
     public List<PetSittingAdvertDto> Adverts { get; set; } = new();
+    public List<BookingDto> PendingBookings { get; set; } = new List<BookingDto>();
     
 }

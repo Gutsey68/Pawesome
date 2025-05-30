@@ -5,6 +5,6 @@ riderModule.iml
 /_ReSharper.Caches/
 *.env
 .idea/
-Pawesome//wwwroot/images/users/*
-Pawesome//wwwroot/images/pets/*
+Pawesome/wwwroot/images/users/*
+Pawesome/wwwroot/images/pets/*
 Pawesome/wwwroot/lib/

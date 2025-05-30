@@ -16,6 +16,7 @@ public class UserController : Controller
     private readonly IUserService _userService;
     private readonly UserManager<User> _userManager;
     private readonly SignInManager<User> _signInManager;
+    private readonly IBookingService _bookingService;
 
     /// <summary>
     /// Initializes a new instance of the UserController
@@ -23,14 +24,17 @@ public class UserController : Controller
     /// <param name="userService">Service for handling profile operations</param>
     /// <param name="userManager">The user manager for handling user operations</param>
     /// <param name="signInManager">The sign-in manager for handling user sign-in operations</param>
+    /// <param name="bookingService">Service pour gérer les réservations</param>
     public UserController(
         IUserService userService, 
         UserManager<User> userManager,
-        SignInManager<User> signInManager)
+        SignInManager<User> signInManager,
+        IBookingService bookingService)
     {
         _userService = userService;
         _userManager = userManager;
         _signInManager = signInManager;
+        _bookingService = bookingService;
     }
 
     /// <summary>
@@ -52,6 +56,10 @@ public class UserController : Controller
         {
             return RedirectToAction("Login", "Auth");
         }
+
+        var pendingBookings = await _bookingService.GetPendingBookingsForUserAdvertsAsync(int.Parse(userId));
+    
+        profileViewModel.PendingBookings = pendingBookings;
 
         return View(profileViewModel);
     }

@@ -17,6 +17,7 @@ public class AdvertController : Controller
 {
     private readonly IAdvertService _advertService;
     private readonly IPetService _petService;
+    private readonly IBookingService _bookingService;
     private readonly IAnimalTypeService _animalTypeService;
     private readonly ILocationService _locationService;
     private readonly UserManager<User> _userManager;
@@ -24,12 +25,14 @@ public class AdvertController : Controller
     public AdvertController(
         IAdvertService advertService,
         IPetService petService,
+        IBookingService bookingService,
         IAnimalTypeService animalTypeService,
         ILocationService locationService,
         UserManager<User> userManager)
     {
         _advertService = advertService;
         _petService = petService;
+        _bookingService = bookingService;
         _animalTypeService = animalTypeService;
         _locationService = locationService;
         _userManager = userManager;
@@ -309,14 +312,13 @@ public class AdvertController : Controller
     public async Task<IActionResult> MyAdverts()
     {
         var user = await _userManager.GetUserAsync(User);
-
         if (user == null)
-        {
             return Challenge();
-        }
-
+        
         var adverts = await _advertService.GetUserAdvertsAsync(user.Id);
-
+    
+        ViewBag.PendingBookings = await _bookingService.GetPendingBookingsForUserAdvertsAsync(user.Id);
+    
         return View(adverts);
     }
 

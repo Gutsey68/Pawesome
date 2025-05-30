@@ -14,5 +14,6 @@ namespace Pawesome.Interfaces
         Task<bool> DisputeBookingAsync(int bookingId, string reason);
         Task<bool> ProcessAutomaticValidationsAsync();
         Task<bool> ProcessExpiredBookingsAsync();
+        public Task<List<BookingDto>> GetPendingBookingsForUserAdvertsAsync(int userId);
     }
 }

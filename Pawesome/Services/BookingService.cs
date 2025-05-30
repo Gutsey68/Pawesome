@@ -478,5 +478,16 @@ namespace Pawesome.Services
             
             return await _notificationService.CreateNotificationAsync(notification);
         }
+        
+        /// <summary>
+        /// Gets all pending bookings for adverts owned by the specified user
+        /// </summary>
+        /// <param name="userId">The ID of the user who owns the adverts</param>
+        /// <returns>List of pending booking DTOs</returns>
+        public async Task<List<BookingDto>> GetPendingBookingsForUserAdvertsAsync(int userId)
+        {
+            var bookings = await _bookingRepository.GetPendingBookingsForUserAdvertsAsync(userId);
+            return _mapper.Map<List<BookingDto>>(bookings);
+        }
     }
 }

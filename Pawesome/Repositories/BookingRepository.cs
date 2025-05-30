@@ -3,10 +3,6 @@ using Pawesome.Data;
 using Pawesome.Interfaces;
 using Pawesome.Models.Entities;
 using Pawesome.Models.enums;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
 
 namespace Pawesome.Repositories
 {
@@ -217,6 +213,23 @@ namespace Pawesome.Repositories
                 .Where(b => b.Status == BookingStatus.InProgress && 
                            b.EndDate < validationDeadline &&
                            !b.IsValidated)
+                .ToListAsync();
+        }
+        
+        /// <summary>
+        /// Retrieves all pending bookings for adverts owned by the specified user.
+        /// </summary>
+        /// <param name="userId">The ID of the user who owns the adverts.</param>
+        /// <returns>A list of pending bookings for the user's adverts.</returns>
+        public async Task<List<Booking>> GetPendingBookingsForUserAdvertsAsync(int userId)
+        {
+            return await _context.Bookings
+                .Include(b => b.Advert)
+                .Include(b => b.BookerUser)
+                .Include(b => b.Payments)
+                .Where(b => b.Advert.UserId == userId && 
+                            b.Status == BookingStatus.PendingConfirmation)
+                .OrderByDescending(b => b.CreatedAt)
                 .ToListAsync();
         }
     }
