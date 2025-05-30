@@ -1,4 +1,3 @@
-@using Pawesome.Helpers
 @model Pawesome.Models.DTOs.Booking.CreateBookingDto
 @{
     ViewData["Title"] = "Nouvelle réservation";
@@ -146,16 +145,16 @@
                     <div class="price-details">
                         <div class="price-item">
                             <span class="price-label">Prix par jour</span>
-                            <span class="price-value">@((advert.Amount / (advert.EndDate - advert.StartDate).Days).ToString("C"))</span>
+                            <span class="price-value">@advert.Amount.ToString("C")</span>
                         </div>
                         <div class="price-item">
                             <span class="price-label">Nombre de jours</span>
-                            <span class="price-value">@((advert.EndDate - advert.StartDate).Days)</span>
+                            <span id="numberOfDays" class="price-value">@((Model.EndDate - Model.StartDate).Days)</span>
                         </div>
                         <div class="price-divider"></div>
                         <div class="price-item total">
                             <span class="price-label">Total</span>
-                            <span class="price-value">@advert.Amount.ToString("C")</span>
+                            <span id="totalPrice" class="price-value">@((advert.Amount * (Model.EndDate - Model.StartDate).Days).ToString("C"))</span>
                         </div>
                     </div>
                     

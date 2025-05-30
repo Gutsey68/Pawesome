@@ -50,6 +50,8 @@ public class AdvertRepository : IAdvertRepository
     {
         return await _context.Adverts
             .Include(a => a.User) 
+            .ThenInclude(u => u.Address)
+            .ThenInclude(a => a != null ? a.City : null)
             .Include(a => a.PetAdverts)
                 .ThenInclude(pa => pa.Pet)
                     .ThenInclude(p => p!.User)

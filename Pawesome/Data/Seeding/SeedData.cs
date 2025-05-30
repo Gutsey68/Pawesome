@@ -384,7 +384,7 @@ namespace Pawesome.Data.Seeding
             {
                 StartDate = DateTime.UtcNow.AddDays(5),
                 EndDate = DateTime.UtcNow.AddDays(9),
-                Status = AdvertStatus.Pending,
+                Status = AdvertStatus.Active,
                 Amount = 50.0m,
                 UserId = users[0].Id,
                 PetAdverts = new List<PetAdvert>(),
@@ -398,7 +398,7 @@ namespace Pawesome.Data.Seeding
             {
                 StartDate = DateTime.UtcNow.AddDays(10),
                 EndDate = DateTime.UtcNow.AddDays(23),
-                Status = AdvertStatus.Pending,
+                Status = AdvertStatus.Active,
                 Amount = 15.0m,
                 UserId = users[0].Id,
                 PetAdverts = new List<PetAdvert>(),

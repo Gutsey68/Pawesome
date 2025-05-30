@@ -100,7 +100,11 @@ public class AuthService : IAuthService
         {
             claims.Add(new Claim("Photo", user.Photo));
         }
-        
+
+        claims.Add(!string.IsNullOrEmpty(user.Address?.StreetAddress)
+            ? new Claim("Address", user.Address.StreetAddress)
+            : new Claim("Address", string.Empty));
+
         if (claims.Count != 0)
         {
             await _userManager.AddClaimsAsync(user, claims);
@@ -141,6 +145,10 @@ public class AuthService : IAuthService
         {
             claims.Add(new Claim("Photo", user.Photo));
         }
+
+        claims.Add(!string.IsNullOrEmpty(user.Address?.StreetAddress)
+            ? new Claim("Address", user.Address.StreetAddress)
+            : new Claim("Address", string.Empty));
 
         if (claims.Count != 0)
         {
