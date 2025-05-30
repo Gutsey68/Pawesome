@@ -1,6 +1,7 @@
 using AutoMapper;
 using Pawesome.Models.Dtos.Booking;
 using Pawesome.Models.DTOs.Booking;
+using Pawesome.Models.Entities;
 
 namespace Pawesome.Infrastructure.Mappers
 {

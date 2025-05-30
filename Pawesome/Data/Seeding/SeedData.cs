@@ -382,8 +382,8 @@ namespace Pawesome.Data.Seeding
 
             var advert1 = new Advert
             {
-                StartDate = DateTime.UtcNow.AddDays(1),
-                EndDate = DateTime.UtcNow.AddDays(3),
+                StartDate = DateTime.UtcNow.AddDays(5),
+                EndDate = DateTime.UtcNow.AddDays(9),
                 Status = AdvertStatus.Pending,
                 Amount = 50.0m,
                 UserId = users[0].Id,
@@ -396,8 +396,8 @@ namespace Pawesome.Data.Seeding
             
             var advert2 = new Advert
             {
-                StartDate = DateTime.UtcNow.AddDays(5),
-                EndDate = DateTime.UtcNow.AddDays(6),
+                StartDate = DateTime.UtcNow.AddDays(10),
+                EndDate = DateTime.UtcNow.AddDays(23),
                 Status = AdvertStatus.Pending,
                 Amount = 15.0m,
                 UserId = users[0].Id,

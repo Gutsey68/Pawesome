@@ -391,6 +391,66 @@
             </div>
         }
     </section>
+    <section class="pending-bookings-section">
+    <h2 class="section-title">Réservations en attente</h2>
+    @if (Model.PendingBookings != null && Model.PendingBookings.Any())
+    {
+        <div class="pending-bookings-container">
+            @foreach (var booking in Model.PendingBookings)
+            {
+                <div class="booking-card">
+                    <div class="booking-header">
+                        <h3>Réservation #@booking.Id</h3>
+                        <span class="badge" data-variant="warning">En attente</span>
+                    </div>
+                    <div class="booking-body">
+                        <p><strong>Demandeur:</strong> @booking.BookerUserName</p>
+                        <p><strong>Dates:</strong> Du @booking.StartDate.ToString("dd/MM/yyyy") au @booking.EndDate.ToString("dd/MM/yyyy")</p>
+                        <p><strong>Montant:</strong> @booking.Amount.ToString("C")</p>
+                        
+                        @if (booking.Pets != null && booking.Pets.Any())
+                        {
+                            <p><strong>Animaux:</strong></p>
+                            <div class="pets-tags">
+                                @foreach (var pet in booking.Pets)
+                                {
+                                    <span class="badge" data-variant="@pet.AnimalType">@pet.Name</span>
+                                }
+                            </div>
+                        }
+                    </div>
+                    <div class="booking-actions">
+                        <form asp-controller="Booking" asp-action="UpdateStatus" method="post">
+                            <input type="hidden" name="bookingId" value="@booking.Id" />
+                            <input type="hidden" name="status" value="Accepted" />
+                            <button type="submit" class="button" data-variant="primary" data-size="sm">Accepter</button>
+                        </form>
+                        <form asp-controller="Booking" asp-action="UpdateStatus" method="post">
+                            <input type="hidden" name="bookingId" value="@booking.Id" />
+                            <input type="hidden" name="status" value="Declined" />
+                            <button type="submit" class="button" data-variant="danger" data-size="sm">Refuser</button>
+                        </form>
+                        <a asp-controller="Booking" asp-action="Details" asp-route-id="@booking.Id" class="button" data-variant="outline" data-size="sm">Détails</a>
+                    </div>
+                </div>
+            }
+        </div>
+    }
+    else
+    {
+        <div class="empty-state">
+            <svg xmlns="http://www.w3.org/2000/svg" width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-calendar-check">
+                <path d="M8 2v4"/>
+                <path d="M16 2v4"/>
+                <rect width="18" height="18" x="3" y="4" rx="2"/>
+                <path d="M3 10h18"/>
+                <path d="m9 16 2 2 4-4"/>
+            </svg>
+            <h3>Aucune réservation en attente</h3>
+            <p>Vous n'avez pas de réservations en attente de confirmation.</p>
+        </div>
+    }
+</section>
  <section class="user-info-section">
         <h2 class="section-title">Informations personnelles</h2>
         <div class="info-cards">

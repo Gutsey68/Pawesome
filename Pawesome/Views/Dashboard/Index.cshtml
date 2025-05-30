@@ -8,7 +8,6 @@
     <div class="dashboard-page">
         <div class="dashboard-header">
             <h1>Tableau de bord</h1>
-            <p>Trouvez rapidement ce que vous cherchez</p>
         </div>
         <div class="dashboard-search-container">
             <div class="tabs-container">
@@ -43,32 +42,6 @@
                 </div>
             </form>
         </div>
-        <section class="dashboard-section">
-            <h2>Réservations en attente (@(ViewBag.PendingBookings != null ? ViewBag.PendingBookings.Count : 0))</h2>
-            <div class="pending-bookings">
-                @if (ViewBag.PendingBookings != null && ViewBag.PendingBookings.Count > 0)
-                {
-                    <div class="bookings-list">
-                        @foreach (var booking in ViewBag.PendingBookings)
-                        {
-                            <div class="booking-item">
-                                <div class="booking-details">
-                                    <span class="booking-dates">Du @booking.StartDate.ToString("dd/MM/yyyy") au @booking.EndDate.ToString("dd/MM/yyyy")</span>
-                                    <span class="booking-price">@booking.Amount.ToString("C")</span>
-                                </div>
-                                <div class="booking-actions">
-                                    <a asp-controller="Booking" asp-action="Details" asp-route-id="@booking.Id" class="btn btn-outline-primary btn-sm">Voir détails</a>
-                                </div>
-                            </div>
-                        }
-                    </div>
-                }
-                else
-                {
-                    <p>Aucune réservation en attente.</p>
-                }
-            </div>
-        </section>
     </div>
 </main>
 
