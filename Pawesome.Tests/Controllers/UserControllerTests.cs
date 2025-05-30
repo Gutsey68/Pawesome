@@ -8,6 +8,7 @@ using Pawesome.Models.Entities;
 using Pawesome.Models.ViewModels.User;
 using System.Security.Claims;
 using Pawesome.Models.ViewModels.Pet;
+using Pawesome.Models.Dtos.Booking;
 
 namespace Pawesome.Tests.Controllers;
 
@@ -16,6 +17,7 @@ public class UserControllerTests
     private readonly Mock<IUserService> _userServiceMock = new();
     private readonly Mock<UserManager<User>> _userManagerMock;
     private readonly Mock<SignInManager<User>> _signInManagerMock;
+    private readonly Mock<IBookingService> _bookingServiceMock = new();
 
     private readonly UserController _controller;
 
@@ -36,7 +38,8 @@ public class UserControllerTests
         _controller = new UserController(
             _userServiceMock.Object,
             _userManagerMock.Object,
-            _signInManagerMock.Object
+            _signInManagerMock.Object,
+            _bookingServiceMock.Object
         );
     }
 
@@ -98,6 +101,9 @@ public class UserControllerTests
                 Country = "France",
                 Pets = new()
             });
+        
+        _bookingServiceMock.Setup(s => s.GetPendingBookingsForUserAdvertsAsync(1))
+            .ReturnsAsync(new List<Models.Dtos.Booking.BookingDto>());
 
         // Act
         var result = await _controller.Index();
