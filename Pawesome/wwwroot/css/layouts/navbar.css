@@ -254,3 +254,183 @@ nav ul {
     font-size: var(--font-size-2xl);
     font-weight: 600;
 }
+
+.notifications-popup {
+    min-width: 350px;
+    max-width: 400px;
+    max-height: 60vh;
+    display: flex;
+    flex-direction: column;
+    padding: 0;
+    overflow: hidden; 
+    box-shadow: var(--shadow-md);
+}
+
+.notifications-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: var(--space-2) var(--space-4);
+    border-bottom: 1px solid var(--color-primary-3);
+    background-color: var(--color-primary-2);
+    border-top-left-radius: var(--radius-md);
+    border-top-right-radius: var(--radius-md);
+}
+
+.notifications-header h3 {
+    margin: 0;
+    font-size: var(--font-size-md);
+    font-weight: 600;
+    color: var(--color-primary-12);
+}
+
+.notifications-header div {
+    display: flex;
+    gap: var(--space-2);
+}
+
+.notifications-header .button {
+    font-size: var(--font-size-xs);
+    padding: var(--space-1) var(--space-2);
+    height: auto;
+    line-height: 1;
+}
+
+.notifications-list-popup {
+    padding: var(--space-2);
+    overflow-y: auto;
+    max-height: 400px;
+    background-color: var(--color-primary-1);
+}
+
+.notification-item-popup {
+    display: flex;
+    padding: var(--space-2) var(--space-3);
+    margin: var(--space-2) 0;
+    border-radius: var(--radius-md);
+    gap: var(--space-3);
+    transition: background-color 0.2s ease;
+}
+
+.notification-item-popup.unread {
+    background-color: var(--color-primary-3);
+}
+
+.notification-item-popup:hover {
+    background-color: var(--color-primary-4);
+}
+
+.notification-icon {
+    color: var(--color-primary-10);
+    display: flex;
+    align-items: flex-start;
+    padding-top: var(--space-1);
+    flex-shrink: 0;
+}
+
+.notification-content {
+    flex: 1;
+}
+
+.notification-header {
+    display: flex;
+    justify-content: space-between;
+    margin-bottom: var(--space-2);
+    align-items: flex-start;
+}
+
+.notification-title {
+    font-weight: 600;
+    font-size: var(--font-size-sm);
+    margin: 0;
+    color: var(--color-primary-12);
+    line-height: 1.4;
+}
+
+.notification-time {
+    font-size: var(--font-size-xs);
+    color: var(--color-primary-10);
+    white-space: nowrap;
+    margin-left: var(--space-2);
+}
+
+.notification-message {
+    font-size: var(--font-size-sm);
+    margin: var(--space-1) 0 var(--space-2) 0;
+    line-height: 1.5;
+}
+
+.notification-link {
+    display: inline-flex;
+    align-items: center;
+    gap: var(--space-1);
+    font-size: var(--font-size-xs);
+    color: var(--color-primary-10);
+    margin-top: var(--space-1);
+    transition: color 0.2s ease;
+}
+
+.notification-link:hover {
+    color: var(--color-primary-12);
+}
+
+.notification-actions {
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-1);
+    flex-shrink: 0;
+}
+
+.notification-actions .button {
+    padding: var(--space-1);
+    height: auto;
+    width: auto;
+    min-width: 0;
+    border-radius: var(--radius-md);
+    color: var(--color-primary-10);
+    transition: color 0.2s ease, background-color 0.2s ease;
+}
+
+.notification-actions .button:hover {
+    background-color: var(--color-primary-3);
+    color: var(--color-primary-12);
+}
+
+.notification-actions .delete-notification-btn:hover {
+    color: var(--color-error-foreground);
+}
+
+.loading-spinner {
+    display: flex;
+    justify-content: center;
+    padding: var(--space-4);
+}
+
+.animate-spin {
+    animation: spin 1s linear infinite;
+}
+
+@keyframes spin {
+    from { transform: rotate(0deg); }
+    to { transform: rotate(360deg); }
+}
+
+.empty-notifications {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    padding: var(--space-6) var(--space-4);
+    color: var(--color-primary-9);
+}
+
+.empty-notifications svg {
+    margin-bottom: var(--space-2);
+    opacity: 0.7;
+}
+
+.error-message {
+    color: var(--color-error-solid);
+    text-align: center;
+    padding: var(--space-3);
+}
