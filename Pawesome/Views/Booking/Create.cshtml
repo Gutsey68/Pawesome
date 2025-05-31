@@ -53,7 +53,7 @@
                                         <path d="M4 14h9"/>
                                         <path d="M19 6a7.7 7.7 0 0 0-5.2-2A7.9 7.9 0 0 0 6 12c0 4.4 3.5 8 7.8 8 2 0 3.8-.8 5.2-2"/>
                                     </svg>
-                                    <span class="price">@advert.Amount.ToString("C")</span>
+                                    <span class="price">@advert.Amount.ToString("C") / jour</span>
                                 </div>
                                 <div class="detail-item">
                                     <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-dog">
@@ -121,7 +121,7 @@
                             </svg>
                             <div>
                                 <h4>À propos du paiement</h4>
-                                <p>Votre carte bancaire sera autorisée pour le montant de @advert.Amount.ToString("C"), mais le paiement ne sera débité qu'après la validation de la prestation.</p>
+                                <p>Votre carte bancaire sera autorisée pour le montant de @((advert.Amount * (Model.EndDate - Model.StartDate).Days).ToString("C")), mais le paiement ne sera débité qu'après la validation de la prestation.</p>
                             </div>
                         </div>
                     </div>

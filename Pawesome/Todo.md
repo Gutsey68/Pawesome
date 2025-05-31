@@ -1,4 +1,5 @@
 TODO: 
+- Ne pas afficher les annonces qui sont en cours et terminer sur Adverts et profile
 - Il faut ajouter la searchbar sur modale quand pas sur home ou dashboard
 - Booking/Create il faut gérer la possibilité ou non de changer une date
 - Afficher les annonces acceptées, valider la préstation

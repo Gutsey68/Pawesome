@@ -2,11 +2,6 @@
 @using Pawesome.Helpers
 @{
     ViewData["Title"] = "Détails de la réservation";
-    var isBooker = Model.BookerUserId == ViewBag.CurrentUserId;
-    var isPetSitter = Model.PetSitterUserId == ViewBag.CurrentUserId;
-    var canUpdateStatus = isPetSitter && (Model.Status == BookingStatus.PendingConfirmation);
-    var canValidate = isBooker && (Model.Status == BookingStatus.InProgress || Model.Status == BookingStatus.Completed);
-    var canDispute = isBooker && (Model.Status == BookingStatus.InProgress || Model.Status == BookingStatus.Completed);
 }
 
 <main role="main" class="booking-details-container">
@@ -147,7 +142,7 @@
 
         <section class="booking-section">
             <div class="booking-actions">
-                @if (canUpdateStatus)
+                @if (ViewBag.canUpdateStatus)
                 {
                     <div class="actions-group">
                         <h3>Actions disponibles (Pet sitter)</h3>
@@ -177,23 +172,18 @@
                     </div>
                 }
                 
-                @if (canValidate)
+                @if (ViewBag.canValidate)
                 {
                     <div class="actions-group">
                         <h3>Actions disponibles</h3>
                         <div class="action-buttons">
-                            <form asp-action="Validate" method="post">
+                            <form controller="Booking" asp-action="Validate" method="post">
                                 <input type="hidden" name="bookingId" value="@Model.Id" />
                                 <button type="submit" class="button" data-variant="primary" data-size="md">
-                                    <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-check-circle">
-                                        <path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"/>
-                                        <path d="m9 11 3 3L22 4"/>
-                                    </svg>
                                     Valider la prestation
                                 </button>
                             </form>
-                            
-                            @if (canDispute)
+                            @if (ViewBag.canDispute)
                             {
                                 <a asp-action="Dispute" asp-route-bookingId="@Model.Id" class="button" data-variant="destructive" data-size="md">
                                     <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-alert-triangle">

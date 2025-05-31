@@ -19,6 +19,8 @@ public class User : IdentityUser<int>
     public string? Photo { get; set; }
     
     public float? Rating { get; set; }
+    public string? StripeAccountId { get; set; }
+    public bool IsStripeOnboardingCompleted { get; set; } = false;
     
     [MaxLength(255)]
     public UserStatus Status { get; set; } = UserStatus.Active;

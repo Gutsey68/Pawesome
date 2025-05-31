@@ -16,6 +16,7 @@ namespace Pawesome.Services
     {
         private readonly IPaymentRepository _paymentRepository;
         private readonly IBookingRepository _bookingRepository;
+        private readonly IUserRepository _userRepository;
         private readonly ILogger<PaymentService> _logger;
         private readonly IMapper _mapper;
 
@@ -24,16 +25,19 @@ namespace Pawesome.Services
         /// </summary>
         /// <param name="paymentRepository">Repository for payment operations</param>
         /// <param name="bookingRepository">Repository for booking operations</param>
+        /// <param name="userRepository">Repository for user operations</param>
         /// <param name="logger">Logger instance</param>
         /// <param name="mapper">AutoMapper instance for object mapping</param>
         public PaymentService(
             IPaymentRepository paymentRepository,
             IBookingRepository bookingRepository,
+            IUserRepository userRepository,
             ILogger<PaymentService> logger,
             IMapper mapper)
         {
             _paymentRepository = paymentRepository;
             _bookingRepository = bookingRepository;
+            _userRepository = userRepository;
             _logger = logger;
             _mapper = mapper;
         }
@@ -54,7 +58,7 @@ namespace Pawesome.Services
 
                 if (session == null)
                 {
-                    throw new InvalidOperationException($"Unable to retrieve Stripe session {sessionId}");
+                    throw new InvalidOperationException($"Impossible de récupérer la session Stripe {sessionId}");
                 }
 
                 var booking = new Booking
@@ -90,7 +94,7 @@ namespace Pawesome.Services
             }
             catch (Exception ex)
             {
-                _logger.LogError(ex, "Error creating payment for user {UserId}, advert {AdvertId}, session {SessionId}", userId, advertId, sessionId);
+                _logger.LogError(ex, "Erreur lors de la création du paiement pour l'utilisateur {UserId}, annonce {AdvertId}, session {SessionId}", userId, advertId, sessionId);
                 throw;
             }
         }
@@ -125,12 +129,12 @@ namespace Pawesome.Services
             }
             catch (StripeException ex)
             {
-                _logger.LogError(ex, "Stripe error retrieving session {SessionId}", sessionId);
+                _logger.LogError(ex, "Erreur Stripe lors de la récupération de la session {SessionId}", sessionId);
                 return null;
             }
             catch (Exception ex)
             {
-                _logger.LogError(ex, "Error completing payment for session {SessionId}", sessionId);
+                _logger.LogError(ex, "Erreur lors de la finalisation du paiement pour la session {SessionId}", sessionId);
                 return null;
             }
         }
@@ -155,18 +159,45 @@ namespace Pawesome.Services
         {
             try
             {
-                var paymentIntentService = new PaymentIntentService();
-                var paymentIntent = await paymentIntentService.CaptureAsync(paymentIntentId);
-                
-                // We need to find the payment by session ID, so first get the session ID
-                // from the payment intent data
                 var payment = await GetPaymentByPaymentIntentIdAsync(paymentIntentId);
-                
                 if (payment == null || payment.SessionId == null)
                 {
-                    _logger.LogError("Payment or SessionId not found for PaymentIntentId {PaymentIntentId}", paymentIntentId);
+                    _logger.LogError("Paiement non trouvé pour PaymentIntentId {PaymentIntentId}", paymentIntentId);
                     return false;
                 }
+                
+                var booking = payment.Booking;
+                if (booking == null)
+                {
+                    _logger.LogError("Réservation non trouvée pour le paiement avec PaymentIntentId {PaymentIntentId}", paymentIntentId);
+                    return false;
+                }
+                
+                var petSitterId = booking.Advert.UserId;
+                var petSitter = await _userRepository.GetByIdAsync(petSitterId);
+                
+                if (petSitter == null || string.IsNullOrEmpty(petSitter.StripeAccountId))
+                {
+                    _logger.LogError("Pet sitter ou compte Stripe non trouvé pour la réservation {BookingId}", booking.Id);
+                    return false;
+                }
+                
+                var paymentIntentService = new PaymentIntentService();
+                var paymentIntent = await paymentIntentService.CaptureAsync(paymentIntentId);
+
+                long amount = paymentIntent.Amount;
+                long commission = (long)(amount * 0.15);
+                long transferAmount = amount - commission;
+                
+                var transferService = new TransferService();
+                await transferService.CreateAsync(new TransferCreateOptions
+                {
+                    Amount = transferAmount,
+                    Currency = "eur",
+                    Destination = petSitter.StripeAccountId,
+                    SourceTransaction = paymentIntent.LatestChargeId,
+                    Description = $"Paiement pour la réservation #{booking.Id}"
+                });
 
                 await _paymentRepository.UpdatePaymentStatusAsync(
                     payment.SessionId,
@@ -177,12 +208,12 @@ namespace Pawesome.Services
             }
             catch (StripeException ex)
             {
-                _logger.LogError(ex, "Stripe error capturing payment {PaymentIntentId}", paymentIntentId);
+                _logger.LogError(ex, "Erreur Stripe lors de la capture du paiement {PaymentIntentId}", paymentIntentId);
                 return false;
             }
             catch (Exception ex)
             {
-                _logger.LogError(ex, "Error capturing payment {PaymentIntentId}", paymentIntentId);
+                _logger.LogError(ex, "Erreur lors de la capture du paiement {PaymentIntentId}", paymentIntentId);
                 return false;
             }
         }
@@ -199,13 +230,11 @@ namespace Pawesome.Services
                 var paymentIntentService = new PaymentIntentService();
                 var paymentIntent = await paymentIntentService.CancelAsync(paymentIntentId);
                 
-                // We need to find the payment by session ID, so first get the session ID
-                // from the payment intent data
                 var payment = await GetPaymentByPaymentIntentIdAsync(paymentIntentId);
                 
                 if (payment == null || payment.SessionId == null)
                 {
-                    _logger.LogError("Payment or SessionId not found for PaymentIntentId {PaymentIntentId}", paymentIntentId);
+                    _logger.LogError("Paiement ou SessionId non trouvé pour PaymentIntentId {PaymentIntentId}", paymentIntentId);
                     return false;
                 }
 
@@ -218,12 +247,12 @@ namespace Pawesome.Services
             }
             catch (StripeException ex)
             {
-                _logger.LogError(ex, "Stripe error cancelling payment {PaymentIntentId}", paymentIntentId);
+                _logger.LogError(ex, "Erreur Stripe lors de l'annulation du paiement {PaymentIntentId}", paymentIntentId);
                 return false;
             }
             catch (Exception ex)
             {
-                _logger.LogError(ex, "Error cancelling payment {PaymentIntentId}", paymentIntentId);
+                _logger.LogError(ex, "Erreur lors de l'annulation du paiement {PaymentIntentId}", paymentIntentId);
                 return false;
             }
         }
@@ -242,7 +271,6 @@ namespace Pawesome.Services
                 return null;
             }
             
-            // Get the most recent payment
             var payment = payments.Payments
                 .OrderByDescending(p => p.CreatedAt)
                 .FirstOrDefault();
@@ -267,12 +295,11 @@ namespace Pawesome.Services
                     webhookSecret
                 );
 
-                // Handle different types of Stripe events
                 switch (stripeEvent.Type)
                 {
                     case "payment_intent.succeeded":
                         var paymentIntent = (PaymentIntent)stripeEvent.Data.Object;
-                        _logger.LogInformation("Payment succeeded: {PaymentIntentId}", paymentIntent.Id);
+                        _logger.LogInformation("Paiement réussi: {PaymentIntentId}", paymentIntent.Id);
                         
                         var payment = await GetPaymentByPaymentIntentIdAsync(paymentIntent.Id);
                         if (payment?.SessionId != null)
@@ -285,7 +312,7 @@ namespace Pawesome.Services
 
                     case "payment_intent.payment_failed":
                         var failedPaymentIntent = (PaymentIntent)stripeEvent.Data.Object;
-                        _logger.LogWarning("Payment failed: {PaymentIntentId}, {Error}",
+                        _logger.LogWarning("Échec du paiement: {PaymentIntentId}, {Error}",
                             failedPaymentIntent.Id,
                             failedPaymentIntent.LastPaymentError?.Message);
                         
@@ -303,7 +330,7 @@ namespace Pawesome.Services
             }
             catch (StripeException ex)
             {
-                _logger.LogError(ex, "Error processing Stripe webhook");
+                _logger.LogError(ex, "Erreur lors du traitement du webhook Stripe");
                 return false;
             }
         }

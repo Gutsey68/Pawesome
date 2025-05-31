@@ -57,7 +57,9 @@ public class WebhookController : Controller
     /// <param name="bookingId">The ID of the booking to validate</param>
     /// <returns>Redirect to booking details page</returns>
     [Authorize]
-    [HttpPost("validate/{bookingId}")]
+    [HttpPost]
+    [Route("validate/{bookingId}")] 
+    [Route("Webhook/ValidateBooking")] 
     public async Task<IActionResult> ValidateBooking(int bookingId)
     {
         var success = await _bookingService.ValidateBookingAsync(bookingId);

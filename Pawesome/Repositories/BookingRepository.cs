@@ -140,15 +140,24 @@ namespace Pawesome.Repositories
         public async Task<bool> ValidateBookingAsync(int bookingId)
         {
             var booking = await _context.Bookings.FindAsync(bookingId);
-            
-            if (booking == null || booking.Status != BookingStatus.InProgress)
+    
+            if (booking == null)
                 return false;
-                
+            
+            var allowedStatuses = new[] { 
+                BookingStatus.Accepted, 
+                BookingStatus.InProgress, 
+                BookingStatus.Completed 
+            };
+
+            if (!allowedStatuses.Contains(booking.Status) || booking.IsValidated)
+                return false;
+        
             booking.Status = BookingStatus.Completed;
             booking.IsValidated = true;
             booking.ValidatedAt = DateTime.UtcNow;
             booking.UpdatedAt = DateTime.UtcNow;
-            
+    
             await _context.SaveChangesAsync();
             return true;
         }
@@ -230,6 +239,20 @@ namespace Pawesome.Repositories
                 .Where(b => b.Advert.UserId == userId && 
                             b.Status == BookingStatus.PendingConfirmation)
                 .OrderByDescending(b => b.CreatedAt)
+                .ToListAsync();
+        }
+        
+        /// <summary>
+        /// Gets all active bookings (accepted or in progress) with their related entities.
+        /// </summary>
+        /// <returns>A list of active bookings.</returns>
+        public async Task<List<Booking>> GetActiveBookingsAsync()
+        {
+            return await _context.Bookings
+                .Include(b => b.Advert)
+                .Include(b => b.BookerUser)
+                .Include(b => b.Payments)
+                .Where(b => b.Status == BookingStatus.Accepted || b.Status == BookingStatus.InProgress)
                 .ToListAsync();
         }
     }

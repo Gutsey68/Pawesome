@@ -1,0 +1,102 @@
+@model Pawesome.Models.ViewModels.Balance.BalanceViewModel
+@{
+    ViewData["Title"] = "Mon solde";
+}
+
+<main class="container my-5">
+    <div class="row">
+        <div class="col-md-8 offset-md-2">
+            <div class="card">
+                <div class="card-header bg-primary text-white">
+                    <h2 class="mb-0">Mon solde Pawesome</h2>
+                </div>
+                <div class="card-body">
+                    <div class="row mb-4">
+                        <div class="col-md-6">
+                            <div class="card bg-light">
+                                <div class="card-body">
+                                    <h3 class="card-title">Solde disponible</h3>
+                                    <h2 class="text-success">@Model.AvailableBalance.ToString("C")</h2>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <div class="card">
+                                <div class="card-body">
+                                    <h3 class="card-title">Demander un retrait</h3>
+                                    <form asp-action="CreatePayout" method="post">
+                                        <div class="form-group mb-3">
+                                            <label for="amount">Montant (€)</label>
+                                            <input type="number" class="form-control" id="amount" name="amount" 
+                                                   step="0.01" min="0.01" max="@Model.AvailableBalance" 
+                                                   value="@Model.AvailableBalance.ToString("F2")" required />
+                                        </div>
+                                        <button type="submit" class="button" data-variant="primary" data-size="md" 
+                                                @(Model.AvailableBalance <= 0 ? "disabled" : "")>
+                                            Effectuer le retrait
+                                        </button>
+                                    </form>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <h3>Historique des retraits</h3>
+                    @if (Model.PayoutHistory.Any())
+                    {
+                        <div class="table-responsive">
+                            <table class="table table-striped">
+                                <thead>
+                                    <tr>
+                                        <th>Date</th>
+                                        <th>Montant</th>
+                                        <th>Statut</th>
+                                        <th>Date d'arrivée</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    @foreach (var payout in Model.PayoutHistory)
+                                    {
+                                        <tr>
+                                            <td>@payout.CreatedAt.ToString("dd/MM/yyyy HH:mm")</td>
+                                            <td>@payout.Amount.ToString("C")</td>
+                                            <td>
+                                                @switch (payout.Status)
+                                                {
+                                                    case "paid":
+                                                        <span class="badge bg-success">Payé</span>
+                                                        break;
+                                                    case "pending":
+                                                        <span class="badge bg-warning">En attente</span>
+                                                        break;
+                                                    case "in_transit":
+                                                        <span class="badge bg-info">En transit</span>
+                                                        break;
+                                                    case "failed":
+                                                        <span class="badge bg-danger">Échoué</span>
+                                                        break;
+                                                    default:
+                                                        <span class="badge bg-secondary">@payout.Status</span>
+                                                        break;
+                                                }
+                                            </td>
+                                            <td>
+                                                @(payout.ArrivalDate.HasValue ? payout.ArrivalDate.Value.ToString("dd/MM/yyyy") : "N/A")
+                                            </td>
+                                        </tr>
+                                    }
+                                </tbody>
+                            </table>
+                        </div>
+                    }
+                    else
+                    {
+                        <div class="alert alert-info">
+                            Vous n'avez pas encore effectué de retrait.
+                        </div>
+                    }
+                </div>
+            </div>
+        </div>
+    </div>
+</main>

@@ -63,7 +63,7 @@ namespace Pawesome.Services
                 {
                     return null;
                 }
-                
+
                 return _mapper.Map<BookingDto>(booking);
             }
             catch (Exception ex)
@@ -88,7 +88,8 @@ namespace Pawesome.Services
             }
             catch (Exception ex)
             {
-                _logger.LogError(ex, "Erreur lors de la récupération des réservations pour l'utilisateur {UserId}", userId);
+                _logger.LogError(ex, "Erreur lors de la récupération des réservations pour l'utilisateur {UserId}",
+                    userId);
                 return new List<BookingDto>();
             }
         }
@@ -108,60 +109,63 @@ namespace Pawesome.Services
                 {
                     throw new InvalidOperationException("L'annonce demandée n'existe pas.");
                 }
-                
+
                 if (advert.Owner.Id == userId)
                 {
                     throw new InvalidOperationException("Vous ne pouvez pas réserver votre propre annonce.");
                 }
-                
+
                 if (createDto.StartDate < DateTime.UtcNow)
                 {
                     throw new InvalidOperationException("La date de début doit être dans le futur.");
                 }
-                
+
                 if (createDto.EndDate <= createDto.StartDate)
                 {
                     throw new InvalidOperationException("La date de fin doit être après la date de début.");
                 }
-                
+
                 if (createDto.StartDate < advert.StartDate || createDto.EndDate > advert.EndDate)
                 {
-                    throw new InvalidOperationException("Les dates choisies sont en dehors de la disponibilité du pet sitter.");
+                    throw new InvalidOperationException(
+                        "Les dates choisies sont en dehors de la disponibilité du pet sitter.");
                 }
-                
+
                 var advertBookings = await _bookingRepository.GetBookingsByAdvertIdAsync(advert.Id);
-                var overlappingBooking = advertBookings.FirstOrDefault(b => 
-                    (b.Status == BookingStatus.Accepted || b.Status == BookingStatus.InProgress) && 
-                    ((createDto.StartDate >= b.StartDate && createDto.StartDate < b.EndDate) || 
+                var overlappingBooking = advertBookings.FirstOrDefault(b =>
+                    (b.Status == BookingStatus.Accepted || b.Status == BookingStatus.InProgress) &&
+                    ((createDto.StartDate >= b.StartDate && createDto.StartDate < b.EndDate) ||
                      (createDto.EndDate > b.StartDate && createDto.EndDate <= b.EndDate) ||
                      (createDto.StartDate <= b.StartDate && createDto.EndDate >= b.EndDate)));
-                
+
                 if (overlappingBooking != null)
                 {
                     throw new InvalidOperationException("Le pet sitter a déjà une réservation pour cette période.");
                 }
-                
+
                 var numberOfDays = (createDto.EndDate - createDto.StartDate).Days;
                 var totalAmount = numberOfDays * advert.Amount;
-                
+
                 var booking = _mapper.Map<Booking>(createDto);
                 booking.BookerUserId = userId;
                 booking.Amount = totalAmount;
-                
+
                 var createdBooking = await _bookingRepository.CreateBookingAsync(booking);
-                
+
                 await CreateAndSendNotificationAsync(
                     advert.Owner.Id,
                     NotificationType.NewBookingRequest,
                     "Nouvelle demande de réservation",
                     $"Vous avez reçu une nouvelle demande de réservation du {createDto.StartDate.ToString("dd/MM/yyyy")} au {createDto.EndDate.ToString("dd/MM/yyyy")}."
                 );
-                
+
                 return _mapper.Map<BookingDto>(createdBooking);
             }
             catch (Exception ex)
             {
-                _logger.LogError(ex, "Erreur lors de la création d'une réservation pour l'annonce {AdvertId} par l'utilisateur {UserId}", createDto.AdvertId, userId);
+                _logger.LogError(ex,
+                    "Erreur lors de la création d'une réservation pour l'annonce {AdvertId} par l'utilisateur {UserId}",
+                    createDto.AdvertId, userId);
                 throw;
             }
         }
@@ -183,7 +187,7 @@ namespace Pawesome.Services
                 }
 
                 var result = await _bookingRepository.UpdateBookingStatusAsync(bookingId, status);
-                
+
                 if (result)
                 {
                     var statusMessage = status switch
@@ -195,7 +199,7 @@ namespace Pawesome.Services
                         BookingStatus.Completed => "terminée",
                         _ => "mise à jour"
                     };
-                    
+
                     if (status == BookingStatus.Accepted)
                     {
                         await CreateAndSendNotificationAsync(
@@ -213,11 +217,11 @@ namespace Pawesome.Services
                             $"Réservation #{bookingId} refusée",
                             "Le pet sitter a refusé votre demande de réservation."
                         );
-                        
+
                         var payment = booking.Payments
                             .OrderByDescending(p => p.CreatedAt)
                             .FirstOrDefault();
-                        
+
                         if (payment?.PaymentIntentId != null)
                         {
                             await _paymentService.CancelPaymentAuthorizationAsync(payment.PaymentIntentId);
@@ -242,12 +246,13 @@ namespace Pawesome.Services
                         );
                     }
                 }
-                
+
                 return result;
             }
             catch (Exception ex)
             {
-                _logger.LogError(ex, "Erreur lors de la mise à jour du statut de la réservation {BookingId} à {Status}", bookingId, status);
+                _logger.LogError(ex, "Erreur lors de la mise à jour du statut de la réservation {BookingId} à {Status}",
+                    bookingId, status);
                 return false;
             }
         }
@@ -266,20 +271,32 @@ namespace Pawesome.Services
                 {
                     return false;
                 }
-                
+
+                var allowedStatuses = new[] { 
+                    BookingStatus.Accepted, 
+                    BookingStatus.InProgress, 
+                    BookingStatus.Completed 
+                };
+        
+                if (!allowedStatuses.Contains(booking.Status))
+                {
+                    _logger.LogWarning("Tentative de validation d'une réservation avec un statut non autorisé: {Status}", booking.Status);
+                    return false;
+                }
+        
                 var result = await _bookingRepository.ValidateBookingAsync(bookingId);
-                
+        
                 if (result)
                 {
                     var payment = booking.Payments
                         .OrderByDescending(p => p.CreatedAt)
                         .FirstOrDefault();
-                    
+            
                     if (payment?.PaymentIntentId != null)
                     {
                         await _paymentService.CapturePaymentAsync(payment.PaymentIntentId);
                     }
-                    
+            
                     await CreateAndSendNotificationAsync(
                         booking.Advert.UserId,
                         NotificationType.BookingValidated,
@@ -287,7 +304,7 @@ namespace Pawesome.Services
                         "Le client a validé la prestation. Votre paiement a été traité."
                     );
                 }
-                
+        
                 return result;
             }
             catch (Exception ex)
@@ -314,7 +331,7 @@ namespace Pawesome.Services
                 }
 
                 var result = await _bookingRepository.DisputeBookingAsync(bookingId, reason);
-                
+
                 if (result)
                 {
                     await CreateAndSendNotificationAsync(
@@ -323,14 +340,14 @@ namespace Pawesome.Services
                         $"Votre réservation #{bookingId} a été signalée en litige.",
                         $"La réservation a été mise en litige. Motif : {reason}"
                     );
-                    
+
                     await CreateAndSendNotificationAsync(
                         booking.Advert.UserId,
                         NotificationType.BookingDisputed,
                         $"La réservation #{bookingId} a été signalée en litige.",
                         $"Un client a signalé un problème avec cette réservation. Motif : {reason}"
                     );
-                    
+
                     const int adminUserId = 1; //TODO: fix this 
                     await CreateAndSendNotificationAsync(
                         adminUserId,
@@ -344,7 +361,8 @@ namespace Pawesome.Services
             }
             catch (Exception ex)
             {
-                _logger.LogError(ex, "Erreur lors de l'ouverture d'un litige pour la réservation {BookingId}", bookingId);
+                _logger.LogError(ex, "Erreur lors de l'ouverture d'un litige pour la réservation {BookingId}",
+                    bookingId);
                 return false;
             }
         }
@@ -358,7 +376,8 @@ namespace Pawesome.Services
             try
             {
                 var validationDeadline = DateTime.UtcNow.AddDays(-3);
-                var bookingsToValidate = await _bookingRepository.GetBookingsToAutomaticallyValidateAsync(validationDeadline);
+                var bookingsToValidate =
+                    await _bookingRepository.GetBookingsToAutomaticallyValidateAsync(validationDeadline);
 
                 foreach (var booking in bookingsToValidate)
                 {
@@ -382,7 +401,7 @@ namespace Pawesome.Services
                         $"Validation automatique de la réservation #{booking.Id}",
                         "La réservation a été validée automatiquement après 3 jours sans action."
                     );
-                    
+
                     await CreateAndSendNotificationAsync(
                         booking.Advert.UserId,
                         NotificationType.BookingValidated,
@@ -457,11 +476,12 @@ namespace Pawesome.Services
                 return false;
             }
         }
-        
+
         /// <summary>
         /// Helper method to create and send a notification
         /// </summary>
-        private async Task<Notification> CreateAndSendNotificationAsync(int userId, NotificationType type, string title, string message)
+        private async Task<Notification> CreateAndSendNotificationAsync(int userId, NotificationType type, string title,
+            string message)
         {
             var notification = new Notification
             {
@@ -474,10 +494,10 @@ namespace Pawesome.Services
                 UpdatedAt = DateTime.UtcNow,
                 User = null!
             };
-            
+
             return await _notificationService.CreateNotificationAsync(notification);
         }
-        
+
         /// <summary>
         /// Gets all pending bookings for adverts owned by the specified user
         /// </summary>
@@ -488,16 +508,117 @@ namespace Pawesome.Services
             var bookings = await _bookingRepository.GetPendingBookingsForUserAdvertsAsync(userId);
             return _mapper.Map<List<BookingDto>>(bookings);
         }
-        
-        public int GetBookingsCount() 
+
+        /// <summary>
+        /// Gets the total count of bookings in the system
+        /// </summary>
+        /// <returns>The total number of bookings</returns>
+        public int GetBookingsCount()
         {
             return _bookingRepository.GetAllAsync().Result.Count();
         }
 
+        /// <summary>
+        /// Gets all bookings in the system
+        /// </summary>
+        /// <returns>List of all booking DTOs</returns>
         public List<BookingDto> GetAllBookings()
         {
             var bookings = _bookingRepository.GetAllAsync();
             return _mapper.Map<List<BookingDto>>(bookings);
+        }
+
+        /// <summary>
+        /// Updates the status of a booking automatically based on start and end dates
+        /// </summary>
+        /// <param name="bookingId">The ID of the booking to update</param>
+        /// <returns>True if update was successful, false otherwise</returns>
+        public async Task<bool> UpdateBookingStatusAutomaticallyAsync(int bookingId)
+        {
+            try
+            {
+                var booking = await _bookingRepository.GetBookingByIdWithDetailsAsync(bookingId);
+                if (booking == null)
+                {
+                    return false;
+                }
+
+                var today = DateTime.UtcNow;
+                var currentStatus = booking.Status;
+                var hasChanged = false;
+                
+                if (booking.Status == BookingStatus.Accepted && today.Date >= booking.StartDate.Date)
+                {
+                    booking.Status = BookingStatus.InProgress;
+                    booking.UpdatedAt = today;
+                    hasChanged = true;
+
+                    await CreateAndSendNotificationAsync(
+                        booking.BookerUserId,
+                        NotificationType.BookingStatusChanged,
+                        $"Réservation #{bookingId} commencée",
+                        "La garde de votre animal a commencé automatiquement selon les dates prévues."
+                    );
+                }
+                else if (booking.Status == BookingStatus.InProgress && today.Date > booking.EndDate.Date)
+                {
+                    booking.Status = BookingStatus.Completed;
+                    booking.UpdatedAt = today;
+                    hasChanged = true;
+
+                    await CreateAndSendNotificationAsync(
+                        booking.BookerUserId,
+                        NotificationType.BookingStatusChanged,
+                        $"Réservation #{bookingId} terminée",
+                        "La garde de votre animal est terminée selon les dates prévues. N'oubliez pas de valider la prestation."
+                    );
+                }
+
+                if (hasChanged)
+                {
+                    await _bookingRepository.UpdateAsync(booking);
+                    _logger.LogInformation(
+                        "Statut de la réservation {BookingId} mis à jour automatiquement de {OldStatus} à {NewStatus}",
+                        bookingId, currentStatus, booking.Status);
+                }
+
+                return true;
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex,
+                    "Erreur lors de la mise à jour automatique du statut de la réservation {BookingId}", bookingId);
+                return false;
+            }
+        }
+        
+        /// <summary>
+        /// Updates the status of all active bookings based on their start and end dates
+        /// </summary>
+        /// <returns>The number of bookings updated</returns>
+        public async Task<int> UpdateAllBookingsStatusAutomaticallyAsync()
+        {
+            try
+            {
+                var activeBookings = await _bookingRepository.GetActiveBookingsAsync();
+                int updatedCount = 0;
+
+                foreach (var booking in activeBookings)
+                {
+                    var result = await UpdateBookingStatusAutomaticallyAsync(booking.Id);
+                    if (result)
+                    {
+                        updatedCount++;
+                    }
+                }
+
+                return updatedCount;
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, "Erreur lors de la mise à jour automatique des statuts de réservation");
+                return 0;
+            }
         }
     }
 }

@@ -124,6 +124,7 @@ public static class ServiceCollectionExtensions
         services.AddScoped<INotificationService, NotificationService>();
         services.AddScoped<ILocationService, LocationService>();
         services.AddScoped<IBookingService, BookingService>();
+        services.AddScoped<IStripeBalanceService, StripeBalanceService>();
         
         // Register AutoMapper
         services.AddAutoMapper(typeof(Program).Assembly);

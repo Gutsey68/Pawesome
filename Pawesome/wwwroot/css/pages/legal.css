@@ -1,0 +1,119 @@
+/* Styles communs pour les pages légales */
+.legal-container {
+    max-width: 800px;
+    margin: 0 auto;
+    padding: var(--space-4) 0;
+}
+
+.legal-section {
+    margin-bottom: var(--space-6);
+}
+
+.legal-section h2 {
+    font-size: var(--font-size-xl);
+    color: var(--color-primary-11);
+    margin-bottom: var(--space-3);
+    padding-bottom: var(--space-2);
+    border-bottom: 1px solid var(--color-primary-5);
+}
+
+.legal-section h3 {
+    font-size: var(--font-size-lg);
+    color: var(--color-primary-11);
+    font-weight: var(--font-weight-medium);
+    margin-top: var(--space-4);
+    margin-bottom: var(--space-2);
+}
+
+.legal-section p {
+    margin-bottom: var(--space-3);
+    line-height: 1.6;
+}
+
+.legal-section ul {
+    list-style-type: disc;
+    margin-left: var(--space-5);
+    margin-bottom: var(--space-3);
+}
+
+.legal-section ul li {
+    margin-bottom: var(--space-2);
+}
+
+.legal-section strong {
+    font-weight: var(--font-weight-bold);
+}
+
+.legal-update {
+    font-size: var(--font-size-sm);
+    color: var(--color-primary-10);
+    margin-top: var(--space-6);
+    text-align: right;
+    font-style: italic;
+}
+
+.legal-container a {
+    color: var(--color-primary-10);
+    text-decoration: underline;
+}
+
+.legal-container a:hover {
+    color: var(--color-primary-9);
+}
+
+.legal-intro {
+    margin-bottom: var(--space-6);
+}
+
+.legal-toc {
+    background-color: var(--color-primary-2);
+    border: 1px solid var(--color-primary-5);
+    border-radius: var(--radius-lg);
+    padding: var(--space-4);
+    margin-bottom: var(--space-6);
+}
+
+.legal-toc ul {
+    list-style-type: none;
+    margin-left: 0;
+}
+
+.legal-toc ul li {
+    margin-bottom: var(--space-2);
+}
+
+.legal-toc a {
+    text-decoration: none;
+}
+
+.legal-toc a:hover {
+    text-decoration: underline;
+}
+
+/* Style pour les alertes dans les sections légales */
+.legal-alert {
+    background-color: var(--color-info);
+    border: 1px solid var(--color-info-border);
+    color: var(--color-info-foreground);
+    padding: var(--space-4);
+    border-radius: var(--radius-md);
+    margin-bottom: var(--space-4);
+}
+
+.legal-alert[data-variant="warning"] {
+    background-color: var(--color-warning);
+    border-color: var(--color-warning-border);
+    color: var(--color-warning-foreground);
+}
+
+.legal-alert[data-variant="success"] {
+    background-color: var(--color-success);
+    border-color: var(--color-success-border);
+    color: var(--color-success-foreground);
+}
+
+@media (max-width: 768px) {
+    .legal-container {
+        padding: var(--space-4);
+    }
+}

@@ -78,6 +78,17 @@ namespace Pawesome.Controllers
             if (booking.BookerUserId != user.Id && booking.PetSitterUserId != user.Id)
                 return Forbid();
 
+            ViewBag.CanValidate = booking.BookerUserId == user.Id && 
+                                  (booking.Status == BookingStatus.Accepted || 
+                                   booking.Status == BookingStatus.InProgress || 
+                                   booking.Status == BookingStatus.Completed && !booking.IsValidated);
+            
+            ViewBag.canDispute = booking.Status == BookingStatus.Completed && 
+                                 booking.BookerUserId == user.Id &&
+                                 !booking.IsDisputed;
+            
+            ViewBag.CanUpdateStatus = booking.PetSitterUserId == user.Id && booking.Status == BookingStatus.PendingConfirmation;
+
             return View(booking);
         }
 
