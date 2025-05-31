@@ -186,10 +186,13 @@ namespace Pawesome.Services
                     return false;
                 }
 
+                var advertId = booking.AdvertId;
                 var result = await _bookingRepository.UpdateBookingStatusAsync(bookingId, status);
 
                 if (result)
                 {
+                    await UpdateAdvertStatusAsync(advertId);
+                    
                     var statusMessage = status switch
                     {
                         BookingStatus.Accepted => "acceptée",
@@ -288,6 +291,8 @@ namespace Pawesome.Services
         
                 if (result)
                 {
+                    await UpdateAdvertStatusAsync(booking.AdvertId);
+                    
                     var payment = booking.Payments
                         .OrderByDescending(p => p.CreatedAt)
                         .FirstOrDefault();
@@ -334,6 +339,8 @@ namespace Pawesome.Services
 
                 if (result)
                 {
+                    await UpdateAdvertStatusAsync(booking.AdvertId);
+                    
                     await CreateAndSendNotificationAsync(
                         booking.BookerUserId,
                         NotificationType.BookingDisputed,
@@ -602,6 +609,7 @@ namespace Pawesome.Services
             {
                 var activeBookings = await _bookingRepository.GetActiveBookingsAsync();
                 int updatedCount = 0;
+                var updatedAdvertIds = new HashSet<int>();
 
                 foreach (var booking in activeBookings)
                 {
@@ -609,7 +617,13 @@ namespace Pawesome.Services
                     if (result)
                     {
                         updatedCount++;
+                        updatedAdvertIds.Add(booking.AdvertId);
                     }
+                }
+
+                foreach (var advertId in updatedAdvertIds)
+                {
+                    await UpdateAdvertStatusAsync(advertId);
                 }
 
                 return updatedCount;
@@ -618,6 +632,29 @@ namespace Pawesome.Services
             {
                 _logger.LogError(ex, "Erreur lors de la mise à jour automatique des statuts de réservation");
                 return 0;
+            }
+        }
+        
+        /// <summary>
+        /// Updates the status of an advert based on its associated bookings.
+        /// </summary>
+        /// <param name="advertId">The ID of the advert to update.</param>
+        /// <returns>True if the advert status was updated successfully, false otherwise.</returns>
+        /// <remarks>
+        /// - If there are active bookings (Accepted or InProgress), the advert is set to FullyBooked if all periods are covered, otherwise Active.
+        /// - If there are no active bookings and the advert end date is in the past, the advert is set to Expired.
+        /// - If the advert was previously FullyBooked but is no longer, it is set back to Active.
+        /// </remarks>
+        private async Task<bool> UpdateAdvertStatusAsync(int advertId)
+        {
+            try
+            {
+                return await _bookingRepository.UpdateAdvertStatusBasedOnBookingsAsync(advertId);
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, "Erreur lors de la mise à jour du statut de l'annonce {AdvertId}", advertId);
+                return false;
             }
         }
     }

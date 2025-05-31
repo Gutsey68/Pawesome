@@ -203,6 +203,8 @@ namespace Pawesome.Services
                     payment.SessionId,
                     PaymentStatus.Captured,
                     paymentIntentId);
+                
+                await _bookingRepository.UpdateAdvertStatusBasedOnBookingsAsync(booking.AdvertId);
 
                 return true;
             }

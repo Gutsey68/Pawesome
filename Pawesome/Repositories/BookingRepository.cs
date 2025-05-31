@@ -3,6 +3,7 @@ using Pawesome.Data;
 using Pawesome.Interfaces;
 using Pawesome.Models.Entities;
 using Pawesome.Models.enums;
+using Pawesome.Models.Enums;
 
 namespace Pawesome.Repositories
 {
@@ -29,7 +30,7 @@ namespace Pawesome.Repositories
         {
             return await _context.Bookings
                 .Include(b => b.Advert)
-                    .ThenInclude(a => a.User)
+                .ThenInclude(a => a.User)
                 .Include(b => b.BookerUser)
                 .Include(b => b.Payments)
                 .FirstOrDefaultAsync(b => b.Id == bookingId);
@@ -48,11 +49,11 @@ namespace Pawesome.Repositories
         {
             return await _context.Bookings
                 .Include(b => b.Advert)
-                    .ThenInclude(a => a.User)
+                .ThenInclude(a => a.User)
                 .Include(b => b.BookerUser)
                 .Include(b => b.Payments)
-                .Where(b => asBooker 
-                    ? b.BookerUserId == userId 
+                .Where(b => asBooker
+                    ? b.BookerUserId == userId
                     : b.Advert.UserId == userId)
                 .OrderByDescending(b => b.CreatedAt)
                 .ToListAsync();
@@ -83,10 +84,10 @@ namespace Pawesome.Repositories
             booking.CreatedAt = DateTime.UtcNow;
             booking.UpdatedAt = DateTime.UtcNow;
             booking.Status = BookingStatus.PendingConfirmation;
-            
+
             _context.Bookings.Add(booking);
             await _context.SaveChangesAsync();
-            
+
             return booking;
         }
 
@@ -105,13 +106,13 @@ namespace Pawesome.Repositories
         public async Task<bool> UpdateBookingStatusAsync(int bookingId, BookingStatus status)
         {
             var booking = await _context.Bookings.FindAsync(bookingId);
-            
+
             if (booking == null)
                 return false;
-                
+
             booking.Status = status;
             booking.UpdatedAt = DateTime.UtcNow;
-            
+
             if (status == BookingStatus.InProgress)
             {
                 if (booking.StartDate.Date == DateTime.UtcNow.Date)
@@ -124,7 +125,7 @@ namespace Pawesome.Repositories
                 booking.IsValidated = true;
                 booking.ValidatedAt = DateTime.UtcNow;
             }
-            
+
             await _context.SaveChangesAsync();
             return true;
         }
@@ -140,24 +141,25 @@ namespace Pawesome.Repositories
         public async Task<bool> ValidateBookingAsync(int bookingId)
         {
             var booking = await _context.Bookings.FindAsync(bookingId);
-    
+
             if (booking == null)
                 return false;
-            
-            var allowedStatuses = new[] { 
-                BookingStatus.Accepted, 
-                BookingStatus.InProgress, 
-                BookingStatus.Completed 
+
+            var allowedStatuses = new[]
+            {
+                BookingStatus.Accepted,
+                BookingStatus.InProgress,
+                BookingStatus.Completed
             };
 
             if (!allowedStatuses.Contains(booking.Status) || booking.IsValidated)
                 return false;
-        
+
             booking.Status = BookingStatus.Completed;
             booking.IsValidated = true;
             booking.ValidatedAt = DateTime.UtcNow;
             booking.UpdatedAt = DateTime.UtcNow;
-    
+
             await _context.SaveChangesAsync();
             return true;
         }
@@ -171,15 +173,15 @@ namespace Pawesome.Repositories
         public async Task<bool> DisputeBookingAsync(int bookingId, string reason)
         {
             var booking = await _context.Bookings.FindAsync(bookingId);
-            
+
             if (booking == null)
                 return false;
-                
+
             booking.Status = BookingStatus.Disputed;
             booking.IsDisputed = true;
             booking.DisputeReason = reason;
             booking.UpdatedAt = DateTime.UtcNow;
-            
+
             await _context.SaveChangesAsync();
             return true;
         }
@@ -197,8 +199,8 @@ namespace Pawesome.Repositories
                 .Include(b => b.Advert)
                 .Include(b => b.BookerUser)
                 .Include(b => b.Payments)
-                .Where(b => b.Status == BookingStatus.PendingConfirmation && 
-                           b.CreatedAt < expirationDate)
+                .Where(b => b.Status == BookingStatus.PendingConfirmation &&
+                            b.CreatedAt < expirationDate)
                 .ToListAsync();
         }
 
@@ -219,12 +221,12 @@ namespace Pawesome.Repositories
                 .Include(b => b.Advert)
                 .Include(b => b.BookerUser)
                 .Include(b => b.Payments)
-                .Where(b => b.Status == BookingStatus.InProgress && 
-                           b.EndDate < validationDeadline &&
-                           !b.IsValidated)
+                .Where(b => b.Status == BookingStatus.InProgress &&
+                            b.EndDate < validationDeadline &&
+                            !b.IsValidated)
                 .ToListAsync();
         }
-        
+
         /// <summary>
         /// Retrieves all pending bookings for adverts owned by the specified user.
         /// </summary>
@@ -236,16 +238,16 @@ namespace Pawesome.Repositories
                 .Include(b => b.Advert)
                 .Include(b => b.BookerUser)
                 .Include(b => b.Payments)
-                .Where(b => b.Advert.UserId == userId && 
+                .Where(b => b.Advert.UserId == userId &&
                             b.Status == BookingStatus.PendingConfirmation)
                 .OrderByDescending(b => b.CreatedAt)
                 .ToListAsync();
         }
         
         /// <summary>
-        /// Gets all active bookings (accepted or in progress) with their related entities.
+        /// Retrieves all active bookings (with status Accepted or InProgress).
         /// </summary>
-        /// <returns>A list of active bookings.</returns>
+        /// <returns>A list of active bookings including related advert, booker user, and payments.</returns>
         public async Task<List<Booking>> GetActiveBookingsAsync()
         {
             return await _context.Bookings
@@ -254,6 +256,98 @@ namespace Pawesome.Repositories
                 .Include(b => b.Payments)
                 .Where(b => b.Status == BookingStatus.Accepted || b.Status == BookingStatus.InProgress)
                 .ToListAsync();
+        }
+        
+        /// <summary>
+        /// Updates the status of an advert based on its associated bookings.
+        /// </summary>
+        /// <param name="advertId">The ID of the advert to update.</param>
+        /// <returns>
+        /// True if the advert status was updated successfully, false if the advert was not found.
+        /// </returns>
+        /// <remarks>
+        /// - If there are active bookings (Accepted or InProgress), the advert is set to FullyBooked if all periods are covered, otherwise Active.
+        /// - If there are no active bookings and the advert end date is in the past, the advert is set to Expired.
+        /// - If the advert was previously FullyBooked but is no longer, it is set back to Active.
+        /// </remarks>
+        public async Task<bool> UpdateAdvertStatusBasedOnBookingsAsync(int advertId)
+        {
+            var advert = await _context.Adverts
+                .Include(a => a.Bookings)
+                .FirstOrDefaultAsync(a => a.Id == advertId);
+
+            if (advert == null)
+                return false;
+
+            var bookings = advert.Bookings.Where(b =>
+                b.Status == BookingStatus.Accepted ||
+                b.Status == BookingStatus.InProgress).ToList();
+
+            var now = DateTime.UtcNow;
+
+            if (bookings.Any())
+            {
+                var isFullyBooked = IsAdvertFullyBooked(advert, bookings);
+
+                if (isFullyBooked)
+                {
+                    advert.Status = AdvertStatus.FullyBooked;
+                }
+                else
+                {
+                    advert.Status = AdvertStatus.Active;
+                }
+            }
+            else
+            {
+                if (advert.EndDate < now)
+                {
+                    advert.Status = AdvertStatus.Expired;
+                }
+                else if (advert.Status == AdvertStatus.FullyBooked)
+                {
+                    advert.Status = AdvertStatus.Active;
+                }
+            }
+
+            advert.UpdatedAt = now;
+            await _context.SaveChangesAsync();
+
+            return true;
+        }
+        
+        /// <summary>
+        /// Determines if an advert is fully booked based on its bookings.
+        /// An advert is considered fully booked if:
+        /// - The earliest booking starts at or before the advert's start date.
+        /// - The latest booking ends at or after the advert's end date.
+        /// - All bookings are contiguous (no gaps between bookings).
+        /// </summary>
+        /// <param name="advert">The advert to check.</param>
+        /// <param name="bookings">The list of bookings associated with the advert.</param>
+        /// <returns>True if the advert is fully booked, otherwise false.</returns>
+        private bool IsAdvertFullyBooked(Advert advert, List<Booking> bookings)
+        {
+            var sortedBookings = bookings
+                .OrderBy(b => b.StartDate)
+                .ToList();
+
+            if (!sortedBookings.Any())
+                return false;
+
+            if (sortedBookings.First().StartDate > advert.StartDate)
+                return false;
+
+            if (sortedBookings.Last().EndDate < advert.EndDate)
+                return false;
+
+            for (int i = 0; i < sortedBookings.Count - 1; i++)
+            {
+                if (sortedBookings[i].EndDate < sortedBookings[i + 1].StartDate)
+                    return false;
+            }
+
+            return true;
         }
     }
 }

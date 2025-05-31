@@ -35,7 +35,7 @@ public class AdvertRepository : IAdvertRepository
             .Include(a => a.PetAdverts)
             .ThenInclude(pa => pa.Pet)
             .ThenInclude(p => p!.AnimalType)
-            .Where(a => a.Status != AdvertStatus.Cancelled && 
+            .Where(a => a.Status != AdvertStatus.Cancelled &&
                         (isPetSitter ? a.Status == AdvertStatus.PendingOffer : a.Status == AdvertStatus.Pending))
             .OrderByDescending(a => a.CreatedAt)
             .ToListAsync();
@@ -49,18 +49,18 @@ public class AdvertRepository : IAdvertRepository
     public async Task<Advert?> GetAdvertByIdAsync(int id)
     {
         return await _context.Adverts
-            .Include(a => a.User) 
+            .Include(a => a.User)
             .ThenInclude(u => u.Address)
             .ThenInclude(a => a != null ? a.City : null)
             .Include(a => a.PetAdverts)
-                .ThenInclude(pa => pa.Pet)
-                    .ThenInclude(p => p!.User)
+            .ThenInclude(pa => pa.Pet)
+            .ThenInclude(p => p!.User)
             .Include(a => a.PetAdverts)
-                .ThenInclude(pa => pa.Pet)
-                    .ThenInclude(p => p!.AnimalType)
+            .ThenInclude(pa => pa.Pet)
+            .ThenInclude(p => p!.AnimalType)
             .FirstOrDefaultAsync(a => a.Id == id);
     }
-    
+
     /// <summary>
     /// Updates the status of an advert by its ID using a string status value.
     /// </summary>
@@ -217,18 +217,18 @@ public class AdvertRepository : IAdvertRepository
         var existingAdvert = await _context.Adverts
             .Include(a => a.PetAdverts)
             .FirstOrDefaultAsync(a => a.Id == advert.Id);
-            
+
         if (existingAdvert == null)
             throw new InvalidOperationException($"Advert with ID {advert.Id} not found");
-        
+
         existingAdvert.StartDate = DateTime.SpecifyKind(advert.StartDate, DateTimeKind.Utc);
         existingAdvert.EndDate = DateTime.SpecifyKind(advert.EndDate, DateTimeKind.Utc);
         existingAdvert.Amount = advert.Amount;
         existingAdvert.AdditionalInformation = advert.AdditionalInformation;
         existingAdvert.UpdatedAt = DateTime.UtcNow;
-        
+
         _context.PetAdverts.RemoveRange(existingAdvert.PetAdverts);
-        
+
         foreach (var petId in petIds)
         {
             var pet = await _context.Pets.FindAsync(petId);
@@ -243,9 +243,9 @@ public class AdvertRepository : IAdvertRepository
                 });
             }
         }
-        
+
         await _context.SaveChangesAsync();
-        
+
         return await GetAdvertByIdAsync(existingAdvert.Id) ?? existingAdvert;
     }
 
@@ -260,18 +260,18 @@ public class AdvertRepository : IAdvertRepository
         var existingAdvert = await _context.Adverts
             .Include(a => a.PetAdverts)
             .FirstOrDefaultAsync(a => a.Id == advert.Id);
-            
+
         if (existingAdvert == null)
             throw new InvalidOperationException($"Advert with ID {advert.Id} not found");
-        
+
         existingAdvert.StartDate = DateTime.SpecifyKind(advert.StartDate, DateTimeKind.Utc);
         existingAdvert.EndDate = DateTime.SpecifyKind(advert.EndDate, DateTimeKind.Utc);
         existingAdvert.Amount = advert.Amount;
         existingAdvert.AdditionalInformation = advert.AdditionalInformation;
         existingAdvert.UpdatedAt = DateTime.UtcNow;
-        
+
         _context.PetAdverts.RemoveRange(existingAdvert.PetAdverts);
-        
+
         foreach (var animalTypeId in animalTypeIds)
         {
             var petsOfType = await _context.Pets
@@ -290,12 +290,12 @@ public class AdvertRepository : IAdvertRepository
                 });
             }
         }
-        
+
         await _context.SaveChangesAsync();
-        
+
         return await GetAdvertByIdAsync(existingAdvert.Id) ?? existingAdvert;
     }
-    
+
     /// <summary>
     /// Deletes an advert and all its associated entities
     /// </summary>
@@ -315,10 +315,10 @@ public class AdvertRepository : IAdvertRepository
                 return false;
 
             _context.PetAdverts.RemoveRange(advert.PetAdverts);
-            
+
             _context.Adverts.Remove(advert);
             await _context.SaveChangesAsync();
-        
+
             await transaction.CommitAsync();
             return true;
         }
@@ -328,6 +328,7 @@ public class AdvertRepository : IAdvertRepository
             throw;
         }
     }
+
     /// <summary>
     /// Retrieves a filtered list of adverts based on the provided filter criteria.
     /// </summary>
@@ -350,7 +351,7 @@ public class AdvertRepository : IAdvertRepository
 
         if (filter.IsPetSitterOffer.HasValue)
         {
-                query = query.Where(a => (a.Status == AdvertStatus.PendingOffer) == filter.IsPetSitterOffer);
+            query = query.Where(a => (a.Status == AdvertStatus.PendingOffer) == filter.IsPetSitterOffer);
         }
 
         if (filter.MinPrice.HasValue)
@@ -390,24 +391,30 @@ public class AdvertRepository : IAdvertRepository
 
         if (filter.CountryId.HasValue)
         {
-            query = query.Where(a => a.User.Address != null && 
+            query = query.Where(a => a.User.Address != null &&
                                      a.User.Address.City.CountryId == filter.CountryId.Value);
         }
 
         if (!string.IsNullOrEmpty(filter.City))
         {
-            query = query.Where(a => a.User.Address != null && 
+            query = query.Where(a => a.User.Address != null &&
                                      a.User.Address.City.Name.ToLower().Contains(filter.City.ToLower()));
         }
 
-        query = query.Where(a => a.Status != AdvertStatus.Cancelled && 
-                                 (filter.IsPetSitterOffer.HasValue ? 
-                                     (filter.IsPetSitterOffer.Value ? a.Status == AdvertStatus.PendingOffer : a.Status == AdvertStatus.Pending) : 
-                                     (a.Status == AdvertStatus.Pending || a.Status == AdvertStatus.PendingOffer)));
+        query = query.Where(a => a.Status != AdvertStatus.Cancelled
+                                 && a.Status != AdvertStatus.Expired
+                                 && a.Status != AdvertStatus.Archived
+                                 && a.Status != AdvertStatus.FullyBooked &&
+                                 (filter.IsPetSitterOffer.HasValue
+                                     ? (filter.IsPetSitterOffer.Value
+                                         ? a.Status == AdvertStatus.PendingOffer
+                                         : a.Status == AdvertStatus.Pending)
+                                     : (a.Status == AdvertStatus.Pending || a.Status == AdvertStatus.PendingOffer)));
+
 
         return await query.ToListAsync();
     }
-    
+
     public List<Advert> GetAllAdvertsWithUsers()
     {
         return _context.Adverts

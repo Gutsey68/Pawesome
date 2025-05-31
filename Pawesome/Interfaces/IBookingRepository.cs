@@ -19,5 +19,6 @@ namespace Pawesome.Interfaces
         Task<List<Booking>> GetBookingsToAutomaticallyValidateAsync(DateTime validationDeadline);
         public Task<List<Booking>> GetPendingBookingsForUserAdvertsAsync(int userId);
         public Task<List<Booking>> GetActiveBookingsAsync();
+        public Task<bool> UpdateAdvertStatusBasedOnBookingsAsync(int advertId);
     }
 }
