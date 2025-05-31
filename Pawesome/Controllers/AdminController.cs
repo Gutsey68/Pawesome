@@ -63,18 +63,6 @@ namespace Pawesome.Controllers
             var adverts = _advertService.GetAllAdverts();
             return Json(new { data = adverts });
         }
-
-        public IActionResult Bookings()
-        {
-            return View();
-        }
-
-        [HttpGet]
-        public IActionResult GetBookings()
-        {
-            var bookings = _bookingService.GetAllBookings();
-            return Json(new { data = bookings });
-        }
         
         [HttpPost]
         public async Task<IActionResult> BanUser(int id)

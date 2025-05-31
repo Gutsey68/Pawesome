@@ -118,6 +118,43 @@
     height: 3rem;
 }
 
+.button[data-color='info'] {
+    background-color: var(--color-info);
+    color: var(--color-info-foreground);
+    border: 1px solid var(--color-info-border);
+}
+.button[data-color='info']:hover {
+    background-color: color-mix(in srgb, var(--color-info) 80%, transparent);
+}
+
+.button[data-color='error'] {
+    background-color: var(--color-error);
+    color: var(--color-error-foreground);
+    border: 1px solid var(--color-error-border);
+}
+.button[data-color='error']:hover {
+    background-color: color-mix(in srgb, var(--color-error) 80%, transparent);
+}
+
+.button[data-color='warning'] {
+    background-color: var(--color-warning);
+    color: var(--color-warning-foreground);
+    border: 1px solid var(--color-warning-border);
+}
+.button[data-color='warning']:hover {
+    background-color: color-mix(in srgb, var(--color-warning) 80%, transparent);
+}
+
+.button[data-color='success'] {
+    background-color: var(--color-success);
+    color: var(--color-success-foreground);
+    border: 1px solid var(--color-success-border);
+}
+.button[data-color='success']:hover {
+    background-color: color-mix(in srgb, var(--color-success) 80%, transparent);
+}
+
+
 @media (max-width: 768px) {
     .button {
         width: 100%;

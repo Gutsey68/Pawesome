@@ -9,6 +9,35 @@
         <p class="page-description">Gérez les comptes utilisateurs, les rôles et les autorisations.</p>
     </div>
 </div>
+
+<div class="stats-cards">
+    <div class="stat-card total">
+        <div class="stat-label">Total utilisateurs</div>
+        <div class="stat-value" id="totalUsers">0</div>
+    </div>
+    <div class="stat-card active">
+        <div class="stat-label">Utilisateurs actifs</div>
+        <div class="stat-value" id="activeUsers">0</div>
+    </div>
+    <div class="stat-card pending">
+        <div class="stat-label">Suspendu</div>
+        <div class="stat-value" id="pendingUsers">0</div>
+    </div>
+    <div class="stat-card banned">
+        <div class="stat-label">Utilisateurs bannis</div>
+        <div class="stat-value" id="bannedUsers">0</div>
+    </div>
+</div>
+
+<div class="control-bar">
+    <div class="control-actions">
+        <button class="button" id="refreshBtn" data-variant="secondary" data-size="sm">
+            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-refresh-cw mr-2"><polyline points="23 4 23 10 17 10"></polyline><polyline points="1 20 1 14 7 14"></polyline><path d="M3.51 9a9 9 0 0 1 14.85-3.36L23 10M1 14l4.64 4.36A9 9 0 0 0 20.49 15"></path></svg>
+            Rafraîchir
+        </button>
+    </div>
+</div>
+
 <div class="datatable-container">
     <table id="usersTable" class="display responsive nowrap" style="width:100%">
         <thead>
@@ -37,7 +66,6 @@
 
     <script>
         $(document).ready(function () {
-            // Fonction pour mettre à jour les compteurs
             function updateCounters(data) {
                 if (!data || !data.data) return;
 
@@ -68,7 +96,6 @@
                     },
                     error: function (xhr, error, thrown) {
                         console.error('Erreur lors du chargement des données:', error, thrown);
-                        alert('Une erreur est survenue lors du chargement des utilisateurs');
                     }
                 },
                 columns: [
@@ -76,10 +103,9 @@
                     {
                         data: 'fullName',
                         render: function (data, type, row) {
-                            const initial = data.charAt(0).toUpperCase();
                             return `
                             <div class="user-info">
-                                    <div class="user-name">${data}</div>
+                                <div class="user-name">${data}</div>
                             </div>
                         `;
                         }
@@ -113,8 +139,8 @@
                                 case 'Banned':
                                     badge = '<span class="badge" data-variant="error">Banni</span>';
                                     break;
-                                case 'Pending':
-                                    badge = '<span class="badge" data-variant="warning">En attente</span>';
+                                case 'Suspended':
+                                    badge = '<span class="badge" data-variant="warning">Suspendu</span>';
                                     break;
                                 default:
                                     badge = '<span class="badge badge" data-variant="orange">' + data + '</span>';
@@ -142,31 +168,20 @@
                         data: null,
                         render: function (data, type, row) {
                             const banBtn = row.status === 'Banned'
-                                ? `<button class="btn-unban btn-warning button" data-variant="icon" data-id="${row.id}" title="Réactiver">
-                                <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                                    <path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path>
-                                    <polyline points="22 4 12 14.01 9 11.01"></polyline>
-                                </svg>
+                                ? `<button class="btn-unban button" data-size="sm" data-color="warning" data-id="${row.id}" title="Réactiver">
+                                Réactiver
                                </button>`
-                                : `<button class="btn-ban btn-danger button" data-variant="icon" data-id="${row.id}" title="Bannir">
-                                <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                                    <circle cx="12" cy="12" r="10"></circle>
-                                    <path d="m4.9 4.9 14.2 14.2"></path>
-                                </svg>
-                               </button>`;
+                                : `<button class="btn-ban button" data-size="sm" data-color="error" data-id="${row.id}" title="Bannir">
+                                    Bannir
+                                   </button>`;
 
                             return `
                                 <div class="action-buttons">
-                                    <button class="btn-view btn-info button" data-variant="icon" data-id="${row.id}" title="Voir">
-                                        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                                            <path d="M2 12s3-7 10-7 10 7 10 7-3 7-10 7-10-7-10-7Z"></path>
-                                            <circle cx="12" cy="12" r="3"></circle>
-                                        </svg>
+                                    <button class="btn-view button" data-size="sm" data-color="info" data-id="${row.id}" title="Voir">
+                                        Voir
                                     </button>
-                                    <button class="btn-edit btn-primary button" data-variant="icon" data-id="${row.id}" title="Éditer">
-                                        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                                            <path d="M17 3a2.85 2.83 0 1 1 4 4L7.5 20.5 2 22l1.5-5.5Z"></path>
-                                        </svg>
+                                    <button class="btn-edit button" data-size="sm" data-color="warning" data-id="${row.id}" title="Éditer">
+                                        Modifier
                                     </button>
                                     ${banBtn}
                                 </div>
@@ -182,8 +197,19 @@
                 processing: true,
                 order: [[0, 'desc']]
             });
+            $('.filter-badge').click(function() {
+                $('.filter-badge').removeClass('active');
+                $(this).addClass('active');
+                
+                const filter = $(this).data('filter');
+                
+                if (filter === 'all') {
+                    usersTable.column(4).search('').draw();
+                } else {
+                    usersTable.column(4).search(filter, true, false).draw();
+                }
+            });
 
-            // Gérer les actions
             $('#usersTable').on('click', '.btn-view', function () {
                 const userId = $(this).data('id');
                 window.location.href = '/User/Profile/' + userId;
@@ -196,42 +222,28 @@
 
             $('#usersTable').on('click', '.btn-ban', function () {
                 const userId = $(this).data('id');
-                if (confirm('Êtes-vous sûr de vouloir bannir cet utilisateur?')) {
-                    $.ajax({
-                        url: '/Admin/BanUser/' + userId,
-                        type: 'POST',
-                        success: function (result) {
-                            if (result.success) {
-                                usersTable.ajax.reload();
-                            } else {
-                                alert('Erreur lors du bannissement: ' + result.message);
-                            }
-                        },
-                        error: function () {
-                            alert('Une erreur est survenue lors de la communication avec le serveur');
+                $.ajax({
+                    url: '/Admin/BanUser/' + userId,
+                    type: 'POST',
+                    success: function (result) {
+                        if (result.success) {
+                            usersTable.ajax.reload();
                         }
-                    });
-                }
+                    },
+                });
             });
 
             $('#usersTable').on('click', '.btn-unban', function () {
                 const userId = $(this).data('id');
-                if (confirm('Êtes-vous sûr de vouloir réactiver cet utilisateur?')) {
                     $.ajax({
                         url: '/Admin/UnbanUser/' + userId,
                         type: 'POST',
                         success: function (result) {
                             if (result.success) {
                                 usersTable.ajax.reload();
-                            } else {
-                                alert('Erreur lors de la réactivation: ' + result.message);
                             }
                         },
-                        error: function () {
-                            alert('Une erreur est survenue lors de la communication avec le serveur');
-                        }
                     });
-                }
             });
 
             $('#addUserBtn').click(function () {

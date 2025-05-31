@@ -3,66 +3,72 @@
     Layout = "~/Views/Shared/Admin/_AdminLayout.cshtml";
 }
 
-<div class="admin-content">
-    <h1>Gestion des annonces</h1>
-
-    <div class="data-controls">
-        <button id="refreshBtn" class="btn-action">Rafraîchir</button>
+<div class="page-header">
+    <div class="page-header-content">
+        <h1 class="page-title">Gestion des annonces</h1>
+        <p class="page-description">Gérez les annonces publiées sur la plateforme</p>
     </div>
+</div>
 
-    <div class="datatable-container">
-        <table id="advertsTable" class="display" style="width:100%">
-            <thead>
-                <tr>
-                    <th>ID</th>
-                    <th>Propriétaire</th>
-                    <th>Type</th>
-                    <th>Montant</th>
-                    <th>Ville</th>
-                    <th>Dates</th>
-                    <th>Statut</th>
-                    <th>Créé le</th>
-                    <th>Actions</th>
-                </tr>
-            </thead>
-        </table>
+<div class="control-bar">
+    <div class="control-actions">
+        <button class="button" id="refreshBtn" data-variant="secondary" data-size="sm">
+            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-refresh-cw mr-2"><polyline points="23 4 23 10 17 10"></polyline><polyline points="1 20 1 14 7 14"></polyline><path d="M3.51 9a9 9 0 0 1 14.85-3.36L23 10M1 14l4.64 4.36A9 9 0 0 0 20.49 15"></path></svg>
+            Rafraîchir
+        </button>
     </div>
+</div>
+
+<div class="datatable-container">
+    <table id="advertsTable" class="display responsive nowrap" style="width:100%">
+        <thead>
+        <tr>
+            <th>ID</th>
+            <th>Propriétaire</th>
+            <th>Type</th>
+            <th>Montant</th>
+            <th>Ville</th>
+            <th>Dates</th>
+            <th>Statut</th>
+            <th>Créé le</th>
+            <th>Actions</th>
+        </tr>
+        </thead>
+    </table>
 </div>
 
 @section Scripts {
     <link rel="stylesheet" type="text/css" href="https://cdn.datatables.net/1.13.6/css/jquery.dataTables.min.css">
+    <link rel="stylesheet" type="text/css" href="https://cdn.datatables.net/responsive/2.4.1/css/responsive.dataTables.min.css">
     <script type="text/javascript" src="https://cdn.datatables.net/1.13.6/js/jquery.dataTables.min.js"></script>
+    <script type="text/javascript" src="https://cdn.datatables.net/responsive/2.4.1/js/dataTables.responsive.min.js"></script>
 
     <script>
-        $(document).ready(function() {
-            $('#advertsTable').DataTable({
+        $(document).ready(function () {
+            let advertsTable = $('#advertsTable').DataTable({
                 ajax: {
                     url: '@Url.Action("GetAdverts", "Admin")',
                     type: 'GET',
                     dataSrc: 'data',
-                    error: function (xhr, error, thrown) {
-                        console.error('Erreur lors du chargement des données:', error, thrown);
-                        alert('Une erreur est survenue lors du chargement des annonces');
-                    }
                 },
                 columns: [
-                    { data: 'id' },
-                    { data: 'ownerName' },
-                    { data: 'type' },
+                    {data: 'id'},
+                    {data: 'ownerName'},
+                    {data: 'type'},
                     {
                         data: 'amount',
-                        render: function(data) {
-                            return parseFloat(data).toFixed(2) + ' €';
+                        render: function (data) {
+                            return `<span class="price-tag">${parseFloat(data).toFixed(2)} €</span>`;
                         }
                     },
-                    { data: 'city' },
+                    {data: 'city'},
                     {
                         data: null,
-                        render: function(data) {
+                        render: function (data) {
                             try {
                                 const startDate = new Date(data.startDate).toLocaleDateString('fr-FR');
                                 const endDate = new Date(data.endDate).toLocaleDateString('fr-FR');
-                                return startDate + ' au ' + endDate;
+                                return `<div class="date-info"><span>${startDate}</span><span class="time-small">au ${endDate}</span></div>`;
                             } catch (e) {
                                 return 'Non défini';
                             }
@@ -70,9 +76,9 @@
                     },
                     {
                         data: 'status',
-                        render: function(data) {
+                        render: function (data) {
                             let badge = '';
-                            switch(data) {
+                            switch (data) {
                                 case 'Pending':
                                     badge = '<span class="badge" data-variant="warning">En attente</span>';
                                     break;
@@ -83,7 +89,7 @@
                                     badge = '<span class="badge" data-variant="success">Approuvée</span>';
                                     break;
                                 case 'Rejected':
-                                    badge = '<span class="badge" data-variant="danger">Rejetée</span>';
+                                    badge = '<span class="badge" data-variant="error">Rejetée</span>';
                                     break;
                                 case 'Cancelled':
                                     badge = '<span class="badge" data-variant="purple">Annulée</span>';
@@ -96,9 +102,14 @@
                     },
                     {
                         data: 'createdAt',
-                        render: function(data) {
+                        render: function (data) {
                             try {
-                                return new Date(data).toLocaleDateString('fr-FR');
+                                const date = new Date(data);
+                                return `
+                                <div class="date-info">
+                                    <span>${date.toLocaleDateString('fr-FR')}</span>
+                                    <span class="time-small">${date.toLocaleTimeString('fr-FR')}</span>
+                                </div>`;
                             } catch (e) {
                                 return 'Non défini';
                             }
@@ -106,12 +117,11 @@
                     },
                     {
                         data: 'id',
-                        render: function(data) {
+                        render: function (data) {
                             return `
                                 <div class="action-buttons">
-                                    <button class="btn-view" data-id="${data}">Voir</button>
-                                    <button class="btn-edit" data-id="${data}">Modifier</button>
-                                    <button class="btn-delete" data-id="${data}">Supprimer</button>
+                                    <button class="btn-view button" data-color="info" data-size="sm" data-id="${data}">Voir</button>
+                                    <button class="btn-delete button" data-color="error" data-size="sm" data-id="${data}">Supprimer</button>
                                 </div>
                             `;
                         },
@@ -125,39 +135,31 @@
                 processing: true
             });
 
-            // Gérer les actions
-            $('#advertsTable').on('click', '.btn-view', function() {
+            $('.filter-badge').click(function() {
+                $('.filter-badge').removeClass('active');
+                $(this).addClass('active');
+                
+                const filter = $(this).data('filter');
+                
+                if (filter === 'all') {
+                    advertsTable.column(6).search('').draw();
+                } else {
+                    advertsTable.column(6).search(filter).draw();
+                }
+            });
+
+            $('#advertsTable').on('click', '.btn-view', function () {
                 const advertId = $(this).data('id');
                 window.location.href = '/Advert/Details/' + advertId;
             });
 
-            $('#advertsTable').on('click', '.btn-edit', function() {
+            $('#advertsTable').on('click', '.btn-delete', function () {
                 const advertId = $(this).data('id');
-                window.location.href = '/Advert/EditAdvert/' + advertId;
+                window.location.href = '/Advert/ConfirmStatusChange/' + advertId;
             });
 
-            $('#advertsTable').on('click', '.btn-delete', function() {
-                const advertId = $(this).data('id');
-                if (confirm('Êtes-vous sûr de vouloir supprimer cette annonce?')) {
-                    $.ajax({
-                        url: '/Admin/DeleteAdvert/' + advertId,
-                        type: 'POST',
-                        success: function(result) {
-                            if (result.success) {
-                                $('#advertsTable').DataTable().ajax.reload();
-                            } else {
-                                alert('Erreur lors de la suppression: ' + result.message);
-                            }
-                        },
-                        error: function() {
-                            alert('Une erreur est survenue lors de la communication avec le serveur');
-                        }
-                    });
-                }
-            });
-
-            $('#refreshBtn').click(function() {
-                $('#advertsTable').DataTable().ajax.reload();
+            $('#refreshBtn').click(function () {
+                advertsTable.ajax.reload();
             });
         });
     </script>
