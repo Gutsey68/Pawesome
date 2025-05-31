@@ -98,6 +98,15 @@ public class HomeController : Controller
         return View();
     }
     
+    /// <summary>
+    /// Displays the terms and conditions (CGV) page.
+    /// </summary>
+    /// <returns>The CGV view.</returns>
+    public IActionResult Cgv()
+    {
+        return View();
+    }
+    
     [Route("Home/HandleError/{statusCode}")]
     public IActionResult HandleError(int statusCode)
     {
