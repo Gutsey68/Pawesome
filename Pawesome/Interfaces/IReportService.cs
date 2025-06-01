@@ -9,4 +9,5 @@ public interface IReportService
     Task<Report> CreateReportAsync(Report report);
     Task<Report> UpdateReportAsync(Report report);
     Task<Report> ResolveReportAsync(int reportId);
+    Task<int> GetReportsCountAsync();
 }

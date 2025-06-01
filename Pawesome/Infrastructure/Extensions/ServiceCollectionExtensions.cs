@@ -111,6 +111,7 @@ public static class ServiceCollectionExtensions
         services.AddScoped<IAddressRepository, AddressRepository>();
         services.AddScoped<INotificationRepository, NotificationRepository>();
         services.AddScoped<IBookingRepository, BookingRepository>();
+        services.AddScoped<IReportRepository, ReportRepository>();
         
         // Register services
         services.AddScoped<IAuthService, AuthService>();
@@ -125,6 +126,7 @@ public static class ServiceCollectionExtensions
         services.AddScoped<ILocationService, LocationService>();
         services.AddScoped<IBookingService, BookingService>();
         services.AddScoped<IStripeBalanceService, StripeBalanceService>();
+        services.AddScoped<IReportService, ReportService>();
         
         // Register AutoMapper
         services.AddAutoMapper(typeof(Program).Assembly);

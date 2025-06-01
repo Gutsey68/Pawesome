@@ -415,6 +415,11 @@ public class AdvertRepository : IAdvertRepository
         return await query.ToListAsync();
     }
 
+    /// <summary>
+    /// Retrieves all adverts with their associated users, addresses, and pets.
+    /// Excludes adverts where the user is banned.
+    /// </summary>
+    /// <returns>A list of adverts including user, address, and pet information.</returns>
     public List<Advert> GetAllAdvertsWithUsers()
     {
         return _context.Adverts
@@ -427,4 +432,14 @@ public class AdvertRepository : IAdvertRepository
             .Where(a => a.User.Status != Models.Enums.UserStatus.Banned)
             .ToList();
     }
+    
+    /// <summary>
+    /// Returns the total number of adverts in the database.
+    /// </summary>
+    /// <returns>The count of all adverts.</returns>
+    public async Task<int> GetAdvertsCountAsync()
+    {
+        return await _context.Adverts.CountAsync();
+    }
+
 }

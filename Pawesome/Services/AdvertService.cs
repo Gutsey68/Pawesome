@@ -172,11 +172,19 @@ public class AdvertService : IAdvertService
         return await _repository.DeleteAdvertAsync(advertId);
     }
 
-    public int GetAdvertsCount()
+    /// <summary>
+    /// Returns the total number of adverts in the system.
+    /// </summary>
+    /// <returns>The count of all adverts.</returns>
+    public async Task<int> GetAdvertsCountAsync()
     {
-        return _repository.GetAllAdvertsAsync().Result.Count;
+        return await _repository.GetAdvertsCountAsync();
     }
 
+    /// <summary>
+    /// Retrieves all adverts as a list of AdvertDto.
+    /// </summary>
+    /// <returns>A list of AdvertDto representing all adverts in the system.</returns>
     public List<AdvertDto> GetAllAdverts()
     {
         var adverts = _repository.GetAllAdvertsWithUsers();

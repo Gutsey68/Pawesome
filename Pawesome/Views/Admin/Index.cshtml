@@ -35,3 +35,13 @@
         <div class="stat-value">@Model.PetsCount</div>
     </div>
 </div>
+
+<div class="admin-stats">
+    <div class="stat-card total-users">
+        <div class="stat-title">Signalements</div>
+        <div class="stat-value">@Model.ReportsCount</div>
+        <div class="stat-actions">
+            <a asp-action="Reports" class="button" data-size="sm" data-variant="outline">Gérer les signalements</a>
+        </div>
+    </div>
+</div>

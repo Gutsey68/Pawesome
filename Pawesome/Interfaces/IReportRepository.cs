@@ -8,4 +8,5 @@ public interface IReportRepository
     Task<Report?> GetReportByIdAsync(int id);
     Task AddReportAsync(Report report);
     Task UpdateReportAsync(Report report);
+    Task<int> GetReportsCountAsync();
 }

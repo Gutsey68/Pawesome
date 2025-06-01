@@ -1,0 +1,197 @@
+@{
+    ViewData["Title"] = "Gestion des signalements";
+    Layout = "~/Views/Shared/Admin/_AdminLayout.cshtml";
+}
+
+<div class="page-header">
+    <div class="page-header-content">
+        <h1 class="page-title">Gestion des signalements</h1>
+        <p class="page-description">Gérez les signalements d'utilisateurs et prenez les mesures appropriées.</p>
+    </div>
+</div>
+
+<div class="stats-cards">
+    <div class="stat-card total">
+        <div class="stat-label">Total signalements</div>
+        <div class="stat-value" id="totalReports">0</div>
+    </div>
+    <div class="stat-card active">
+        <div class="stat-label">En attente</div>
+        <div class="stat-value" id="pendingReports">0</div>
+    </div>
+    <div class="stat-card pending">
+        <div class="stat-label">Résolus</div>
+        <div class="stat-value" id="resolvedReports">0</div>
+    </div>
+    <div class="stat-card recent">
+        <div class="stat-label">Récents (7j)</div>
+        <div class="stat-value" id="recentReports">0</div>
+    </div>
+</div>
+
+<div class="control-bar">
+    <div class="control-actions">
+        <button class="button" id="refreshBtn" data-variant="secondary" data-size="sm">
+            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-refresh-cw mr-2"><polyline points="23 4 23 10 17 10"></polyline><polyline points="1 20 1 14 7 14"></polyline><path d="M3.51 9a9 9 0 0 1 14.85-3.36L23 10M1 14l4.64 4.36A9 9 0 0 0 20.49 15"></path></svg>
+            Rafraîchir
+        </button>
+    </div>
+</div>
+
+<div class="datatable-container">
+    <table class="table table-striped" id="reportsTable">
+        <thead>
+            <tr>
+                <th>ID</th>
+                <th>Cible</th>
+                <th>Signalé par</th>
+                <th>Date</th>
+                <th>Commentaire</th>
+                <th>Statut</th>
+                <th>Actions</th>
+            </tr>
+        </thead>
+        <tbody>
+        </tbody>
+    </table>
+</div>
+
+@section Scripts {
+    <link rel="stylesheet" type="text/css" href="https://cdn.datatables.net/1.13.6/css/jquery.dataTables.min.css">
+    <link rel="stylesheet" type="text/css"
+          href="https://cdn.datatables.net/responsive/2.4.1/css/responsive.dataTables.min.css">
+    <script type="text/javascript" src="https://cdn.datatables.net/1.13.6/js/jquery.dataTables.min.js"></script>
+    <script type="text/javascript"
+            src="https://cdn.datatables.net/responsive/2.4.1/js/dataTables.responsive.min.js"></script>
+
+<script>
+    $(document).ready(function() {
+        function updateCounters(data) {
+            if (!data || !data.data) return;
+
+            const totalReports = data.data.length;
+            let pendingReports = 0;
+            let resolvedReports = 0;
+            let recentReports = 0;
+            
+            const oneWeekAgo = new Date();
+            oneWeekAgo.setDate(oneWeekAgo.getDate() - 7);
+            
+            data.data.forEach(report => {
+                if (!report.isResolved) pendingReports++;
+                if (report.isResolved) resolvedReports++;
+                
+                const reportDate = new Date(report.createdAt);
+                if (reportDate > oneWeekAgo) recentReports++;
+            });
+
+            $('#totalReports').text(totalReports);
+            $('#pendingReports').text(pendingReports);
+            $('#resolvedReports').text(resolvedReports);
+            $('#recentReports').text(recentReports);
+        }
+        
+        let reportsTable = $('#reportsTable').DataTable({
+            ajax: {
+                url: '@Url.Action("GetReports", "Admin")',
+                type: 'GET',
+                dataSrc: function(json) {
+                    updateCounters(json);
+                    return json.data;
+                }
+            },
+            columns: [
+                { data: 'id' },
+                { 
+                    data: 'targetId',
+                    render: function(data, type, row) {
+                        return `<a href="/User/Profile/${data}" class="link">${data}</a>`;
+                    }
+                },
+                {
+                    data: 'user',
+                    render: function(data) {
+                        if (data) {
+                            return `<div class="user-info">
+                                        <div class="user-name">${data.email || 'N/A'}</div>
+                                    </div>`;
+                        }
+                        return 'Utilisateur supprimé';
+                    }
+                },
+                {
+                    data: 'createdAt',
+                    render: function(data) {
+                        try {
+                            const date = new Date(data);
+                            return `
+                                <div class="date-info">
+                                    <span>${date.toLocaleDateString('fr-FR')}</span>
+                                    <span class="time-small">${date.toLocaleTimeString('fr-FR')}</span>
+                                </div>
+                            `;
+                        } catch (e) {
+                            return 'Date inconnue';
+                        }
+                    }
+                },
+                { data: 'comment' },
+                {
+                    data: 'isResolved',
+                    render: function(data) {
+                        return data ?
+                            '<span class="badge" data-variant="success">Résolu</span>' :
+                            '<span class="badge" data-variant="warning">En attente</span>';
+                    }
+                },
+                {
+                    data: null,
+                    render: function(data) {
+                        var actions = '<div class="action-buttons">';
+
+                        if (!data.isResolved) {
+                            actions += `<button class="button resolve-report" data-size="xs" data-variant="secondary" data-id="${data.id}">Résoudre</button>`;
+                        }
+                        
+                        actions += '</div>';
+                        return actions;
+                    }
+                }
+            ],
+            language: {
+                url: '//cdn.datatables.net/plug-ins/1.11.5/i18n/fr-FR.json'
+            },
+            responsive: true,
+            processing: true,
+            order: [[0, 'desc']]
+        });
+
+        $(document).on('click', '.resolve-report', function() {
+            var id = $(this).data('id');
+
+            if (confirm('Êtes-vous sûr de vouloir marquer ce signalement comme résolu ?')) {
+                $.ajax({
+                    url: '@Url.Action("ResolveReport", "Admin")',
+                    type: 'POST',
+                    data: { id: id },
+                    success: function(response) {
+                        if (response.success) {
+                            alert(response.message);
+                            reportsTable.ajax.reload();
+                        } else {
+                            alert('Erreur : ' + response.message);
+                        }
+                    },
+                    error: function() {
+                        alert('Une erreur est survenue lors de la résolution du signalement.');
+                    }
+                });
+            }
+        });
+        
+        $('#refreshBtn').click(function() {
+            reportsTable.ajax.reload();
+        });
+    });
+</script>
+}

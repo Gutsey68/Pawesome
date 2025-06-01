@@ -1,0 +1,59 @@
+@model Pawesome.Models.ViewModels.CreateReportViewModel
+
+@{
+    ViewData["Title"] = "Signaler un utilisateur";
+}
+
+<main role="main" class="container">
+    <section class="report-section">
+        <h1 class="section-title">Signaler un utilisateur</h1>
+        
+        <div class="report-description">
+            Veuillez nous fournir des détails sur le problème rencontré afin que nous puissions prendre les mesures appropriées.
+        </div>
+        
+        @if (TempData["ErrorMessage"] != null)
+        {
+            <div class="alert mb-4" data-variant="error" role="alert">
+                <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-ban">
+                    <circle cx="12" cy="12" r="10"/>
+                    <path d="m4.9 4.9 14.2 14.2"/>
+                </svg>
+                <div>
+                    <h4>Erreur</h4>
+                    <p>@TempData["ErrorMessage"]</p>
+                </div>
+            </div>
+        }
+        
+        <div class="report-card">
+            <form asp-controller="Report" asp-action="Create" method="post" class="report-form">
+                <input type="hidden" asp-for="TargetId" />
+                <input type="hidden" asp-for="ReportType" />
+
+                <fieldset class="form-group">
+                    <legend>Motif du signalement</legend>
+                    <div class="form-group">
+                        <label asp-for="Comment" class="form-label">Pourquoi signalez-vous cet utilisateur ? <span class="required-indicator">*</span></label>
+                        <textarea asp-for="Comment" class="form-control" rows="5" 
+                                  placeholder="Veuillez décrire le problème en détail..." 
+                                  aria-required="true" 
+                                  data-val="true" 
+                                  data-val-required="Ce champ est requis"></textarea>
+                        <span asp-validation-for="Comment" class="validation-message"></span>
+                        <p class="info-hint">Veuillez fournir autant de détails que possible pour nous aider à traiter votre signalement efficacement.</p>
+                    </div>
+                </fieldset>
+
+                <div class="actions-container">
+                    <a asp-controller="User" asp-action="Profile" asp-route-id="@Model.TargetId" class="button" data-variant="secondary">Annuler</a>
+                    <button type="submit" class="button" data-color="error">Envoyer le signalement</button>
+                </div>
+            </form>
+        </div>
+    </section>
+</main>
+
+@section Scripts {
+    <partial name="_ValidationScriptsPartial" />
+}

@@ -16,5 +16,6 @@ namespace Pawesome.Interfaces
         Task<bool> DeleteAdvertAsync(int advertId);
         Task<IEnumerable<Advert>> GetFilteredAdvertsAsync(AdvertFilterDto filter);
         public List<Advert> GetAllAdvertsWithUsers();
+        Task<int> GetAdvertsCountAsync();
     }
 }

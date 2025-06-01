@@ -10,6 +10,20 @@
             <header class="onboarding-card-header">
                 <h2>Compte de paiement</h2>
             </header>
+            
+            @if (TempData["SuccessMessage"] != null)
+            {
+                <div class="alert mt-4" data-variant="success" role="alert">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-check-circle">
+                        <path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"/>
+                        <polyline points="22 4 12 14.01 9 11.01"/>
+                    </svg>
+                    <div>
+                        <h4>@TempData["SuccessMessage"]</h4>
+                    </div>
+                </div>
+            }
+            
             <div class="onboarding-card-body">
                 <div class="alert mb-4" data-variant="warning" role="alert" aria-labelledby="configuration-alert-heading">
                     <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24"

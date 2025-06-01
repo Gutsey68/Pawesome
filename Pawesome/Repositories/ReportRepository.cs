@@ -27,7 +27,10 @@ public class ReportRepository : IReportRepository
     /// <returns>A collection of all reports.</returns>
     public async Task<IEnumerable<Report>> GetAllReportsAsync()
     {
-        return await _context.Reports.ToListAsync();
+        return await _context.Reports
+            .Include(r => r.User)
+            .OrderByDescending(r => r.CreatedAt)
+            .ToListAsync();
     }
 
     /// <summary>
@@ -60,5 +63,14 @@ public class ReportRepository : IReportRepository
     {
         _context.Reports.Update(report);
         await _context.SaveChangesAsync();
+    }
+    
+    /// <summary>
+    /// Retrieves the total number of reports in the database asynchronously.
+    /// </summary>
+    /// <returns>The total count of reports.</returns>
+    public async Task<int> GetReportsCountAsync()
+    {
+        return await _context.Reports.CountAsync();
     }
 }
