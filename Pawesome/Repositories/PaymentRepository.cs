@@ -142,4 +142,32 @@ public class PaymentRepository : IPaymentRepository
             .Where(p => p.Booking.BookerUserId == userId && p.Booking.AdvertId == advertId)
             .ToListAsync();
     }
+    
+    /// <summary>
+    /// Retrieves a payment by its ID, including related booking, advert, and user details.
+    /// </summary>
+    /// <param name="paymentId">The ID of the payment to retrieve.</param>
+    /// <returns>The payment entity with related details if found, otherwise null.</returns>
+    public async Task<Payment?> GetByIdWithDetailsAsync(int paymentId)
+    {
+        return await _context.Payments
+            .Include(p => p.Booking)
+            .ThenInclude(b => b.Advert)
+            .ThenInclude(a => a.User)
+            .Include(p => p.Booking.BookerUser)
+            .FirstOrDefaultAsync(p => p.Id == paymentId);
+    }
+    
+    /// <summary>
+    /// Updates an existing payment entity in the database.
+    /// </summary>
+    /// <param name="payment">The payment entity to update.</param>
+    /// <returns>The updated payment entity.</returns>
+    public async Task<Payment> UpdatePaymentAsync(Payment payment)
+    {
+        _context.Payments.Update(payment);
+        payment.UpdatedAt = DateTime.UtcNow;
+        await _context.SaveChangesAsync();
+        return payment;
+    }
 }

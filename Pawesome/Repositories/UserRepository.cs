@@ -18,7 +18,7 @@ public class UserRepository : Repository<User>, IUserRepository
     public UserRepository(AppDbContext context) : base(context)
     {
     }
-    
+
     /// <summary>
     /// Checks if a user with the specified email exists
     /// </summary>
@@ -28,7 +28,7 @@ public class UserRepository : Repository<User>, IUserRepository
     {
         return await _context.Users.AnyAsync(u => u.Email == email);
     }
-    
+
     /// <summary>
     /// Retrieves a user by their email address
     /// </summary>
@@ -39,7 +39,7 @@ public class UserRepository : Repository<User>, IUserRepository
         return await _context.Users
             .FirstOrDefaultAsync(u => u.Email == email);
     }
-    
+
     /// <summary>
     /// Retrieves a user by their ID including related address, city, country and pets
     /// </summary>
@@ -57,5 +57,24 @@ public class UserRepository : Repository<User>, IUserRepository
             .ThenInclude(pa => pa.Pet)
             .ThenInclude(p => p!.AnimalType)
             .FirstOrDefaultAsync(u => u.Id == userId);
+    }
+
+    /// <summary>
+    /// Updates the balance of a user by a specified amount.
+    /// </summary>
+    /// <param name="userId">The ID of the user whose balance will be updated.</param>
+    /// <param name="amount">The amount to add (or subtract if negative) to the user's balance.</param>
+    /// <returns>True if the update was successful, false if the user was not found.</returns>
+    public async Task<bool> UpdateUserBalanceAsync(int userId, decimal amount)
+    {
+        var user = await _context.Users.FindAsync(userId);
+        if (user == null)
+            return false;
+
+        user.BalanceAccount += amount;
+        user.UpdatedAt = DateTime.UtcNow;
+
+        await _context.SaveChangesAsync();
+        return true;
     }
 }

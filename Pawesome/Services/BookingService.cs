@@ -17,6 +17,7 @@ namespace Pawesome.Services
         private readonly IAdvertService _advertService;
         private readonly IPaymentService _paymentService;
         private readonly INotificationService _notificationService;
+        private readonly IStripeBalanceService _balanceService;
         private readonly IUserRepository _userRepository;
         private readonly IMapper _mapper;
         private readonly ILogger<BookingService> _logger;
@@ -28,6 +29,7 @@ namespace Pawesome.Services
         /// <param name="advertService">Service for advert operations</param>
         /// <param name="paymentService">Service for payment operations</param>
         /// <param name="notificationService">Service for notification operations</param>
+        /// <param name="balanceService">Service for balance operations</param>
         /// <param name="userRepository">Repository for user operations</param>
         /// <param name="mapper">AutoMapper instance for object mapping</param>
         /// <param name="logger">Logger instance</param>
@@ -35,6 +37,7 @@ namespace Pawesome.Services
             IBookingRepository bookingRepository,
             IAdvertService advertService,
             IPaymentService paymentService,
+            IStripeBalanceService balanceService,
             INotificationService notificationService,
             IUserRepository userRepository,
             IMapper mapper,
@@ -43,6 +46,7 @@ namespace Pawesome.Services
             _bookingRepository = bookingRepository;
             _advertService = advertService;
             _paymentService = paymentService;
+            _balanceService = balanceService;
             _notificationService = notificationService;
             _userRepository = userRepository;
             _mapper = mapper;
@@ -120,12 +124,12 @@ namespace Pawesome.Services
                     throw new InvalidOperationException("La date de début doit être dans le futur.");
                 }
 
-                if (createDto.EndDate <= createDto.StartDate)
+                if (createDto.EndDate.Date <= createDto.StartDate.Date)
                 {
                     throw new InvalidOperationException("La date de fin doit être après la date de début.");
                 }
 
-                if (createDto.StartDate < advert.StartDate || createDto.EndDate > advert.EndDate)
+                if (createDto.StartDate.Date < advert.StartDate.Date || createDto.EndDate.Date > advert.EndDate.Date)
                 {
                     throw new InvalidOperationException(
                         "Les dates choisies sont en dehors de la disponibilité du pet sitter.");
@@ -192,7 +196,7 @@ namespace Pawesome.Services
                 if (result)
                 {
                     await UpdateAdvertStatusAsync(advertId);
-                    
+
                     var statusMessage = status switch
                     {
                         BookingStatus.Accepted => "acceptée",
@@ -271,45 +275,29 @@ namespace Pawesome.Services
             {
                 var booking = await _bookingRepository.GetBookingByIdWithDetailsAsync(bookingId);
                 if (booking == null)
-                {
                     return false;
+
+                var payment = booking.Payments
+                    .OrderByDescending(p => p.CreatedAt)
+                    .FirstOrDefault();
+
+                bool paymentSuccess = true;
+                if (payment != null && payment.Status == PaymentStatus.Authorized)
+                {
+                    paymentSuccess = await _paymentService.FinalizeBookingPaymentAsync(bookingId);
+                    if (!paymentSuccess)
+                        return false;
+                
+                    payment.Status = PaymentStatus.Completed;
+                    payment.UpdatedAt = DateTime.UtcNow;
+
+                    await _balanceService.UpdateLocalBalanceFromStripeAsync(booking.Advert.UserId);
+            
+                    await _bookingRepository.SaveChangesAsync();
                 }
 
-                var allowedStatuses = new[] { 
-                    BookingStatus.Accepted, 
-                    BookingStatus.InProgress, 
-                    BookingStatus.Completed 
-                };
-        
-                if (!allowedStatuses.Contains(booking.Status))
-                {
-                    _logger.LogWarning("Tentative de validation d'une réservation avec un statut non autorisé: {Status}", booking.Status);
-                    return false;
-                }
-        
                 var result = await _bookingRepository.ValidateBookingAsync(bookingId);
-        
-                if (result)
-                {
-                    await UpdateAdvertStatusAsync(booking.AdvertId);
-                    
-                    var payment = booking.Payments
-                        .OrderByDescending(p => p.CreatedAt)
-                        .FirstOrDefault();
-            
-                    if (payment?.PaymentIntentId != null)
-                    {
-                        await _paymentService.CapturePaymentAsync(payment.PaymentIntentId);
-                    }
-            
-                    await CreateAndSendNotificationAsync(
-                        booking.Advert.UserId,
-                        NotificationType.BookingValidated,
-                        $"Réservation #{bookingId} validée",
-                        "Le client a validé la prestation. Votre paiement a été traité."
-                    );
-                }
-        
+
                 return result;
             }
             catch (Exception ex)
@@ -340,7 +328,7 @@ namespace Pawesome.Services
                 if (result)
                 {
                     await UpdateAdvertStatusAsync(booking.AdvertId);
-                    
+
                     await CreateAndSendNotificationAsync(
                         booking.BookerUserId,
                         NotificationType.BookingDisputed,
@@ -386,42 +374,59 @@ namespace Pawesome.Services
                 var bookingsToValidate =
                     await _bookingRepository.GetBookingsToAutomaticallyValidateAsync(validationDeadline);
 
+                if (!bookingsToValidate.Any())
+                    return true;
+
+                _logger.LogInformation("{Count} réservation(s) à valider automatiquement", bookingsToValidate.Count);
+
                 foreach (var booking in bookingsToValidate)
                 {
-                    booking.Status = BookingStatus.Completed;
-                    booking.IsValidated = true;
-                    booking.ValidatedAt = DateTime.UtcNow;
-                    booking.UpdatedAt = DateTime.UtcNow;
+                    var payment = booking.Payments.FirstOrDefault(p => p.Status == PaymentStatus.Authorized);
 
-                    var payment = booking.Payments
-                        .OrderByDescending(p => p.CreatedAt)
-                        .FirstOrDefault();
-
-                    if (payment?.PaymentIntentId != null)
+                    if (payment != null)
                     {
-                        await _paymentService.CapturePaymentAsync(payment.PaymentIntentId);
-                    }
+                        var success = await _paymentService.FinalizeBookingPaymentAsync(payment.Id);
 
-                    await CreateAndSendNotificationAsync(
-                        booking.BookerUserId,
-                        NotificationType.BookingValidated,
-                        $"Validation automatique de la réservation #{booking.Id}",
-                        "La réservation a été validée automatiquement après 3 jours sans action."
-                    );
+                        if (success)
+                        {
+                            _logger.LogInformation(
+                                "Validation automatique réussie pour la réservation {BookingId}, paiement {PaymentId}",
+                                booking.Id, payment.Id);
 
-                    await CreateAndSendNotificationAsync(
-                        booking.Advert.UserId,
-                        NotificationType.BookingValidated,
-                        $"Validation automatique de la réservation #{booking.Id}",
-                        "La réservation a été validée automatiquement et votre paiement a été traité."
-                    );
-                }
+                            await _bookingRepository.ValidateBookingAsync(booking.Id);
 
-                if (bookingsToValidate.Any())
-                {
-                    foreach (var booking in bookingsToValidate)
-                    {
-                        await _bookingRepository.UpdateAsync(booking);
+                            await _notificationService.CreateNotificationAsync(new Notification
+                            {
+                                UserId = booking.BookerUserId,
+                                Title = "Réservation validée automatiquement",
+                                Message =
+                                    $"Votre réservation du {booking.StartDate:dd/MM/yyyy} au {booking.EndDate:dd/MM/yyyy} a été validée automatiquement.",
+                                Type = NotificationType.BookingStatusChange,
+                                IsRead = false,
+                                CreatedAt = DateTime.UtcNow,
+                                UpdatedAt = DateTime.UtcNow,
+                                User = booking.BookerUser
+                            });
+
+                            await _notificationService.CreateNotificationAsync(new Notification
+                            {
+                                UserId = booking.Advert.UserId,
+                                Title = "Paiement reçu",
+                                Message =
+                                    $"Le paiement pour la réservation du {booking.StartDate:dd/MM/yyyy} au {booking.EndDate:dd/MM/yyyy} a été effectué.",
+                                Type = NotificationType.BookingValidated,
+                                IsRead = false,
+                                CreatedAt = DateTime.UtcNow,
+                                UpdatedAt = DateTime.UtcNow,
+                                User = booking.Advert.User
+                            });
+                        }
+                        else
+                        {
+                            _logger.LogWarning(
+                                "Échec de la validation automatique pour la réservation {BookingId}, paiement {PaymentId}",
+                                booking.Id, payment.Id);
+                        }
                     }
                 }
 
@@ -553,7 +558,7 @@ namespace Pawesome.Services
                 var today = DateTime.UtcNow;
                 var currentStatus = booking.Status;
                 var hasChanged = false;
-                
+
                 if (booking.Status == BookingStatus.Accepted && today.Date >= booking.StartDate.Date)
                 {
                     booking.Status = BookingStatus.InProgress;
@@ -563,7 +568,7 @@ namespace Pawesome.Services
                     await CreateAndSendNotificationAsync(
                         booking.BookerUserId,
                         NotificationType.BookingStatusChanged,
-                        $"Réservation #{bookingId} commencée",
+                        $"Réservation commencée",
                         "La garde de votre animal a commencé automatiquement selon les dates prévues."
                     );
                 }
@@ -576,7 +581,7 @@ namespace Pawesome.Services
                     await CreateAndSendNotificationAsync(
                         booking.BookerUserId,
                         NotificationType.BookingStatusChanged,
-                        $"Réservation #{bookingId} terminée",
+                        $"Réservation terminée",
                         "La garde de votre animal est terminée selon les dates prévues. N'oubliez pas de valider la prestation."
                     );
                 }
@@ -598,7 +603,7 @@ namespace Pawesome.Services
                 return false;
             }
         }
-        
+
         /// <summary>
         /// Updates the status of all active bookings based on their start and end dates
         /// </summary>
@@ -634,7 +639,7 @@ namespace Pawesome.Services
                 return 0;
             }
         }
-        
+
         /// <summary>
         /// Updates the status of an advert based on its associated bookings.
         /// </summary>

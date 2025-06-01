@@ -434,3 +434,7 @@ nav ul {
     text-align: center;
     padding: var(--space-3);
 }
+
+.advert-link, .search-button {
+    color: var(--color-primary-11);
+}

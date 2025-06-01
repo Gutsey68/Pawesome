@@ -416,6 +416,9 @@
                         <span class="info-value">@Model.BalanceAccount.ToString("C")</span>
                     </div>
                     <div class="info-item">
+                        <a asp-controller="Balance" asp-action="Index" class="underline">Voir mon solde</a>
+                    </div>
+                    <div class="info-item">
                         <span class="info-label">Membre depuis</span>
                         <span class="info-value">@Model.CreatedAt.ToString("d MMMM yyyy")</span>
                     </div>

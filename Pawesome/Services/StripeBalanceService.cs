@@ -45,23 +45,28 @@ namespace Pawesome.Services
             try
             {
                 var user = await _userRepository.GetByIdAsync(userId);
-                if (user == null || string.IsNullOrEmpty(user.StripeAccountId) || !user.IsOnboardingCompleted)
+                if (user == null || string.IsNullOrEmpty(user.StripeAccountId) || !user.IsStripeOnboardingCompleted)
                 {
+                    _logger.LogWarning("Impossible de récupérer le solde: utilisateur {UserId} non trouvé ou compte Stripe non configuré", userId);
                     return 0;
                 }
-                
+
                 var balanceService = new BalanceService();
                 var requestOptions = new RequestOptions
                 {
                     StripeAccount = user.StripeAccountId
                 };
-                
+
                 var balance = await balanceService.GetAsync(requestOptions);
-                
+        
                 var availableBalance = balance.Available
-                    .Find(b => b.Currency == "eur")?.Amount ?? 0;
-                
-                return availableBalance / 100m;
+                    .FirstOrDefault(b => b.Currency == "eur")?.Amount ?? 0;
+        
+                decimal balanceInEuros = availableBalance / 100m;
+
+                _logger.LogInformation("Solde Stripe récupéré pour l'utilisateur {UserId}: {Balance}€", userId, balanceInEuros);
+
+                return balanceInEuros;
             }
             catch (StripeException ex)
             {
@@ -70,7 +75,7 @@ namespace Pawesome.Services
             }
             catch (Exception ex)
             {
-                _logger.LogError(ex, "Erreur lors de la récupération du solde pour l'utilisateur {UserId}", userId);
+                _logger.LogError(ex, "Erreur lors de la récupération du solde Stripe pour l'utilisateur {UserId}", userId);
                 return 0;
             }
         }
@@ -121,7 +126,6 @@ namespace Pawesome.Services
                     throw new InvalidOperationException("Utilisateur non trouvé");
                 }
 
-                // Create a Stripe Connect account if it doesn't exist
                 if (string.IsNullOrEmpty(user.StripeAccountId))
                 {
                     var accountService = new AccountService();
@@ -185,7 +189,9 @@ namespace Pawesome.Services
                 if (isCompleted && !user.IsStripeOnboardingCompleted)
                 {
                     user.IsStripeOnboardingCompleted = true;
+                    user.IsOnboardingCompleted = true;
                     await _userRepository.UpdateAsync(user);
+                    await _userRepository.SaveChangesAsync();
 
                     await _notificationService.CreateNotificationAsync(new Models.Entities.Notification
                     {
@@ -316,6 +322,41 @@ namespace Pawesome.Services
             {
                 _logger.LogError(ex, "Erreur lors de la récupération de l'historique des versements pour l'utilisateur {UserId}", userId);
                 return new List<PayoutHistoryViewModel>();
+            }
+        }
+        
+        /// <summary>
+        /// Updates the user's local balance from the Stripe balance
+        /// </summary>
+        /// <param name="userId">The user's identifier</param>
+        /// <returns>The updated balance</returns>
+        public async Task<decimal> UpdateLocalBalanceFromStripeAsync(int userId)
+        {
+            try
+            {
+                var stripeBalance = await GetUserBalanceAsync(userId);
+        
+                var user = await _userRepository.GetByIdAsync(userId);
+                if (user == null)
+                {
+                    _logger.LogWarning("Impossible de mettre à jour le solde: utilisateur {UserId} non trouvé", userId);
+                    return 0;
+                }
+        
+                user.BalanceAccount = stripeBalance;
+                user.UpdatedAt = DateTime.UtcNow;
+        
+                await _userRepository.UpdateAsync(user);
+                await _userRepository.SaveChangesAsync();
+        
+                _logger.LogInformation("Solde local mis à jour pour l'utilisateur {UserId}: {Balance}€", userId, stripeBalance);
+        
+                return stripeBalance;
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, "Erreur lors de la mise à jour du solde local depuis Stripe pour l'utilisateur {UserId}", userId);
+                return 0;
             }
         }
     }

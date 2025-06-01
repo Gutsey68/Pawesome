@@ -184,8 +184,9 @@ namespace Pawesome.Controllers
                 PaymentDate = DateTime.UtcNow,
                 IsAutoAccepted = true
             };
-    
-            return View(model);
+            
+            TempData["SuccessMessage"] = "Paiement réussi ! Votre réservation a été créée avec succès.";
+            return RedirectToAction("Details", "Booking", new { id = payment.BookingId });
         }
 
         /// <summary>

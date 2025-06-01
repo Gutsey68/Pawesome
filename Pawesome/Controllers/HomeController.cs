@@ -27,10 +27,6 @@ public class HomeController : Controller
     /// <returns>The index view</returns>
     public IActionResult Index()
     {
-        if (User.Identity?.IsAuthenticated == true)
-        {
-            return RedirectToAction("", "dashboard");
-        }
         
         var model = new List<PetCartViewModel>
         {

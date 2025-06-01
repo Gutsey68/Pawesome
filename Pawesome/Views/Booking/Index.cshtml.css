@@ -1,5 +1,6 @@
 .booking-container {
     max-width: 60rem;
+    min-width: 40rem;
     margin: 0 auto;
     padding: var(--space-4) var(--space-4);
 }

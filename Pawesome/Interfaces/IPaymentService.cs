@@ -12,5 +12,6 @@ namespace Pawesome.Interfaces
         Task<bool> CancelPaymentAuthorizationAsync(string paymentIntentId);
         Task<PaymentDto?> GetPaymentByBookingIdAsync(int bookingId);
         Task<bool> HandleStripeWebhookAsync(string json, string signature, string webhookSecret);
+        public Task<bool> FinalizeBookingPaymentAsync(int bookingId);
     }
 }

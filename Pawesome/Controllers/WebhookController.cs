@@ -63,17 +63,17 @@ public class WebhookController : Controller
     public async Task<IActionResult> ValidateBooking(int bookingId)
     {
         var success = await _bookingService.ValidateBookingAsync(bookingId);
-        
+    
         if (success)
         {
             TempData["SuccessMessage"] = "Le service a été validé et le paiement capturé avec succès.";
-            return RedirectToAction("Details", "Booking", new { id = bookingId });
         }
         else
         {
             TempData["ErrorMessage"] = "Une erreur s'est produite lors de la validation du service.";
-            return RedirectToAction("Details", "Booking", new { id = bookingId });
         }
+    
+        return RedirectToAction("Details", "Booking", new { id = bookingId });
     }
     
     /// <summary>

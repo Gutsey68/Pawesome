@@ -8,4 +8,5 @@ public interface IStripeBalanceService
     Task<bool> CheckOnboardingStatusAsync(int userId);
     Task<string> CreatePayoutLinkAsync(int userId, decimal amount);
     Task<List<Models.ViewModels.Balance.PayoutHistoryViewModel>> GetUserPayoutHistoryAsync(int userId);
+    public Task<decimal> UpdateLocalBalanceFromStripeAsync(int userId);
 }

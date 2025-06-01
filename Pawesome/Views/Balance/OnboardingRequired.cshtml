@@ -2,37 +2,46 @@
     ViewData["Title"] = "Configuration requise";
 }
 
-<main class="container my-5">
-    <div class="row">
-        <div class="col-md-8 offset-md-2">
-            <div class="card">
-                <div class="card-header bg-primary text-white">
-                    <h2 class="mb-0">Configuration requise</h2>
-                </div>
-                <div class="card-body">
-                    <div class="alert alert-warning mb-4">
-                        <h4 class="alert-heading">Configuration de votre compte de paiement requise</h4>
+<main class="container onboarding-container" role="main">
+    <section class="onboarding-section">
+        <h1 class="section-title">Configuration requise</h1>
+        
+        <article class="onboarding-card">
+            <header class="onboarding-card-header">
+                <h2>Compte de paiement</h2>
+            </header>
+            <div class="onboarding-card-body">
+                <div class="alert mb-4" data-variant="warning" role="alert" aria-labelledby="configuration-alert-heading">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24"
+                         fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
+                         stroke-linejoin="round" class="lucide lucide-alert-triangle" aria-hidden="true">
+                        <path d="m21.73 18-8-14a2 2 0 0 0-3.48 0l-8 14A2 2 0 0 0 4 21h16a2 2 0 0 0 1.73-3Z"/>
+                        <path d="M12 9v4"/>
+                        <path d="M12 17h.01"/>
+                    </svg>
+                    <div>
+                        <h4 id="configuration-alert-heading" class="alert-heading">Configuration de votre compte de paiement requise</h4>
                         <p>Pour recevoir vos paiements, vous devez finaliser la configuration de votre compte Stripe.</p>
                     </div>
-                    
-                    <p>Avant de pouvoir recevoir des paiements sur votre compte bancaire, vous devez compléter la configuration 
-                        de votre compte Stripe. Cette configuration est nécessaire pour vérifier votre identité et sécuriser les transactions.</p>
-                    
-                    <p>Ce processus est rapide et ne prend que quelques minutes. Vous aurez besoin de :</p>
-                    
-                    <ul>
-                        <li>Une pièce d'identité valide</li>
-                        <li>Vos coordonnées bancaires</li>
-                        <li>Votre adresse</li>
-                    </ul>
-                    
-                    <div class="text-center mt-4">
-                        <a asp-action="SetupAccount" class="button" data-variant="primary" data-size="lg">
-                            Configurer mon compte de paiement
-                        </a>
-                    </div>
+                </div>
+                
+                <p>Avant de pouvoir recevoir des paiements sur votre compte bancaire, vous devez compléter la configuration 
+                    de votre compte Stripe. Cette configuration est nécessaire pour vérifier votre identité et sécuriser les transactions.</p>
+                
+                <p>Ce processus est rapide et ne prend que quelques minutes. Vous aurez besoin de :</p>
+                
+                <ul>
+                    <li>- Une pièce d'identité valide</li>
+                    <li>- Vos coordonnées bancaires</li>
+                    <li>- Votre adresse</li>
+                </ul>
+                
+                <div class="actions-container">
+                    <a asp-action="SetupAccount" class="button" data-variant="primary" data-size="lg" role="button">
+                        Configurer mon compte de paiement
+                    </a>
                 </div>
             </div>
-        </div>
-    </div>
+        </article>
+    </section>
 </main>

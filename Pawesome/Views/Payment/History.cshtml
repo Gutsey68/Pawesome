@@ -6,8 +6,20 @@
 }
 
 <main role="main" class="history-container">
-    <h1 class="section-title">Historique de vos paiements</h1>
-    <p class="history-subtitle">Retrouvez l'ensemble de vos transactions et réservations</p>
+    <div class="header-section">
+        <div>
+            <h1 class="section-title">Historique de vos paiements</h1>
+            <p class="history-subtitle">Retrouvez l'ensemble de vos transactions et réservations</p>
+        </div>
+        <a asp-controller="Balance" asp-action="Index" class="button" data-variant="primary" data-size="md">
+            <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-wallet mr-2">
+                <path d="M21 12V7H5a2 2 0 0 1 0-4h14v4"/>
+                <path d="M3 5v14a2 2 0 0 0 2 2h16v-5"/>
+                <path d="M18 12a2 2 0 0 0 0 4h4v-4Z"/>
+            </svg>
+            Voir mon solde
+        </a>
+    </div>
     
     <div class="history-card">
         @if (Model.Any())
@@ -18,16 +30,31 @@
                     <article class="payment-item">
                         <div class="payment-header">
                             <div class="payment-title">
-                                <h3>@(payment.IsPetSitter ? "Offre de pet sitting" : "Demande de pet sitting")</h3>
-                                <span class="payment-date">Transaction du @payment.CreatedAt.ToString("dd/MM/yyyy à HH:mm")</span>
+                                <h3>@(payment.IsPetSitter ? "Offre de pet-sitting" : "Réservation de pet-sitting")</h3>
+                                <span class="payment-date">@payment.CreatedAt.ToString("dd/MM/yyyy HH:mm")</span>
                             </div>
-                            <div class="payment-badge @payment.Status.ToLower()">@GetStatusLabel(payment.Status)</div>
+                            <span class="badge" data-variant="@GetStatusVariant(payment.Status)">
+                                @GetStatusText(payment.Status)
+                            </span>
                         </div>
-                        
                         <div class="payment-content">
                             <div class="payment-details">
                                 <div class="detail-group">
-                                    <span class="label">
+                                    <div class="label">
+                                        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-tag">
+                                            <path d="M12 2H2v10l9.29 9.29c.94.94 2.48.94 3.42 0l6.58-6.58c.94-.94.94-2.48 0-3.42L12 2Z"/>
+                                            <path d="M7 7h.01"/>
+                                        </svg>
+                                        Annonce ID
+                                    </div>
+                                    <div class="value">
+                                        <a asp-controller="Advert" asp-action="Details" asp-route-id="@payment.AdvertId">
+                                            #@payment.AdvertId
+                                        </a>
+                                    </div>
+                                </div>
+                                <div class="detail-group">
+                                    <div class="label">
                                         <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-calendar">
                                             <rect width="18" height="18" x="3" y="4" rx="2" ry="2"/>
                                             <line x1="16" x2="16" y1="2" y2="6"/>
@@ -35,52 +62,42 @@
                                             <line x1="3" x2="21" y1="10" y2="10"/>
                                         </svg>
                                         Période
-                                    </span>
-                                    <span class="value">Du @payment.StartDate.ToString("dd/MM/yyyy") au @payment.EndDate.ToString("dd/MM/yyyy")</span>
+                                    </div>
+                                    <div class="value">@payment.StartDate.ToString("dd/MM/yyyy") - @payment.EndDate.ToString("dd/MM/yyyy")</div>
                                 </div>
+                            </div>
+                            <div class="payment-details">
                                 <div class="detail-group">
-                                    <span class="label">
-                                        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-euro">
-                                            <path d="M4 10h12"/>
-                                            <path d="M4 14h9"/>
-                                            <path d="M19 6a7.7 7.7 0 0 0-5.2-2A7.9 7.9 0 0 0 6 12c0 4.4 3.5 8 7.8 8 2 0 3.8-.8 5.2-2"/>
+                                    <div class="label">
+                                        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-receipt">
+                                            <path d="M4 2v20l2-1 2 1 2-1 2 1 2-1 2 1 2-1 2 1V2l-2 1-2-1-2 1-2-1-2 1-2-1-2 1-2-1Z"/>
+                                            <path d="M16 8h-6a2 2 0 1 0 0 4h4a2 2 0 1 1 0 4H8"/>
+                                            <path d="M12 17.5v-11"/>
                                         </svg>
                                         Montant
-                                    </span>
-                                    <span class="value price">@payment.Amount.ToString("C")</span>
+                                    </div>
+                                    <div class="value price">@payment.Amount.ToString("C")</div>
                                 </div>
+                                @if (!string.IsNullOrEmpty(payment.SessionId))
+                                {
+                                    <div class="detail-group payment-reference">
+                                        <div class="label">
+                                            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-hash">
+                                                <line x1="4" x2="20" y1="9" y2="9"/>
+                                                <line x1="4" x2="20" y1="15" y2="15"/>
+                                                <line x1="10" x2="8" y1="3" y2="21"/>
+                                                <line x1="16" x2="14" y1="3" y2="21"/>
+                                            </svg>
+                                            Référence de paiement
+                                        </div>
+                                        <div class="value reference">@payment.SessionId</div>
+                                    </div>
+                                }
                             </div>
-                            
-                            <div class="payment-reference">
-                                <div class="detail-group">
-                                    <span class="label">
-                                        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-hash">
-                                            <line x1="4" x2="20" y1="9" y2="9"/>
-                                            <line x1="4" x2="20" y1="15" y2="15"/>
-                                            <line x1="10" x2="8" y1="3" y2="21"/>
-                                            <line x1="16" x2="14" y1="3" y2="21"/>
-                                        </svg>
-                                        Référence
-                                    </span>
-                                    <span class="value reference">@payment.SessionId</span>
-                                </div>
-                            </div>
-                            
                             <div class="payment-actions">
-                                <a asp-controller="Booking" asp-action="Details" asp-route-id="@payment.Id" class="button" data-variant="secondary" data-size="sm">
-                                    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-clipboard-list mr-2">
-                                        <rect width="8" height="4" x="8" y="2" rx="1" ry="1"/>
-                                        <path d="M16 4h2a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2V6a2 2 0 0 1 2-2h2"/>
-                                        <path d="M12 11h4"/>
-                                        <path d="M12 16h4"/>
-                                        <path d="M8 11h.01"/>
-                                        <path d="M8 16h.01"/>
-                                    </svg>
-                                    Détails réservation
-                                </a>
                                 <a asp-controller="Advert" asp-action="Details" asp-route-id="@payment.AdvertId" class="button" data-variant="outline" data-size="sm">
-                                    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-eye mr-2">
-                                        <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/>
+                                    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-eye">
+                                        <path d="M2 12s3-7 10-7 10 7 10 7-3 7-10 7-10-7-10-7Z"/>
                                         <circle cx="12" cy="12" r="3"/>
                                     </svg>
                                     Voir l'annonce
@@ -92,7 +109,7 @@
             </div>
             <div class="actions-container">
                 <a asp-controller="Home" asp-action="Index" class="button" data-variant="outline" data-size="md">
-                    <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-arrow-left" style="margin-right: var(--space-2);">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-arrow-left mr-2">
                         <path d="m12 19-7-7 7-7"/>
                         <path d="M19 12H5"/>
                     </svg>
@@ -102,7 +119,7 @@
         }
         else
         {
-            <div class="empty-state">
+            <div class="empty-state2">
                 <div class="empty-icon">
                     <svg xmlns="http://www.w3.org/2000/svg" width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-credit-card">
                         <rect width="20" height="14" x="2" y="5" rx="2"/>
@@ -113,14 +130,14 @@
                 <p>Vous n'avez pas encore effectué de paiement sur notre plateforme.</p>
                 <div class="payment-actions">
                     <a asp-controller="Advert" asp-action="Index" class="button" data-variant="primary" data-size="md">
-                        <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-search" style="margin-right: var(--space-2);">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-search mr-2">
                             <circle cx="11" cy="11" r="8"/>
                             <path d="m21 21-4.3-4.3"/>
                         </svg>
                         Explorer les annonces
                     </a>
                     <a asp-controller="Home" asp-action="Index" class="button" data-variant="outline" data-size="md">
-                        <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-home" style="margin-right: var(--space-2);">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-home mr-2">
                             <path d="m3 9 9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/>
                             <polyline points="9 22 9 12 15 12 15 22"/>
                         </svg>
@@ -133,12 +150,26 @@
 </main>
 
 @functions {
-    string GetStatusLabel(string status)
+    private string GetStatusVariant(string status)
     {
         return status.ToLower() switch
         {
+            "completed" => "success",
+            "paid" => "success",
+            "pending" => "warning",
+            "failed" => "error",
+            "refunded" => "info",
+            _ => "secondary"
+        };
+    }
+
+    private string GetStatusText(string status)
+    {
+        return status.ToLower() switch
+        {
+            "completed" => "Complété",
+            "paid" => "Payé",
             "pending" => "En attente",
-            "completed" => "Confirmé",
             "failed" => "Échoué",
             "refunded" => "Remboursé",
             _ => status

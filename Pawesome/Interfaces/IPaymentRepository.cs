@@ -10,4 +10,6 @@ public interface IPaymentRepository
     Task<List<Payment>> GetUserPaymentsAsync(int userId);
     Task<Payment?> UpdatePaymentStatusAsync(string sessionId, PaymentStatus status, string? paymentIntentId = null);
     Task<List<Payment>> GetPaymentsByUserAndAdvertAsync(int userId, int advertId);
+    public Task<Payment?> GetByIdWithDetailsAsync(int paymentId);
+    Task<Payment> UpdatePaymentAsync(Payment payment);
 }

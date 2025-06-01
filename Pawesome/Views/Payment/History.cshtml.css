@@ -1,7 +1,15 @@
 .history-container {
-    max-width: 50rem;
+    max-width: 60rem;
+    min-width: 50rem;
     margin: 0 auto var(--space-10) auto;
     padding: var(--space-4) 0;
+}
+
+.header-section {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: var(--space-4);
 }
 
 .section-title {
@@ -13,7 +21,7 @@
 
 .history-subtitle {
     color: var(--color-primary-11);
-    margin-bottom: var(--space-6);
+    margin-bottom: var(--space-2);
     font-size: var(--font-size-md);
 }
 
@@ -165,6 +173,12 @@
     justify-content: flex-end;
     margin-top: var(--space-2);
     gap: var(--space-2);
+    flex-wrap: wrap;
+}
+
+.payment-actions .button {
+    display: flex;
+    align-items: center;
 }
 
 .payment-actions .button {
@@ -173,7 +187,7 @@
     gap: var(--space-2);
 }
 
-.empty-state {
+.empty-state2 {
     text-align: center;
     padding: var(--space-8) var(--space-4);
     display: flex;
@@ -191,16 +205,15 @@
     align-items: center;
     justify-content: center;
     color: var(--color-primary-9);
-    margin-bottom: var(--space-2);
 }
 
-.empty-state h2 {
+.empty-state2 h2 {
     font-size: var(--font-size-xl);
     color: var(--color-primary-12);
     margin: 0;
 }
 
-.empty-state p {
+.empty-state2 p {
     color: var(--color-primary-11);
     margin: 0 0 var(--space-4);
     max-width: 400px;
@@ -218,6 +231,15 @@
 @media (max-width: 768px) {
     .history-container {
         padding: var(--space-3) var(--space-4);
+    }
+    
+    .header-section {
+        flex-direction: column;
+        gap: var(--space-3);
+    }
+    
+    .header-section .button {
+        width: 100%;
     }
     
     .payment-header {
@@ -250,4 +272,14 @@
     .actions-container .button {
         width: 100%;
     }
+}
+
+.mr-2 {
+    margin-right: var(--space-2);
+}
+
+.icon-left {
+    margin-right: var(--space-2);
+    display: inline-flex;
+    vertical-align: middle;
 }

@@ -1,0 +1,137 @@
+.balance-container {
+    margin-top: var(--space-6);
+    margin-bottom: var(--space-10);
+}
+
+.balance-section {
+    max-width: 50rem;
+    margin: 0 auto var(--space-10) auto;
+    padding: var(--space-4) 0;
+}
+
+.section-title {
+    font-size: var(--font-size-2xl);
+    color: var(--color-primary-12);
+    margin: var(--space-6) 0 var(--space-4) 0;
+    font-weight: var(--font-weight-medium);
+}
+
+.subsection-title {
+    font-size: var(--font-size-xl);
+    color: var(--color-primary-12);
+    margin: var(--space-6) 0 var(--space-4) 0;
+    font-weight: var(--font-weight-medium);
+}
+
+.balance-cards {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: var(--space-4);
+    margin-bottom: var(--space-6);
+}
+
+.balance-card {
+    background-color: var(--color-primary-1);
+    border: 1px solid var(--color-primary-4);
+    border-radius: var(--radius-lg);
+    overflow: hidden;
+    box-shadow: var(--shadow-sm);
+    transition: var(--transition);
+}
+
+.balance-card.available-balance {
+    background-color: var(--color-success);
+    color: var(--color-success-foreground);
+}
+
+.balance-card-body {
+    padding: var(--space-5);
+}
+
+.balance-card-title {
+    font-size: var(--font-size-lg);
+    font-weight: var(--font-weight-medium);
+    margin-bottom: var(--space-3);
+}
+
+.balance-amount {
+    font-size: var(--font-size-3xl);
+    font-weight: var(--font-weight-bold);
+    margin: var(--space-2) 0;
+}
+
+.withdrawal-form {
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-4);
+}
+
+.withdrawal-form .form-group {
+    margin-bottom: var(--space-4);
+}
+
+.history-section {
+    background-color: var(--color-primary-1);
+    border: 1px solid var(--color-primary-4);
+    border-radius: var(--radius-lg);
+    padding: var(--space-5);
+    box-shadow: var(--shadow-sm);
+}
+
+.table-container {
+    overflow-x: auto;
+    border-radius: var(--radius-md);
+    margin-top: var(--space-4);
+}
+
+.table {
+    width: 100%;
+    border-collapse: collapse;
+    font-size: var(--font-size-sm);
+}
+
+.table th {
+    text-align: left;
+    padding: var(--space-3);
+    font-weight: var(--font-weight-medium);
+    background-color: var(--color-primary-3);
+    color: var(--color-primary-12);
+    border-bottom: 1px solid var(--color-primary-6);
+}
+
+.table td {
+    padding: var(--space-3);
+    border-bottom: 1px solid var(--color-primary-4);
+}
+
+.table tr:nth-child(even) {
+    background-color: var(--color-primary-2);
+}
+
+.info-hint {
+    color: var(--color-primary-11);
+    font-size: var(--font-size-xs);
+    margin-top: var(--space-1);
+}
+
+@media (max-width: 768px) {
+    .balance-cards {
+        grid-template-columns: 1fr;
+    }
+    
+    .balance-container {
+        padding: var(--space-3);
+    }
+    
+    .table {
+        font-size: var(--font-size-xs);
+    }
+    
+    .table td, .table th {
+        padding: var(--space-2);
+    }
+    
+    .balance-card-body {
+        padding: var(--space-4);
+    }
+}
