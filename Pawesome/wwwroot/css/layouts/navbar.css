@@ -3,6 +3,11 @@
     color: var(--color-primary-12);
 }
 
+.accueil-navbar {
+    background-color: var(--color-primary-3);
+    width: 100%;
+}
+
 nav {
     display: flex;
     justify-content: space-between;
