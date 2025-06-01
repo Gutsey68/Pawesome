@@ -3,10 +3,38 @@
 
 @{
     ViewData["Title"] = Model.IsPetSitter ? "Offre de pet sitting" : "Recherche de pet sitting";
+    
+    string GetStatusVariant(AdvertStatus status) => status switch
+    {
+        AdvertStatus.Pending => "info",
+        AdvertStatus.PendingOffer => "purple",
+        AdvertStatus.Active => "success",
+        AdvertStatus.Cancelled => "error",
+        AdvertStatus.Expired => "warning",
+        AdvertStatus.Archived => "secondary",
+        AdvertStatus.FullyBooked => "lime",
+        _ => "secondary"
+    };
+    
+    string GetStatusText(AdvertStatus status) => status switch
+    {
+        AdvertStatus.Pending => "En attente",
+        AdvertStatus.PendingOffer => "Offre en attente",
+        AdvertStatus.Active => "Active",
+        AdvertStatus.Cancelled => "Annulée",
+        AdvertStatus.Expired => "Expirée",
+        AdvertStatus.Archived => "Archivée",
+        AdvertStatus.FullyBooked => "Complétée",
+        _ => status.ToString()
+    };
 }
 
 <main role="main" class="advert-details">
-    <h1 class="section-title">@(Model.IsPetSitter ? "Offre de pet sitting" : "Recherche d'un pet sitter")</h1>
+
+    <div class="advert-title2">
+        <h1 class="section-title">@(Model.IsPetSitter ? "Offre de pet sitting" : "Recherche d'un pet sitter")</h1>
+        <p class="badge" data-variant="@GetStatusVariant(Model.Status)">@GetStatusText(Model.Status)</p>
+    </div>
     
     <div class="advert-header">
         <div class="advert-dates-price">

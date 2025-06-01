@@ -1,4 +1,33 @@
+@using Pawesome.Models.Enums
 @model List<Pawesome.Models.Dtos.Advert.PetSittingAdvertDto>
+
+@{
+    ViewData["Title"] = "Mes Annonces";
+
+    string GetStatusVariant(AdvertStatus status) => status switch
+    {
+        AdvertStatus.Pending => "info",
+        AdvertStatus.PendingOffer => "purple",
+        AdvertStatus.Active => "success",
+        AdvertStatus.Cancelled => "error",
+        AdvertStatus.Expired => "warning",
+        AdvertStatus.Archived => "secondary",
+        AdvertStatus.FullyBooked => "lime",
+        _ => "secondary"
+    };
+
+    string GetStatusText(AdvertStatus status) => status switch
+    {
+        AdvertStatus.Pending => "En attente",
+        AdvertStatus.PendingOffer => "Offre en attente",
+        AdvertStatus.Active => "Active",
+        AdvertStatus.Cancelled => "Annulée",
+        AdvertStatus.Expired => "Expirée",
+        AdvertStatus.Archived => "Archivée",
+        AdvertStatus.FullyBooked => "Complétée",
+        _ => status.ToString()
+    };
+}
 
 <main role="main" class="container index-container">
     <div class="index-header">
@@ -63,6 +92,8 @@
                             <span class="advert-badge @(advert.IsPetSitter ? "offer" : "request")">
                                 @(advert.IsPetSitter ? "Offre" : "Demande")
                             </span>
+                            <span class="badge"
+                                  data-variant="@GetStatusVariant(advert.Status)">@GetStatusText(advert.Status)</span>
                             <span class="advert-price">@advert.Amount.ToString("C")</span>
                         </div>
                         <div class="card-body">
@@ -141,6 +172,8 @@
                     <article class="advert-card">
                         <div class="card-header">
                             <span class="advert-badge offer">Offre</span>
+                            <span class="badge"
+                                  data-variant="@GetStatusVariant(advert.Status)">@GetStatusText(advert.Status)</span>
                             <span class="advert-price">@advert.Amount.ToString("C")</span>
                         </div>
                         <div class="card-body">
@@ -237,6 +270,8 @@
                     <article class="advert-card">
                         <div class="card-header">
                             <span class="advert-badge request">Demande</span>
+                            <span class="badge"
+                                  data-variant="@GetStatusVariant(advert.Status)">@GetStatusText(advert.Status)</span>
                             <span class="advert-price">@advert.Amount.ToString("C")</span>
                         </div>
                         <div class="card-body">

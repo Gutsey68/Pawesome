@@ -15,7 +15,7 @@
             <div class="pat-background2"></div>
             <div class="header">
                 <h1>Trouver le Petsitter parfait <br/>
-                    pour votre animal,<br/>
+                    pour votre animal<br/>
                     de compagnie !
                 </h1>
                 <p>
@@ -62,19 +62,7 @@
                 <img alt="woman-sitting" src="images/casual-life-3d-young-woman-sitting-on-ground-and-petting-dog.png"/>
             </div>
         </div>
-
-        @model List<PetCartViewModel>
-        <div class="home-page-cards-container">
-            <h1>Les Bestioles Qui Cartonnent</h1>
-            <div class="containers pet-cards-flex-container">
-                @foreach (var pet in Model)
-                {
-                <partial name="_PetCardPartial" model="pet"/>
-                }
-            </div>
-            <button type="button" class="home-page-submission">Voir toute les annonce <img alt="Rechercher" class="icon icon-button-search-l" src="svg/lucide/arrow-right.svg"/></button>
-
-        </div>
+        
 
         @* Container 3 / Recherche de pet sitter *@
         <div class="home-page-container">
@@ -194,31 +182,6 @@
                 </div>
             </div>
         </section>
-
-
-        @* Container 5 / Recherche de pet sitter *@
-        <div class="home-page-container-map">
-            <div class="container-left">
-                <div class="map-container">
-
-                </div>
-            </div>
-            <div class="container-right">
-                <div class="container-right-paragraph">
-                    <h1>
-                        Plein d’animaux attendent d’être aimés autour de vous !
-                    </h1>
-                    <p>
-                        Offrez-leur un foyer rempli de tendresse et recevez en retour un amour inconditionnel.
-                    </p>
-
-                    <button type="button" class="home-page-submission"> Cherchez autour de vous<img alt="Rechercher" class="icon icon-button-search-l" src="svg/lucide/radar.svg"/></button>
-                </div>
-                <div class="container-img container-l-4">
-                    <img alt="dog" src="images/casual-life-3d-cat-in-box.png"/>
-                </div>
-            </div>
-        </div>
     </div>
 </main>
 

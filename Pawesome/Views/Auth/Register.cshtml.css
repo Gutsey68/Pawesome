@@ -11,6 +11,10 @@ main {
     width: 100%;
 }
 
+.register-alert {
+    margin: 0 0 var(--space-4) 20%;
+}
+
 .form-label label {
     display: flex;
     align-items: center;

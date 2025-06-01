@@ -4,117 +4,129 @@
 }
 
 <main role="main" class="notifications-container">
-    <div class="notifications-header">
-        <h1 class="section-title">Notifications</h1>
-        @if (Model.Any())
-        {
-            <div class="notifications-actions">
-                <button id="mark-all-read" class="button" data-variant="outline" data-size="sm">
-                    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide-check-circle">
-                        <path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"/>
-                        <path d="m9 11 3 3L22 4"/>
-                    </svg>
-                    Tout marquer comme lu
-                </button>
-            </div>
-        }
-    </div>
-
-    <div class="notifications-list">
-        @if (Model.Any())
-        {
-            foreach (var notification in Model)
-            {
-                <div class="notification-item @(notification.IsRead ? "read" : "unread")" data-id="@notification.Id">
-                    <div class="notification-icon">
-                        @if (notification.Type == "Message")
-                        {
-                            <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide-message-square">
-                                <path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/>
-                            </svg>
-                        }
-                        else if (notification.Type == "Booking")
-                        {
-                            <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide-calendar">
-                                <rect width="18" height="18" x="3" y="4" rx="2" ry="2"/>
-                                <line x1="16" x2="16" y1="2" y2="6"/>
-                                <line x1="8" x2="8" y1="2" y2="6"/>
-                                <line x1="3" x2="21" y1="10" y2="10"/>
-                            </svg>
-                        }
-                        else if (notification.Type == "Review")
-                        {
-                            <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide-star">
-                                <polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/>
-                            </svg>
-                        }
-                        else
-                        {
-                            <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide-bell">
-                                <path d="M6 8a6 6 0 0 1 12 0c0 7 3 9 3 9H3s3-2 3-9"/>
-                                <path d="M10.3 21a1.94 1.94 0 0 0 3.4 0"/>
-                            </svg>
-                        }
-                    </div>
-                    <div class="notification-content">
-                        <div class="notification-header">
-                            <h2 class="notification-title">@notification.Title</h2>
-                            <span class="notification-time">@notification.CreatedAt.ToLocalTime().ToString("dd/MM/yyyy HH:mm")</span>
-                        </div>
-                        <p class="notification-message">@notification.Message</p>
-                        @if (!string.IsNullOrEmpty(notification.LinkUrl))
-                        {
-                            <a href="@notification.LinkUrl" class="notification-link">
-                                <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide-external-link">
-                                    <path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"/>
-                                    <polyline points="15 3 21 3 21 9"/>
-                                    <line x1="10" x2="21" y1="14" y2="3"/>
-                                </svg>
-                                Voir les détails
-                            </a>
-                        }
-                    </div>
-                    <div class="notification-actions">
-                        @if (!notification.IsRead)
-                        {
-                            <button class="button mark-read" data-id="@notification.Id" title="Marquer comme lu">
-                                <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide-check">
-                                    <polyline points="20 6 9 17 4 12"/>
-                                </svg>
-                            </button>
-                        }
-                        <button class="button delete-notification" data-id="@notification.Id" title="Supprimer">
-                            <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide-trash-2">
-                                <path d="M3 6h18"/>
-                                <path d="M19 6v14c0 1-1 2-2 2H7c-1 0-2-1-2-2V6"/>
-                                <path d="M8 6V4c0-1 1-2 2-2h4c1 0 2 1 2 2v2"/>
-                                <line x1="10" x2="10" y1="11" y2="17"/>
-                                <line x1="14" x2="14" y1="11" y2="17"/>
-                            </svg>
-                        </button>
-                    </div>
-                </div>
-            }
-        }
-        else
-        {
-            <div class="empty-notifications">
-                <svg xmlns="http://www.w3.org/2000/svg" width="48" height="48" viewBox="0 0 24 24" fill="none" 
-                     stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" 
-                     class="lucide lucide-bell">
+    <h1 class="notifications-title">Notifications</h1>
+    
+    <section class="notifications-section">
+        <div class="section-header">
+            <div class="section-icon">
+                <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-bell">
                     <path d="M6 8a6 6 0 0 1 12 0c0 7 3 9 3 9H3s3-2 3-9"/>
                     <path d="M10.3 21a1.94 1.94 0 0 0 3.4 0"/>
                 </svg>
-                <p>Vous n'avez aucune notification</p>
             </div>
-        }
-    </div>
+            <h2 class="section-title">Centre de notifications</h2>
+            @if (Model.Any())
+            {
+                <div class="notifications-actions">
+                    <button id="mark-all-read" class="button" data-variant="outline" data-size="sm">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide-check-circle mr-2">
+                            <path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"/>
+                            <path d="m9 11 3 3L22 4"/>
+                        </svg>
+                        Tout marquer comme lu
+                    </button>
+                </div>
+            }
+        </div>
+
+        <div class="section-content">
+            @if (Model.Any())
+            {
+                <div class="notifications-list">
+                    @foreach (var notification in Model)
+                    {
+                        <div class="notification-item @(notification.IsRead ? "read" : "unread")" data-id="@notification.Id">
+                            <div class="notification-icon">
+                                @if (notification.Type == "Message")
+                                {
+                                    <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide-message-square">
+                                        <path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/>
+                                    </svg>
+                                }
+                                else if (notification.Type == "Booking")
+                                {
+                                    <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide-calendar">
+                                        <rect width="18" height="18" x="3" y="4" rx="2" ry="2"/>
+                                        <line x1="16" x2="16" y1="2" y2="6"/>
+                                        <line x1="8" x2="8" y1="2" y2="6"/>
+                                        <line x1="3" x2="21" y1="10" y2="10"/>
+                                    </svg>
+                                }
+                                else if (notification.Type == "Review")
+                                {
+                                    <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide-star">
+                                        <polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/>
+                                    </svg>
+                                }
+                                else
+                                {
+                                    <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide-bell">
+                                        <path d="M6 8a6 6 0 0 1 12 0c0 7 3 9 3 9H3s3-2 3-9"/>
+                                        <path d="M10.3 21a1.94 1.94 0 0 0 3.4 0"/>
+                                    </svg>
+                                }
+                            </div>
+                            <div class="notification-content">
+                                <div class="notification-header">
+                                    <h2 class="notification-title">@notification.Title</h2>
+                                    <span class="notification-time">@notification.CreatedAt.ToLocalTime().ToString("dd/MM/yyyy HH:mm")</span>
+                                </div>
+                                <p class="notification-message">@notification.Message</p>
+                                @if (!string.IsNullOrEmpty(notification.LinkUrl))
+                                {
+                                    <a href="@notification.LinkUrl" class="notification-link">
+                                        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide-external-link">
+                                            <path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"/>
+                                            <polyline points="15 3 21 3 21 9"/>
+                                            <line x1="10" x2="21" y1="14" y2="3"/>
+                                        </svg>
+                                        Voir les détails
+                                    </a>
+                                }
+                            </div>
+                            <div class="notification-actions">
+                                @if (!notification.IsRead)
+                                {
+                                    <button class="button mark-read" data-id="@notification.Id" title="Marquer comme lu">
+                                        <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide-check">
+                                            <polyline points="20 6 9 17 4 12"/>
+                                        </svg>
+                                    </button>
+                                }
+                                <button class="button delete-notification" data-id="@notification.Id" title="Supprimer">
+                                    <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide-trash-2">
+                                        <path d="M3 6h18"/>
+                                        <path d="M19 6v14c0 1-1 2-2 2H7c-1 0-2-1-2-2V6"/>
+                                        <path d="M8 6V4c0-1 1-2 2-2h4c1 0 2 1 2 2v2"/>
+                                        <line x1="10" x2="10" y1="11" y2="17"/>
+                                        <line x1="14" x2="14" y1="11" y2="17"/>
+                                    </svg>
+                                </button>
+                            </div>
+                        </div>
+                    }
+                </div>
+            }
+            else
+            {
+                <div class="empty-state">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="48" height="48" viewBox="0 0 24 24" fill="none" 
+                        stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" 
+                        class="lucide lucide-bell">
+                        <path d="M6 8a6 6 0 0 1 12 0c0 7 3 9 3 9H3s3-2 3-9"/>
+                        <path d="M10.3 21a1.94 1.94 0 0 0 3.4 0"/>
+                    </svg>
+                    <h3>Vous n'avez aucune notification</h3>
+                    <p>Lorsque vous recevrez des notifications, elles apparaîtront ici</p>
+                </div>
+            }
+        </div>
+    </section>
 </main>
 
 @section Scripts {
     <script>
         document.addEventListener('DOMContentLoaded', function() {
-            // Mark single notification as read
             document.querySelectorAll('.mark-read').forEach(button => {
                 button.addEventListener('click', async function() {
                     const id = this.dataset.id;
@@ -138,7 +150,6 @@
                 });
             });
             
-            // Mark all as read
             const markAllBtn = document.getElementById('mark-all-read');
             if (markAllBtn) {
                 markAllBtn.addEventListener('click', async function() {
@@ -163,7 +174,6 @@
                 });
             }
             
-            // Delete notification
             document.querySelectorAll('.delete-notification').forEach(button => {
                 button.addEventListener('click', async function() {
                     const id = this.dataset.id;
@@ -179,20 +189,20 @@
                             const notificationItem = document.querySelector(`.notification-item[data-id="${id}"]`);
                             notificationItem.remove();
                             
-                            // Si plus aucune notification, afficher le message vide
                             if (document.querySelectorAll('.notification-item').length === 0) {
                                 const emptyNotif = `
-                                    <div class="empty-notifications">
+                                    <div class="empty-state">
                                         <svg xmlns="http://www.w3.org/2000/svg" width="48" height="48" viewBox="0 0 24 24" fill="none" 
-                                             stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" 
-                                             class="lucide lucide-bell">
+                                            stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" 
+                                            class="lucide lucide-bell">
                                             <path d="M6 8a6 6 0 0 1 12 0c0 7 3 9 3 9H3s3-2 3-9"/>
                                             <path d="M10.3 21a1.94 1.94 0 0 0 3.4 0"/>
                                         </svg>
-                                        <p>Vous n'avez aucune notification</p>
+                                        <h3>Vous n'avez aucune notification</h3>
+                                        <p>Lorsque vous recevrez des notifications, elles apparaîtront ici</p>
                                     </div>
                                 `;
-                                document.querySelector('.notifications-list').innerHTML = emptyNotif;
+                                document.querySelector('.section-content').innerHTML = emptyNotif;
                                 document.querySelector('.notifications-actions')?.remove();
                             }
                         }
