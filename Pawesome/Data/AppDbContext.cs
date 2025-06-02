@@ -118,7 +118,7 @@ public class AppDbContext : IdentityDbContext<User, IdentityRole<int>, int>
             .OnDelete(DeleteBehavior.Restrict);
 
         modelBuilder.Entity<Review>()
-            .HasOne(r => r.Booking)
+            .HasOne(r => r.Advert)
             .WithMany()
             .HasForeignKey(r => r.BookingId)
             .OnDelete(DeleteBehavior.Cascade);

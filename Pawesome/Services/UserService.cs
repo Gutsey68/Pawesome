@@ -22,6 +22,7 @@ public class UserService : IUserService
     private readonly IWebHostEnvironment _environment;
     private readonly UserManager<User> _userManager;
     private readonly ICityRepository _cityRepository;
+    private readonly IAdvertRepository _advertRepository;
     private readonly ICountryRepository _countryRepository;
     private readonly IAddressRepository _addressRepository;
 
@@ -34,6 +35,7 @@ public class UserService : IUserService
     /// <param name="cityRepository">Repository for city operations.</param>
     /// <param name="countryRepository">Repository for country operations.</param>
     /// <param name="addressRepository">Repository for address operations.</param>
+    /// <param name="advertRepository"></param>
     /// <param name="userManager">User manager for user-related operations.</param>
     public UserService(
         IUserRepository userRepository, 
@@ -42,6 +44,7 @@ public class UserService : IUserService
         ICityRepository cityRepository,
         ICountryRepository countryRepository,
         IAddressRepository addressRepository,
+        IAdvertRepository advertRepository,
         UserManager<User> userManager)
     {
         _userRepository = userRepository;
@@ -50,6 +53,7 @@ public class UserService : IUserService
         _userManager = userManager;
         _cityRepository = cityRepository;
         _countryRepository = countryRepository;
+        _advertRepository = advertRepository;
         _addressRepository = addressRepository;
     }
 
@@ -319,5 +323,56 @@ public class UserService : IUserService
         await _userRepository.SaveChangesAsync();
         
         return true;
+    }
+    
+    public async Task<bool> RateUserAsync(int raterUserId, int ratedUserId, int rating, string? comment, int advertId)
+    {
+        try
+        {
+            var ratedUser = await _userRepository.GetByIdAsync(ratedUserId);
+            var raterUser = await _userRepository.GetByIdAsync(raterUserId);
+            var advert = await _advertRepository.GetAdvertByIdAsync(advertId);
+        
+            if (ratedUser == null || raterUser == null || advert == null)
+            {
+                return false;
+            }
+            
+            if (advert.Status != AdvertStatus.FullyBooked)
+            {
+                return false;
+            }
+        
+            var review = new Review
+            {
+                UserId = ratedUserId,
+                Rate = rating,
+                Comment = comment,
+                CreatedAt = DateTime.UtcNow,
+                User = ratedUser,
+                Advert = advert
+            };
+        
+            if (ratedUser.Reviews == null)
+                ratedUser.Reviews = new List<Review>();
+            
+            ratedUser.Reviews.Add(review);
+        
+            var allRatings = ratedUser.Reviews.Select(r => r.Rate).ToList();
+            if (allRatings.Any())
+            {
+                ratedUser.Rating = allRatings.Average();
+            }
+        
+            await _userRepository.UpdateAsync(ratedUser);
+            await _userRepository.SaveChangesAsync();
+        
+            return true;
+        }
+        catch (Exception ex)
+        {
+            Console.WriteLine($"Erreur lors de la notation de l'utilisateur: {ex.Message}");
+            return false;
+        }
     }
 }

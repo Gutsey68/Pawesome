@@ -12,5 +12,5 @@ public class Review
     public DateTime UpdatedAt { get; set; } = DateTime.UtcNow;
 
     public required User User { get; set; }
-    public required Booking Booking { get; set; }
+    public required Advert Advert { get; set; }
 }

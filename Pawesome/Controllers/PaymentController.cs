@@ -121,7 +121,7 @@ namespace Pawesome.Controllers
                                 Currency = "eur",
                                 ProductData = new SessionLineItemPriceDataProductDataOptions
                                 {
-                                    Name = $"Réservation pour {advert.Owner}",
+                                    Name = $"Réservation pour {advert.Owner.FullName}",
                                     Description = $"Du {booking.StartDate:dd/MM/yyyy} au {booking.EndDate:dd/MM/yyyy}"
                                 }
                             },

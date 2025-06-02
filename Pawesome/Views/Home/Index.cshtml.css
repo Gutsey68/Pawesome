@@ -543,11 +543,13 @@
     overflow: hidden;
     transition: max-height 0.3s ease;
     padding: 0 var(--space-5);
+    visibility: hidden;
 }
 
 .accordion-item.active .accordion-content {
-    max-height: 300px;
+    max-height: 500px;
     padding-bottom: var(--space-5);
+    visibility: visible;
 }
 
 .accordion-content p {

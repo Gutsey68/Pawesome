@@ -21,6 +21,7 @@ public class UserServiceTests
     private readonly Mock<ICityRepository> _cityRepoMock = new();
     private readonly Mock<ICountryRepository> _countryRepoMock = new();
     private readonly Mock<IAddressRepository> _addressRepoMock = new();
+    private readonly Mock<IAdvertRepository> _advertRepoMock = new();
 
     private readonly UserService _userService;
 
@@ -40,6 +41,7 @@ public class UserServiceTests
             _cityRepoMock.Object,
             _countryRepoMock.Object,
             _addressRepoMock.Object,
+            _advertRepoMock.Object,
             _userManagerMock.Object
         );
     }

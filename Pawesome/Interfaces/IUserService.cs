@@ -13,4 +13,5 @@ public interface IUserService
     public Task<List<UserSimpleDto>> GetAllUsers();
     Task<bool> BanUserAsync(int userId);
     Task<bool> UnbanUserAsync(int userId);
+    Task<bool> RateUserAsync(int raterUserId, int ratedUserId, int rating, string? comment, int advertId);
 }

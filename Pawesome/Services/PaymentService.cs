@@ -78,6 +78,8 @@ namespace Pawesome.Services
                     BookerUser = default!,
                     Payments = default!,
                 };
+                
+                
 
                 var createdBooking = await _bookingRepository.CreateBookingAsync(booking);
 

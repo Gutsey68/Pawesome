@@ -166,4 +166,60 @@ public class UserController : Controller
 
         return View(profileViewModel);
     }
+    
+    /// <summary>
+    /// Allows a user to rate another user for a specific advert.
+    /// </summary>
+    /// <param name="advertId">The ID of the advert related to the rating.</param>
+    /// <param name="ratedUserId">The ID of the user being rated.</param>
+    /// <param name="rating">The rating value (must be between 1 and 5).</param>
+    /// <param name="comment">An optional comment for the rating.</param>
+    /// <returns>
+    /// Redirects to the advert details page with a success or error message depending on the outcome.
+    /// </returns>
+    [Authorize]
+    [HttpPost]
+    [ValidateAntiForgeryToken]
+    public async Task<IActionResult> RateUser(int advertId, int ratedUserId, int rating, string? comment)
+    {
+        if (rating < 1 || rating > 5)
+        {
+            TempData["ErrorMessage"] = "La note doit être comprise entre 1 et 5.";
+            return RedirectToAction("Details", "Advert", new { id = advertId });
+        }
+
+        var currentUserId = int.Parse(_userManager.GetUserId(User)!);
+    
+        if (currentUserId == ratedUserId)
+        {
+            TempData["ErrorMessage"] = "Vous ne pouvez pas vous évaluer vous-même.";
+            return RedirectToAction("Details", "Advert", new { id = advertId });
+        }
+
+        if (advertId <= 0 || ratedUserId <= 0)
+        {
+            TempData["ErrorMessage"] = "Paramètres invalides pour l'évaluation.";
+            return RedirectToAction("Details", "Advert", new { id = advertId });
+        }
+
+        try
+        {
+            var success = await _userService.RateUserAsync(currentUserId, ratedUserId, rating, comment, advertId);
+        
+            if (success)
+            {
+                TempData["SuccessMessage"] = "Votre évaluation a été enregistrée avec succès.";
+            }
+            else
+            {
+                TempData["ErrorMessage"] = "Une erreur est survenue lors de l'enregistrement de votre évaluation.";
+            }
+        }
+        catch (Exception ex)
+        {
+            TempData["ErrorMessage"] = $"Erreur: {ex.Message}";
+        }
+    
+        return RedirectToAction("Details", "Advert", new { id = advertId });
+    }
 }
