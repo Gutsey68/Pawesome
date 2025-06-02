@@ -19,5 +19,6 @@ namespace Pawesome.Interfaces
         public List<BookingDto> GetAllBookings();
         public Task<bool> UpdateBookingStatusAutomaticallyAsync(int bookingId);
         public Task<int> UpdateAllBookingsStatusAutomaticallyAsync();
+        public Task<BookingDto?> GetBookingByAdvertIdAsync(int advertId);
     }
 }

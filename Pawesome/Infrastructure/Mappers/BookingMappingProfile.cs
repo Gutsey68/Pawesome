@@ -22,10 +22,12 @@ namespace Pawesome.Infrastructure.Mappers
                     $"{src.Advert.User.FirstName} {src.Advert.User.LastName}"))
                 .ForMember(dest => dest.PetSitterPhoto, opt => opt.MapFrom(src =>
                     src.Advert.User.Photo))
-                .ForMember(dest => dest.AdditionalInformation, opt => opt.MapFrom(src => src.Advert.AdditionalInformation))
+                .ForMember(dest => dest.AdditionalInformation,
+                    opt => opt.MapFrom(src => src.Advert.AdditionalInformation))
                 .ForMember(dest => dest.BookerPhoto, opt => opt.MapFrom(src =>
                     src.BookerUser.Photo)).ForMember(dest => dest.Pets, opt => opt.MapFrom(src =>
-                    src.Advert.PetAdverts.Select(ap => ap.Pet)));
+                    src.Advert.PetAdverts.Select(ap => ap.Pet)))
+                .ForMember(dest => dest.AdvertStatus, opt => opt.MapFrom(src => src.Advert.Status));
 
                 
             CreateMap<BookingDto, Booking>();

@@ -5,6 +5,8 @@ using Microsoft.Extensions.Options;
 using Pawesome.Interfaces;
 using Pawesome.Models.Configuration;
 using Pawesome.Models.Entities;
+using Pawesome.Models.enums;
+using Pawesome.Models.Enums;
 using Pawesome.Models.ViewModels.Payment;
 using Stripe;
 using Stripe.Checkout;
@@ -53,8 +55,9 @@ namespace Pawesome.Controllers
         /// Displays the checkout page for a specific booking
         /// </summary>
         /// <param name="bookingId">ID of the booking to process payment for</param>
-        /// <returns>The checkout view or an error result</returns>
+        /// <returns>The checkout view or an error [HttpGet]
         [HttpGet]
+        [HttpPost]
         public async Task<IActionResult> Checkout(int bookingId)
         {
             var user = await _userManager.GetUserAsync(User);
@@ -63,24 +66,37 @@ namespace Pawesome.Controllers
 
             var booking = await _bookingService.GetBookingByIdAsync(bookingId);
             if (booking == null)
-                return NotFound();
+            {
+                return NotFound("La réservation demandée n'existe pas.");
+            }
 
-            if (booking.BookerUserId != user.Id)
-                return Forbid("Vous n'êtes pas autorisé à payer cette réservation.");
+            if (booking.PetSitterUserId != user.Id && booking.BookerUserId != user.Id )
+            {
+                return Forbid();
+            }
 
             var advert = await _advertService.GetAdvertByIdAsync(booking.AdvertId);
             if (advert == null)
-                return NotFound("L'annonce associée à cette réservation n'existe plus.");
-
-            var viewModel = new CheckoutViewModel
             {
-                BookingId = bookingId,
-                AdvertId = booking.AdvertId,
-                Amount = booking.Amount,
-                StripePublishableKey = _stripeSettings.PublishableKey
-            };
+                return NotFound("L'annonce associée à cette réservation n'existe plus.");
+            }
 
-            return View(viewModel);
+            try
+            {
+                var viewModel = new CheckoutViewModel
+                {
+                    BookingId = bookingId,
+                    AdvertId = booking.AdvertId,
+                    Amount = booking.Amount,
+                    StripePublishableKey = _stripeSettings.PublishableKey
+                };
+
+                return View(viewModel);
+            }
+            catch (Exception)
+            {
+                return RedirectToAction("Error", "Home", new { message = "Une erreur s'est produite lors de la préparation du paiement." });
+            }
         }
 
         /// <summary>
@@ -101,7 +117,7 @@ namespace Pawesome.Controllers
                 if (booking == null)
                     return NotFound(new { error = "Réservation non trouvée" });
 
-                if (booking.BookerUserId != user.Id)
+                if (booking.PetSitterUserId != user.Id && booking.BookerUserId != user.Id )
                     return Forbid();
 
                 var advert = await _advertService.GetAdvertByIdAsync(booking.AdvertId);
@@ -121,7 +137,7 @@ namespace Pawesome.Controllers
                                 Currency = "eur",
                                 ProductData = new SessionLineItemPriceDataProductDataOptions
                                 {
-                                    Name = $"Réservation pour {advert.Owner}",
+                                    Name = $"Réservation pour {advert.Owner.FullName}",
                                     Description = $"Du {booking.StartDate:dd/MM/yyyy} au {booking.EndDate:dd/MM/yyyy}"
                                 }
                             },
@@ -141,6 +157,14 @@ namespace Pawesome.Controllers
 
                 var service = new SessionService();
                 var session = await service.CreateAsync(options);
+
+                if (booking.PetSitterUserId == user.Id)
+                {
+                    _logger.LogWarning("Ca passe la");
+                    await _advertService.UpdateAdvertStatusAsync(booking.AdvertId, AdvertStatus.FullyBooked);
+                    await _bookingService.UpdateBookingStatusAsync(booking.Id, BookingStatus.Completed);
+                }
+                _logger.LogWarning("Ca passe pas la");
 
                 return Json(new { id = session.Id });
             }

@@ -5,6 +5,7 @@ using Pawesome.Interfaces;
 using Pawesome.Models.Entities;
 using Pawesome.Models.enums;
 using Pawesome.Models.DTOs.Booking;
+using Pawesome.Models.Enums;
 
 namespace Pawesome.Controllers
 {
@@ -78,16 +79,25 @@ namespace Pawesome.Controllers
             if (booking.BookerUserId != user.Id && booking.PetSitterUserId != user.Id)
                 return Forbid();
 
-            ViewBag.CanValidate = booking.BookerUserId == user.Id && 
-                                  (booking.Status == BookingStatus.Accepted || 
-                                   booking.Status == BookingStatus.InProgress || 
+            ViewBag.IsPetSitter = booking.PetSitterUserId == user.Id;
+
+            ViewBag.IsBooker = booking.BookerUserId == user.Id;
+
+            ViewBag.CanIPay = booking.BookerUserId != user.Id &&
+                                  booking.AdvertStatus == AdvertStatus.Pending;
+            ;
+
+            ViewBag.CanValidate = booking.BookerUserId == user.Id &&
+                                  (booking.Status == BookingStatus.Accepted ||
+                                   booking.Status == BookingStatus.InProgress ||
                                    booking.Status == BookingStatus.Completed && !booking.IsValidated);
-            
-            ViewBag.canDispute = booking.Status == BookingStatus.Completed && 
+
+            ViewBag.canDispute = booking.Status == BookingStatus.Completed &&
                                  booking.BookerUserId == user.Id &&
                                  !booking.IsDisputed;
-            
-            ViewBag.CanUpdateStatus = booking.PetSitterUserId == user.Id && booking.Status == BookingStatus.PendingConfirmation;
+
+            ViewBag.CanUpdateStatus = booking.PetSitterUserId == user.Id &&
+                                      booking.Status == BookingStatus.PendingConfirmation;
 
             return View(booking);
         }
@@ -151,6 +161,13 @@ namespace Pawesome.Controllers
             try
             {
                 var booking = await _bookingService.CreateBookingAsync(model, user.Id);
+
+                var advert = await _advertService.GetAdvertByIdAsync(model.AdvertId);
+                if (advert != null && !advert.IsPetSitter)
+                {
+                    return RedirectToAction(nameof(Details), new { id = booking.Id });
+                }
+
                 return RedirectToAction("Checkout", "Payment", new { bookingId = booking.Id });
             }
             catch (InvalidOperationException ex)
@@ -296,6 +313,60 @@ namespace Pawesome.Controllers
                 return BadRequest("L'ouverture du litige a échoué");
 
             return RedirectToAction(nameof(Details), new { id = bookingId });
+        }
+        
+        /// <summary>
+        /// Changes the status of an advert and initiates payment if fully booked.
+        /// </summary>
+        /// <param name="id">The ID of the advert to update.</param>
+        /// <param name="status">The new status to set for the advert.</param>
+        /// <returns>
+        /// If successful, redirects to the payment checkout page if the advert is fully booked,
+        /// otherwise redirects to the advert index. If the advert is not found or the user is not authorized,
+        /// returns the appropriate error response.
+        /// </returns>
+        /// <remarks>
+        /// Only the owner of the advert can change its status. If the status is set to FullyBooked,
+        /// the user is redirected to the payment checkout for the associated booking.
+        /// </remarks>
+        [Authorize]
+        [HttpPost]
+        public async Task<IActionResult> ChangeStatusAndPay(int id, AdvertStatus status)
+        {
+            var advert = await _advertService.GetAdvertByIdAsync(id);
+
+            if (advert == null)
+            {
+                return NotFound();
+            }
+
+            var user = await _userManager.GetUserAsync(User);
+            if (user == null || advert.Owner.Id != user.Id)
+            {
+                return Forbid();
+            }
+
+            var success = await _advertService.UpdateAdvertStatusAsync(id, status);
+
+            if (!success)
+            {
+                TempData["ErrorMessage"] = "Échec de la mise à jour du statut de l'annonce.";
+                return RedirectToAction("Index");
+            }
+
+            TempData["SuccessMessage"] = "Le statut de l'annonce a été mis à jour avec succès.";
+
+            if (status == AdvertStatus.FullyBooked)
+            {
+                var booking = await _bookingService.GetBookingByAdvertIdAsync(id);
+        
+                if (booking != null)
+                {
+                    return RedirectToAction("Checkout", "Payment", new { bookingId = booking.Id });
+                }
+            }
+
+            return RedirectToAction("Index");
         }
     }
 }

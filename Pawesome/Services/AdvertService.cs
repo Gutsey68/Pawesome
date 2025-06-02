@@ -105,7 +105,7 @@ public class AdvertService : IAdvertService
     /// <param name="advertId">The ID of the advert to update</param>
     /// <param name="status">The new status value</param>
     /// <returns>True if the update was successful, false if the advert wasn't found</returns>
-    public async Task<bool> UpdateAdvertStatusAsync(int advertId, string status)
+    public async Task<bool> UpdateAdvertStatusAsync(int advertId, AdvertStatus status)
     {
         return await _repository.UpdateAdvertStatusAsync(advertId, status);
     }
