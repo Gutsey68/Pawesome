@@ -63,6 +63,9 @@ public class AdvertMappingProfile : Profile
             .ForMember(dest => dest.CreatedAt, opt => opt.MapFrom(src => src.CreatedAt))
             .ForMember(dest => dest.UpdatedAt, opt => opt.MapFrom(src => src.UpdatedAt))
             .ForMember(dest => dest.IsPetSitter, opt => opt.MapFrom(src => src.Status == AdvertStatus.PendingOffer))
+            .ForMember(dest => dest.AnimalTypes, opt => opt.MapFrom(src => src.Status == AdvertStatus.PendingOffer 
+                ? src.AnimalTypeAdverts.Select(ata => ata.AnimalType).ToList()
+                : src.PetAdverts.Select(pa => pa.Pet!.AnimalType).ToList()))
             .ForMember(dest => dest.Owner, opt => opt.MapFrom(src => src.User))
             .ForMember(dest => dest.Pets, opt => opt.MapFrom(src => src.PetAdverts.Select(pa => pa.Pet).ToList()))
             .ForMember(dest => dest.Address, opt => opt.MapFrom(src => src.User.Address))
@@ -83,5 +86,6 @@ public class AdvertMappingProfile : Profile
             .ForMember(dest => dest.Type, opt => opt.MapFrom(src => src.Status == AdvertStatus.PendingOffer ? "Offre" : "Demande"))
             .ForMember(dest => dest.City, opt => opt.MapFrom(src => 
                 src.User.Address != null ? src.User.Address.City.Name : "Non spécifiée"));
+        
     }
 }

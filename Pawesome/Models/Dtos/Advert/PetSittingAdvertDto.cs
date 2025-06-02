@@ -20,4 +20,6 @@ public class PetSittingAdvertDto
     public List<PetSimpleDto> Pets { get; set; } = [];
     public AddressDto? Address { get; set; }
     public string? City { get; set; }
+    public List<Entities.AnimalType> AnimalTypes { get; set; } = [];
+    
 }

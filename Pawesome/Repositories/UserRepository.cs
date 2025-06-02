@@ -1,8 +1,8 @@
 using Microsoft.EntityFrameworkCore;
 using Pawesome.Data;
 using Pawesome.Interfaces;
-using Pawesome.Models;
 using Pawesome.Models.Entities;
+using Pawesome.Models.Enums;
 
 namespace Pawesome.Repositories;
 
@@ -52,7 +52,9 @@ public class UserRepository : Repository<User>, IUserRepository
             .ThenInclude(c => c.Country)
             .Include(u => u.Pets)
             .ThenInclude(p => p.AnimalType)
-            .Include(u => u.Adverts)
+            .Include(u => u.Adverts.Where(a =>
+                a.Status == AdvertStatus.Active || a.Status == AdvertStatus.Pending ||
+                a.Status == AdvertStatus.PendingOffer))
             .ThenInclude(a => a.PetAdverts)
             .ThenInclude(pa => pa.Pet)
             .ThenInclude(p => p!.AnimalType)

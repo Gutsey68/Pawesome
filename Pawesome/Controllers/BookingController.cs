@@ -87,14 +87,23 @@ namespace Pawesome.Controllers
                                   booking.AdvertStatus == AdvertStatus.Pending;
             ;
 
-            ViewBag.CanValidate = booking.BookerUserId == user.Id &&
+            var advert = await _advertService.GetAdvertByIdAsync(booking.AdvertId);
+            bool isAdvertCreatedByPetSitter = advert != null && advert.IsPetSitter;
+
+            ViewBag.CanValidate = (isAdvertCreatedByPetSitter && booking.BookerUserId == user.Id) ||
+                                  (!isAdvertCreatedByPetSitter && booking.PetSitterUserId == user.Id) &&
                                   (booking.Status == BookingStatus.Accepted ||
                                    booking.Status == BookingStatus.InProgress ||
                                    booking.Status == BookingStatus.Completed && !booking.IsValidated);
 
-            ViewBag.canDispute = booking.Status == BookingStatus.Completed &&
-                                 booking.BookerUserId == user.Id &&
-                                 !booking.IsDisputed;
+            ViewBag.IsPetSitter = booking.PetSitterUserId == user.Id;
+            ViewBag.IsBooker = booking.BookerUserId == user.Id;
+
+            ViewBag.canDispute =booking.Status == BookingStatus.Accepted ||
+                                booking.Status == BookingStatus.InProgress ||
+                                booking.Status == BookingStatus.Completed && 
+                                booking.BookerUserId == user.Id &&
+                                !booking.IsDisputed;
 
             ViewBag.CanUpdateStatus = booking.PetSitterUserId == user.Id &&
                                       booking.Status == BookingStatus.PendingConfirmation;
@@ -237,13 +246,23 @@ namespace Pawesome.Controllers
             var booking = await _bookingService.GetBookingByIdAsync(bookingId);
             if (booking == null)
                 return NotFound();
+            
+            var advert = await _advertService.GetAdvertByIdAsync(booking.AdvertId);
+            if (advert == null)
+                return NotFound();
 
-            if (booking.BookerUserId != user.Id)
+            bool isAdvertCreatedByPetSitter = advert.IsPetSitter;
+            bool canValidate = (isAdvertCreatedByPetSitter && booking.BookerUserId == user.Id) ||
+                               (!isAdvertCreatedByPetSitter && booking.PetSitterUserId == user.Id);
+
+            if (!canValidate)
                 return Forbid();
 
             var result = await _bookingService.ValidateBookingAsync(bookingId);
             if (!result)
                 return BadRequest("La validation de la prestation a échoué");
+            
+            await _advertService.UpdateAdvertStatusAsync(booking.AdvertId, AdvertStatus.FullyBooked);
 
             return RedirectToAction(nameof(Details), new { id = bookingId });
         }

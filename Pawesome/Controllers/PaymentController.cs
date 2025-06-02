@@ -55,7 +55,7 @@ namespace Pawesome.Controllers
         /// Displays the checkout page for a specific booking
         /// </summary>
         /// <param name="bookingId">ID of the booking to process payment for</param>
-        /// <returns>The checkout view or an error [HttpGet]
+        /// <returns>The checkout view or an error [HttpGet] </returns>
         [HttpGet]
         [HttpPost]
         public async Task<IActionResult> Checkout(int bookingId)
@@ -160,22 +160,18 @@ namespace Pawesome.Controllers
 
                 if (booking.PetSitterUserId == user.Id)
                 {
-                    _logger.LogWarning("Ca passe la");
-                    await _advertService.UpdateAdvertStatusAsync(booking.AdvertId, AdvertStatus.FullyBooked);
-                    await _bookingService.UpdateBookingStatusAsync(booking.Id, BookingStatus.Completed);
+                    await _advertService.UpdateAdvertStatusAsync(booking.AdvertId, AdvertStatus.Pending);
+                    await _bookingService.UpdateBookingStatusAsync(booking.Id, BookingStatus.Accepted);
                 }
-                _logger.LogWarning("Ca passe pas la");
 
                 return Json(new { id = session.Id });
             }
             catch (StripeException e)
             {
-                _logger.LogError(e, "Erreur Stripe lors de la création de la session de paiement");
                 return BadRequest(new { error = $"Erreur de paiement: {e.Message}" });
             }
-            catch (Exception e)
+            catch (Exception)
             {
-                _logger.LogError(e, "Erreur lors de la création de la session de paiement");
                 return BadRequest(new { error = "Une erreur inattendue s'est produite" });
             }
         }
@@ -186,31 +182,41 @@ namespace Pawesome.Controllers
         /// <param name="sessionId">The Stripe session ID for the completed payment</param>
         /// <returns>Success view with payment details or redirect with error message</returns>
         [HttpGet]
-        public async Task<IActionResult> Success(string sessionId)
+        public async Task<IActionResult> Success(string session_id)
         {
-            if (string.IsNullOrEmpty(sessionId))
+    
+            if (string.IsNullOrEmpty(session_id))
             {
                 return RedirectToAction("Index", "Home");
             }
-    
-            var payment = await _paymentService.CompletePaymentAsync(sessionId);
-    
-            if (payment == null)
+
+            try
             {
-                TempData["ErrorMessage"] = "Impossible de récupérer les détails du paiement.";
+                var payment = await _paymentService.CompletePaymentAsync(session_id);
+
+                if (payment == null)
+                {
+                    TempData["ErrorMessage"] = "Impossible de récupérer les détails du paiement.";
+                    return RedirectToAction("Index", "Home");
+                }
+
+        
+                var model = new SuccessViewModel
+                {
+                    BookingId = payment.BookingId,
+                    Amount = payment.Amount,
+                    PaymentDate = DateTime.UtcNow,
+                    IsAutoAccepted = true
+                };
+
+                TempData["SuccessMessage"] = "Paiement réussi ! Votre réservation a été créée avec succès.";
+                return RedirectToAction("Details", "Booking", new { id = payment.BookingId });
+            }
+            catch (Exception)
+            {
+                TempData["ErrorMessage"] = "Une erreur est survenue lors de la finalisation du paiement.";
                 return RedirectToAction("Index", "Home");
             }
-    
-            var model = new SuccessViewModel
-            {
-                BookingId = payment.BookingId,
-                Amount = payment.Amount,
-                PaymentDate = DateTime.UtcNow,
-                IsAutoAccepted = true
-            };
-            
-            TempData["SuccessMessage"] = "Paiement réussi ! Votre réservation a été créée avec succès.";
-            return RedirectToAction("Details", "Booking", new { id = payment.BookingId });
         }
 
         /// <summary>

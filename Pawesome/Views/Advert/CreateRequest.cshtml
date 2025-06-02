@@ -79,8 +79,9 @@
                                        id="pet-@pet.Id">
                                 @if (!string.IsNullOrEmpty(pet.Photo))
                                 {
-                                    <img style="width: 100%; height: 80%; object-fit: cover; object-position: center;"
-                                         src="~/images/pets/@pet.Photo" alt="@pet.Name" class="pet-thumbnail">
+                                    
+                                        <img style="width: 100%; height: 80%; object-fit: cover; object-position: center;"
+                                             src="@ImageHelper.GetPetPhotoUrl(pet.Photo)" alt="@pet.Name" class="pet-thumbnail">
                                 }
                                 <div class="pet-details">
                                     <h3 class="pet-name">@pet.Name</h3>

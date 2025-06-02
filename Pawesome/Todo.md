@@ -1,7 +1,7 @@
 TODO: 
-- Modifier les seed datas pour ajouter les personas
-- Rediriger sur la page booking quand on paye
-- Sur advert changer les cards si user est pet sitter
+- Bug notation des annonces
+- Bug solde
+- Bug annonces en prod
 
 
 admin@pawesome.com

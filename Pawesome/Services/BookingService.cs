@@ -191,6 +191,12 @@ namespace Pawesome.Services
                 }
 
                 var advertId = booking.AdvertId;
+                var advert = await _advertService.GetAdvertByIdAsync(advertId);
+                if (advert == null)
+                {
+                    return false;
+                }
+
                 var result = await _bookingRepository.UpdateBookingStatusAsync(bookingId, status);
 
                 if (result)
@@ -209,20 +215,28 @@ namespace Pawesome.Services
 
                     if (status == BookingStatus.Accepted)
                     {
+                        string message = advert.IsPetSitter
+                            ? "Le pet sitter a accepté votre demande de réservation."
+                            : "Le propriétaire d'animal a accepté votre offre de service.";
+
                         await CreateAndSendNotificationAsync(
                             booking.BookerUserId,
                             NotificationType.BookingStatusChanged,
                             $"Réservation #{bookingId} acceptée",
-                            "Le pet sitter a accepté votre demande de réservation."
+                            message
                         );
                     }
                     else if (status == BookingStatus.Declined)
                     {
+                        string message = advert.IsPetSitter
+                            ? "Le pet sitter a refusé votre demande de réservation."
+                            : "Le propriétaire d'animal a refusé votre offre de service.";
+
                         await CreateAndSendNotificationAsync(
                             booking.BookerUserId,
                             NotificationType.BookingStatusChanged,
                             $"Réservation #{bookingId} refusée",
-                            "Le pet sitter a refusé votre demande de réservation."
+                            message
                         );
 
                         var payment = booking.Payments
@@ -245,11 +259,15 @@ namespace Pawesome.Services
                     }
                     else if (status == BookingStatus.Completed)
                     {
+                        string message = advert.IsPetSitter
+                            ? "La garde de votre animal est terminée. N'oubliez pas de valider la prestation."
+                            : "La prestation est terminée. Attendez la validation par le pet sitter.";
+
                         await CreateAndSendNotificationAsync(
                             booking.BookerUserId,
                             NotificationType.BookingStatusChanged,
                             $"Réservation #{bookingId} terminée",
-                            "La garde de votre animal est terminée. N'oubliez pas de valider la prestation."
+                            message
                         );
                     }
                 }
@@ -287,12 +305,12 @@ namespace Pawesome.Services
                     paymentSuccess = await _paymentService.FinalizeBookingPaymentAsync(bookingId);
                     if (!paymentSuccess)
                         return false;
-                
+
                     payment.Status = PaymentStatus.Completed;
                     payment.UpdatedAt = DateTime.UtcNow;
 
                     await _balanceService.UpdateLocalBalanceFromStripeAsync(booking.Advert.UserId);
-            
+
                     await _bookingRepository.SaveChangesAsync();
                 }
 
@@ -662,7 +680,7 @@ namespace Pawesome.Services
                 return false;
             }
         }
-        
+
         /// <summary>
         /// Retrieves the first booking associated with a specific advert.
         /// </summary>

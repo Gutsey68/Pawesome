@@ -58,6 +58,8 @@ public class AdvertRepository : IAdvertRepository
             .Include(a => a.PetAdverts)
             .ThenInclude(pa => pa.Pet)
             .ThenInclude(p => p!.AnimalType)
+            .Include(a => a.AnimalTypeAdverts)
+            .ThenInclude(ata => ata.AnimalType)
             .FirstOrDefaultAsync(a => a.Id == id);
     }
 
@@ -259,6 +261,7 @@ public class AdvertRepository : IAdvertRepository
     {
         var existingAdvert = await _context.Adverts
             .Include(a => a.PetAdverts)
+            .Include(a => a.AnimalTypeAdverts) 
             .FirstOrDefaultAsync(a => a.Id == advert.Id);
 
         if (existingAdvert == null)
@@ -270,25 +273,20 @@ public class AdvertRepository : IAdvertRepository
         existingAdvert.AdditionalInformation = advert.AdditionalInformation;
         existingAdvert.UpdatedAt = DateTime.UtcNow;
 
-        _context.PetAdverts.RemoveRange(existingAdvert.PetAdverts);
+        if (existingAdvert.PetAdverts != null)
+            _context.PetAdverts.RemoveRange(existingAdvert.PetAdverts);
+    
+        if (existingAdvert.AnimalTypeAdverts != null)
+            _context.AnimalTypeAdverts.RemoveRange(existingAdvert.AnimalTypeAdverts);
 
         foreach (var animalTypeId in animalTypeIds)
         {
-            var petsOfType = await _context.Pets
-                .Where(p => p.AnimalTypeId == animalTypeId)
-                .ToListAsync();
-
-            var firstPet = petsOfType.FirstOrDefault();
-            if (firstPet != null)
+            await _context.AnimalTypeAdverts.AddAsync(new AnimalTypeAdvert
             {
-                await _context.PetAdverts.AddAsync(new PetAdvert
-                {
-                    PetId = firstPet.Id,
-                    AdvertId = existingAdvert.Id,
-                    Pet = firstPet,
-                    Advert = existingAdvert
-                });
-            }
+                AnimalTypeId = animalTypeId,
+                AdvertId = existingAdvert.Id,
+                Advert = existingAdvert
+            });
         }
 
         await _context.SaveChangesAsync();
