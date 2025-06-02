@@ -1,5 +1,6 @@
 using Pawesome.Models.Entities;
 using Pawesome.Models.Dtos.Advert;
+using Pawesome.Models.Enums;
 
 namespace Pawesome.Interfaces
 {
@@ -12,7 +13,7 @@ namespace Pawesome.Interfaces
         Task<Advert> CreatePetSittingOfferAsync(Advert advert, List<int> animalTypeIds, int userId);
         Task<Advert> UpdatePetSittingRequestAsync(Advert advert, List<int> petIds);
         Task<Advert> UpdatePetSittingOfferAsync(Advert advert, List<int> animalTypeIds);
-        Task<bool> UpdateAdvertStatusAsync(int advertId, string status);
+        Task<bool> UpdateAdvertStatusAsync(int advertId, AdvertStatus status);
         Task<bool> DeleteAdvertAsync(int advertId);
         Task<IEnumerable<Advert>> GetFilteredAdvertsAsync(AdvertFilterDto filter);
         public List<Advert> GetAllAdvertsWithUsers();

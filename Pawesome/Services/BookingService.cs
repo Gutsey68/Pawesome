@@ -662,5 +662,16 @@ namespace Pawesome.Services
                 return false;
             }
         }
+        
+        /// <summary>
+        /// Retrieves the first booking associated with a specific advert.
+        /// </summary>
+        /// <param name="advertId">The ID of the advert.</param>
+        /// <returns>The first booking DTO for the given advert, or null if not found.</returns>
+        public async Task<BookingDto?> GetBookingByAdvertIdAsync(int advertId)
+        {
+            var booking = await _bookingRepository.GetBookingByAdvertIdAsync(advertId);
+            return booking != null ? _mapper.Map<BookingDto>(booking) : null;
+        }
     }
 }

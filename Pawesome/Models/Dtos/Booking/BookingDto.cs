@@ -1,6 +1,7 @@
 using Pawesome.Models.Dtos.Payment;
 using Pawesome.Models.Entities;
 using Pawesome.Models.enums;
+using Pawesome.Models.Enums;
 
 namespace Pawesome.Models.Dtos.Booking;
 
@@ -20,6 +21,7 @@ public class BookingDto
         
     public int AdvertId { get; set; }
     public string AdvertTitle { get; set; } = string.Empty;
+    public AdvertStatus AdvertStatus { get; set; }
         
     public int BookerUserId { get; set; }
     public string BookerUserName { get; set; } = string.Empty;

@@ -387,7 +387,11 @@ namespace Pawesome.Services
         public async Task<bool> FinalizeBookingPaymentAsync(int bookingId)
         {
             try {
-                var payment = await _paymentRepository.GetByIdWithDetailsAsync(bookingId);
+                var booking = await _bookingRepository.GetBookingByIdWithDetailsAsync(bookingId);
+                if (booking == null)
+                    return false;
+            
+                var payment = booking.Payments.FirstOrDefault(p => p.Status == PaymentStatus.Authorized);
                 if (payment == null || payment.PaymentIntentId == null)
                     return false;
 
@@ -395,11 +399,10 @@ namespace Pawesome.Services
                 await service.CaptureAsync(payment.PaymentIntentId, new PaymentIntentCaptureOptions());
         
                 payment.Status = PaymentStatus.Completed;
-                payment.CreatedAt = DateTime.UtcNow;
+                payment.UpdatedAt = DateTime.UtcNow;
                 await _paymentRepository.UpdatePaymentAsync(payment);
         
-                var booking = await _bookingRepository.GetBookingByIdWithDetailsAsync(bookingId);
-                if (booking != null) {
+                if (booking.Advert != null) {
                     await _userRepository.UpdateUserBalanceAsync(booking.Advert.UserId, payment.Amount);
                 }
         

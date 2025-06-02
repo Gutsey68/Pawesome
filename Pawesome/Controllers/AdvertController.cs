@@ -5,6 +5,7 @@ using Microsoft.AspNetCore.Mvc.Rendering;
 using Pawesome.Interfaces;
 using Pawesome.Models.Dtos.Advert;
 using Pawesome.Models.Entities;
+using Pawesome.Models.Enums;
 using Pawesome.Models.ViewModels.Advert;
 using Pawesome.Models.ViewModels.AnimalType;
 
@@ -289,7 +290,7 @@ public class AdvertController : Controller
     /// <returns>Redirects to Details if successful, or returns NotFound if advert not found</returns>
     [Authorize]
     [HttpPost]
-    public async Task<IActionResult> UpdateStatus(int advertId, string status)
+    public async Task<IActionResult> UpdateStatus(int advertId, AdvertStatus status)
     {
         var result = await _advertService.UpdateAdvertStatusAsync(advertId, status);
 
@@ -298,7 +299,7 @@ public class AdvertController : Controller
             return NotFound();
         }
 
-        return status == "cancelled"
+        return status == AdvertStatus.Cancelled
             ? RedirectToAction("Index", "Advert")
             : RedirectToAction(nameof(Details), new { id = advertId });
     }

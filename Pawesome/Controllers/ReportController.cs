@@ -4,6 +4,7 @@ using Pawesome.Interfaces;
 using Pawesome.Models.ViewModels;
 using Microsoft.AspNetCore.Identity;
 using Pawesome.Models.Entities;
+using Stripe.Reporting;
 
 namespace Pawesome.Controllers;
 
@@ -89,7 +90,19 @@ public class ReportController : Controller
 
             await _reportService.CreateReportAsync(report);
             TempData["SuccessMessage"] = "Votre signalement a été enregistré avec succès.";
-            return RedirectToAction("Profile", "User", new { id = model.TargetId });
+
+            switch (model.ReportType)
+            {
+                case "user":
+                    TempData["SuccessMessage"] = "Votre signalement de l'utilisateur a été enregistré avec succès.";
+                    return RedirectToAction("Profile", "User", new { id = model.TargetId });
+                
+                case "advert":
+                    TempData["SuccessMessage"] = "Votre signalement de l'annonce a été enregistré avec succès.";
+                    return RedirectToAction("Details", "Advert", new { id = model.TargetId });
+            }
+
+            return View(model);
         }
         catch (ArgumentException ex)
         {

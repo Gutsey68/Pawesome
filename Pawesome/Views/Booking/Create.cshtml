@@ -2,11 +2,13 @@
 @{
     ViewData["Title"] = "Nouvelle réservation";
     var advert = ViewBag.Advert;
+    
+    var isPetSitterBooking = !advert.IsPetSitter;
 }
 
 <main role="main" class="container">
     <section class="booking-create-section">
-        <h1 class="section-title">Réserver cette prestation</h1>
+        <h1 class="section-title">@(isPetSitterBooking ? "Demander une réservation" : "Réserver cette prestation")</h1>
         
         @if (ViewData.ModelState.ErrorCount > 0)
         {
@@ -106,34 +108,66 @@
                             <label asp-for="Message" class="form-label">Détails supplémentaires</label>
                             <textarea asp-for="Message" class="form-control" rows="4" 
                                       aria-describedby="message-hint"
-                                      placeholder="Indiquez ici toute information supplémentaire pour le pet sitter..."></textarea>
-                            <p id="message-hint" class="info-hint">Précisez les détails importants pour le pet sitter (accès, besoins spécifiques, etc.)</p>
+                                      placeholder="@(isPetSitterBooking ? "Indiquez ici les informations concernant votre disponibilité et vos compétences..." : "Indiquez ici toute information supplémentaire pour le pet sitter...")"></textarea>
+                            <p id="message-hint" class="info-hint">
+                                @(isPetSitterBooking 
+                                  ? "Précisez vos qualifications et toute information utile pour le propriétaire des animaux." 
+                                  : "Précisez les détails importants pour le pet sitter (accès, besoins spécifiques, etc.)")
+                            </p>
                             <span asp-validation-for="Message" class="validation-message"></span>
                         </div>
                     </fieldset>
                     
-                    <div class="booking-payment-notice">
-                        <div class="alert" data-variant="info">
-                            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-info">
-                                <circle cx="12" cy="12" r="10"></circle>
-                                <path d="M12 16v-4"></path>
-                                <path d="M12 8h.01"></path>
-                            </svg>
-                            <div>
-                                <h4>À propos du paiement</h4>
-                                <p>Votre carte bancaire sera autorisée pour le montant de @((advert.Amount * (Model.EndDate - Model.StartDate).Days).ToString("C")), mais le paiement ne sera débité qu'après la validation de la prestation.</p>
+                    @if (!isPetSitterBooking)
+                    {
+                        <div class="booking-payment-notice">
+                            <div class="alert" data-variant="info">
+                                <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-info">
+                                    <circle cx="12" cy="12" r="10"></circle>
+                                    <path d="M12 16v-4"></path>
+                                    <path d="M12 8h.01"></path>
+                                </svg>
+                                <div>
+                                    <h4>À propos du paiement</h4>
+                                    <p>Votre carte bancaire sera autorisée pour le montant de @((advert.Amount * (Model.EndDate - Model.StartDate).Days).ToString("C")), mais le paiement ne sera débité qu'après la validation de la prestation.</p>
+                                </div>
                             </div>
                         </div>
-                    </div>
+                    }
+                    else
+                    {
+                        <div class="booking-free-notice">
+                            <div class="alert" data-variant="success">
+                                <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-info">
+                                    <circle cx="12" cy="12" r="10"></circle>
+                                    <path d="M12 16v-4"></path>
+                                    <path d="M12 8h.01"></path>
+                                </svg>
+                                <div>
+                                    <h4>Demande de réservation</h4>
+                                    <p>En tant que pet sitter, vous effectuez une demande de réservation pour cette annonce. Aucun paiement ne sera nécessaire pour cette transaction.</p>
+                                </div>
+                            </div>
+                        </div>
+                    }
                     
                     <div class="actions-container">
                         <a asp-controller="Advert" asp-action="Details" asp-route-id="@advert.Id" class="button" data-variant="secondary" data-size="md">Annuler</a>
                         <button type="submit" class="button" data-variant="primary" data-size="md">
-                            Continuer vers le paiement
-                            <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-arrow-right" style="margin-left: var(--space-2);">
-                                <path d="M5 12h14"></path>
-                                <path d="m12 5 7 7-7 7"></path>
-                            </svg>
+                            @if (isPetSitterBooking)
+                            {
+                                <text>Envoyer ma demande</text>
+                            }
+                            else
+                            {
+                                <text>
+                                    Continuer vers le paiement
+                                    <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-arrow-right" style="margin-left: var(--space-2);">
+                                        <path d="M5 12h14"></path>
+                                        <path d="m12 5 7 7-7 7"></path>
+                                    </svg>
+                                </text>
+                            }
                         </button>
                     </div>
                 </form>
@@ -159,11 +193,20 @@
                     </div>
                     
                     <div class="payment-policy">
-                        <h4>Conditions de paiement</h4>
+                        <h4>@(isPetSitterBooking ? "Informations de réservation" : "Conditions de paiement")</h4>
                         <ul>
-                            <li>La carte est autorisée mais non débitée immédiatement</li>
-                            <li>Le paiement est capturé après validation de la prestation</li>
-                            <li>Vous pouvez annuler avant la confirmation par le pet sitter</li>
+                            @if (isPetSitterBooking)
+                            {
+                                <li>Votre demande devra être confirmée par le propriétaire</li>
+                                <li>Aucun paiement ne vous sera demandé</li>
+                                <li>Vous recevrez une notification lorsque la réservation sera confirmée</li>
+                            }
+                            else
+                            {
+                                <li>La carte est autorisée mais non débitée immédiatement</li>
+                                <li>Le paiement est capturé après validation de la prestation</li>
+                                <li>Vous pouvez annuler avant la confirmation par le pet sitter</li>
+                            }
                         </ul>
                     </div>
                 </div>

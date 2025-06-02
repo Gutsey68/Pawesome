@@ -349,5 +349,19 @@ namespace Pawesome.Repositories
 
             return true;
         }
+        
+        /// <summary>
+        /// Retrieves the first booking associated with a specific advert.
+        /// </summary>
+        /// <param name="advertId">The ID of the advert.</param>
+        /// <returns>The first booking for the given advert, including related advert, booker user, and payments, or null if not found.</returns>
+        public async Task<Booking?> GetBookingByAdvertIdAsync(int advertId)
+        {
+            return await _context.Bookings
+                .Include(b => b.Advert)
+                .Include(b => b.BookerUser)
+                .Include(b => b.Payments)
+                .FirstOrDefaultAsync(b => b.AdvertId == advertId);
+        }
     }
 }
