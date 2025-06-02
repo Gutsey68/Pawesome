@@ -1,17 +1,27 @@
 @model Pawesome.Models.ViewModels.CreateReportViewModel
 
 @{
-    ViewData["Title"] = "Signaler un utilisateur";
+    if (Model.ReportType == "user") {
+        ViewData["Title"] = "Signaler un utilisateur";
+    } else if (Model.ReportType == "advert") {
+        ViewData["Title"] = "Signaler une annonce";
+    }
 }
 
 <main role="main" class="container">
     <section class="report-section">
-        <h1 class="section-title">Signaler un utilisateur</h1>
-        
+        @{
+            if (Model.ReportType == "user") {
+                <h1 class="section-title">Signaler un utilisateur</h1>
+            } else if (Model.ReportType == "advert") {
+                <h1 class="section-title">Signaler une annonce</h1>
+            }
+        }
+
         <div class="report-description">
             Veuillez nous fournir des détails sur le problème rencontré afin que nous puissions prendre les mesures appropriées.
         </div>
-        
+
         @if (TempData["ErrorMessage"] != null)
         {
             <div class="alert mb-4" data-variant="error" role="alert">
@@ -25,16 +35,24 @@
                 </div>
             </div>
         }
-        
+
         <div class="report-card">
             <form asp-controller="Report" asp-action="Create" method="post" class="report-form">
-                <input type="hidden" asp-for="TargetId" />
-                <input type="hidden" asp-for="ReportType" />
+                <input type="hidden" asp-for="TargetId"/>
+                <input type="hidden" asp-for="ReportType"/>
 
                 <fieldset class="form-group">
                     <legend>Motif du signalement</legend>
                     <div class="form-group">
-                        <label asp-for="Comment" class="form-label">Pourquoi signalez-vous cet utilisateur ? <span class="required-indicator">*</span></label>
+                        @if (Model.ReportType == "user")
+                        {
+                            <label asp-for="Comment" class="form-label">Pourquoi signalez-vous cet utilisateur ? <span class="required-indicator">*</span></label>
+                        }
+                        @if (Model.ReportType == "advert")
+                        {
+                            <label asp-for="Comment" class="form-label">Pourquoi signalez-vous cette annonce ? <span class="required-indicator">*</span></label>
+                        }
+                        
                         <textarea asp-for="Comment" class="form-control" rows="5" 
                                   placeholder="Veuillez décrire le problème en détail..." 
                                   aria-required="true" 
@@ -45,10 +63,21 @@
                     </div>
                 </fieldset>
 
-                <div class="actions-container">
-                    <a asp-controller="User" asp-action="Profile" asp-route-id="@Model.TargetId" class="button" data-variant="secondary">Annuler</a>
-                    <button type="submit" class="button" data-color="error">Envoyer le signalement</button>
-                </div>
+                @if (Model.ReportType == "user")
+                {
+                    <div class="actions-container">
+                        <a asp-controller="User" asp-action="Profile" asp-route-id="@Model.TargetId" class="button" data-variant="secondary">Annuler</a>
+                        <button type="submit" class="button" data-color="error">Envoyer le signalement</button>
+                    </div>
+                }
+                
+                @if (Model.ReportType == "advert")
+                {
+                    <div class="actions-container">
+                        <a asp-controller="Advert" asp-action="Details" asp-route-id="@Model.TargetId" class="button" data-variant="secondary">Annuler</a>
+                        <button type="submit" class="button" data-color="error">Envoyer le signalements</button>
+                    </div>
+                }
             </form>
         </div>
     </section>

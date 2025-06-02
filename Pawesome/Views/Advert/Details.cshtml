@@ -32,7 +32,25 @@
 <main role="main" class="advert-details">
 
     <div class="advert-title2">
-        <h1 class="section-title">@(Model.IsPetSitter ? "Offre de pet sitting" : "Recherche d'un pet sitter")</h1>
+        <div class="title-container">
+            <h1 class="section-title">@(Model.IsPetSitter ? "Offre de pet sitting" : "Recherche d'un pet sitter")</h1>
+            <a asp-controller="Report" asp-action="Create" asp-route-targetId="@Model.Id" asp-route-reportType="advert"
+               class="button"
+               data-size="xs"
+               data-color="error"
+               data-bs-toggle="tooltip"
+               title="Signaler cette annonce"
+               data-bs-target="#reportModal"
+               data-report-type="user"
+               data-target-id="@Model.Id">
+                <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none"
+                     stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"
+                     class="lucide lucide-flag-icon lucide-flag">
+                    <path d="M4 15s1-1 4-1 5 2 8 2 4-1 4-1V3s-1 1-4 1-5-2-8-2-4 1-4 1z"/>
+                    <line x1="4" x2="4" y1="22" y2="15"/>
+                </svg>
+            </a>
+        </div>
         <p class="badge" data-variant="@GetStatusVariant(Model.Status)">@GetStatusText(Model.Status)</p>
     </div>
     
