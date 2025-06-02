@@ -241,4 +241,8 @@
         margin-top: var(--space-2);
         align-self: flex-end;
     }
+
+    .booking-container {
+        min-width: 0;
+    }
 }

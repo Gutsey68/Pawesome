@@ -14,7 +14,7 @@
             </svg>
             <span class="pawesome">Pawesome</span>
         </a>
-        <div>
+        <div class="nav-actions">
             <ul>
                 @if (User.Identity?.IsAuthenticated == true)
                 {
@@ -262,7 +262,7 @@
                 }
                 else
                 {
-                    <nav>
+                    <nav class="nav-actions">
                         <ul class="unlogged-links">
                             <li>
                                 <a class="button" data-variant="secondary" asp-area="" asp-controller="Auth"
@@ -280,7 +280,7 @@
     </nav>
 </header>
 
-    <script>
+<script>
         document.addEventListener('DOMContentLoaded', function () {
             updateNotificationCount();
 
@@ -507,3 +507,4 @@
             });
         }
     </script>
+

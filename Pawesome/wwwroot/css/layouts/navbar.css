@@ -448,3 +448,27 @@ nav ul {
 .advert-link, .search-button {
     color: var(--color-primary-11);
 }
+
+@media (max-width: 768px) {
+    .accueil-navbar, .nav-actions {
+        width: 100%;
+    }
+    
+    .nav-actions .unlogged-links .button{
+        font-size: var(--font-size-xs);
+        padding: 0.4rem 0.6rem;
+    }
+
+    .unlogged-links {
+        padding: 0;
+    }
+    
+    .nav-actions ul {
+        padding: 0;    
+        justify-content: flex-end;
+    }
+
+    .advert-link .lucide-circle-plus {
+        margin-right: var(--space-2);
+    }
+}

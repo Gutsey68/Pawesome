@@ -231,44 +231,45 @@
 @media (max-width: 768px) {
     .history-container {
         padding: var(--space-3) var(--space-4);
+        min-width: 0;
     }
-    
+
     .header-section {
         flex-direction: column;
         gap: var(--space-3);
     }
-    
+
     .header-section .button {
         width: 100%;
     }
-    
+
     .payment-header {
         flex-direction: column;
         align-items: flex-start;
         gap: var(--space-2);
     }
-    
+
     .payment-badge {
         align-self: flex-start;
     }
-    
+
     .payment-content {
         grid-template-columns: 1fr;
     }
-    
+
     .payment-actions {
         justify-self: stretch;
     }
-    
+
     .payment-actions .button {
         width: 100%;
     }
-    
+
     .actions-container {
         flex-direction: column;
         gap: var(--space-2);
     }
-    
+
     .actions-container .button {
         width: 100%;
     }
