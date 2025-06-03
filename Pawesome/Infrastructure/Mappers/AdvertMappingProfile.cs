@@ -56,20 +56,21 @@ public class AdvertMappingProfile : Profile
             .ForMember(dest => dest.Id, opt => opt.MapFrom(src => src.Id))
             .ForMember(dest => dest.StartDate, opt => opt.MapFrom(src => src.StartDate))
             .ForMember(dest => dest.EndDate, opt => opt.MapFrom(src => src.EndDate))
-            .ForMember(dest => dest.Status, opt => opt.MapFrom(src => src.Status.ToString()))
+            .ForMember(dest => dest.Status, opt => opt.MapFrom(src => src.Status))
             .ForMember(dest => dest.Amount, opt => opt.MapFrom(src => src.Amount))
             .ForMember(dest => dest.AdditionalInformation, opt => opt.MapFrom(src => src.AdditionalInformation))
             .ForMember(dest => dest.CreatedAt, opt => opt.MapFrom(src => src.CreatedAt))
             .ForMember(dest => dest.UpdatedAt, opt => opt.MapFrom(src => src.UpdatedAt))
             .ForMember(dest => dest.IsPetSitter, opt => opt.MapFrom(src => src.Status == AdvertStatus.PendingOffer))
-            .ForMember(dest => dest.AnimalTypes, opt => opt.MapFrom(src => src.Status == AdvertStatus.PendingOffer 
+            .ForMember(dest => dest.AnimalTypes, opt => opt.MapFrom(src => src.Status == AdvertStatus.PendingOffer
                 ? src.AnimalTypeAdverts.Select(ata => ata.AnimalType).ToList()
                 : src.PetAdverts.Select(pa => pa.Pet!.AnimalType).ToList()))
             .ForMember(dest => dest.Owner, opt => opt.MapFrom(src => src.User))
             .ForMember(dest => dest.Pets, opt => opt.MapFrom(src => src.PetAdverts.Select(pa => pa.Pet).ToList()))
             .ForMember(dest => dest.Address, opt => opt.MapFrom(src => src.User.Address))
-            .ForMember(dest => dest.City, opt => opt.MapFrom(src => src.User.Address != null ? src.User.Address.City.Name : null));
-        
+            .ForMember(dest => dest.City,
+                opt => opt.MapFrom(src => src.User.Address != null ? src.User.Address.City.Name : null));
+
         CreateMap<Address, AddressDto>()
             .ForMember(dest => dest.Id, opt => opt.MapFrom(src => src.Id))
             .ForMember(dest => dest.StreetAddress, opt => opt.MapFrom(src => src.StreetAddress))
@@ -78,13 +79,13 @@ public class AdvertMappingProfile : Profile
             .ForMember(dest => dest.PostalCode, opt => opt.MapFrom(src => src.City.PostalCode))
             .ForMember(dest => dest.CountryId, opt => opt.MapFrom(src => src.City.CountryId))
             .ForMember(dest => dest.CountryName, opt => opt.MapFrom(src => src.City.Country.Name));
-        
+
         CreateMap<Advert, AdvertDto>()
             .ForMember(dest => dest.OwnerName, opt => opt.MapFrom(src => $"{src.User.FirstName} {src.User.LastName}"))
             .ForMember(dest => dest.Status, opt => opt.MapFrom(src => src.Status.ToString()))
-            .ForMember(dest => dest.Type, opt => opt.MapFrom(src => src.Status == AdvertStatus.PendingOffer ? "Offre" : "Demande"))
-            .ForMember(dest => dest.City, opt => opt.MapFrom(src => 
+            .ForMember(dest => dest.Type,
+                opt => opt.MapFrom(src => src.Status == AdvertStatus.PendingOffer ? "Offre" : "Demande"))
+            .ForMember(dest => dest.City, opt => opt.MapFrom(src =>
                 src.User.Address != null ? src.User.Address.City.Name : "Non spécifiée"));
-        
     }
 }
