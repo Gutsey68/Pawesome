@@ -1,6 +1,7 @@
 using System.Security.Claims;
 using AutoMapper;
 using Microsoft.AspNetCore.Identity;
+using Microsoft.EntityFrameworkCore;
 using Pawesome.Interfaces;
 using Pawesome.Models.Entities;
 using Pawesome.Models.ViewModels.Auth;
@@ -74,9 +75,12 @@ public class AuthService : IAuthService
     /// <returns>
     /// A SignInResult indicating the success or failure of the login attempt.
     /// </returns>
+
     public async Task<SignInResult> LoginUserAsync(string email, string password, bool rememberMe)
     {
-        var user = await _userManager.FindByEmailAsync(email);
+        var user = await _userManager.Users
+            .Include(u => u.Address)
+            .FirstOrDefaultAsync(u => u.Email == email);
 
         if (user == null)
         {
@@ -94,6 +98,7 @@ public class AuthService : IAuthService
 
         return SignInResult.Success;
     }
+
 
 
     /// <summary>
