@@ -48,7 +48,6 @@ public class AdvertMappingProfile : Profile
         CreateMap<PetSimpleDto, PetCartViewModel>()
             .ForMember(dest => dest.Id, opt => opt.MapFrom(src => src.Id))
             .ForMember(dest => dest.Name, opt => opt.MapFrom(src => src.Name))
-            .ForMember(dest => dest.Species, opt => opt.MapFrom(src => src.AnimalTypeName))
             .ForMember(dest => dest.Photo, opt => opt.MapFrom(src => src.Photo))
             .ForMember(dest => dest.Info, opt => opt.MapFrom(src => src.Info))
             .ForMember(dest => dest.Species, opt => opt.MapFrom(src => src.AnimalTypeName));

@@ -34,10 +34,12 @@ public class PetMappingProfile : Profile
             .ForMember(dest => dest.UserId, opt => opt.Ignore()); 
 
         CreateMap<Pet, PetSimpleDto>()
+            .ForMember(dest => dest.Id, opt => opt.MapFrom(src => src.Id))
+            .ForMember(dest => dest.Name, opt => opt.MapFrom(src => src.Name))
             .ForMember(dest => dest.AnimalTypeName, opt => opt.MapFrom(src => src.AnimalType.Name))
             .ForMember(dest => dest.Photo, opt => opt.MapFrom(src => src.Photo))
-            .ForMember(dest => dest.Name, opt => opt.MapFrom(src => src.Name))
-            .ForMember(dest => dest.Id, opt => opt.MapFrom(src => src.Id));
+            .ForMember(dest => dest.Info, opt => opt.MapFrom(src => src.Info));
+
         
         CreateMap<PetSimpleDto, PetCartViewModel>()
             .ForMember(dest => dest.Id, opt => opt.MapFrom(src => src.Id))
