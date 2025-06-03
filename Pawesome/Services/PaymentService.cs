@@ -391,9 +391,12 @@ namespace Pawesome.Services
                 if (booking == null)
                     return false;
             
-                var payment = booking.Payments.FirstOrDefault(p => p.Status == PaymentStatus.Authorized);
+                var payment = booking.Payments.FirstOrDefault();
                 if (payment == null || payment.PaymentIntentId == null)
+                {
+                    _logger.LogWarning("Aucun paiement trouvé");
                     return false;
+                }
 
                 var service = new PaymentIntentService();
                 await service.CaptureAsync(payment.PaymentIntentId, new PaymentIntentCaptureOptions());
@@ -402,9 +405,7 @@ namespace Pawesome.Services
                 payment.UpdatedAt = DateTime.UtcNow;
                 await _paymentRepository.UpdatePaymentAsync(payment);
         
-                if (booking.Advert != null) {
-                    await _userRepository.UpdateUserBalanceAsync(booking.Advert.UserId, payment.Amount);
-                }
+                await _userRepository.UpdateUserBalanceAsync(booking.Advert.UserId, payment.Amount);
         
                 return true;
             } catch (Exception ex) {

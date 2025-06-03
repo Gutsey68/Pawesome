@@ -287,43 +287,58 @@ namespace Pawesome.Services
         /// </summary>
         /// <param name="bookingId">The ID of the booking to validate</param>
         /// <returns>True if validation was successful, false otherwise</returns>
-        public async Task<bool> ValidateBookingAsync(int bookingId)
+public async Task<bool> ValidateBookingAsync(int bookingId)
+{
+    try
+    {
+        var booking = await _bookingRepository.GetBookingByIdWithDetailsAsync(bookingId);
+        if (booking == null)
         {
-            try
+            _logger.LogWarning("Validation impossible : réservation {BookingId} non trouvée", bookingId);
+            return false;
+        }
+
+        _logger.LogInformation("Début de validation de la réservation {BookingId} pour le montant {Amount}€",
+            bookingId, booking.Amount);
+
+        var payment = booking.Payments
+            .OrderByDescending(p => p.CreatedAt)
+            .FirstOrDefault(p => p.Status == PaymentStatus.Authorized);
+
+        if (payment != null)
+        {
+            _logger.LogInformation("Finalisation du paiement {PaymentId} pour la réservation {BookingId}",
+                payment.Id, bookingId);
+                
+            var paymentSuccess = await _paymentService.FinalizeBookingPaymentAsync(bookingId);
+
+            if (!paymentSuccess)
             {
-                var booking = await _bookingRepository.GetBookingByIdWithDetailsAsync(bookingId);
-                if (booking == null)
-                    return false;
-
-                var payment = booking.Payments
-                    .OrderByDescending(p => p.CreatedAt)
-                    .FirstOrDefault();
-
-                bool paymentSuccess = true;
-                if (payment != null && payment.Status == PaymentStatus.Authorized)
-                {
-                    paymentSuccess = await _paymentService.FinalizeBookingPaymentAsync(bookingId);
-                    if (!paymentSuccess)
-                        return false;
-
-                    payment.Status = PaymentStatus.Completed;
-                    payment.UpdatedAt = DateTime.UtcNow;
-
-                    await _balanceService.UpdateLocalBalanceFromStripeAsync(booking.Advert.UserId);
-
-                    await _bookingRepository.SaveChangesAsync();
-                }
-
-                var result = await _bookingRepository.ValidateBookingAsync(bookingId);
-
-                return result;
-            }
-            catch (Exception ex)
-            {
-                _logger.LogError(ex, "Erreur lors de la validation de la réservation {BookingId}", bookingId);
+                _logger.LogError("Échec de la finalisation du paiement pour la réservation {BookingId}",
+                    bookingId);
                 return false;
             }
+            
         }
+        else
+        {
+            _logger.LogInformation(
+                "Aucun paiement à finaliser pour la réservation {BookingId} ou paiement déjà complété",
+                bookingId);
+        }
+
+        var result = await _bookingRepository.ValidateBookingAsync(bookingId);
+        _logger.LogInformation("Résultat de la validation de la réservation {BookingId} : {Result}", bookingId,
+            result);
+
+        return result;
+    }
+    catch (Exception ex)
+    {
+        _logger.LogError(ex, "Erreur lors de la validation de la réservation {BookingId}", bookingId);
+        return false;
+    }
+}
 
         /// <summary>
         /// Opens a dispute for a booking

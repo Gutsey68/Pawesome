@@ -356,7 +356,7 @@ namespace Pawesome.Services
                     return 0;
                 }
 
-                var stripeBalance = await GetBalanceFromStripeAsync(userId);
+                var stripeBalance = await GetUserBalanceAsync(userId);
 
                 var result = await _userRepository.UpdateUserBalanceToExactAmountAsync(userId, stripeBalance);
 

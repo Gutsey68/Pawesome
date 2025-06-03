@@ -55,7 +55,7 @@ namespace Pawesome.Controllers
                 return View("OnboardingRequired");
             }
 
-            var balance = await _balanceService.GetUserBalanceAsync(user.Id);
+            var balance = await _balanceService.UpdateLocalBalanceFromStripeAsync(user.Id);
             var payoutHistory = await _balanceService.GetUserPayoutHistoryAsync(user.Id);
 
             var viewModel = new BalanceViewModel
@@ -140,6 +140,9 @@ namespace Pawesome.Controllers
             if (amount > balance)
             {
                 TempData["ErrorMessage"] = "Le montant du retrait ne peut pas dépasser votre solde disponible.";
+                
+                await _balanceService.UpdateLocalBalanceFromStripeAsync(user.Id);
+                
                 return RedirectToAction(nameof(Index));
             }
 

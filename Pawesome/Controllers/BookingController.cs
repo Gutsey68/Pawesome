@@ -266,8 +266,6 @@ namespace Pawesome.Controllers
             var result = await _bookingService.ValidateBookingAsync(bookingId);
             if (result)
             {
-                await _balanceService.UpdateLocalBalanceFromStripeAsync(booking.PetSitterUserId);
-        
                 TempData["SuccessMessage"] = "La réservation a été validée avec succès et le paiement a été finalisé.";
             }
             else
