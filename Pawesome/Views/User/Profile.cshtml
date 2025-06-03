@@ -6,7 +6,7 @@
 
 <main role="main" class="container">
     <div class="profile-header">
-        <div>
+        <div> 
             @if (!string.IsNullOrEmpty(Model.Photo))
             {
                 <div class="avatar" data-size="xxl">
@@ -117,10 +117,10 @@
         else
         {
             <div id="all-adverts" class="adverts-content active">
-                <div class="adverts-grid">
+                <div class="profile-adverts-grid">
                     @foreach (var advert in Model.Adverts)
                     {
-                        <article class="advert-card">
+                        <article class="profile-advert-card">
                             <div class="card-header">
                                 <span class="advert-badge @(advert.IsPetSitter ? "offer" : "request")">
                                     @(advert.IsPetSitter ? "Offre" : "Demande")
@@ -198,10 +198,10 @@
             </div>
 
             <div id="offers-adverts" class="adverts-content">
-                <div class="adverts-grid">
+                <div class="profile-adverts-grid">
                     @foreach (var advert in Model.Adverts.Where(a => a.IsPetSitter))
                     {
-                        <article class="advert-card">
+                        <article class="profile-advert-card">
                             <div class="card-header">
                                 <span class="advert-badge offer">Offre</span>
                                 <span class="advert-price">@advert.Amount.ToString("C")</span>
@@ -294,10 +294,10 @@
             </div>
 
             <div id="requests-adverts" class="adverts-content">
-                <div class="adverts-grid">
+                <div class="profile-adverts-grid">
                     @foreach (var advert in Model.Adverts.Where(a => !a.IsPetSitter))
                     {
-                        <article class="advert-card">
+                        <article class="profile-advert-card">
                             <div class="card-header">
                                 <span class="advert-badge request">Demande</span>
                                 <span class="advert-price">@advert.Amount.ToString("C")</span>

@@ -84,10 +84,10 @@
     else
     {
         <div id="all-adverts" class="adverts-content active">
-            <div class="adverts-grid">
+            <div class="my-adverts-adverts-grid">
                 @foreach (var advert in Model)
                 {
-                    <article class="advert-card">
+                    <article class="my-adverts-adverts-card">
                         <div class="card-header">
                             <span class="advert-badge @(advert.IsPetSitter ? "offer" : "request")">
                                 @(advert.IsPetSitter ? "Offre" : "Demande")
@@ -129,8 +129,9 @@
                                     <div class="pets-tags">
                                         @foreach (var pet in advert.Pets)
                                         {
-                                            <span class="badge" data-variant="@pet.AnimalTypeName"
-                                                  data->@pet.AnimalTypeName</span>
+                                            <span class="badge" data-variant="@pet.AnimalTypeName">
+                                                @pet.AnimalTypeName
+                                            </span>
                                         }
                                     </div>
                                 </div>
@@ -166,10 +167,10 @@
         </div>
         
         <div id="offers-adverts" class="adverts-content">
-            <div class="adverts-grid">
+            <div class="my-adverts-adverts-grid">
                 @foreach (var advert in Model.Where(a => a.IsPetSitter))
                 {
-                    <article class="advert-card">
+                    <article class="my-adverts-adverts-card">
                         <div class="card-header">
                             <span class="advert-badge offer">Offre</span>
                             <span class="badge"
@@ -209,8 +210,9 @@
                                     <div class="pets-tags">
                                         @foreach (var pet in advert.Pets)
                                         {
-                                            <span class="badge" data-variant="@pet.AnimalTypeName"
-                                                  data->@pet.AnimalTypeName</span>
+                                            <span class="badge" data-variant="@pet.AnimalTypeName">
+                                                @pet.AnimalTypeName
+                                            </span>
                                         }
                                     </div>
                                 </div>
@@ -264,7 +266,7 @@
         </div>
         
         <div id="requests-adverts" class="adverts-content">
-            <div class="adverts-grid">
+            <div class="my-adverts-adverts-grid">
                 @foreach (var advert in Model.Where(a => !a.IsPetSitter))
                 {
                     <article class="advert-card">
@@ -307,8 +309,9 @@
                                     <div class="pets-tags">
                                         @foreach (var pet in advert.Pets)
                                         {
-                                            <span class="badge" data-variant="@pet.AnimalTypeName"
-                                                  data->@pet.AnimalTypeName</span>
+                                            <span class="badge" data-variant="@pet.AnimalTypeName">
+                                                @pet.AnimalTypeName
+                                            </span>
                                         }
                                     </div>
                                 </div>

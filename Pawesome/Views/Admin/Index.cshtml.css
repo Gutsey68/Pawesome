@@ -145,7 +145,7 @@
     gap: var(--space-3);
 }
 
-.advert-card {
+.admin-advert-card {
     background-color: var(--color-primary-2);
     border-radius: var(--radius-lg);
     padding: var(--space-4);
@@ -153,7 +153,7 @@
     transition: transform 0.2s ease;
 }
 
-.advert-card:hover {
+.admin-advert-card:hover {
     transform: translateY(-2px);
     box-shadow: var(--shadow-sm);
 }
@@ -161,6 +161,7 @@
 .advert-card-header {
     display: flex;
     justify-content: space-between;
+    border-radius: var(--radius-lg);
     align-items: center;
     margin-bottom: var(--space-3);
 }

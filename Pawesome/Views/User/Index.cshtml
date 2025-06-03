@@ -148,10 +148,10 @@
         else
         {
             <div id="all-adverts" class="adverts-content active">
-                <div class="adverts-grid">
+                <div class="user-adverts-grid">
                     @foreach (var advert in Model.Adverts)
                     {
-                        <article class="advert-card">
+                        <article class="user-advert-card">
                             <div class="card-header">
                                 <span class="advert-badge @(advert.IsPetSitter ? "offer" : "request")">
                                     @(advert.IsPetSitter ? "Offre" : "Demande")
@@ -231,10 +231,10 @@
             </div>
 
             <div id="offers-adverts" class="adverts-content">
-                <div class="adverts-grid">
+                <div class="user-adverts-grid">
                     @foreach (var advert in Model.Adverts.Where(a => a.IsPetSitter))
                     {
-                        <article class="advert-card">
+                        <article class="user-advert-card">
                             <div class="card-header">
                                 <span class="advert-badge offer">Offre</span>
                                 <span class="badge"
@@ -333,10 +333,10 @@
             </div>
 
             <div id="requests-adverts" class="adverts-content">
-                <div class="adverts-grid">
+                <div class="user-adverts-grid">
                     @foreach (var advert in Model.Adverts.Where(a => !a.IsPetSitter))
                     {
-                        <article class="advert-card">
+                        <article class="user-advert-card">
                             <div class="card-header">
                                 <span class="advert-badge request">Demande</span>
                                 <span class="badge"

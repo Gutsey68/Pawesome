@@ -159,13 +159,13 @@
     z-index: -1;
 }
 
-.adverts-grid {
+.profile-adverts-grid {
     display: grid;
     grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
     gap: var(--space-4);
 }
 
-.advert-card {
+.profile-advert-card {
     background-color: var(--color-primary-2);
     border-radius: var(--radius-xl);
     border: 1px solid var(--color-primary-4);
@@ -176,7 +176,7 @@
     z-index: 10;
 }
 
-.advert-card:hover {
+.profile-advert-card:hover {
     box-shadow: var(--shadow-md);
     transform: translateY(-2px);
     border-color: var(--color-primary-6);
@@ -185,6 +185,7 @@
 .card-header {
     display: flex;
     justify-content: space-between;
+    border-radius: var(--radius-xl);
     align-items: center;
     padding: var(--space-3) var(--space-4);
     background-color: var(--color-primary-2);
@@ -369,7 +370,7 @@
         text-align: center;
     }
 
-    .adverts-grid {
+    .profile-adverts-grid {
         grid-template-columns: 1fr;
     }
 }

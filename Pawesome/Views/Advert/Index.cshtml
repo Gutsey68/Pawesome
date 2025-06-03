@@ -213,7 +213,7 @@
                 </div>
             </div>
 
-            <div class="adverts-grid">
+            <div class="filter-adverts-grid">
                 @if (!Model.Adverts.Any())
                 {
                     <div class="mobile-hidden"></div>
@@ -234,7 +234,7 @@
                 {
                     @foreach (var advert in Model.Adverts)
                     {
-                        <article class="advert-card">
+                        <article class="filter-advert-card">
                             <div class="card-header">
                                 <span class="advert-badge @(advert.IsPetSitter ? "offer" : "request")">
                                     @(advert.IsPetSitter ? "Offre" : "Demande")
