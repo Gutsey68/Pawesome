@@ -38,9 +38,9 @@ public class UserService : IUserService
     /// <param name="advertRepository"></param>
     /// <param name="userManager">User manager for user-related operations.</param>
     public UserService(
-        IUserRepository userRepository, 
-        IMapper mapper, 
-        IWebHostEnvironment environment, 
+        IUserRepository userRepository,
+        IMapper mapper,
+        IWebHostEnvironment environment,
         ICityRepository cityRepository,
         ICountryRepository countryRepository,
         IAddressRepository addressRepository,
@@ -77,12 +77,12 @@ public class UserService : IUserService
     public async Task<ProfileViewModel?> GetUserProfileAsync(int userId)
     {
         var user = await _userRepository.GetUserByIdWithDetailsAsync(userId);
-    
+
         if (user == null)
             return null;
-    
+
         var profileViewModel = _mapper.Map<ProfileViewModel>(user);
-    
+
         return profileViewModel;
     }
 
@@ -118,7 +118,7 @@ public class UserService : IUserService
 
             await _userRepository.UpdateAsync(user);
             await _userRepository.SaveChangesAsync();
-            
+
             await UpdateUserClaimsAsync(user);
         }
     }
@@ -154,7 +154,7 @@ public class UserService : IUserService
             File.Delete(filePath);
         }
     }
-    
+
     /// <summary>
     /// Retrieves a public user profile for display.
     /// </summary>
@@ -185,7 +185,7 @@ public class UserService : IUserService
 
         return profile;
     }
-    
+
     /// <summary>
     /// Updates the user's claims in the identity system.
     /// Removes all existing claims and adds updated claims for first name, last name, email, and photo.
@@ -196,7 +196,7 @@ public class UserService : IUserService
     {
         var existingClaims = await _userManager.GetClaimsAsync(user);
         await _userManager.RemoveClaimsAsync(user, existingClaims);
-    
+
         var claims = new List<Claim>
         {
             new Claim("FirstName", user.FirstName),
@@ -206,18 +206,17 @@ public class UserService : IUserService
 
         claims.Add(new Claim("Address", user.Address?.StreetAddress ?? string.Empty));
 
-        if (user.Email != null) 
+        if (user.Email != null)
         {
             claims.Add(new Claim("Email", user.Email));
         }
-    
+
         if (!string.IsNullOrEmpty(user.Photo))
         {
             claims.Add(new Claim("Photo", user.Photo));
         }
-    
     }
-    
+
     /// <summary>
     /// Updates the user's address information.
     /// Ensures the country and city exist in the database, creates them if necessary,
@@ -234,7 +233,8 @@ public class UserService : IUserService
 
             if (country == null)
             {
-                country = new Country {
+                country = new Country
+                {
                     Name = "France",
                     Cities = new List<City>()
                 };
@@ -268,16 +268,33 @@ public class UserService : IUserService
 
                 await _addressRepository.UpdateAsync(user.Address);
             }
+            else
+            {
+                var newAddress = new Address
+                {
+                    StreetAddress = model.StreetAddress,
+                    AdditionalInfo = model.AdditionalInfo,
+                    CityId = city.Id,
+                    City = city,
+                    CreatedAt = DateTime.UtcNow,
+                    UpdatedAt = DateTime.UtcNow
+                };
+
+                user.Address = newAddress;
+
+                await _addressRepository.AddAsync(newAddress);
+            }
 
             await _addressRepository.SaveChangesAsync();
         }
     }
-    
+
+
     /// <summary>
     /// Returns the total number of users in the system.
     /// </summary>
     /// <returns>The count of users as an integer.</returns>
-    public int GetUsersCount() 
+    public int GetUsersCount()
     {
         return _userRepository.GetAllAsync().Result.Count();
     }
@@ -290,17 +307,17 @@ public class UserService : IUserService
     {
         var users = await _userRepository.GetAllAsync();
         var userDtos = _mapper.Map<List<UserSimpleDto>>(users);
-    
+
         foreach (var userDto in userDtos)
         {
             var user = users.First(u => u.Id == userDto.Id);
             var roles = await _userManager.GetRolesAsync(user);
             userDto.Role = roles.FirstOrDefault() ?? "User";
         }
-    
+
         return userDtos;
     }
-    
+
     /// <summary>
     /// Bans a user by setting their status to Banned.
     /// </summary>
@@ -309,19 +326,19 @@ public class UserService : IUserService
     public async Task<bool> BanUserAsync(int userId)
     {
         var user = await _userRepository.GetByIdAsync(userId);
-        
+
         if (user == null)
             return false;
-            
+
         user.Status = UserStatus.Banned;
         user.UpdatedAt = DateTime.UtcNow;
-        
+
         await _userRepository.UpdateAsync(user);
         await _userRepository.SaveChangesAsync();
-        
+
         return true;
     }
-    
+
     /// <summary>
     /// Unbans a user by setting their status to Active.
     /// </summary>
@@ -330,19 +347,19 @@ public class UserService : IUserService
     public async Task<bool> UnbanUserAsync(int userId)
     {
         var user = await _userRepository.GetByIdAsync(userId);
-        
+
         if (user == null)
             return false;
-            
+
         user.Status = UserStatus.Active;
         user.UpdatedAt = DateTime.UtcNow;
-        
+
         await _userRepository.UpdateAsync(user);
         await _userRepository.SaveChangesAsync();
-        
+
         return true;
     }
-    
+
     /// <summary>
     /// Allows a user to rate another user for a specific advert.
     /// </summary>
@@ -361,17 +378,17 @@ public class UserService : IUserService
             var ratedUser = await _userRepository.GetByIdAsync(ratedUserId);
             var raterUser = await _userRepository.GetByIdAsync(raterUserId);
             var advert = await _advertRepository.GetAdvertByIdAsync(advertId);
-        
+
             if (ratedUser == null || raterUser == null || advert == null)
             {
                 return false;
             }
-            
+
             if (advert.Status != AdvertStatus.FullyBooked)
             {
                 return false;
             }
-        
+
             var review = new Review
             {
                 UserId = ratedUserId,
@@ -381,21 +398,21 @@ public class UserService : IUserService
                 User = ratedUser,
                 Advert = advert
             };
-        
+
             if (ratedUser.Reviews == null)
                 ratedUser.Reviews = new List<Review>();
-            
+
             ratedUser.Reviews.Add(review);
-        
+
             var allRatings = ratedUser.Reviews.Select(r => r.Rate).ToList();
             if (allRatings.Any())
             {
                 ratedUser.Rating = allRatings.Average();
             }
-        
+
             await _userRepository.UpdateAsync(ratedUser);
             await _userRepository.SaveChangesAsync();
-        
+
             return true;
         }
         catch (Exception ex)

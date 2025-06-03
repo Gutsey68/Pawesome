@@ -13,6 +13,9 @@
       - "traefik.http.routers.pawesome.tls.certresolver=pawesome"
       - "traefik.http.services.pawesome.loadbalancer.server.port=8080"
       - "traefik.docker.network=traefik-proxy"
+    volumes:
+      - user_images:/app/wwwroot/images/users
+      - pet_images:/app/wwwroot/images/pets
     networks:
       - pawesome-network
       - traefik-proxy
@@ -39,6 +42,8 @@
 
 volumes:
   db_data:
+  user_images:
+  pet_images:
 
 networks:
   pawesome-network:
