@@ -104,11 +104,7 @@ public class AuthService : IAuthService
         claims.Add(!string.IsNullOrEmpty(user.Address?.StreetAddress)
             ? new Claim("Address", user.Address.StreetAddress)
             : new Claim("Address", string.Empty));
-
-        if (claims.Count != 0)
-        {
-            await _userManager.AddClaimsAsync(user, claims);
-        }
+        
 
         return result;
     }
@@ -149,11 +145,6 @@ public class AuthService : IAuthService
         claims.Add(!string.IsNullOrEmpty(user.Address?.StreetAddress)
             ? new Claim("Address", user.Address.StreetAddress)
             : new Claim("Address", string.Empty));
-
-        if (claims.Count != 0)
-        {
-            await _userManager.AddClaimsAsync(user, claims);
-        }
 
         await _signInManager.SignInAsync(user, isPersistent: true);
     }

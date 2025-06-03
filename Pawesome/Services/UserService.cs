@@ -201,6 +201,7 @@ public class UserService : IUserService
         {
             new Claim("FirstName", user.FirstName),
             new Claim("LastName", user.LastName),
+            new Claim("Id", user.Id.ToString())
         };
 
         claims.Add(new Claim("Address", user.Address?.StreetAddress ?? string.Empty));
@@ -215,7 +216,6 @@ public class UserService : IUserService
             claims.Add(new Claim("Photo", user.Photo));
         }
     
-        await _userManager.AddClaimsAsync(user, claims);
     }
     
     /// <summary>

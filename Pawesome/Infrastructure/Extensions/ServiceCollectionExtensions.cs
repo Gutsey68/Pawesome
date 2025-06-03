@@ -5,6 +5,7 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Options;
 using Pawesome.Data;
 using Pawesome.Infrastructure.Filters;
+using Pawesome.Infrastructure.Security;
 using Pawesome.Interfaces;
 using Pawesome.Models.Configuration;
 using Pawesome.Models.Entities;
@@ -45,6 +46,8 @@ public static class ServiceCollectionExtensions
     /// <returns>The service collection for chaining</returns>
     public static IServiceCollection AddPawesomeIdentity(this IServiceCollection services)
     {
+        services.AddScoped<IUserClaimsPrincipalFactory<User>, CustomClaimsPrincipalFactory>();
+
         services.AddIdentity<User, IdentityRole<int>>(options =>
         {
             options.Password.RequireDigit = true;
