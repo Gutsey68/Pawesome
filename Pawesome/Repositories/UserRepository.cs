@@ -79,4 +79,41 @@ public class UserRepository : Repository<User>, IUserRepository
         await _context.SaveChangesAsync();
         return true;
     }
+    
+    /// <summary>
+    /// Marks the Stripe onboarding process as completed for a user.
+    /// </summary>
+    /// <param name="userId">The ID of the user to update.</param>
+    /// <returns>True if the update was successful, false if the user was not found.</returns>
+    public async Task<bool> SetStripeOnboardingCompletedAsync(int userId)
+    {
+        var user = await _context.Users.FindAsync(userId);
+        if (user == null)
+            return false;
+
+        user.IsStripeOnboardingCompleted = true;
+        user.UpdatedAt = DateTime.UtcNow;
+
+        await _context.SaveChangesAsync();
+        return true;
+    }
+    
+    /// <summary>
+    /// Updates the user's balance to an exact specified amount.
+    /// </summary>
+    /// <param name="userId">The ID of the user whose balance will be updated.</param>
+    /// <param name="amount">The exact amount to set as the user's balance.</param>
+    /// <returns>True if the update was successful, false if the user was not found.</returns>
+    public async Task<bool> UpdateUserBalanceToExactAmountAsync(int userId, decimal amount)
+    {
+        var user = await _context.Users.FindAsync(userId);
+        if (user == null)
+            return false;
+
+        user.BalanceAccount = amount;
+        user.UpdatedAt = DateTime.UtcNow;
+
+        await _context.SaveChangesAsync();
+        return true;
+    }
 }

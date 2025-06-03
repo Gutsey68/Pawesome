@@ -8,6 +8,7 @@ using Pawesome.Models.Entities;
 using Pawesome.Models.enums;
 using Pawesome.Models.Enums;
 using Pawesome.Models.ViewModels.Payment;
+using Pawesome.Repositories;
 using Stripe;
 using Stripe.Checkout;
 
@@ -25,6 +26,9 @@ namespace Pawesome.Controllers
         private readonly UserManager<User> _userManager;
         private readonly StripeSettings _stripeSettings;
         private readonly ILogger<PaymentController> _logger;
+        private readonly IPaymentRepository _paymentRepository;
+        private readonly IUserRepository _userRepository;
+        private readonly IStripeBalanceService _balanceService;
 
         /// <summary>
         /// Initializes a new instance of the PaymentController
@@ -35,13 +39,20 @@ namespace Pawesome.Controllers
         /// <param name="userManager">User manager for user operations</param>
         /// <param name="stripeSettings">Stripe configuration settings</param>
         /// <param name="logger">Logger for recording diagnostic information</param>
+        /// <param name="paymentRepository"></param>
+        /// <param name="userRepository"></param>
+        /// <param name="balanceService"></param>
         public PaymentController(
             IPaymentService paymentService,
             IAdvertService advertService,
             IBookingService bookingService,
             UserManager<User> userManager,
             IOptions<StripeSettings> stripeSettings,
-            ILogger<PaymentController> logger)
+            ILogger<PaymentController> logger,
+            IPaymentRepository paymentRepository,
+            IUserRepository userRepository,
+            IStripeBalanceService balanceService
+        )
         {
             _paymentService = paymentService;
             _advertService = advertService;
@@ -49,6 +60,9 @@ namespace Pawesome.Controllers
             _userManager = userManager;
             _stripeSettings = stripeSettings.Value;
             _logger = logger;
+            _paymentRepository = paymentRepository;
+            _userRepository = userRepository;
+            _balanceService = balanceService;
         }
 
         /// <summary>
@@ -70,7 +84,7 @@ namespace Pawesome.Controllers
                 return NotFound("La réservation demandée n'existe pas.");
             }
 
-            if (booking.PetSitterUserId != user.Id && booking.BookerUserId != user.Id )
+            if (booking.PetSitterUserId != user.Id && booking.BookerUserId != user.Id)
             {
                 return Forbid();
             }
@@ -95,7 +109,8 @@ namespace Pawesome.Controllers
             }
             catch (Exception)
             {
-                return RedirectToAction("Error", "Home", new { message = "Une erreur s'est produite lors de la préparation du paiement." });
+                return RedirectToAction("Error", "Home",
+                    new { message = "Une erreur s'est produite lors de la préparation du paiement." });
             }
         }
 
@@ -109,6 +124,11 @@ namespace Pawesome.Controllers
         {
             try
             {
+                if (request.BookingId <= 0)
+                {
+                    return BadRequest(new { error = "Données de réservation invalides" });
+                }
+
                 var user = await _userManager.GetUserAsync(User);
                 if (user == null)
                     return Challenge();
@@ -117,7 +137,7 @@ namespace Pawesome.Controllers
                 if (booking == null)
                     return NotFound(new { error = "Réservation non trouvée" });
 
-                if (booking.PetSitterUserId != user.Id && booking.BookerUserId != user.Id )
+                if (booking.PetSitterUserId != user.Id && booking.BookerUserId != user.Id)
                     return Forbid();
 
                 var advert = await _advertService.GetAdvertByIdAsync(booking.AdvertId);
@@ -145,7 +165,8 @@ namespace Pawesome.Controllers
                         }
                     },
                     Mode = "payment",
-                    SuccessUrl = $"{Request.Scheme}://{Request.Host}/Payment/Success?session_id={{CHECKOUT_SESSION_ID}}",
+                    SuccessUrl =
+                        $"{Request.Scheme}://{Request.Host}/Payment/Success?session_id={{CHECKOUT_SESSION_ID}}",
                     CancelUrl = $"{Request.Scheme}://{Request.Host}/Payment/Cancel",
                     CustomerEmail = user.Email,
                     ClientReferenceId = booking.Id.ToString(),
@@ -157,6 +178,20 @@ namespace Pawesome.Controllers
 
                 var service = new SessionService();
                 var session = await service.CreateAsync(options);
+
+                var payment = new Payment
+                {
+                    BookingId = booking.Id,
+                    Amount = booking.Amount,
+                    PaymentIntentId = session.PaymentIntentId,
+                    SessionId = session.Id,
+                    Status = PaymentStatus.Authorized,
+                    CreatedAt = DateTime.UtcNow,
+                    UpdatedAt = DateTime.UtcNow,
+                    Booking = default!
+                };
+
+                await _paymentRepository.CreatePaymentAsync(payment);
 
                 if (booking.PetSitterUserId == user.Id)
                 {
@@ -179,28 +214,29 @@ namespace Pawesome.Controllers
         /// <summary>
         /// Handles successful payment processing and redirects to success page
         /// </summary>
-        /// <param name="sessionId">The Stripe session ID for the completed payment</param>
+        /// <param name="session_id">The Stripe session ID for the completed payment</param>
         /// <returns>Success view with payment details or redirect with error message</returns>
         [HttpGet]
         public async Task<IActionResult> Success(string session_id)
         {
-    
-            if (string.IsNullOrEmpty(session_id))
-            {
-                return RedirectToAction("Index", "Home");
-            }
-
             try
             {
-                var payment = await _paymentService.CompletePaymentAsync(session_id);
+                var payment = await _paymentRepository.GetPaymentBySessionIdAsync(session_id);
 
                 if (payment == null)
                 {
-                    TempData["ErrorMessage"] = "Impossible de récupérer les détails du paiement.";
+                    TempData["ErrorMessage"] = "Paiement non trouvé.";
                     return RedirectToAction("Index", "Home");
                 }
 
-        
+                payment = await _paymentRepository.UpdatePaymentStatusAsync(session_id, PaymentStatus.Captured);
+
+                if (payment == null)
+                {
+                    TempData["ErrorMessage"] = "Erreur lors de la mise à jour du paiement.";
+                    return RedirectToAction("Index", "Home");
+                }
+
                 var model = new SuccessViewModel
                 {
                     BookingId = payment.BookingId,

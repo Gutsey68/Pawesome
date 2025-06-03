@@ -19,6 +19,7 @@ namespace Pawesome.Controllers
         private readonly IBookingService _bookingService;
         private readonly IAdvertService _advertService;
         private readonly UserManager<User> _userManager;
+        private readonly IStripeBalanceService _balanceService;
 
         /// <summary>
         /// Initializes a new instance of the <see cref="BookingController"/> class.
@@ -29,11 +30,14 @@ namespace Pawesome.Controllers
         public BookingController(
             IBookingService bookingService,
             IAdvertService advertService,
-            UserManager<User> userManager)
+            UserManager<User> userManager,
+            IStripeBalanceService balanceService
+            )
         {
             _bookingService = bookingService;
             _advertService = advertService;
             _userManager = userManager;
+            _balanceService = balanceService;
         }
 
         /// <summary>
@@ -237,6 +241,7 @@ namespace Pawesome.Controllers
         /// This action triggers payment capture in Stripe.
         /// </remarks>
         [HttpPost]
+        [ValidateAntiForgeryToken]
         public async Task<IActionResult> Validate(int bookingId)
         {
             var user = await _userManager.GetUserAsync(User);
@@ -259,8 +264,16 @@ namespace Pawesome.Controllers
                 return Forbid();
 
             var result = await _bookingService.ValidateBookingAsync(bookingId);
-            if (!result)
-                return BadRequest("La validation de la prestation a échoué");
+            if (result)
+            {
+                await _balanceService.UpdateLocalBalanceFromStripeAsync(booking.PetSitterUserId);
+        
+                TempData["SuccessMessage"] = "La réservation a été validée avec succès et le paiement a été finalisé.";
+            }
+            else
+            {
+                TempData["ErrorMessage"] = "Une erreur s'est produite lors de la validation de la réservation.";
+            }
             
             await _advertService.UpdateAdvertStatusAsync(booking.AdvertId, AdvertStatus.FullyBooked);
 

@@ -16,6 +16,9 @@ namespace Pawesome.Infrastructure.Mappers
                     $"{src.BookerUser.FirstName} {src.BookerUser.LastName}"))
                 .ForMember(dest => dest.BookerUserEmail, opt => opt.MapFrom(src =>
                     src.BookerUser.Email))
+                
+                .ForMember(dest => dest.IsPetSitter, opt => opt.MapFrom(src => 
+                    src.Advert.PetAdverts == null || !src.Advert.PetAdverts.Any()))
                 .ForMember(dest => dest.PetSitterUserId, opt => opt.MapFrom(src =>
                     src.Advert.UserId))
                 .ForMember(dest => dest.PetSitterUserName, opt => opt.MapFrom(src =>

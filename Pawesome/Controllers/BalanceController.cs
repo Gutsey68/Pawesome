@@ -15,6 +15,7 @@ namespace Pawesome.Controllers
     {
         private readonly IStripeBalanceService _balanceService;
         private readonly UserManager<User> _userManager;
+        private readonly IUserRepository _userRepository;
         private readonly ILogger<BalanceController> _logger;
 
         /// <summary>
@@ -22,14 +23,17 @@ namespace Pawesome.Controllers
         /// </summary>
         /// <param name="balanceService">Service handling stripe balance operations</param>
         /// <param name="userManager">Identity user manager</param>
+        /// <param name="userRepository"></param>
         /// <param name="logger">Logger instance</param>
         public BalanceController(
             IStripeBalanceService balanceService,
             UserManager<User> userManager,
+            IUserRepository userRepository,
             ILogger<BalanceController> logger)
         {
             _balanceService = balanceService;
             _userManager = userManager;
+            _userRepository = userRepository;
             _logger = logger;
         }
 
@@ -85,9 +89,16 @@ namespace Pawesome.Controllers
             if (returnUrl != null)
             {
                 var onboardingUrl = await _balanceService.CreateOnboardingLinkAsync(user.Id, returnUrl);
+                
+                var onboardingResult = await _userRepository.SetStripeOnboardingCompletedAsync(user.Id);
+                if (!onboardingResult)
+                {
+                    _logger.LogWarning($"Impossible de mettre à jour le statut d'onboarding pour l'utilisateur {user.Id}");
+                }
 
                 return Redirect(onboardingUrl);
             }
+            
             return View("OnboardingRequired");
         }
 
@@ -104,7 +115,6 @@ namespace Pawesome.Controllers
 
             await _balanceService.CheckOnboardingStatusAsync(user.Id);
 
-            TempData["SuccessMessage"] = "Configuration du compte Stripe effectuée avec succès.";
             return RedirectToAction(nameof(Index));
         }
 

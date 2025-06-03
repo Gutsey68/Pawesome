@@ -273,11 +273,19 @@ public class UserService : IUserService
         }
     }
     
+    /// <summary>
+    /// Returns the total number of users in the system.
+    /// </summary>
+    /// <returns>The count of users as an integer.</returns>
     public int GetUsersCount() 
     {
         return _userRepository.GetAllAsync().Result.Count();
     }
 
+    /// <summary>
+    /// Retrieves a list of all users with basic information and their roles.
+    /// </summary>
+    /// <returns>A list of UserSimpleDto objects representing all users.</returns>
     public async Task<List<UserSimpleDto>> GetAllUsers()
     {
         var users = await _userRepository.GetAllAsync();
@@ -293,6 +301,11 @@ public class UserService : IUserService
         return userDtos;
     }
     
+    /// <summary>
+    /// Bans a user by setting their status to Banned.
+    /// </summary>
+    /// <param name="userId">The ID of the user to ban.</param>
+    /// <returns>True if the user was successfully banned; false otherwise.</returns>
     public async Task<bool> BanUserAsync(int userId)
     {
         var user = await _userRepository.GetByIdAsync(userId);
@@ -309,6 +322,11 @@ public class UserService : IUserService
         return true;
     }
     
+    /// <summary>
+    /// Unbans a user by setting their status to Active.
+    /// </summary>
+    /// <param name="userId">The ID of the user to unban.</param>
+    /// <returns>True if the user was successfully unbanned; false otherwise.</returns>
     public async Task<bool> UnbanUserAsync(int userId)
     {
         var user = await _userRepository.GetByIdAsync(userId);
@@ -325,6 +343,17 @@ public class UserService : IUserService
         return true;
     }
     
+    /// <summary>
+    /// Allows a user to rate another user for a specific advert.
+    /// </summary>
+    /// <param name="raterUserId">The ID of the user giving the rating.</param>
+    /// <param name="ratedUserId">The ID of the user being rated.</param>
+    /// <param name="rating">The rating value (must be between 1 and 5).</param>
+    /// <param name="comment">An optional comment for the rating.</param>
+    /// <param name="advertId">The ID of the advert related to the rating.</param>
+    /// <returns>
+    /// True if the rating was successfully saved; false otherwise.
+    /// </returns>
     public async Task<bool> RateUserAsync(int raterUserId, int ratedUserId, int rating, string? comment, int advertId)
     {
         try

@@ -35,6 +35,7 @@ public class BookingDto
         
     public List<PaymentDto> Payments { get; set; } = new List<PaymentDto>();
     public ICollection<Pet> Pets { get; set; } = new List<Pet>();
+    public bool IsPetSitter { get; set; } 
     
     public string StatusLabel => Status switch
     {
