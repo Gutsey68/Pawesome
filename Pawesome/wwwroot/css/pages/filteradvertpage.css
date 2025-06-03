@@ -241,12 +241,13 @@
     justify-content: space-between;
     align-items: center;
     padding: var(--space-3) var(--space-4);
-    border-radius: var(--radius-xl);
+    border-top-left-radius: var(--radius-xl);
+    border-top-right-radius: var(--radius-xl);
     background-color: var(--color-primary-2);
     border-bottom: 1px solid var(--color-primary-4);
 }
 
-.advert-badge {
+.filter-advert-badge {
     display: inline-flex;
     padding: var(--space-1) var(--space-3);
     border-radius: var(--radius-full);
@@ -256,22 +257,22 @@
     letter-spacing: var(--letter-spacing-1);
 }
 
-.advert-badge.offer {
+.filter-advert-badge.offer {
     background-color: var(--color-success);
     color: var(--color-success-foreground);
 }
 
-.advert-badge.request {
+.filter-advert-badge.request {
     background-color: var(--color-info);
     color: var(--color-info-foreground);
 }
 
-.advert-price {
+.filter-advert-price {
     font-weight: var(--font-weight-bold);
     color: var(--color-primary-12);
 }
 
-.card-body {
+.filter-card-body {
     padding: var(--space-4);
     flex-grow: 1;
     display: flex;
@@ -279,7 +280,7 @@
     gap: var(--space-3);
 }
 
-.advert-title {
+.filter-advert-title {
     display: flex;
     align-items: center;
     gap: var(--space-2);
@@ -288,7 +289,7 @@
     color: var(--color-primary-12);
 }
 
-.advert-info {
+.filter-advert-info {
     display: flex;
     align-items: center;
     gap: var(--space-2);
@@ -296,7 +297,7 @@
     font-size: var(--font-size-sm);
 }
 
-.advert-info svg {
+.filter-advert-info svg {
     flex-shrink: 0;
     color: var(--color-primary-9);
 }
@@ -313,10 +314,12 @@
     margin-bottom: auto;
 }
 
-.card-footer {
+.filter-card-footer {
     padding: var(--space-3) var(--space-4);
     background-color: var(--color-primary-2);
     border-top: 1px solid var(--color-primary-4);
+    border-bottom-left-radius: var(--radius-xl);
+    border-bottom-right-radius: var(--radius-xl);
     display: flex;
     align-items: center;
     font-size: var(--font-size-sm);

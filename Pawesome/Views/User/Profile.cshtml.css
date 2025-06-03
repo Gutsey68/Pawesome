@@ -91,7 +91,6 @@
     color: var(--color-primary-12);
 }
 
-/* Nouvelle section de styles pour les annonces */
 .user-adverts-section {
     margin-top: var(--space-10);
     margin-bottom: var(--space-10);
@@ -185,7 +184,8 @@
 .card-header {
     display: flex;
     justify-content: space-between;
-    border-radius: var(--radius-xl);
+    border-top-left-radius: var(--radius-xl);
+    border-top-right-radius: var(--radius-xl);
     align-items: center;
     padding: var(--space-3) var(--space-4);
     background-color: var(--color-primary-2);
@@ -262,6 +262,8 @@
 .card-footer {
     padding: var(--space-3) var(--space-4);
     background-color: var(--color-primary-2);
+    border-bottom-left-radius: var(--radius-xl);
+    border-bottom-right-radius: var(--radius-xl);
     border-top: 1px solid var(--color-primary-4);
     display: flex;
     align-items: center;
