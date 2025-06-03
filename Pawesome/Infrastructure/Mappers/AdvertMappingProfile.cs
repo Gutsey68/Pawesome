@@ -1,6 +1,4 @@
 using AutoMapper;
-using Microsoft.AspNetCore.Mvc.Rendering;
-using Pawesome.Models;
 using Pawesome.Models.DTOs;
 using Pawesome.Models.DTOs.Address;
 using Pawesome.Models.Dtos.Advert;
@@ -62,14 +60,32 @@ public class AdvertMappingProfile : Profile
             .ForMember(dest => dest.CreatedAt, opt => opt.MapFrom(src => src.CreatedAt))
             .ForMember(dest => dest.UpdatedAt, opt => opt.MapFrom(src => src.UpdatedAt))
             .ForMember(dest => dest.IsPetSitter, opt => opt.MapFrom(src => src.Status == AdvertStatus.PendingOffer))
-            .ForMember(dest => dest.AnimalTypes, opt => opt.MapFrom(src => src.Status == AdvertStatus.PendingOffer
-                ? src.AnimalTypeAdverts.Select(ata => ata.AnimalType).ToList()
-                : src.PetAdverts.Select(pa => pa.Pet!.AnimalType).ToList()))
             .ForMember(dest => dest.Owner, opt => opt.MapFrom(src => src.User))
-            .ForMember(dest => dest.Pets, opt => opt.MapFrom(src => src.PetAdverts.Select(pa => pa.Pet).ToList()))
+            .ForMember(dest => dest.Pets, opt => opt.MapFrom(src => src.PetAdverts.Select(pa => pa.Pet)))
             .ForMember(dest => dest.Address, opt => opt.MapFrom(src => src.User.Address))
-            .ForMember(dest => dest.City,
-                opt => opt.MapFrom(src => src.User.Address != null ? src.User.Address.City.Name : null));
+            .ForMember(dest => dest.City, opt => opt.MapFrom(src => src.User.Address != null ? src.User.Address.City.Name : null))
+            .ForMember(dest => dest.AnimalTypes, opt => opt.Ignore())
+            .AfterMap((src, dest) =>
+            {
+                if (src.Status == AdvertStatus.PendingOffer && src.AnimalTypeAdverts != null)
+                {
+                    dest.AnimalTypes = src.AnimalTypeAdverts
+                        .Where(ata => ata.AnimalType != null)
+                        .Select(ata => ata.AnimalType)
+                        .ToList();
+                }
+                else if (src.PetAdverts != null)
+                {
+                    dest.AnimalTypes = src.PetAdverts
+                        .Where(pa => pa.Pet?.AnimalType != null)
+                        .Select(pa => pa.Pet!.AnimalType)
+                        .ToList();
+                }
+                else
+                {
+                    dest.AnimalTypes = new List<AnimalType>();
+                }
+            });
 
         CreateMap<Address, AddressDto>()
             .ForMember(dest => dest.Id, opt => opt.MapFrom(src => src.Id))
@@ -83,9 +99,7 @@ public class AdvertMappingProfile : Profile
         CreateMap<Advert, AdvertDto>()
             .ForMember(dest => dest.OwnerName, opt => opt.MapFrom(src => $"{src.User.FirstName} {src.User.LastName}"))
             .ForMember(dest => dest.Status, opt => opt.MapFrom(src => src.Status.ToString()))
-            .ForMember(dest => dest.Type,
-                opt => opt.MapFrom(src => src.Status == AdvertStatus.PendingOffer ? "Offre" : "Demande"))
-            .ForMember(dest => dest.City, opt => opt.MapFrom(src =>
-                src.User.Address != null ? src.User.Address.City.Name : "Non spécifiée"));
+            .ForMember(dest => dest.Type, opt => opt.MapFrom(src => src.Status == AdvertStatus.PendingOffer ? "Offre" : "Demande"))
+            .ForMember(dest => dest.City, opt => opt.MapFrom(src => src.User.Address != null ? src.User.Address.City.Name : "Non spécifiée"));
     }
 }
