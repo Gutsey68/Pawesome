@@ -83,31 +83,18 @@ public class AuthService : IAuthService
             return SignInResult.Failed;
         }
 
-        var result = await _signInManager.PasswordSignInAsync(user, password, rememberMe, false);
+        var result = await _signInManager.CheckPasswordSignInAsync(user, password, false);
 
-        if (!result.Succeeded) return result;
-        
-        var claims = new List<Claim>
+        if (!result.Succeeded)
         {
-            new Claim("FirstName", user.FirstName),
-            new Claim("LastName", user.LastName),
-            new Claim("Id", user.Id.ToString())
-        };
-        
-        if (user.Email != null) claims.Add(new Claim("Email", user.Email));
-        
-        if (!string.IsNullOrEmpty(user.Photo))
-        {
-            claims.Add(new Claim("Photo", user.Photo));
+            return result;
         }
 
-        claims.Add(!string.IsNullOrEmpty(user.Address?.StreetAddress)
-            ? new Claim("Address", user.Address.StreetAddress)
-            : new Claim("Address", string.Empty));
-        
+        await _signInManager.SignInAsync(user, isPersistent: rememberMe);
 
-        return result;
+        return SignInResult.Success;
     }
+
 
     /// <summary>
     /// Signs out the currently logged-in user.
