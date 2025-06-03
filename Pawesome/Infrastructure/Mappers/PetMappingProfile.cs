@@ -30,7 +30,8 @@ public class PetMappingProfile : Profile
             .ForMember(dest => dest.Photo, opt => opt.Ignore());
     
         CreateMap<UpdatePetViewModel, Pet>()
-            .ForMember(dest => dest.Photo, opt => opt.Ignore());
+            .ForMember(dest => dest.Photo, opt => opt.Ignore())
+            .ForMember(dest => dest.UserId, opt => opt.Ignore()); 
 
         CreateMap<Pet, PetSimpleDto>()
             .ForMember(dest => dest.AnimalTypeName, opt => opt.MapFrom(src => src.AnimalType.Name))
