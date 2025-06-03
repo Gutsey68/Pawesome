@@ -280,7 +280,9 @@
     </nav>
 </header>
 
-<script>
+@if (User.Identity != null && User.Identity.IsAuthenticated == true)
+{
+    <script>
         document.addEventListener('DOMContentLoaded', function () {
             updateNotificationCount();
 
@@ -507,4 +509,4 @@
             });
         }
     </script>
-
+}
