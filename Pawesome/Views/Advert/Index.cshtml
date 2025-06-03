@@ -4,10 +4,10 @@
     ViewData["Title"] = "Annonces de Pet Sitting";
 }
 
-<main role="main" class="index-container container mb-4">
-    <div class="index-header">
-        <h1 class="section-title">Annonces de Pet Sitting</h1>
-        <div class="create-buttons">
+<main role="main" class="filter-index-container container mb-4">
+    <div class="filter-index-header">
+        <h1 class="filter-section-title">Annonces de Pet Sitting</h1>
+        <div class="filter-create-buttons">
             <a asp-action="CreateRequest" class="button" data-variant="secondary" data-size="sm">
                 <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none"
                      stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"
@@ -29,20 +29,20 @@
         </div>
     </div>
 
-    <div class="content-container">
-        <aside class="filters-panel">
+    <div class="filter-content-container">
+        <aside class="filter-filters-panel">
             <form id="filterForm" method="get" asp-controller="Advert" asp-action="Index">
                 <input type="hidden" name="isPetSitter" value="@ViewContext.RouteData.Values["isPetSitter"]"/>
                 <input type="hidden" asp-for="IsPetSitterOffer"/>
 
-                <section class="filter-section">
-                    <div class="filter-header">
+                <section class="filter-filter-section">
+                    <div class="filter-filter-header">
                         <h3>Trier par</h3>
                         <a href="@Url.Action("Index", "Advert", new { isPetSitter = ViewContext.RouteData.Values["isPetSitter"] })"
-                           class="reset-link">Tout effacer</a>
+                           class="filter-reset-link">Tout effacer</a>
                     </div>
                     <div class="filter-options">
-                        <div class="filter-option">
+                        <div class="filter-filter-option">
                             <label>
                                 <input type="radio" name="SortOption" value="newest"
                                        @(Model.SortOption == "newest" ? "checked" : "")>
@@ -57,7 +57,7 @@
                                 </svg>
                             </label>
                         </div>
-                        <div class="filter-option">
+                        <div class="filter-filter-option">
                             <label>
                                 <input type="radio" name="SortOption" value="oldest"
                                        @(Model.SortOption == "oldest" ? "checked" : "")>
@@ -72,7 +72,7 @@
                                 </svg>
                             </label>
                         </div>
-                        <div class="filter-option">
+                        <div class="filter-filter-option">
                             <label>
                                 <input type="radio" name="SortOption" value="date_start_asc"
                                        @(Model.SortOption == "date_start_asc" ? "checked" : "")>
@@ -87,7 +87,7 @@
                                 </svg>
                             </label>
                         </div>
-                        <div class="filter-option">
+                        <div class="filter-filter-option">
                             <label>
                                 <input type="radio" name="SortOption" value="price_asc"
                                        @(Model.SortOption == "price_asc" ? "checked" : "")>
@@ -102,7 +102,7 @@
                                 </svg>
                             </label>
                         </div>
-                        <div class="filter-option">
+                        <div class="filter-filter-option">
                             <label>
                                 <input type="radio" name="SortOption" value="price_desc"
                                        @(Model.SortOption == "price_desc" ? "checked" : "")>
@@ -120,55 +120,55 @@
                     </div>
                 </section>
 
-                <div class="divider"></div>
+                <div class="filter-divider"></div>
 
-                <section class="filter-section">
+                <section class="filter-filter-section">
                     <h3>Par ville</h3>
                     <div class="mt-2">
-                        <input type="text" asp-for="City" class="form-control" placeholder="Entrez une ville">
+                        <input type="text" asp-for="City" class="filter-form-control" placeholder="Entrez une ville">
                     </div>
                 </section>
 
-                <div class="divider"></div>
+                <div class="filter-divider"></div>
 
-                <section class="filter-section">
+                <section class="filter-filter-section">
                     <h3 class="mb-2">Par prix</h3>
-                    <div class="price-slider">
-                        <div class="range-inputs">
+                    <div class="filter-price-slider">
+                        <div class="filter-range-inputs">
                             <input id="minPrice" type="range" min="@Model.MinPriceBeforeReload" max="@Model.MaxPriceBeforeReload" value="@(Model.MinPrice ?? Model.MinPriceBeforeReload)" step="1">
                             <input id="maxPrice" type="range" min="@Model.MinPriceBeforeReload" max="@Model.MaxPriceBeforeReload" value="@(Model.MaxPrice ?? Model.MaxPriceBeforeReload)" step="1">
                         </div>
-                        <div class="price-inputs">
+                        <div class="filter-price-inputs">
                             <input id="minPriceText" type="text" name="MinPrice" value="@(Math.Round(Model.MinPrice ?? Model.MinPriceBeforeReload))">
                             <input id="maxPriceText" type="text" name="MaxPrice" value="@(Math.Round(Model.MaxPrice ?? Model.MaxPriceBeforeReload))">
                         </div>
                     </div>
                 </section>
 
-                <div class="divider"></div>
+                <div class="filter-divider"></div>
 
-                <section class="filter-section">
+                <section class="filter-filter-section">
                     <h3 class="mb-2">Par date</h3>
                     <div class="mb-2">
-                        <label class="form-label">Début à partir du:</label>
-                        <input type="date" asp-for="StartDateFrom" class="form-control">
+                        <label class="filter-form-label">Début à partir du:</label>
+                        <input type="date" asp-for="StartDateFrom" class="filter-form-control">
                     </div>
                     <div>
-                        <label class="form-label">Fin jusqu'au:</label>
-                        <input type="date" asp-for="EndDateTo" class="form-control">
+                        <label class="filter-form-label">Fin jusqu'au:</label>
+                        <input type="date" asp-for="EndDateTo" class="filter-form-control">
                     </div>
                 </section>
 
-                <div class="divider"></div>
+                <div class="filter-divider"></div>
 
-                <section class="filter-section">
+                <section class="filter-filter-section">
                     <h3 class="mb-2">Par type d'animal</h3>
                     @if (Model.AnimalTypes != null && Model.AnimalTypes.Any())
                     {
                         <div id="animalCheckboxes">
                             @foreach (var animalType in Model.AnimalTypes)
                             {
-                                <div class="filter-option">
+                                <div class="filter-filter-option">
                                     <label>
                                         <input type="checkbox" name="AnimalTypeIds" value="@animalType.Id"
                                                class="animal-checkbox"
@@ -189,23 +189,23 @@
                     }
                 </section>
 
-                <div class="divider"></div>
+                <div class="filter-divider"></div>
 
                 <button type="submit" class="button" data-variant="primary" data-size="md">Rechercher</button>
             </form>
         </aside>
 
-        <div class="main-content">
-            <div class="tabs-container">
-                <div class="tabs-list" role="tablist">
+        <div class="filter-main-content">
+            <div class="filter-tabs-container">
+                <div class="filter-tabs-list" role="tablist">
                     <a asp-action="Index" asp-route-isPetSitter="false"
-                       class="tab @(ViewContext.RouteData.Values["isPetSitter"]?.ToString() == "false" ? "active" : "")"
+                       class="filter-tab @(ViewContext.RouteData.Values["isPetSitter"]?.ToString() == "false" ? "active" : "")"
                        role="tab"
                        aria-selected="@(ViewContext.RouteData.Values["isPetSitter"]?.ToString() == "false" ? "true" : "false")">
                         Demandes
                     </a>
                     <a asp-action="Index" asp-route-isPetSitter="true"
-                       class="tab @(ViewContext.RouteData.Values["isPetSitter"]?.ToString() == "true" ? "active" : "")"
+                       class="filter-tab @(ViewContext.RouteData.Values["isPetSitter"]?.ToString() == "true" ? "active" : "")"
                        role="tab"
                        aria-selected="@(ViewContext.RouteData.Values["isPetSitter"]?.ToString() == "true" ? "true" : "false")">
                         Offres
@@ -216,8 +216,8 @@
             <div class="filter-adverts-grid">
                 @if (!Model.Adverts.Any())
                 {
-                    <div class="mobile-hidden"></div>
-                    <div class="empty-state">
+                    <div class="filter-mobile-hidden"></div>
+                    <div class="filter-empty-state">
                         <svg xmlns="http://www.w3.org/2000/svg" width="48" height="48" viewBox="0 0 24 24" fill="none"
                              stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"
                              class="lucide lucide-search-x">
@@ -270,8 +270,8 @@
                                 @if (advert.Pets.Any())
                                 {
                                     <div>
-                                        <p class="form-label">Animaux :</p>
-                                        <div class="pets-tags">
+                                        <p class="filter-form-label">Animaux :</p>
+                                        <div class="filter-pets-tags">
                                             @foreach (var pet in advert.Pets)
                                             {
                                                 <span class="badge" data-variant="@pet.AnimalTypeName"
@@ -283,7 +283,7 @@
 
                                 @if (!string.IsNullOrEmpty(advert.AdditionalInformation))
                                 {
-                                    <p class="description-text">
+                                    <p class="filter-description-text">
                                         @(advert.AdditionalInformation.Length > 100 ? advert.AdditionalInformation.Substring(0, 100) + "..." : advert.AdditionalInformation)
                                     </p>
                                 }
@@ -294,7 +294,6 @@
                                 </div>
                             </div>
                             <div class="filter-card-footer">
-
                                 <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24"
                                      fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
                                      stroke-linejoin="round" class="lucide lucide-clock"
@@ -386,7 +385,7 @@
 
 <script>
     document.addEventListener('DOMContentLoaded', function () {
-        const tabs = document.querySelectorAll('.tabs-list .tab');
+        const tabs = document.querySelectorAll('.filter-tabs-list .filter-tab');
 
         const urlParams = new URLSearchParams(window.location.search);
         let isPetSitter = '@ViewContext.RouteData.Values["isPetSitter"]';
