@@ -386,10 +386,10 @@
 .recent-adverts-section {
     width: 100%;
     background-color: var(--color-primary-1);
-    padding: var(--space-10) 0 var(--space-14) 0;
-    display: flex; /* Ajouter flex pour organiser les éléments enfants */
-    flex-direction: column; /* Empiler les éléments verticalement */
-    align-items: center; /* Centrer les éléments horizontalement */
+    padding: var(--space-14) 0;
+    display: flex; 
+    flex-direction: column;
+    align-items: center;
 }
 
 .adverts-grid {
@@ -399,14 +399,13 @@
     width: 100%;
     margin: 0 auto;
     max-width: 1200px;
-    padding: 0 var(--space-4); /* Ajouter du padding horizontal pour éviter le collage aux bords */
+    padding: 0 var(--space-4);
 }
 
-.advert-card {
+.advert-card-landing{
     background-color: var(--color-primary-2);
     border-radius: var(--radius-xl);
     border: 1px solid var(--color-primary-4);
-    overflow: hidden;
     transition: var(--transition);
     height: 100%;
     display: flex;
@@ -414,7 +413,7 @@
     z-index: 10;
 }
 
-.advert-card:hover {
+.advert-card-landing:hover {
     box-shadow: var(--shadow-md);
     transform: translateY(-2px);
     border-color: var(--color-primary-6);
@@ -651,7 +650,7 @@
         grid-template-columns: 1fr;
     }
 
-    .advert-card {
+    .advert-card-landing {
         width: 100%;
         margin: 0;
     }
@@ -660,7 +659,7 @@
         grid-template-columns: 1fr;
     }
 
-    .adverts-grid, .advert-card, .recent-adverts-section {
+    .adverts-grid, .advert-card-landing, .recent-adverts-section {
         width: 100%;
         max-width: 100%;
     }
