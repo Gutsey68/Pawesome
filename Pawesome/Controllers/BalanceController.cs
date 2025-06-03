@@ -85,7 +85,7 @@ namespace Pawesome.Controllers
                 return RedirectToAction(nameof(Index));
             }
 
-            var returnUrl = Url.Action(nameof(OnboardingReturn), "Balance", null, Request.Scheme);
+            var returnUrl = Url.Action(nameof(OnboardingReturn), "Balance", null, "https");
             if (returnUrl != null)
             {
                 var onboardingUrl = await _balanceService.CreateOnboardingLinkAsync(user.Id, returnUrl);
