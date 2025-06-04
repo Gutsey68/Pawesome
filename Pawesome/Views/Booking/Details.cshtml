@@ -52,7 +52,7 @@
                 </div>
                 <div class="booking-info-item">
                     <span class="info-label">Prix total</span>
-                    <span class="info-value price">@Model.Amount.ToString("C")</span>
+                    <span class="info-value price">@Model.Amount.ToString("C", System.Globalization.CultureInfo.GetCultureInfo("fr-FR"))</span>
                 </div>
                 <div class="booking-info-item">
                     <span class="info-label">Date de création</span>

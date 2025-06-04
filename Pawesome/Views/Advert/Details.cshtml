@@ -200,7 +200,7 @@
                 </div>
             </section>
         }
-        else if (Model.Pets != null && Model.Pets.Any())
+        else if (!Model.IsPetSitter && Model.Pets.Any())
         {
             <section class="details-advert-section-details details-pets-section">
                 <h2 class="details-section-heading">Animaux concernés</h2>
