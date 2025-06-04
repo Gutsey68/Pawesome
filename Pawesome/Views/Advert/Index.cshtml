@@ -239,7 +239,7 @@
                                 <span class="filter-advert-badge @(advert.IsPetSitter ? "offer" : "request")">
                                     @(advert.IsPetSitter ? "Offre" : "Demande")
                                 </span>
-                                <span class="filter-advert-price">@advert.Amount.ToString("C")</span>
+                                @advert.Amount.ToString("C", System.Globalization.CultureInfo.GetCultureInfo("fr-FR"))
                             </div>
                             <div class="filter-card-body">
                                 @if (!string.IsNullOrEmpty(advert.City))

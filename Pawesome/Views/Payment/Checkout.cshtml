@@ -14,7 +14,7 @@
             <div class="summary-details">
                 <div class="summary-item total">
                     <span class="label">Montant total :</span>
-                    <span class="value">@Model.Amount.ToString("C")</span>
+                    <span class="value">@Model.Amount.ToString("C", System.Globalization.CultureInfo.GetCultureInfo("fr-FR"))</span>
                 </div>
             </div>
 
