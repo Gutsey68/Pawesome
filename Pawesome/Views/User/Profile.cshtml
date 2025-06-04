@@ -6,7 +6,7 @@
 
 <main role="main" class="container">
     <div class="profile-header">
-        <div> 
+        <div>
             @if (!string.IsNullOrEmpty(Model.Photo))
             {
                 <div class="avatar" data-size="xxl">
@@ -52,11 +52,13 @@
             </a>
         </div>
     </div>
-    
+
     @if (TempData["SuccessMessage"] != null)
     {
         <div class="alert mt-4" data-variant="success" role="alert">
-            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-check-circle">
+            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none"
+                 stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"
+                 class="lucide lucide-check-circle">
                 <path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"/>
                 <polyline points="22 4 12 14.01 9 11.01"/>
             </svg>
@@ -204,7 +206,8 @@
                         <article class="profile-advert-card">
                             <div class="card-header">
                                 <span class="advert-badge offer">Offre</span>
-                                <span class="advert-price">@advert.Amount.ToString("C")</span>
+                                <span
+                                    class="advert-price">@advert.Amount.ToString("C", System.Globalization.CultureInfo.GetCultureInfo("fr-FR"))</span>
                             </div>
                             <div class="card-body">
                                 @if (!string.IsNullOrEmpty(advert.City))

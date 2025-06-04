@@ -94,7 +94,7 @@
                             </span>
                             <span class="badge"
                                   data-variant="@GetStatusVariant(advert.Status)">@GetStatusText(advert.Status)</span>
-                            <span class="advert-price">@advert.Amount.ToString("C")</span>
+                            <span class="advert-price">@advert.Amount.ToString("C", System.Globalization.CultureInfo.GetCultureInfo("fr-FR"))</span>
                         </div>
                         <div class="card-body">
                             @if (!string.IsNullOrEmpty(advert.City))
@@ -175,7 +175,7 @@
                             <span class="advert-badge offer">Offre</span>
                             <span class="badge"
                                   data-variant="@GetStatusVariant(advert.Status)">@GetStatusText(advert.Status)</span>
-                            <span class="advert-price">@advert.Amount.ToString("C")</span>
+                            <span class="advert-price">@advert.Amount.ToString("C", System.Globalization.CultureInfo.GetCultureInfo("fr-FR"))</span>
                         </div>
                         <div class="card-body">
                             @if (!string.IsNullOrEmpty(advert.City))
@@ -274,7 +274,7 @@
                             <span class="advert-badge request">Demande</span>
                             <span class="badge"
                                   data-variant="@GetStatusVariant(advert.Status)">@GetStatusText(advert.Status)</span>
-                            <span class="advert-price">@advert.Amount.ToString("C")</span>
+                            <span class="advert-price">@advert.Amount.ToString("C", System.Globalization.CultureInfo.GetCultureInfo("fr-FR"))</span>
                         </div>
                         <div class="card-body">
                             @if (!string.IsNullOrEmpty(advert.City))

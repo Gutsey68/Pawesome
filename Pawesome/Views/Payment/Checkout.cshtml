@@ -9,7 +9,7 @@
 
     <div class="checkout-card">
         @Html.AntiForgeryToken()
-        
+
         <section class="checkout-section">
             <div class="summary-details">
                 <div class="summary-item total">
@@ -54,12 +54,14 @@
                     <rect width="20" height="14" x="2" y="5" rx="2"/>
                     <line x1="2" x2="22" y1="10" y2="10"/>
                 </svg>
-                Payer @Model.Amount.ToString("C")
+                Payer @Model.Amount.ToString("C", System.Globalization.CultureInfo.GetCultureInfo("fr-FR"))
             </button>
 
             <div class="terms">
-                <p>En procédant au paiement, vous acceptez nos <a class="underline" asp-controller="Home" asp-action="Cgv">conditions
-                        générales de vente</a> et notre <a class="underline" asp-controller="Home" asp-action="Privacy">politique de
+                <p>En procédant au paiement, vous acceptez nos <a class="underline" asp-controller="Home"
+                                                                  asp-action="Cgv">conditions
+                        générales de vente</a> et notre <a class="underline" asp-controller="Home" asp-action="Privacy">politique
+                        de
                         confidentialité</a>.</p>
             </div>
         </section>
@@ -72,7 +74,7 @@
         document.addEventListener('DOMContentLoaded', function () {
             const stripe = Stripe('@Model.StripePublishableKey');
             const checkoutButton = document.getElementById('checkout-button');
-            
+
             checkoutButton.addEventListener('click', function () {
                 checkoutButton.disabled = true;
                 checkoutButton.innerHTML = `
@@ -81,7 +83,7 @@
                     </svg>
                     Traitement en cours...
                 `;
-                
+
                 fetch('/Payment/CreateCheckoutSession', {
                     method: 'POST',
                     headers: {
@@ -92,34 +94,34 @@
                         bookingId: @Model.BookingId
                     })
                 })
-                .then(function(response) {
-                    if (!response.ok) {
-                        return response.json().then(function(errorData) {
-                            throw new Error(errorData.error || 'Erreur réseau - Status: ' + response.status);
-                        });
-                    }
-                    return response.json();
-                })
-                .then(function(session) {
-                    console.log("Session Stripe créée:", session);
-                    if (!session || !session.id) {
-                        throw new Error('Session ID non valide');
-                    }
-                    return stripe.redirectToCheckout({ sessionId: session.id });
-                })
-                .then(function(result) {
-                    if (result.error) {
-                        console.error('Stripe error:', result.error.message);
-                        alert(result.error.message);
+                    .then(function (response) {
+                        if (!response.ok) {
+                            return response.json().then(function (errorData) {
+                                throw new Error(errorData.error || 'Erreur réseau - Status: ' + response.status);
+                            });
+                        }
+                        return response.json();
+                    })
+                    .then(function (session) {
+                        console.log("Session Stripe créée:", session);
+                        if (!session || !session.id) {
+                            throw new Error('Session ID non valide');
+                        }
+                        return stripe.redirectToCheckout({sessionId: session.id});
+                    })
+                    .then(function (result) {
+                        if (result.error) {
+                            console.error('Stripe error:', result.error.message);
+                            alert(result.error.message);
+                            resetButton();
+                        }
+                    })
+                    .catch(function (error) {
+                        console.error('Error:', error);
+                        alert('Une erreur est survenue. Veuillez réessayer. Détails: ' + error.message);
                         resetButton();
-                    }
-                })
-                .catch(function(error) {
-                    console.error('Error:', error);
-                    alert('Une erreur est survenue. Veuillez réessayer. Détails: ' + error.message);
-                    resetButton();
-                });
-                
+                    });
+
                 function resetButton() {
                     checkoutButton.disabled = false;
                     checkoutButton.innerHTML = `
@@ -127,7 +129,7 @@
                             <rect width="20" height="14" x="2" y="5" rx="2"/>
                             <line x1="2" x2="22" y1="10" y2="10"/>
                         </svg>
-                        Payer @Model.Amount.ToString("C")
+                        Payer @Model.Amount.ToString("C", System.Globalization.CultureInfo.GetCultureInfo("fr-FR"))
                     `;
                 }
             });
