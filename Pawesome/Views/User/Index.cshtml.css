@@ -334,7 +334,7 @@
     color: var(--color-primary-12);
 }
 
-.advert-info {
+.user-advert-info {
     display: flex;
     align-items: center;
     gap: var(--space-2);
@@ -342,7 +342,7 @@
     font-size: var(--font-size-sm);
 }
 
-.advert-info svg {
+.user-advert-info svg {
     flex-shrink: 0;
     color: var(--color-primary-9);
 }

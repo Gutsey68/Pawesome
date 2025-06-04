@@ -29,11 +29,11 @@
     };
 }
 
-<main role="main" class="advert-details">
+<main role="main" class="details-advert-details">
 
-    <div class="advert-title2">
-        <div class="title-container">
-            <h1 class="section-title">@(Model.IsPetSitter ? "Offre de pet sitting" : "Recherche d'un pet sitter")</h1>
+    <div class="details-advert-title2">
+        <div class="details-title-container">
+            <h1 class="details-section-title">@(Model.IsPetSitter ? "Offre de pet sitting" : "Recherche d'un pet sitter")</h1>
             <a asp-controller="Report" asp-action="Create" asp-route-targetId="@Model.Id" asp-route-reportType="advert"
                class="button ml-4"
                data-size="xs"
@@ -82,9 +82,9 @@
             </div>
         </div>
     }
-    <div class="advert-header">
-        <div class="advert-dates-price">
-            <div class="advert-date">
+    <div class="details-advert-header">
+        <div class="details-advert-dates-price">
+            <div class="details-advert-date">
                 <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none"
                      stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"
                      class="lucide lucide-calendar-days">
@@ -101,7 +101,7 @@
                 </svg>
                 <span>Du @Model.StartDate.ToString("dd/MM/yyyy") au @Model.EndDate.ToString("dd/MM/yyyy")</span>
             </div>
-            <div class="advert-price">
+            <div class="details-advert-price">
                 <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none"
                      stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"
                      class="lucide lucide-euro">
@@ -111,7 +111,7 @@
                 </svg>
                 <span>@Model.Amount.ToString("C")</span>
             </div>
-            <div class="advert-location">
+            <div class="details-advert-location">
                 <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none"
                      stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"
                      class="lucide lucide-map-pin">
@@ -122,7 +122,7 @@
             </div>
         </div>
     </div>
-    <div class="advert-created-at mb-4">
+    <div class="details-advert-created-at mb-4">
         <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none"
              stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"
              class="lucide lucide-clock">
@@ -131,27 +131,27 @@
         </svg>
         <span>Publiée le @Model.CreatedAt.ToString("dd/MM/yyyy")</span>
     </div>
-    <div class="advert-sections">
-        <section class="advert-section owner-section">
-            <h2 class="section-heading">
+    <div class="details-advert-sections-details">
+        <section class="details-advert-section-details details-owner-section">
+            <h2 class="details-section-heading">
                 @(Model.IsPetSitter ? "Pet sitter" : "Propriétaire des animaux")
             </h2>
             @if (Model.Owner != null)
             {
-                <div class="owner-card">
+                <div class="details-owner-card">
                     <divd data-size="xl" class="avatar">
                         <img class="avatar-image" src="@ImageHelper.GetPhotoUrl(Model.Owner.Photo)"
                              alt="Photo de @Model.Owner.FullName"/>
                     </divd>
-                    <div class="owner-info">
+                    <div class="details-owner-info">
                         <h3>@Model.Owner.FullName</h3>
                         @if (Model.Owner.Rating.HasValue)
                         {
-                            <div class="star-rating">@Html.DisplayStars(Model.Owner.Rating)</div>
+                            <div class="details-star-rating">@Html.DisplayStars(Model.Owner.Rating)</div>
                         }
                         @if (!string.IsNullOrEmpty(Model.Owner.City) || !string.IsNullOrEmpty(Model.Owner.Country))
                         {
-                            <p class="owner-location">
+                            <p class="details-owner-location">
                                 <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24"
                                      fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
                                      stroke-linejoin="round" class="lucide lucide-map-pin">
@@ -190,9 +190,9 @@
 
         @if (Model.IsPetSitter)
         {
-            <section class="advert-section animal-types-section">
-                <h2 class="section-heading">Types d'animaux acceptés</h2>
-                <div class="animal-types-list">
+            <section class="details-advert-section-details details-animal-types-section">
+                <h2 class="details-section-heading">Types d'animaux acceptés</h2>
+                <div class="details-animal-types-list">
                     @foreach (var animalType in Model.AnimalTypes)
                     {
                         <span class="badge" data-variant="@animalType.Name">@animalType.Name</span>
@@ -202,18 +202,18 @@
         }
         else if (Model.Pets != null && Model.Pets.Any())
         {
-            <section class="advert-section pets-section">
-                <h2 class="section-heading">Animaux concernés</h2>
-                <div class="pets-grid">
+            <section class="details-advert-section-details details-pets-section">
+                <h2 class="details-section-heading">Animaux concernés</h2>
+                <div class="details-pets-grid">
                     @foreach (var pet in Model.Pets)
                     {
-                        <div class="pet-card">
-                            <div class="pet-image">
+                        <div class="details-pet-card">
+                            <div class="details-pet-image">
                                 <img src="@ImageHelper.GetPetPhotoUrl(pet.Photo)" alt="@pet.Name"/>
                             </div>
-                            <div class="pet-info">
-                                <div class="pet-header">
-                                    <h3 class="pet-name">@pet.Name</h3>
+                            <div class="details-pet-info">
+                                <div class="details-pet-header">
+                                    <h3 class="details-pet-name">@pet.Name</h3>
                                 </div>
                                 <span class="badge" data-variant="@pet.AnimalTypeName">@pet.AnimalTypeName</span>
                             </div>
@@ -225,25 +225,25 @@
 
         @if (!string.IsNullOrEmpty(Model.AdditionalInformation))
         {
-            <section class="advert-section description-section">
-                <h2 class="section-heading">Informations supplémentaires</h2>
-                <div class="advert-description">
+            <section class="details-advert-section-details details-description-section">
+                <h2 class="details-section-heading">Informations supplémentaires</h2>
+                <div class="details-advert-description">
                     @Model.AdditionalInformation
                 </div>
             </section>
         }
     </div>
-    <div class="advert-actions">
-        <div class="action-buttons">
+    <div class="details-advert-actions">
+        <div class="details-action-buttons">
             @if (Model.Status == AdvertStatus.FullyBooked && User.Identity?.IsAuthenticated == true && Model.Owner != null && Model.Owner.Id != int.Parse(User.FindFirst(System.Security.Claims.ClaimTypes.NameIdentifier)?.Value ?? "0"))
             {
-                <div class="rating-container">
+                <div class="details-rating-container">
                     <h3>Noter le prestataire</h3>
-                    <form asp-controller="User" asp-action="RateUser" method="post" class="rating-form">
+                    <form asp-controller="User" asp-action="RateUser" method="post" class="details-rating-form">
                         @Html.AntiForgeryToken()
                         <input type="hidden" name="advertId" value="@Model.Id"/>
                         <input type="hidden" name="ratedUserId" value="@(Model.Owner?.Id ?? 0)"/>
-                        <div class="star-rating">
+                        <div class="details-star-rating">
                             <input type="radio" id="star5" name="rating" value="5" required/>
                             <label for="star5">
                                 <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24"
@@ -290,7 +290,7 @@
                                 </svg>
                             </label>
                         </div>
-                        <div class="rating-comment">
+                        <div class="details-rating-comment">
                             <textarea name="comment" placeholder="Laissez un commentaire (optionnel)"
                                       rows="3"></textarea>
                         </div>
@@ -311,7 +311,7 @@
 
             @if (isOwner)
             {
-                <div class="owner-actions">
+                <div class="details-owner-actions">
                     @if (Model.Status == AdvertStatus.Pending || Model.Status == AdvertStatus.PendingOffer)
                     {
                         @if (Model.IsPetSitter)
