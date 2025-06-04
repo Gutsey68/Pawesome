@@ -55,27 +55,7 @@
                                         <path d="M4 14h9"/>
                                         <path d="M19 6a7.7 7.7 0 0 0-5.2-2A7.9 7.9 0 0 0 6 12c0 4.4 3.5 8 7.8 8 2 0 3.8-.8 5.2-2"/>
                                     </svg>
-                                    <span class="price">@advert.Amount.ToString("C") / jour</span>
-                                </div>
-                                <div class="detail-item">
-                                    <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-dog">
-                                        <path d="M10 5.172C10 3.782 8.423 2.679 6.5 3c-2.823.47-4.113 6.006-4 7 .08.703 1.725 1.722 3.656 1 1.261-.472 1.96-1.45 2.344-2.5"/>
-                                        <path d="M14.267 5.172c0-1.39 1.577-2.493 3.5-2.172 2.823.47 4.113 6.006 4 7-.08.703-1.725 1.722-3.656 1-1.261-.472-1.855-1.45-2.239-2.5"/>
-                                        <path d="M8 14v.5"/>
-                                        <path d="M16 14v.5"/>
-                                        <path d="M11.25 16.25h1.5L12 17l-.75-.75Z"/>
-                                        <path d="M4.42 11.247A13.152 13.152 0 0 0 4 14.556C4 18.728 7.582 21 12 21s8-2.272 8-6.444c0-1.061-.162-2.2-.493-3.309m-9.243-6.082A8.801 8.801 0 0 1 12 5c.78 0 1.5.108 2.161.306"/>
-                                    </svg>
-                                    <span>
-                                        @{
-                                            var petNames = new List<string>();
-                                            foreach (var pet in advert.Pets)
-                                            {
-                                                petNames.Add(pet.Name);
-                                            }
-                                        }
-                                        @string.Join(", ", petNames)
-                                    </span>
+                                    <span class="price">@advert.Amount.ToString("C", System.Globalization.CultureInfo.GetCultureInfo("fr-FR")) / jour</span>
                                 </div>
                             </div>
                         </div>
@@ -129,7 +109,7 @@
                                 </svg>
                                 <div>
                                     <h4>À propos du paiement</h4>
-                                    <p>Votre carte bancaire sera autorisée pour le montant de @((advert.Amount * (Model.EndDate - Model.StartDate).Days).ToString("C")), mais le paiement ne sera débité qu'après la validation de la prestation.</p>
+                                    <p>Votre carte bancaire sera autorisée pour le montant de (advert.Amount * (Model.EndDate - Model.StartDate).Days).ToString("C", System.Globalization.CultureInfo.GetCultureInfo("fr-FR")), mais le paiement ne sera débité qu'après la validation de la prestation.</p>
                                 </div>
                             </div>
                         </div>
@@ -179,7 +159,7 @@
                     <div class="price-details">
                         <div class="price-item">
                             <span class="price-label">Prix par jour</span>
-                            <span class="price-value">@advert.Amount.ToString("C")</span>
+                            <span class="price-value">@advert.Amount.ToString("C", System.Globalization.CultureInfo.GetCultureInfo("fr-FR"))</span>
                         </div>
                         <div class="price-item">
                             <span class="price-label">Nombre de jours</span>
@@ -188,7 +168,7 @@
                         <div class="price-divider"></div>
                         <div class="price-item total">
                             <span class="price-label">Total</span>
-                            <span id="totalPrice" class="price-value">@((advert.Amount * (Model.EndDate - Model.StartDate).Days).ToString("C"))</span>
+                            <span id="totalPrice" class="price-value">@((advert.Amount * (Model.EndDate - Model.StartDate).Days).ToString("C", System.Globalization.CultureInfo.GetCultureInfo("fr-FR")))</span>
                         </div>
                     </div>
                     
