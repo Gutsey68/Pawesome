@@ -14,8 +14,8 @@
       - "traefik.http.services.pawesome.loadbalancer.server.port=8080"
       - "traefik.docker.network=traefik-proxy"
     volumes:
-      - user_images:/app/wwwroot/images/users
-      - pet_images:/app/wwwroot/images/pets
+      - /var/lib/pawesome/images/users:/app/wwwroot/images/users
+      - /var/lib/pawesome/images/pets:/app/wwwroot/images/pets
     networks:
       - pawesome-network
       - traefik-proxy
