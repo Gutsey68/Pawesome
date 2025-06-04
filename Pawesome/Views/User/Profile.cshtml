@@ -127,7 +127,7 @@
                                 <span class="advert-badge @(advert.IsPetSitter ? "offer" : "request")">
                                     @(advert.IsPetSitter ? "Offre" : "Demande")
                                 </span>
-                                <span class="advert-price">@advert.Amount.ToString("C")</span>
+                                <span class="advert-price">@advert.Amount.ToString("C", System.Globalization.CultureInfo.GetCultureInfo("fr-FR"))</span>
                             </div>
                             <div class="card-body">
                                 @if (!string.IsNullOrEmpty(advert.City))
@@ -303,7 +303,7 @@
                         <article class="profile-advert-card">
                             <div class="card-header">
                                 <span class="advert-badge request">Demande</span>
-                                <span class="advert-price">@advert.Amount.ToString("C")</span>
+                                <span class="advert-price">@advert.Amount.ToString("C", System.Globalization.CultureInfo.GetCultureInfo("fr-FR"))</span>
                             </div>
                             <div class="card-body">
                                 @if (!string.IsNullOrEmpty(advert.City))
