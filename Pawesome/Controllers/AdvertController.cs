@@ -39,6 +39,12 @@ public class AdvertController : Controller
         _userManager = userManager;
     }
 
+    /// <summary>
+    /// Displays the advert index page with filtering and sorting options.
+    /// </summary>
+    /// <param name="isPetSitter">Indicates if the adverts are for pet sitters.</param>
+    /// <param name="model">Optional filter and sorting model for adverts.</param>
+    /// <returns>View with a list of filtered and sorted adverts.</returns>
     [HttpGet]
     public async Task<IActionResult> Index(bool isPetSitter = false, [FromQuery] AdvertViewModel? model = null)
     {
@@ -188,7 +194,13 @@ public class AdvertController : Controller
         ViewBag.Pets = pets;
         return View(new PetSittingRequestViewModel());
     }
-
+    
+    /// <summary>
+    /// Handles the creation of a new pet sitting request (POST).
+    /// Validates the input, ensures the user is authenticated, has an address, and owns at least one pet.
+    /// If validation fails, returns the form with errors and the user's pets.
+    /// If successful, creates the request and redirects to the details page of the new advert.
+    /// </summary>
     [Authorize]
     [HttpPost]
     public async Task<IActionResult> CreateRequest(PetSittingRequestViewModel viewModel)
@@ -253,6 +265,12 @@ public class AdvertController : Controller
         return View(new PetSittingOfferViewModel());
     }
 
+    /// <summary>
+    /// Handles the creation of a new pet sitting offer (POST).
+    /// Validates the input, ensures the user is authenticated and has an address.
+    /// If validation fails, returns the form with errors and animal types.
+    /// If successful, creates the offer and redirects to the details page of the new advert.
+    /// </summary>
     [Authorize]
     [HttpPost]
     public async Task<IActionResult> CreateOffer(PetSittingOfferViewModel viewModel)
